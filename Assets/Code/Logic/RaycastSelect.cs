@@ -17,6 +17,7 @@ namespace Logic
             bool isHit = Physics.Raycast(ray, out var hit, maxDistance, layerMask);
             Transform hitTransform = hit.transform;
 
+            // Highlight
             if (isHit)
             {
                 bool tryGetHighlighted = hitTransform.TryGetComponent<IHighlightable>(out var highlighted);
@@ -28,7 +29,13 @@ namespace Logic
                     _previouslyHighlited = highlighted;
                 }
             }
+            else
+            {
+                _previouslyHighlited?.DisableHighlight();
+                _previouslyHighlited = null;
+            }
 
+            // Select
             if (Input.GetButtonDown("Fire1") && isHit)
             {
                 if (hitTransform.TryGetComponent<ISelectable>(out var selected))
