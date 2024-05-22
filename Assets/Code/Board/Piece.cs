@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Logic;
 using UnityEngine;
 
@@ -23,6 +24,11 @@ namespace Board
         public void DisableSelect()
         {
             Debug.Log($"Piece: {name} selection is disabled.");
+        }
+
+        public void Move(Vector3 target)
+        {
+            transform.DOMove(target, 2).SetEase(Ease.InOutCubic);
         }
     }
 }

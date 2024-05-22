@@ -6798,7 +6798,6 @@ GameObject:
   - component: {fileID: 5391507738751802804}
   - component: {fileID: 7553777077279368967}
   - component: {fileID: 7553777077279368968}
-  - component: {fileID: 7553777077279368969}
   m_Layer: 6
   m_Name: W_Pawn
   m_TagString: Untagged
@@ -6992,18 +6991,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba3223c38181808419e5eb49b0f34b4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7553777077279368969
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7458448261926366768}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f825754460440a42b6d45bc811c4619, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!33 &7564706374606147528

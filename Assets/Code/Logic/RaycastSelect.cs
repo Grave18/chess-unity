@@ -10,6 +10,7 @@ namespace Logic
 
         private IHighlightable _previouslyHighlited;
         private ISelectable _previouslySelected;
+        private Transform _previouslySelectedTransform;
 
         private void Update()
         {
@@ -34,6 +35,10 @@ namespace Logic
             {
                 bool tryGetSelected = hitTransform.TryGetComponent<ISelectable>(out var selected);
 
+                // Move
+                _previouslySelected?.Move(hitTransform.position);
+
+                // Reselect
                 if (tryGetSelected && selected != _previouslySelected)
                 {
                     selected.Select();
