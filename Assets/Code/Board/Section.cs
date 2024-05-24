@@ -21,5 +21,15 @@ namespace Board
         {
             return currentPiece == null;
         }
+
+        public void Select()
+        {
+            _renderer.material.color = Color.magenta;
+        }
+
+        public void DisableSelect()
+        {
+            _renderer.material.color = Color.white;
+        }
     }
 }

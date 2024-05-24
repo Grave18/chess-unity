@@ -60,6 +60,7 @@ namespace Board
 
             _state = State.Selected;
 
+            currentSection.Select();
             Debug.Log($"Piece: {name} is selected.");
             _renderer.material.color = Color.red;
         }
@@ -73,6 +74,7 @@ namespace Board
 
             _state = State.None;
 
+            currentSection.DisableSelect();
             Debug.Log($"Piece: {name} selection is disabled.");
             _renderer.material.color = Color.white;
         }

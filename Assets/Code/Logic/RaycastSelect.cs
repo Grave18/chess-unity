@@ -35,10 +35,10 @@ namespace Logic
                 bool tryGetPiece = hitTransform.TryGetComponent<Piece>(out var piece);
 
                 // Move
-                if (tryGetSection && section.IsEmpty())
+                if (tryGetSection && section.IsEmpty() && _previouslySelectedPiece != null)
                 {
-                    _previouslySelectedPiece?.Move(hitTransform.position, section);
-                    _previouslySelectedPiece?.DisableSelect();
+                    _previouslySelectedPiece.Move(hitTransform.position, section);
+                    _previouslySelectedPiece.DisableSelect();
                     _previouslySelectedPiece = null;
                 }
                 // Reselect
