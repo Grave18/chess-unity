@@ -1,10 +1,9 @@
 using DG.Tweening;
-using Logic;
 using UnityEngine;
 
 namespace Board
 {
-    public class Piece : MonoBehaviour, IHighlightable, ISelectable
+    public class Piece : MonoBehaviour
     {
         private enum State
         {
@@ -35,7 +34,6 @@ namespace Board
 
             _state = State.Highlighted;
 
-            currentSection?.Highlight();
             Debug.Log($"Piece: {name} is highlighted.");
             _renderer.material.color = Color.blue;
         }
@@ -49,7 +47,6 @@ namespace Board
 
             _state = State.None;
 
-            currentSection?.DisableHighlight();
             Debug.Log($"Piece: {name} highlight is disabled.");
             _renderer.material.color = Color.white;
         }
@@ -63,7 +60,6 @@ namespace Board
 
             _state = State.Selected;
 
-            currentSection?.Select();
             Debug.Log($"Piece: {name} is selected.");
             _renderer.material.color = Color.red;
         }
@@ -77,30 +73,26 @@ namespace Board
 
             _state = State.None;
 
-            currentSection?.DisableSelect();
             Debug.Log($"Piece: {name} selection is disabled.");
             _renderer.material.color = Color.white;
         }
 
-        public void Move(Vector3 target)
+        public void Move(Vector3 position, Section section)
         {
             if (_state != State.Selected)
             {
                 return;
             }
 
-            var tween = transform.DOMove(target, 2).SetEase(Ease.InOutCubic);
-            tween.onComplete = () => currentSection.SetPiece(this);
-        }
-
-        public bool IsEqual(ISelectable other)
-        {
-            return this == other || currentSection == other;
-        }
-
-        public bool IsEqual(IHighlightable other)
-        {
-            return this == other || currentSection == other;
+            var tween = transform.DOMove(position, duration: 1).SetEase(Ease.InOutCubic);
+            tween.onComplete = () =>
+            {
+                // Can't be null
+                currentSection.SetPiece(null);
+                currentSection = section;
+                // Can be null
+                currentSection?.SetPiece(this);
+            };
         }
     }
 }

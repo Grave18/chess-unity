@@ -1,3 +1,4 @@
+using Board;
 using UnityEngine;
 
 namespace Logic
@@ -8,9 +9,7 @@ namespace Logic
         [SerializeField] private float maxDistance;
         [SerializeField] private LayerMask layerMask;
 
-        private IHighlightable _previouslyHighlited;
-        private ISelectable _previouslySelected;
-        private Transform _previouslySelectedTransform;
+        private Piece _previouslySelectedPiece;
 
         private void Update()
         {
@@ -21,7 +20,6 @@ namespace Logic
             Transform hitTransform = hit.transform;
 
             Select(isHit, hitTransform);
-            Highlight(isHit, hitTransform);
         }
 
         private void Select(bool isHit, Transform hitTransform)
@@ -33,43 +31,35 @@ namespace Logic
 
             if(isHit)
             {
-                bool tryGetSelected = hitTransform.TryGetComponent<ISelectable>(out var selectable);
+                bool tryGetSection = hitTransform.TryGetComponent<Section>(out var section);
+                bool tryGetPiece = hitTransform.TryGetComponent<Piece>(out var piece);
 
                 // Move
-                // _previouslySelected?.Move(hitTransform.position);
-
+                if (tryGetSection && section.IsEmpty())
+                {
+                    _previouslySelectedPiece?.Move(hitTransform.position, section);
+                    _previouslySelectedPiece?.DisableSelect();
+                    _previouslySelectedPiece = null;
+                }
                 // Reselect
-                if (tryGetSelected && !selectable.IsEqual(_previouslySelected))
+                else if (tryGetPiece && piece != _previouslySelectedPiece)
                 {
-                    selectable.Select();
-                    _previouslySelected?.DisableSelect();
-                    _previouslySelected = selectable;
+                    piece.Select();
+                    _previouslySelectedPiece?.DisableSelect();
+                    _previouslySelectedPiece = piece;
+                }
+                // Deselect if not hit anything
+                else
+                {
+                    _previouslySelectedPiece?.DisableSelect();
+                    _previouslySelectedPiece = null;
                 }
             }
+            // Deselect if not hit anything
             else
             {
-                _previouslySelected?.DisableSelect();
-                _previouslySelected = null;
-            }
-        }
-
-        private void Highlight(bool isHit, Transform hitTransform)
-        {
-            if (isHit)
-            {
-                bool tryGetHighlightable = hitTransform.TryGetComponent<IHighlightable>(out var highlightable);
-
-                if (tryGetHighlightable && !highlightable.IsEqual(_previouslyHighlited))
-                {
-                    highlightable.Highlight();
-                    _previouslyHighlited?.DisableHighlight();
-                    _previouslyHighlited = highlightable;
-                }
-            }
-            else
-            {
-                _previouslyHighlited?.DisableHighlight();
-                _previouslyHighlited = null;
+                _previouslySelectedPiece?.DisableSelect();
+                _previouslySelectedPiece = null;
             }
         }
     }
