@@ -1,44 +1,38 @@
-using DG.Tweening;
 using Logic;
 using UnityEngine;
 
 namespace Board
 {
-    public class Piece : MonoBehaviour, IHighlightable, ISelectable
+    public class Section : MonoBehaviour, IHighlightable, ISelectable
     {
         private enum State
         {
             None, Selected, Highlighted
         }
 
-        [SerializeField] private Section currentSection;
-
+        private Piece currentPiece;
         private MeshRenderer _renderer;
         private State _state = State.None;
 
-        private void Awake()
+        private void Start()
         {
             _renderer = GetComponent<MeshRenderer>();
         }
 
-        private void Start()
-        {
-            currentSection.SetPiece(this);
-        }
-
         public void Highlight()
         {
-            if (_state is State.Selected or State.Highlighted)
+            if (_state == State.Selected || _state == State.Highlighted)
             {
                 return;
             }
 
             _state = State.Highlighted;
 
-            currentSection?.Highlight();
-            Debug.Log($"Piece: {name} is highlighted.");
-            _renderer.material.color = Color.blue;
+            Debug.Log($"Section: {name} is highlighted.");
+            currentPiece?.Highlight();
+            _renderer.material.color = Color.cyan;
         }
+
 
         public void DisableHighlight()
         {
@@ -49,8 +43,8 @@ namespace Board
 
             _state = State.None;
 
-            currentSection?.DisableHighlight();
-            Debug.Log($"Piece: {name} highlight is disabled.");
+            Debug.Log($"Section: {name} highlight is disabled.");
+            currentPiece?.DisableHighlight();
             _renderer.material.color = Color.white;
         }
 
@@ -63,9 +57,9 @@ namespace Board
 
             _state = State.Selected;
 
-            currentSection?.Select();
-            Debug.Log($"Piece: {name} is selected.");
-            _renderer.material.color = Color.red;
+            Debug.Log($"Section: {name} is selected.");
+            currentPiece?.Select();
+            _renderer.material.color = Color.magenta;
         }
 
         public void DisableSelect()
@@ -77,8 +71,8 @@ namespace Board
 
             _state = State.None;
 
-            currentSection?.DisableSelect();
-            Debug.Log($"Piece: {name} selection is disabled.");
+            Debug.Log($"Section: {name} selection is disabled.");
+            currentPiece?.DisableSelect();
             _renderer.material.color = Color.white;
         }
 
@@ -89,18 +83,28 @@ namespace Board
                 return;
             }
 
-            var tween = transform.DOMove(target, 2).SetEase(Ease.InOutCubic);
-            tween.onComplete = () => currentSection.SetPiece(this);
+            if (currentPiece == null)
+            {
+                return;
+            }
+
+            Debug.Log($"Section: {name} delegate move to {currentPiece.name}.");
+            currentPiece.Move(target);
+        }
+
+        public void SetPiece(Piece piece)
+        {
+            currentPiece = piece;
         }
 
         public bool IsEqual(ISelectable other)
         {
-            return this == other || currentSection == other;
+            return this == other || currentPiece == other;
         }
 
         public bool IsEqual(IHighlightable other)
         {
-            return this == other || currentSection == other;
+            return this == other || currentPiece == other;
         }
     }
 }

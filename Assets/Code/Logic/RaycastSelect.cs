@@ -33,17 +33,17 @@ namespace Logic
 
             if(isHit)
             {
-                bool tryGetSelected = hitTransform.TryGetComponent<ISelectable>(out var selected);
+                bool tryGetSelected = hitTransform.TryGetComponent<ISelectable>(out var selectable);
 
                 // Move
-                _previouslySelected?.Move(hitTransform.position);
+                // _previouslySelected?.Move(hitTransform.position);
 
                 // Reselect
-                if (tryGetSelected && selected != _previouslySelected)
+                if (tryGetSelected && !selectable.IsEqual(_previouslySelected))
                 {
-                    selected.Select();
+                    selectable.Select();
                     _previouslySelected?.DisableSelect();
-                    _previouslySelected = selected;
+                    _previouslySelected = selectable;
                 }
             }
             else
@@ -57,13 +57,13 @@ namespace Logic
         {
             if (isHit)
             {
-                bool tryGetHighlighted = hitTransform.TryGetComponent<IHighlightable>(out var highlighted);
+                bool tryGetHighlightable = hitTransform.TryGetComponent<IHighlightable>(out var highlightable);
 
-                if (tryGetHighlighted && highlighted != _previouslyHighlited)
+                if (tryGetHighlightable && !highlightable.IsEqual(_previouslyHighlited))
                 {
-                    highlighted.Highlight();
+                    highlightable.Highlight();
                     _previouslyHighlited?.DisableHighlight();
-                    _previouslyHighlited = highlighted;
+                    _previouslyHighlited = highlightable;
                 }
             }
             else

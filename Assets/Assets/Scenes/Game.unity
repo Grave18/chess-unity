@@ -646,6 +646,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba3223c38181808419e5eb49b0f34b4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentSection: {fileID: 6704605738446285970}
 --- !u!1 &2048994680
 GameObject:
   m_ObjectHideFlags: 0
@@ -6993,6 +6994,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba3223c38181808419e5eb49b0f34b4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentSection: {fileID: 6874513035681872093}
 --- !u!33 &7564706374606147528
 MeshFilter:
   m_ObjectHideFlags: 0

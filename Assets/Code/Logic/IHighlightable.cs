@@ -4,5 +4,7 @@
     {
         void Highlight();
         void DisableHighlight();
+
+        public bool IsEqual(IHighlightable other);
     }
 }

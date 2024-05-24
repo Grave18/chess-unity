@@ -8,5 +8,7 @@ namespace Logic
         void DisableSelect();
 
         void Move(Vector3 target);
+
+        bool IsEqual(ISelectable other);
     }
 }
