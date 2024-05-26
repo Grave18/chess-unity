@@ -4,16 +4,16 @@ using UnityEngine;
 
 namespace Board
 {
-    public class Piece : MonoBehaviour, ISelectable
+    public abstract class Piece : MonoBehaviour, ISelectable
     {
         private enum State
         {
             None, Selected, Highlighted
         }
 
-        [SerializeField] private GameManager gameManager;
+        [SerializeField] protected GameManager gameManager;
 
-        [SerializeField] private Section currentSection;
+        [SerializeField] protected Section currentSection;
         [SerializeField] private LayerMask sectionLayer;
         [SerializeField] private Ease ease = Ease.InOutCubic;
         [SerializeField] private float speed = 0.7f;
@@ -92,10 +92,6 @@ namespace Board
             _renderer.material.color = Color.white;
         }
 
-        public Vector2Int[] CanMoveFirst;
-        public Vector2Int[] CanMove;
-        public bool IsFirstMove = true;
-
         public void Move(Vector3 position, ISelectable selectable)
         {
             if (_state != State.Selected)
@@ -109,26 +105,10 @@ namespace Board
                 return;
             }
 
-            Vector2Int[] move = IsFirstMove ? CanMoveFirst : CanMove;
-            bool canMove = false;
-            foreach (var vector in move)
-            {
-                var possibleSection = gameManager.GetSection(currentSection.X + vector.x, currentSection.Y + vector.y);
-                Debug.Log(possibleSection.name);
-
-                if (possibleSection == section)
-                {
-                    canMove = true;
-                    break;
-                }
-            }
-
-            if (!canMove)
+            if (!CanMovePiece(section))
             {
                 return;
             }
-
-            IsFirstMove = false;
 
             // State changed here
             DisableSelect();
@@ -141,6 +121,8 @@ namespace Board
             currentSection = section;
             currentSection.SetPiece(this);
         }
+
+        protected abstract bool CanMovePiece(Section section);
 
         public bool IsEmpty()
         {
