@@ -145,3 +145,5 @@ MonoBehaviour:
   sectionLayer:
     serializedVersion: 2
     m_Bits: 128
+  ease: 7
+  speed: 0.7

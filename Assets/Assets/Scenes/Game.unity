@@ -982,6 +982,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4613731909289174583, guid: c9117a2798edc584db277f31014d6a62,
         type: 3}
+      propertyPath: ease
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4613731909289174583, guid: c9117a2798edc584db277f31014d6a62,
+        type: 3}
+      propertyPath: speed
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4613731909289174583, guid: c9117a2798edc584db277f31014d6a62,
+        type: 3}
       propertyPath: currentSection
       value: 
       objectReference: {fileID: 6714009882633750907}

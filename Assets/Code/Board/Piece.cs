@@ -13,11 +13,11 @@ namespace Board
 
         [SerializeField] private Section currentSection;
         [SerializeField] private LayerMask sectionLayer;
+        [SerializeField] private Ease ease = Ease.InOutCubic;
+        [SerializeField] private float speed = 0.7f;
 
         private MeshRenderer _renderer;
         private State _state = State.None;
-
-
 
         private void Awake()
         {
@@ -94,7 +94,9 @@ namespace Board
 
             DisableSelect();
 
-            transform.DOMove(position, duration: 1).SetEase(Ease.InOutCubic);
+            float distance = Vector3.Distance(transform.position, position);
+            float duration = distance / speed;
+            transform.DOMove(position, duration).SetEase(ease);
 
             currentSection.SetPiece(null);
             currentSection = selectable as Section;
