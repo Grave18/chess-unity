@@ -1,4 +1,3 @@
-using Board;
 using UnityEngine;
 
 namespace Logic
@@ -9,7 +8,8 @@ namespace Logic
         [SerializeField] private float maxDistance;
         [SerializeField] private LayerMask layerMask;
 
-        private Piece _previouslySelectedPiece;
+        private ISelectable _previouslySelected;
+        private ISelectable _previouslyHighlighted;
 
         private void Update()
         {
@@ -19,47 +19,69 @@ namespace Logic
             bool isHit = Physics.Raycast(ray, out var hit, maxDistance, layerMask);
             Transform hitTransform = hit.transform;
 
-            Select(isHit, hitTransform);
+            if (Input.GetButtonDown("Fire1"))
+            {
+                Select(isHit, hitTransform);
+            }
+            else
+            {
+                Highlight(isHit, hitTransform);
+            }
+        }
+
+        private void Highlight(bool isHit, Transform hitTransform)
+        {
+            if(isHit)
+            {
+                bool tryGetSelectable = hitTransform.TryGetComponent(out ISelectable selectable);
+
+                // Highlight
+                if (tryGetSelectable && !selectable.IsEqual(_previouslyHighlighted))
+                {
+                    selectable.Highlight();
+                    _previouslyHighlighted?.DisableHighlight();
+                    _previouslyHighlighted = selectable;
+                }
+            }
+            // Dehighlight if not hit anything
+            else
+            {
+                _previouslyHighlighted?.DisableHighlight();
+                _previouslyHighlighted = null;
+            }
         }
 
         private void Select(bool isHit, Transform hitTransform)
         {
-            if (!Input.GetButtonDown("Fire1"))
-            {
-                return;
-            }
-
             if(isHit)
             {
-                bool tryGetSection = hitTransform.TryGetComponent<Section>(out var section);
-                bool tryGetPiece = hitTransform.TryGetComponent<Piece>(out var piece);
+                bool tryGetSelectable = hitTransform.TryGetComponent(out ISelectable selectable);
 
                 // Move
-                if (tryGetSection && section.IsEmpty() && _previouslySelectedPiece != null)
+                if (tryGetSelectable && selectable.IsEmpty())
                 {
-                    _previouslySelectedPiece.Move(hitTransform.position, section);
-                    _previouslySelectedPiece.DisableSelect();
-                    _previouslySelectedPiece = null;
+                    _previouslySelected?.Move(hitTransform.position, selectable);
+                    _previouslySelected = null;
                 }
                 // Reselect
-                else if (tryGetPiece && piece != _previouslySelectedPiece)
+                else if (tryGetSelectable && !selectable.IsEqual(_previouslySelected))
                 {
-                    piece.Select();
-                    _previouslySelectedPiece?.DisableSelect();
-                    _previouslySelectedPiece = piece;
+                    selectable.Select();
+                    _previouslySelected?.DisableSelect();
+                    _previouslySelected = selectable;
                 }
                 // Deselect if not hit anything
-                else
-                {
-                    _previouslySelectedPiece?.DisableSelect();
-                    _previouslySelectedPiece = null;
-                }
+                // else
+                // {
+                //     _previouslySelected?.DisableSelect();
+                //     _previouslySelected = null;
+                // }
             }
             // Deselect if not hit anything
             else
             {
-                _previouslySelectedPiece?.DisableSelect();
-                _previouslySelectedPiece = null;
+                _previouslySelected?.DisableSelect();
+                _previouslySelected = null;
             }
         }
     }
