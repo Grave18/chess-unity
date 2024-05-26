@@ -63,19 +63,15 @@ namespace Logic
                     _previouslySelected?.Move(hitTransform.position, selectable);
                     _previouslySelected = null;
                 }
-                // Reselect
+                // Select
                 else if (tryGetSelectable && !selectable.IsEqual(_previouslySelected))
                 {
                     selectable.Select();
                     _previouslySelected?.DisableSelect();
                     _previouslySelected = selectable;
+
+
                 }
-                // Deselect if not hit anything
-                // else
-                // {
-                //     _previouslySelected?.DisableSelect();
-                //     _previouslySelected = null;
-                // }
             }
             // Deselect if not hit anything
             else

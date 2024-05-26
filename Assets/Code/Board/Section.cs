@@ -5,7 +5,11 @@ namespace Board
 {
     public class Section : MonoBehaviour, ISelectable
     {
-        private Piece currentPiece;
+        public int X;
+        public int Y;
+
+        [SerializeField] private Piece currentPiece;
+
         private MeshRenderer _renderer;
 
         private void Start()
