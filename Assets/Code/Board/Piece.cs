@@ -12,9 +12,12 @@ namespace Board
         }
 
         [SerializeField] private Section currentSection;
+        [SerializeField] private LayerMask sectionLayer;
 
         private MeshRenderer _renderer;
         private State _state = State.None;
+
+
 
         private void Awake()
         {
@@ -107,6 +110,20 @@ namespace Board
         public bool IsEqual(ISelectable other)
         {
             return this == other || currentSection == other;
+        }
+
+
+        [ContextMenu("Get Section And Align")]
+        private void GetSectionAndAlign()
+        {
+            if (!Physics.Raycast(transform.position + Vector3.up, Vector3.down, out var hitInfo, 2f, sectionLayer))
+            {
+                return;
+            }
+
+            transform.position = hitInfo.transform.position;
+            currentSection = hitInfo.collider.GetComponent<Section>();
+            currentSection.SetPiece(this);
         }
     }
 }

@@ -142,3 +142,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentSection: {fileID: 0}
+  sectionLayer:
+    serializedVersion: 2
+    m_Bits: 128
