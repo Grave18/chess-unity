@@ -141,6 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96c9e8d7fb4b46668d065061852b67b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pieceColor: 1
   gameManager: {fileID: 0}
   currentSection: {fileID: 0}
   sectionLayer:

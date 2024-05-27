@@ -11,9 +11,10 @@ namespace Board
             None, Selected, Highlighted
         }
 
+        [SerializeField] protected PieceColor pieceColor;
         [SerializeField] protected GameManager gameManager;
-
         [SerializeField] protected Section currentSection;
+
         [SerializeField] private LayerMask sectionLayer;
         [SerializeField] private Ease ease = Ease.InOutCubic;
         [SerializeField] private float speed = 0.7f;

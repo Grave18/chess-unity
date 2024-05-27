@@ -1374,7 +1374,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1216111693}
         m_TargetAssemblyTypeName: Logic.GameManager, Assembly-CSharp
-        m_MethodName: ChangeMove
+        m_MethodName: ChangeTurn
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -3,17 +3,14 @@ using UnityEngine;
 
 namespace Logic
 {
+
     public class GameManager : MonoBehaviour
     {
-        public enum Turn
-        {
-            White, Black
-        }
 
         private const int Width = 8;
         private const int Height = 8;
 
-        public Turn CurrentTurn = Turn.White;
+        public PieceColor CurrentTurn = PieceColor.White;
         public Section[] Sections;
 
         public void Construct(Section[] sections)
@@ -21,9 +18,19 @@ namespace Logic
             Sections = sections;
         }
 
-        public void ChangeMove(int index)
+        public void ChangeTurn(int index)
         {
-            CurrentTurn = (Turn)index;
+            if (index < 0 || index > 1)
+            {
+                return;
+            }
+
+            CurrentTurn = (PieceColor)index;
+        }
+
+        public void ChangeTurn(PieceColor turn)
+        {
+            CurrentTurn = turn;
         }
 
         public Section GetSection(Section currentSection, int offsetX, int offsetY)
@@ -31,7 +38,7 @@ namespace Logic
             int x;
             int y;
 
-            if (CurrentTurn == Turn.White)
+            if (CurrentTurn == PieceColor.White)
             {
                 x = currentSection.X + offsetX;
                 y = currentSection.Y + offsetY;
