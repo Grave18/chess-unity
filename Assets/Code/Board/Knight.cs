@@ -4,25 +4,18 @@ namespace Board
 {
     public class Knight : Piece
     {
-        [Header("Pawn")]
-        public Vector2Int[] MovesEat;
-        public Vector2Int[] MovesFirstMove;
+        [Header("Knight")]
         public Vector2Int[] Moves;
-        public bool IsFirstMove = true;
 
         protected override bool CanMovePiece(Section section)
         {
-            Vector2Int[] move = IsFirstMove ? MovesFirstMove : Moves;
-
-            foreach (var vector in move)
+            foreach (Vector2Int vector in Moves)
             {
                 var possibleSection = gameManager.GetSection(currentSection.X + vector.x, currentSection.Y + vector.y);
                 Debug.Log(possibleSection.name);
 
                 if (possibleSection == section)
                 {
-                    IsFirstMove = false;
-
                     return true;
                 }
             }

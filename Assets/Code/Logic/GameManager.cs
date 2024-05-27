@@ -26,15 +26,21 @@ namespace Logic
             // If out of bounds return first section
             if (x < 0 || x >= Width || y < 0 || y >= Height)
             {
-                return Sections[0];
+                // Null section (last in array)
+                return Sections[^1];
             }
 
-            Section section = CurrentTurn == Turn.White
-                ? Sections[y + x * Width]
-                // Inverse board indices for black turn
-                : Sections[Height - 1 - y + (Width - 1 - x) * Width];
+            int index;
+            if (CurrentTurn == Turn.White)
+            {
+                index = y + x * Width;
+            }
+            else
+            {
+                index = Height - 1 - y + (Width - 1 - x) * Width;
+            }
 
-            return section;
+            return Sections[index];
         }
 
         [ContextMenu("Find All Sections")]
