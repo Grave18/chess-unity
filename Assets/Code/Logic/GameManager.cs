@@ -21,26 +21,35 @@ namespace Logic
             Sections = sections;
         }
 
-        public Section GetSection(int x, int y)
+        public void ChangeMove(int index)
         {
-            // If out of bounds return first section
-            if (x < 0 || x >= Width || y < 0 || y >= Height)
-            {
-                // Null section (last in array)
-                return Sections[^1];
-            }
+            CurrentTurn = (Turn)index;
+        }
 
-            int index;
+        public Section GetSection(Section currentSection, int offsetX, int offsetY)
+        {
+            int x;
+            int y;
+
             if (CurrentTurn == Turn.White)
             {
-                index = y + x * Width;
+                x = currentSection.X + offsetX;
+                y = currentSection.Y + offsetY;
             }
             else
             {
-                index = Height - 1 - y + (Width - 1 - x) * Width;
+                x = currentSection.X - offsetX;
+                y = currentSection.Y - offsetY;
             }
 
-            return Sections[index];
+            // if out of board bounds
+            if (x < 0 || x >= Width || y < 0 || y >= Height)
+            {
+                // Return Null section (last in array)
+                return Sections[^1];
+            }
+
+            return Sections[y + x * Width];
         }
 
         [ContextMenu("Find All Sections")]

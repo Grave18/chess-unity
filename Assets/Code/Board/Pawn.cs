@@ -15,7 +15,7 @@ namespace Board
 
             foreach (var vector in move)
             {
-                var possibleSection = gameManager.GetSection(currentSection.X + vector.x, currentSection.Y + vector.y);
+                var possibleSection = gameManager.GetSection(currentSection, vector.x, vector.y);
                 Debug.Log(possibleSection.name);
 
                 if (possibleSection == section)
