@@ -1,11 +1,12 @@
+using System.Collections.Generic;
 using Board;
 using UnityEngine;
 
 namespace Logic
 {
-
     public class GameManager : MonoBehaviour
     {
+        [SerializeField] private Transform board;
 
         private const int Width = 8;
         private const int Height = 8;
@@ -69,7 +70,14 @@ namespace Logic
         [ContextMenu("Find All Sections")]
         private void FindAllSections()
         {
-            Construct(FindObjectsOfType<Square>());
+            var squares = new List<Square>();
+
+            foreach (Transform squareTransform in board)
+            {
+                squares.Add(squareTransform.GetComponent<Square>());
+            }
+
+            Construct(squares.ToArray());
 
             for (int x = 0; x < Width; x++)
             {
