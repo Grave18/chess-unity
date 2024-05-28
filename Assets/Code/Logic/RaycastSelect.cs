@@ -31,7 +31,7 @@ namespace Logic
 
         private void Highlight(bool isHit, Transform hitTransform)
         {
-            if(isHit)
+            if (isHit)
             {
                 bool tryGetSelectable = hitTransform.TryGetComponent(out ISelectable selectable);
 
@@ -53,24 +53,44 @@ namespace Logic
 
         private void Select(bool isHit, Transform hitTransform)
         {
-            if(isHit)
+            if (isHit)
             {
                 bool tryGetSelectable = hitTransform.TryGetComponent(out ISelectable selectable);
 
-                // Move
-                if (tryGetSelectable && selectable.IsEmpty())
+                if (!tryGetSelectable || selectable.IsEqual(_previouslySelected))
                 {
-                    _previouslySelected?.Move(hitTransform.position, selectable);
-                    _previouslySelected = null;
+                    return;
                 }
-                // Select
-                else if (tryGetSelectable && !selectable.IsEqual(_previouslySelected))
+
+                if (selectable.HasPiece())
                 {
-                    selectable.Select();
+                    // Select
+                    if(_previouslySelected == null)
+                    {
+                        selectable.Select();
+                        _previouslySelected = selectable;
+                    }
+                    // Reselect
+                    else if(selectable.GetPieceColor() == _previouslySelected.GetPieceColor())
+                    {
+                        selectable.Select();
+                        _previouslySelected.DisableSelect();
+                        _previouslySelected = selectable;
+                    }
+                    // Eat
+                    else
+                    {
+                        _previouslySelected?.MoveToAndEat(hitTransform.position, selectable);
+                        _previouslySelected?.DisableSelect();
+                        _previouslySelected = null;
+                    }
+                }
+                // Move
+                else
+                {
+                    _previouslySelected?.MoveToAndEat(hitTransform.position, selectable);
                     _previouslySelected?.DisableSelect();
-                    _previouslySelected = selectable;
-
-
+                    _previouslySelected = null;
                 }
             }
             // Deselect if not hit anything

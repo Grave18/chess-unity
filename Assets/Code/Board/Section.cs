@@ -22,6 +22,11 @@ namespace Board
             currentPiece = piece;
         }
 
+        public Piece GetPiece()
+        {
+            return currentPiece;
+        }
+
         public void Select()
         {
             _renderer.material.color = Color.magenta;
@@ -42,12 +47,22 @@ namespace Board
             _renderer.material.color = Color.white;
         }
 
-        public void Move(Vector3 position, ISelectable selectable)
+        public void MoveToAndEat(Vector3 position, ISelectable selectable)
         {
             // Must be empty
         }
 
-        public bool IsEmpty()
+        public PieceColor GetPieceColor()
+        {
+            return currentPiece?.GetPieceColor() ?? PieceColor.None;
+        }
+
+        public Section GetSection()
+        {
+            return this;
+        }
+
+        public bool IsSection()
         {
             return currentPiece == null;
         }
@@ -55,6 +70,11 @@ namespace Board
         public bool IsEqual(ISelectable other)
         {
             return this == other || currentPiece == other;
+        }
+
+        public bool HasPiece()
+        {
+            return currentPiece != null;
         }
     }
 }

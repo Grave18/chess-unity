@@ -141,6 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96c9e8d7fb4b46668d065061852b67b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pieceColor: 0
   gameManager: {fileID: 0}
   currentSection: {fileID: 0}
   sectionLayer:
@@ -153,4 +154,7 @@ MonoBehaviour:
   - {x: 0, y: 2}
   Moves:
   - {x: 0, y: 1}
-  IsFirstMove: 1
+  Eat:
+  - {x: -1, y: 1}
+  - {x: 1, y: 1}
+  isFirstMove: 1

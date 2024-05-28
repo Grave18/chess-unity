@@ -93,39 +93,71 @@ namespace Board
             _renderer.material.color = Color.white;
         }
 
-        public void Move(Vector3 position, ISelectable selectable)
+        public void MoveToAndEat(Vector3 position, ISelectable selectable)
         {
             if (_state != State.Selected)
             {
                 return;
             }
 
-            var section = selectable as Section;
-            if (section == null)
+            Section section = selectable.GetSection();
+            Piece piece = selectable.GetPiece();
+
+            // Must first check if you can eat
+            if (CanEatAt(section))
             {
-                return;
+                DisableSelect();
+                piece?.MoveToBeaten();
+                MoveAndSetPiece();
+            }
+            else if (CanMoveTo(section))
+            {
+                DisableSelect();
+                MoveAndSetPiece();
             }
 
-            if (!CanMovePiece(section))
+            return;
+
+            void MoveAndSetPiece()
             {
-                return;
+                // Move
+                float distance = Vector3.Distance(transform.position, position);
+                float duration = distance / speed;
+                var tween = transform.DOMove(position, duration).SetEase(ease);
+
+                // Set Piece
+                currentSection.SetPiece(null);
+                currentSection = section;
+                currentSection.SetPiece(this);
             }
-
-            // State changed here
-            DisableSelect();
-
-            float distance = Vector3.Distance(transform.position, position);
-            float duration = distance / speed;
-            transform.DOMove(position, duration).SetEase(ease);
-
-            currentSection.SetPiece(null);
-            currentSection = section;
-            currentSection.SetPiece(this);
         }
 
-        protected abstract bool CanMovePiece(Section section);
+        protected abstract bool CanEatAt(Section section);
 
-        public bool IsEmpty()
+        protected abstract bool CanMoveTo(Section section);
+
+        private void MoveToBeaten()
+        {
+            transform.position = new Vector3(-1.5f, 0f, 0f);
+        }
+
+        public Piece GetPiece()
+        {
+            return this;
+        }
+
+        public PieceColor GetPieceColor()
+        {
+            return pieceColor;
+        }
+
+        public Section GetSection()
+        {
+            return currentSection;
+        }
+
+
+        public bool IsSection()
         {
             // Must be always false
             return false;
@@ -134,6 +166,11 @@ namespace Board
         public bool IsEqual(ISelectable other)
         {
             return this == other || currentSection == other;
+        }
+
+        public bool HasPiece()
+        {
+            return true;
         }
 
         [ContextMenu("Get Section And Align")]

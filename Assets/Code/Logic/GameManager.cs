@@ -13,6 +13,8 @@ namespace Logic
         public PieceColor CurrentTurn = PieceColor.White;
         public Section[] Sections;
 
+        public Section NullSection => Sections[^1];
+
         public void Construct(Section[] sections)
         {
             Sections = sections;
@@ -30,30 +32,35 @@ namespace Logic
 
         public void ChangeTurn(PieceColor turn)
         {
+            if (turn == PieceColor.None)
+            {
+                return;
+            }
+
             CurrentTurn = turn;
         }
 
-        public Section GetSection(Section currentSection, int offsetX, int offsetY)
+        public Section GetSection(Section currentSection, Vector2Int offset)
         {
             int x;
             int y;
 
             if (CurrentTurn == PieceColor.White)
             {
-                x = currentSection.X + offsetX;
-                y = currentSection.Y + offsetY;
+                x = currentSection.X + offset.x;
+                y = currentSection.Y + offset.y;
             }
             else
             {
-                x = currentSection.X - offsetX;
-                y = currentSection.Y - offsetY;
+                x = currentSection.X - offset.x;
+                y = currentSection.Y - offset.y;
             }
 
             // if out of board bounds
             if (x < 0 || x >= Width || y < 0 || y >= Height)
             {
                 // Return Null section (last in array)
-                return Sections[^1];
+                return NullSection;
             }
 
             return Sections[y + x * Width];

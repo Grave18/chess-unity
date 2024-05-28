@@ -7,11 +7,21 @@ namespace Board
         [Header("Knight")]
         public Vector2Int[] Moves;
 
-        protected override bool CanMovePiece(Section section)
+        protected override bool CanEatAt(Section section)
         {
-            foreach (Vector2Int vector in Moves)
+            return CanMoveTo(section);
+        }
+
+        protected override bool CanMoveTo(Section section)
+        {
+            if (section.HasPiece() && section.GetPieceColor() == pieceColor)
             {
-                var possibleSection = gameManager.GetSection(currentSection, vector.x, vector.y);
+                return false;
+            }
+
+            foreach (Vector2Int offset in Moves)
+            {
+                var possibleSection = gameManager.GetSection(currentSection, offset);
                 Debug.Log(possibleSection.name);
 
                 if (possibleSection == section)

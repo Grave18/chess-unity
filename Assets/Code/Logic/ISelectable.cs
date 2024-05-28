@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Board;
+using UnityEngine;
 
 namespace Logic
 {
@@ -9,9 +10,14 @@ namespace Logic
         void Highlight();
         void DisableHighlight();
 
-        void Move(Vector3 position, ISelectable selectable);
+        void MoveToAndEat(Vector3 position, ISelectable selectable);
 
-        bool IsEmpty();
+        PieceColor GetPieceColor();
+        Section GetSection();
+        Piece GetPiece();
+
+        bool IsSection();
         bool IsEqual(ISelectable other);
+        bool HasPiece();
     }
 }
