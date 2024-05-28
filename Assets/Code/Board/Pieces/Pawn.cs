@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Board
+namespace Board.Pieces
 {
     public class Pawn : Piece
     {
@@ -10,20 +10,20 @@ namespace Board
         public Vector2Int[] Eat;
         [SerializeField] private bool isFirstMove = true;
 
-        protected override bool CanEatAt(Section section)
+        protected override bool CanEatAt(Square square)
         {
             // Early exit if section has no piece or piece of the same color
-            if (!section.HasPiece() || section.GetPieceColor() == pieceColor)
+            if (!square.HasPiece() || square.GetPieceColor() == pieceColor)
             {
                 return false;
             }
 
             foreach (Vector2Int offset in Eat)
             {
-                var possibleSection = gameManager.GetSection(currentSection, offset);
-                Debug.Log($"Can eat: {possibleSection.name}");
+                var possibleSquare = gameManager.GetSquare(currentSquare, offset);
+                Debug.Log($"Can eat: {possibleSquare.name}");
 
-                if (possibleSection == section)
+                if (possibleSquare == square)
                 {
                     return true;
                 }
@@ -32,9 +32,9 @@ namespace Board
             return false;
         }
 
-        protected override bool CanMoveTo(Section section)
+        protected override bool CanMoveTo(Square square)
         {
-            if (section.HasPiece())
+            if (square.HasPiece())
             {
                 return false;
             }
@@ -45,7 +45,7 @@ namespace Board
                 move = MovesFirstMove;
 
                 // If move two sections check if passing section is empty
-                var passedSection = gameManager.GetSection(currentSection, move[0]);
+                var passedSection = gameManager.GetSquare(currentSquare, move[0]);
                 if (passedSection.HasPiece())
                 {
                     return false;
@@ -58,10 +58,10 @@ namespace Board
 
             foreach (Vector2Int offset in move)
             {
-                var possibleSection = gameManager.GetSection(currentSection, offset);
+                var possibleSection = gameManager.GetSquare(currentSquare, offset);
                 Debug.Log($"Can Move: {possibleSection.name}");
 
-                if (possibleSection == section)
+                if (possibleSection == square)
                 {
                     isFirstMove = false;
 

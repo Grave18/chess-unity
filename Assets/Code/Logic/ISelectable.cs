@@ -13,11 +13,11 @@ namespace Logic
         void MoveToAndEat(Vector3 position, ISelectable selectable);
 
         PieceColor GetPieceColor();
-        Section GetSection();
+        Square GetSquare();
         Piece GetPiece();
 
-        bool IsSection();
-        bool IsEqual(ISelectable other);
+        bool IsSquare();
         bool HasPiece();
+        bool IsEqual(ISelectable other);
     }
 }

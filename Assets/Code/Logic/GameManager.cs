@@ -11,13 +11,13 @@ namespace Logic
         private const int Height = 8;
 
         public PieceColor CurrentTurn = PieceColor.White;
-        public Section[] Sections;
+        public Square[] Squares;
 
-        public Section NullSection => Sections[^1];
+        public Square NullSquare => Squares[^1];
 
-        public void Construct(Section[] sections)
+        public void Construct(Square[] squares)
         {
-            Sections = sections;
+            this.Squares = squares;
         }
 
         public void ChangeTurn(int index)
@@ -40,36 +40,36 @@ namespace Logic
             CurrentTurn = turn;
         }
 
-        public Section GetSection(Section currentSection, Vector2Int offset)
+        public Square GetSquare(Square currentSquare, Vector2Int offset)
         {
             int x;
             int y;
 
             if (CurrentTurn == PieceColor.White)
             {
-                x = currentSection.X + offset.x;
-                y = currentSection.Y + offset.y;
+                x = currentSquare.X + offset.x;
+                y = currentSquare.Y + offset.y;
             }
             else
             {
-                x = currentSection.X - offset.x;
-                y = currentSection.Y - offset.y;
+                x = currentSquare.X - offset.x;
+                y = currentSquare.Y - offset.y;
             }
 
             // if out of board bounds
             if (x < 0 || x >= Width || y < 0 || y >= Height)
             {
                 // Return Null section (last in array)
-                return NullSection;
+                return NullSquare;
             }
 
-            return Sections[y + x * Width];
+            return Squares[y + x * Width];
         }
 
         [ContextMenu("Find All Sections")]
         private void FindAllSections()
         {
-            Construct(FindObjectsOfType<Section>());
+            Construct(FindObjectsOfType<Square>());
 
             for (int x = 0; x < Width; x++)
             {
@@ -77,7 +77,7 @@ namespace Logic
                 {
                     int index = y + x * Width;
 
-                    var section = Sections[index];
+                    var section = Squares[index];
                     section.X = x;
                     section.Y = y;
                 }

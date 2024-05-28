@@ -141,9 +141,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ee11f8495e346cab99c32d4f9a664a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pieceColor: 0
   gameManager: {fileID: 0}
-  currentSection: {fileID: 0}
-  sectionLayer:
+  currentSquare: {fileID: 0}
+  squareLayer:
     serializedVersion: 2
     m_Bits: 128
   ease: 10

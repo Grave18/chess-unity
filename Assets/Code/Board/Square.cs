@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Board
 {
-    public class Section : MonoBehaviour, ISelectable
+    public class Square : MonoBehaviour, ISelectable
     {
         public int X;
         public int Y;
@@ -57,12 +57,12 @@ namespace Board
             return currentPiece?.GetPieceColor() ?? PieceColor.None;
         }
 
-        public Section GetSection()
+        public Square GetSquare()
         {
             return this;
         }
 
-        public bool IsSection()
+        public bool IsSquare()
         {
             return currentPiece == null;
         }

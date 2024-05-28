@@ -13,9 +13,9 @@ namespace Board
 
         [SerializeField] protected PieceColor pieceColor;
         [SerializeField] protected GameManager gameManager;
-        [SerializeField] protected Section currentSection;
+        [SerializeField] protected Square currentSquare;
 
-        [SerializeField] private LayerMask sectionLayer;
+        [SerializeField] private LayerMask squareLayer;
         [SerializeField] private Ease ease = Ease.InOutCubic;
         [SerializeField] private float speed = 0.7f;
 
@@ -34,7 +34,7 @@ namespace Board
 
         private void Start()
         {
-            currentSection.SetPiece(this);
+            currentSquare.SetPiece(this);
         }
 
         public void Select()
@@ -46,7 +46,7 @@ namespace Board
 
             _state = State.Selected;
 
-            currentSection.Select();
+            currentSquare.Select();
             Debug.Log($"Piece: {name} is selected.");
             _renderer.material.color = Color.red;
         }
@@ -60,7 +60,7 @@ namespace Board
 
             _state = State.None;
 
-            currentSection.DisableSelect();
+            currentSquare.DisableSelect();
             Debug.Log($"Piece: {name} selection is disabled.");
             _renderer.material.color = Color.white;
         }
@@ -73,7 +73,7 @@ namespace Board
             }
 
             _state = State.Highlighted;
-            currentSection?.Highlight();
+            currentSquare?.Highlight();
 
             Debug.Log($"Piece: {name} is highlighted.");
             _renderer.material.color = Color.blue;
@@ -87,7 +87,7 @@ namespace Board
             }
 
             _state = State.None;
-            currentSection?.DisableHighlight();
+            currentSquare?.DisableHighlight();
 
             Debug.Log($"Piece: {name} highlight is disabled.");
             _renderer.material.color = Color.white;
@@ -100,17 +100,17 @@ namespace Board
                 return;
             }
 
-            Section section = selectable.GetSection();
+            Square square = selectable.GetSquare();
             Piece piece = selectable.GetPiece();
 
             // Must first check if you can eat
-            if (CanEatAt(section))
+            if (CanEatAt(square))
             {
                 DisableSelect();
                 piece?.MoveToBeaten();
                 MoveAndSetPiece();
             }
-            else if (CanMoveTo(section))
+            else if (CanMoveTo(square))
             {
                 DisableSelect();
                 MoveAndSetPiece();
@@ -126,15 +126,15 @@ namespace Board
                 var tween = transform.DOMove(position, duration).SetEase(ease);
 
                 // Set Piece
-                currentSection.SetPiece(null);
-                currentSection = section;
-                currentSection.SetPiece(this);
+                currentSquare.SetPiece(null);
+                currentSquare = square;
+                currentSquare.SetPiece(this);
             }
         }
 
-        protected abstract bool CanEatAt(Section section);
+        protected abstract bool CanEatAt(Square square);
 
-        protected abstract bool CanMoveTo(Section section);
+        protected abstract bool CanMoveTo(Square square);
 
         private void MoveToBeaten()
         {
@@ -151,13 +151,13 @@ namespace Board
             return pieceColor;
         }
 
-        public Section GetSection()
+        public Square GetSquare()
         {
-            return currentSection;
+            return currentSquare;
         }
 
 
-        public bool IsSection()
+        public bool IsSquare()
         {
             // Must be always false
             return false;
@@ -165,7 +165,7 @@ namespace Board
 
         public bool IsEqual(ISelectable other)
         {
-            return this == other || currentSection == other;
+            return this == other || currentSquare == other;
         }
 
         public bool HasPiece()
@@ -178,14 +178,14 @@ namespace Board
         {
             Construct(FindObjectOfType<GameManager>());
 
-            if (!Physics.Raycast(transform.position + Vector3.up, Vector3.down, out var hitInfo, 2f, sectionLayer))
+            if (!Physics.Raycast(transform.position + Vector3.up, Vector3.down, out var hitInfo, 2f, squareLayer))
             {
                 return;
             }
 
             transform.position = hitInfo.transform.position;
-            currentSection = hitInfo.collider.GetComponent<Section>();
-            currentSection.SetPiece(this);
+            currentSquare = hitInfo.collider.GetComponent<Square>();
+            currentSquare.SetPiece(this);
         }
     }
 }
