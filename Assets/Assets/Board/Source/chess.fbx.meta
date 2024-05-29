@@ -3,10 +3,25 @@ guid: 951427b40db8f7e4bb8fcf521416855c
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: black_pieces_mat
+    second: {fileID: 2100000, guid: 83e423b500e00d34e8fbf9992f8ed387, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: board_mat
+    second: {fileID: 2100000, guid: f990af765366a08458f2857b9b5f903e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: whie_pieces_mat
+    second: {fileID: 2100000, guid: 1ac4da6081104c14582570f943a9a693, type: 2}
   materials:
     materialImportMode: 2
-    materialName: 0
+    materialName: 2
     materialSearch: 1
     materialLocation: 1
   animations:
