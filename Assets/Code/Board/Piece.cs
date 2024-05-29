@@ -15,12 +15,11 @@ namespace Board
         [SerializeField] protected GameManager gameManager;
         [SerializeField] protected Square currentSquare;
 
-        [SerializeField] private LayerMask squareLayer;
-        [SerializeField] private Ease ease = Ease.InOutCubic;
-        [SerializeField] private float speed = 0.7f;
+        [SerializeField] private CommonPieceSettings commonSettings;
 
         private MeshRenderer _renderer;
         private State _state = State.None;
+        private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
 
         public void Construct(GameManager gameManager)
         {
@@ -35,6 +34,12 @@ namespace Board
         private void Start()
         {
             currentSquare.SetPiece(this);
+            _renderer.material.EnableKeyword("_EMISSION");
+        }
+
+        public void SetCommonPieceSettings(CommonPieceSettings commonSettings)
+        {
+            this.commonSettings = commonSettings;
         }
 
         public void Select()
@@ -48,7 +53,9 @@ namespace Board
 
             currentSquare.Select();
             Debug.Log($"Piece: {name} is selected.");
-            _renderer.material.color = Color.red;
+
+            // _renderer.material.color = Color.red;
+            _renderer.material.SetColor(EmissionColor, commonSettings.SelectColor);
         }
 
         public void DisableSelect()
@@ -62,7 +69,8 @@ namespace Board
 
             currentSquare.DisableSelect();
             Debug.Log($"Piece: {name} selection is disabled.");
-            _renderer.material.color = Color.white;
+            // _renderer.material.color = Color.white;
+            _renderer.material.SetColor(EmissionColor, Color.black);
         }
 
         public void Highlight()
@@ -76,7 +84,8 @@ namespace Board
             currentSquare?.Highlight();
 
             Debug.Log($"Piece: {name} is highlighted.");
-            _renderer.material.color = Color.blue;
+            // _renderer.material.color = Color.blue;
+            _renderer.material.SetColor(EmissionColor, commonSettings.HighLightColor);
         }
 
         public void DisableHighlight()
@@ -90,7 +99,8 @@ namespace Board
             currentSquare?.DisableHighlight();
 
             Debug.Log($"Piece: {name} highlight is disabled.");
-            _renderer.material.color = Color.white;
+            // _renderer.material.color = Color.white;
+            _renderer.material.SetColor(EmissionColor, Color.black);
         }
 
         public void MoveToAndEat(Vector3 position, ISelectable selectable)
@@ -132,8 +142,8 @@ namespace Board
             {
                 // Move
                 float distance = Vector3.Distance(transform.position, position);
-                float duration = distance / speed;
-                var tween = transform.DOMove(position, duration).SetEase(ease);
+                float duration = distance / commonSettings.Speed;
+                var tween = transform.DOMove(position, duration).SetEase(commonSettings.Ease);
 
                 if(callback != null)
                 {
@@ -195,7 +205,7 @@ namespace Board
         {
             Construct(FindObjectOfType<GameManager>());
 
-            if (!Physics.Raycast(transform.position + Vector3.up, Vector3.down, out var hitInfo, 2f, squareLayer))
+            if (!Physics.Raycast(transform.position + Vector3.up, Vector3.down, out var hitInfo, 2f, commonSettings.SquareLayer))
             {
                 return;
             }

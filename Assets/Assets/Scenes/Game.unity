@@ -2787,6 +2787,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2026951327}
   - {fileID: 543450652193350432}
   - {fileID: 1548834808}
   - {fileID: 6037401179958863972}
@@ -4306,7 +4307,7 @@ GameObject:
   - component: {fileID: 1783972072}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: EditorOnly
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4645,6 +4646,59 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1809282752}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2026951326
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2026951327}
+  - component: {fileID: 2026951328}
+  m_Layer: 0
+  m_Name: CommonSettingsSetter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2026951327
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2026951326}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1190829612}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2026951328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2026951326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce4dc2fa4cf7ffe48b911bfbba4cfe49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isSetOnChange: 1
+  commonSettings:
+    SquareLayer:
+      serializedVersion: 2
+      m_Bits: 128
+    Ease: 10
+    Speed: 0.5
+    SelectColor: {r: 1, g: 0, b: 0.10817146, a: 1}
+    HighLightColor: {r: 0, g: 0.51834536, b: 1, a: 1}
 --- !u!1 &2048994680
 GameObject:
   m_ObjectHideFlags: 0
