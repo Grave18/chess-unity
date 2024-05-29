@@ -35,7 +35,7 @@ namespace Board.Pieces
                     }
 
                     // Move or eat
-                    if (square == possibleSquare && possibleSquare.GetPieceColor() != pieceColor)
+                    if (square == possibleSquare)
                     {
                         return true;
                     }

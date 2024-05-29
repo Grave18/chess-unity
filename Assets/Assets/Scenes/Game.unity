@@ -2290,90 +2290,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1078921681}
   m_CullTransparentMesh: 1
---- !u!1001 &1091850184
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 543450652193350432}
-    m_Modifications:
-    - target: {fileID: 1581879247859674352, guid: d7d8c25d7490c4b49a2bf42e691d6787,
-        type: 3}
-      propertyPath: m_Name
-      value: W_Rook_2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5202290572682418367, guid: d7d8c25d7490c4b49a2bf42e691d6787,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.18737927
-      objectReference: {fileID: 0}
-    - target: {fileID: 5202290572682418367, guid: d7d8c25d7490c4b49a2bf42e691d6787,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5202290572682418367, guid: d7d8c25d7490c4b49a2bf42e691d6787,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.06243162
-      objectReference: {fileID: 0}
-    - target: {fileID: 5202290572682418367, guid: d7d8c25d7490c4b49a2bf42e691d6787,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5202290572682418367, guid: d7d8c25d7490c4b49a2bf42e691d6787,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5202290572682418367, guid: d7d8c25d7490c4b49a2bf42e691d6787,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5202290572682418367, guid: d7d8c25d7490c4b49a2bf42e691d6787,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5202290572682418367, guid: d7d8c25d7490c4b49a2bf42e691d6787,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5202290572682418367, guid: d7d8c25d7490c4b49a2bf42e691d6787,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5202290572682418367, guid: d7d8c25d7490c4b49a2bf42e691d6787,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6516812279390626994, guid: d7d8c25d7490c4b49a2bf42e691d6787,
-        type: 3}
-      propertyPath: gameManager
-      value: 
-      objectReference: {fileID: 1216111693}
-    - target: {fileID: 6516812279390626994, guid: d7d8c25d7490c4b49a2bf42e691d6787,
-        type: 3}
-      propertyPath: currentSquare
-      value: 
-      objectReference: {fileID: 7453028710432636832}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: d7d8c25d7490c4b49a2bf42e691d6787, type: 3}
---- !u!4 &1091850185 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5202290572682418367, guid: d7d8c25d7490c4b49a2bf42e691d6787,
-    type: 3}
-  m_PrefabInstance: {fileID: 1091850184}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1094094187
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4576,18 +4492,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2114625051}
   m_CullTransparentMesh: 1
---- !u!114 &2123621657 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6516812279390626994, guid: d7d8c25d7490c4b49a2bf42e691d6787,
-    type: 3}
-  m_PrefabInstance: {fileID: 1091850184}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a69b37aa32d24af5837ac255ed246a2c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &32180091361674583
 GameObject:
   m_ObjectHideFlags: 0
@@ -4949,7 +4853,6 @@ Transform:
   - {fileID: 4510812548981388914}
   - {fileID: 970339053}
   - {fileID: 3031820906413468383}
-  - {fileID: 1091850185}
   - {fileID: 33644839}
   - {fileID: 3673627207619416988}
   - {fileID: 729220628}
@@ -10636,7 +10539,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   X: 2
   Y: 3
-  currentPiece: {fileID: 2123621657}
+  currentPiece: {fileID: 0}
 --- !u!64 &7453028710432636833
 MeshCollider:
   m_ObjectHideFlags: 0

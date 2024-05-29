@@ -5,7 +5,7 @@ namespace Board.Pieces
     public class Queen : Piece
     {
         [Header("Queen")]
-        public Vector2Int[] Moves;
+        public Vector2Int[] MoveVectors;
 
         protected override bool CanEatAt(Square square)
         {
@@ -19,14 +19,26 @@ namespace Board.Pieces
                 return false;
             }
 
-            foreach (Vector2Int offset in Moves)
+            foreach (Vector2Int direction in MoveVectors)
             {
-                var possibleSection = gameManager.GetSquare(currentSquare, offset);
-                Debug.Log(possibleSection.name);
-
-                if (possibleSection == square)
+                var currentDir = direction;
+                while (true)
                 {
-                    return true;
+                    var possibleSquare = gameManager.GetSquare(currentSquare, currentDir);
+                    // Advance for one square
+                    currentDir += direction;
+                    Debug.Log(possibleSquare.name);
+
+                    if (possibleSquare == gameManager.NullSquare)
+                    {
+                        break;
+                    }
+
+                    // Move or eat
+                    if (square == possibleSquare)
+                    {
+                        return true;
+                    }
                 }
             }
 

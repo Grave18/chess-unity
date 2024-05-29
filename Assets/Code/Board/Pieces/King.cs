@@ -4,7 +4,7 @@ namespace Board.Pieces
 {
     public class King : Piece
     {
-        [Header("Queen")]
+        [Header("King")]
         public Vector2Int[] Moves;
 
         protected override bool CanEatAt(Square square)
@@ -21,10 +21,10 @@ namespace Board.Pieces
 
             foreach (Vector2Int offset in Moves)
             {
-                var possibleSection = gameManager.GetSquare(currentSquare, offset);
-                Debug.Log(possibleSection.name);
+                var possibleSquare = gameManager.GetSquare(currentSquare, offset);
+                Debug.Log(possibleSquare.name);
 
-                if (possibleSection == square)
+                if (possibleSquare == square)
                 {
                     return true;
                 }
