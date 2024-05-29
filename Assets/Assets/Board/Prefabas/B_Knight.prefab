@@ -9,8 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 620831966437687686}
-  - component: {fileID: 4182807096881303900}
-  - component: {fileID: 4644601270548016198}
+  - component: {fileID: 3385638592101214282}
+  - component: {fileID: -6181108603625267116}
+  - component: {fileID: 3120915732225311960}
+  - component: {fileID: 1761148181166295610}
   - component: {fileID: 1046063371478266021}
   m_Layer: 6
   m_Name: B_Knight
@@ -34,7 +36,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!33 &4182807096881303900
+--- !u!33 &3385638592101214282
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,7 +44,7 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1638902586701994619}
   m_Mesh: {fileID: 99702682916964025, guid: 951427b40db8f7e4bb8fcf521416855c, type: 3}
---- !u!23 &4644601270548016198
+--- !u!23 &-6181108603625267116
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -62,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -1522727230108676724, guid: 951427b40db8f7e4bb8fcf521416855c, type: 3}
+  - {fileID: 2100000, guid: 83e423b500e00d34e8fbf9992f8ed387, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -84,6 +86,49 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &3120915732225311960
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1638902586701994619}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 99702682916964025, guid: 951427b40db8f7e4bb8fcf521416855c, type: 3}
+--- !u!65 &1761148181166295610
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1638902586701994619}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.1315292, y: 0.01617746, z: 0.1312183}
+  m_Center: {x: 0.001268923, y: -0.003801664, z: 0.0007269159}
 --- !u!114 &1046063371478266021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99,11 +144,14 @@ MonoBehaviour:
   pieceColor: 1
   gameManager: {fileID: 0}
   currentSquare: {fileID: 0}
-  squareLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  ease: 10
-  speed: 0.7
+  commonSettings:
+    SquareLayer:
+      serializedVersion: 2
+      m_Bits: 128
+    Ease: 10
+    Speed: 0.7
+    SelectColor: {r: 1, g: 0, b: 0, a: 1}
+    HighLightColor: {r: 0, g: 0, b: 1, a: 1}
   Moves:
   - {x: 1, y: 2}
   - {x: 2, y: 1}

@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1060529315102910483, guid: 951427b40db8f7e4bb8fcf521416855c, type: 3}
+  - {fileID: 2100000, guid: 1ac4da6081104c14582570f943a9a693, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -144,11 +144,14 @@ MonoBehaviour:
   pieceColor: 0
   gameManager: {fileID: 0}
   currentSquare: {fileID: 0}
-  squareLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  ease: 10
-  speed: 0.7
+  commonSettings:
+    SquareLayer:
+      serializedVersion: 2
+      m_Bits: 0
+    Ease: 10
+    Speed: 0.7
+    SelectColor: {r: 1, g: 0, b: 0, a: 1}
+    HighLightColor: {r: 0, g: 0, b: 1, a: 1}
   Moves:
   - {x: 1, y: 2}
   - {x: 2, y: 1}
