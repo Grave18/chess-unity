@@ -12,16 +12,24 @@ namespace Logic
         private const int Height = 8;
 
         public PieceColor CurrentTurn = PieceColor.White;
+        [SerializeField] private bool isAutoChange;
+
         public Square[] Squares;
 
         public Square NullSquare => Squares[^1];
+        public bool IsAutoChange => isAutoChange;
 
         public void Construct(Square[] squares)
         {
             Squares = squares;
         }
 
-        public void ChangeTurn(int index)
+        public void SetAutoChange(bool value)
+        {
+            isAutoChange = value;
+        }
+
+        public void SetCurrentTurn(int index)
         {
             if (index < 0 || index > 1)
             {
@@ -31,7 +39,22 @@ namespace Logic
             CurrentTurn = (PieceColor)index;
         }
 
-        public void ChangeTurn(PieceColor turn)
+        public void ChangeTurn()
+        {
+            if (!isAutoChange)
+            {
+                return;
+            }
+
+            CurrentTurn = CurrentTurn == PieceColor.White ? PieceColor.Black : PieceColor.White;
+        }
+
+        public bool IsRightTurn(PieceColor pieceColor)
+        {
+            return pieceColor == CurrentTurn;
+        }
+
+        public void SetCurrentTurn(PieceColor turn)
         {
             if (turn == PieceColor.None)
             {

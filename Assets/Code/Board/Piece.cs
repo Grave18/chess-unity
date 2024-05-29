@@ -100,22 +100,30 @@ namespace Board
                 return;
             }
 
+            if (!gameManager.IsRightTurn(pieceColor))
+            {
+                return;
+            }
+
             Square square = selectable.GetSquare();
             Piece piece = selectable.GetPiece();
 
             // Must first check if you can eat
             if (CanEatAt(square))
             {
-                DisableSelect();
                 piece?.MoveToBeaten();
+
+                DisableSelect();
                 Move();
                 ResetCurrentSquare(square);
+                gameManager.ChangeTurn();
             }
             else if (CanMoveTo(square))
             {
                 DisableSelect();
                 Move();
                 ResetCurrentSquare(square);
+                gameManager.ChangeTurn();
             }
 
             return;
