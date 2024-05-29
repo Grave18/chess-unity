@@ -108,26 +108,35 @@ namespace Board
             {
                 DisableSelect();
                 piece?.MoveToBeaten();
-                MoveAndSetPiece();
+                Move();
+                ResetCurrentSquare(square);
             }
             else if (CanMoveTo(square))
             {
                 DisableSelect();
-                MoveAndSetPiece();
+                Move();
+                ResetCurrentSquare(square);
             }
 
             return;
 
-            void MoveAndSetPiece()
+            void Move(TweenCallback callback = null)
             {
                 // Move
                 float distance = Vector3.Distance(transform.position, position);
                 float duration = distance / speed;
                 var tween = transform.DOMove(position, duration).SetEase(ease);
 
-                // Set Piece
+                if(callback != null)
+                {
+                    tween.onComplete = callback;
+                }
+            }
+
+            void ResetCurrentSquare(Square newSquare)
+            {
                 currentSquare.SetPiece(null);
-                currentSquare = square;
+                currentSquare = newSquare;
                 currentSquare.SetPiece(this);
             }
         }

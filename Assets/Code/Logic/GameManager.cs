@@ -18,7 +18,7 @@ namespace Logic
 
         public void Construct(Square[] squares)
         {
-            this.Squares = squares;
+            Squares = squares;
         }
 
         public void ChangeTurn(int index)
