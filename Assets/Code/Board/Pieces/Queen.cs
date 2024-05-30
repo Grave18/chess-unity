@@ -7,6 +7,45 @@ namespace Board.Pieces
         [Header("Queen")]
         public Vector2Int[] MoveVectors;
 
+        public override void CalculateUnderAttackSquares()
+        {
+            UnderAttackSquares.Clear();
+
+            foreach (Vector2Int direction in MoveVectors)
+            {
+                var currentDir = direction;
+
+                while (true)
+                {
+                    var underAttackSquare = gameManager.GetSquare(pieceColor, currentSquare, currentDir);
+                    // Advance for one square
+                    currentDir += direction;
+                    Debug.Log(underAttackSquare.name);
+
+                    // Has Piece
+                    if (underAttackSquare.HasPiece())
+                    {
+                        if (underAttackSquare.GetPieceColor() == pieceColor)
+                        {
+                            break;
+                        }
+
+                        UnderAttackSquares.Add(underAttackSquare);
+                        break;
+                    }
+
+                    // Off board
+                    if (underAttackSquare == gameManager.NullSquare)
+                    {
+                        break;
+                    }
+
+                    // Empty Square
+                    UnderAttackSquares.Add(underAttackSquare);
+                }
+            }
+        }
+
         protected override bool CanEatAt(Square square)
         {
             return CanMoveTo(square);
@@ -19,29 +58,15 @@ namespace Board.Pieces
                 return false;
             }
 
-            foreach (Vector2Int direction in MoveVectors)
+            CalculateUnderAttackSquares();
+
+            foreach (var underAttackSquare in UnderAttackSquares)
             {
-                var currentDir = direction;
-                while (true)
+                if (square == underAttackSquare)
                 {
-                    var possibleSquare = gameManager.GetSquare(currentSquare, currentDir);
-                    // Advance for one square
-                    currentDir += direction;
-                    Debug.Log(possibleSquare.name);
-
-                    if (possibleSquare == gameManager.NullSquare)
-                    {
-                        break;
-                    }
-
-                    // Move or eat
-                    if (square == possibleSquare)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
-
             return false;
         }
     }

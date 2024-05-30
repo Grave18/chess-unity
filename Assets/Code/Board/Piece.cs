@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DG.Tweening;
 using Logic;
 using UnityEngine;
@@ -16,10 +17,14 @@ namespace Board
         [SerializeField] protected Square currentSquare;
 
         [SerializeField] private CommonPieceSettings commonSettings;
+        [SerializeField] private List<Square> underAttackSquares;
 
         private MeshRenderer _renderer;
         private State _state = State.None;
         private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
+
+        // Getters
+        public List<Square> UnderAttackSquares => underAttackSquares;
 
         public void Construct(GameManager gameManager)
         {
@@ -160,12 +165,13 @@ namespace Board
         }
 
         protected abstract bool CanEatAt(Square square);
-
         protected abstract bool CanMoveTo(Square square);
+        public abstract void CalculateUnderAttackSquares();
 
         private void MoveToBeaten()
         {
             transform.position = new Vector3(-1.5f, 0f, 0f);
+            // currentSquare = null;
         }
 
         public Piece GetPiece()

@@ -10,6 +10,36 @@ namespace Board.Pieces
         public Vector2Int[] Eat;
         [SerializeField] private bool isFirstMove = true;
 
+        public override void CalculateUnderAttackSquares()
+        {
+            UnderAttackSquares.Clear();
+            foreach (Vector2Int offset in Eat)
+            {
+                var underAttackSquare = gameManager.GetSquare(pieceColor, currentSquare, offset);
+
+                // Has Piece
+                if (underAttackSquare.HasPiece())
+                {
+                    if (underAttackSquare.GetPieceColor() == pieceColor)
+                    {
+                        break;
+                    }
+
+                    UnderAttackSquares.Add(underAttackSquare);
+                    break;
+                }
+
+                // Off board
+                if (underAttackSquare == gameManager.NullSquare)
+                {
+                    break;
+                }
+
+                // Empty Square
+                UnderAttackSquares.Add(underAttackSquare);
+            }
+        }
+
         protected override bool CanEatAt(Square square)
         {
             // Early exit if section has no piece or piece of the same color
@@ -18,12 +48,11 @@ namespace Board.Pieces
                 return false;
             }
 
-            foreach (Vector2Int offset in Eat)
-            {
-                var possibleSquare = gameManager.GetSquare(currentSquare, offset);
-                Debug.Log($"Can eat: {possibleSquare.name}");
+            CalculateUnderAttackSquares();
 
-                if (possibleSquare == square)
+            foreach (var underAttackSquare in UnderAttackSquares)
+            {
+                if (square == underAttackSquare)
                 {
                     return true;
                 }
@@ -45,7 +74,7 @@ namespace Board.Pieces
                 move = MovesFirstMove;
 
                 // If move two sections check if passing section is empty
-                var passedSection = gameManager.GetSquare(currentSquare, move[0]);
+                var passedSection = gameManager.GetSquare(pieceColor, currentSquare, move[0]);
                 if (passedSection.HasPiece())
                 {
                     return false;
@@ -58,7 +87,7 @@ namespace Board.Pieces
 
             foreach (Vector2Int offset in move)
             {
-                var possibleSection = gameManager.GetSquare(currentSquare, offset);
+                var possibleSection = gameManager.GetSquare(pieceColor, currentSquare, offset);
                 Debug.Log($"Can Move: {possibleSection.name}");
 
                 if (possibleSection == square)

@@ -1,27 +1,68 @@
 using System.Collections.Generic;
+using System.Linq;
 using Board;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Logic
 {
     public class GameManager : MonoBehaviour
     {
-        [SerializeField] private Transform board;
-
         private const int Width = 8;
         private const int Height = 8;
 
+        [Header("References")]
+        [SerializeField] private Transform squaresTransform;
+        [SerializeField] private Transform whitePiecesTransform;
+        [SerializeField] private Transform blackPiecesTransform;
+
+        [Header("Settings")]
         public PieceColor CurrentTurn = PieceColor.White;
         [SerializeField] private bool isAutoChange;
 
-        public Square[] Squares;
+        [Header("Arrays")]
+        [FormerlySerializedAs("Squares")]
+        [SerializeField] private Square[] squares;
+        [SerializeField] private Piece[] whitePieces;
+        [SerializeField] private Piece[] blackPieces;
+        [SerializeField] private Square[] underAttackSquares;
 
-        public Square NullSquare => Squares[^1];
+        // Getters
+        public Square NullSquare => squares[^1];
         public bool IsAutoChange => isAutoChange;
+        public Square[] Squares => squares;
+        public Square[] UnderAttackSquares => underAttackSquares;
 
-        public void Construct(Square[] squares)
+        private void Start()
         {
-            Squares = squares;
+            CalculateUnderAttackSquares();
+        }
+
+        public void Construct(Square[] squares, Piece[] whitePieces, Piece[] blackPieces)
+        {
+            this.squares = squares;
+            this.whitePieces = whitePieces;
+            this.blackPieces = blackPieces;
+        }
+
+        /// <summary>
+        ///  Calculate Under Attack Squares of opposite color
+        /// </summary>
+        public void CalculateUnderAttackSquares()
+        {
+            var pieces = CurrentTurn == PieceColor.White ? blackPieces : whitePieces;
+            var underAttackSet = new HashSet<Square>();
+
+            foreach (var piece in pieces)
+            {
+                piece.CalculateUnderAttackSquares();
+                foreach (var pieceSquare in piece.UnderAttackSquares)
+                {
+                    underAttackSet.Add(pieceSquare);
+                }
+            }
+
+            underAttackSquares = underAttackSet.ToArray();
         }
 
         public void SetAutoChange(bool value)
@@ -47,6 +88,8 @@ namespace Logic
             }
 
             CurrentTurn = CurrentTurn == PieceColor.White ? PieceColor.Black : PieceColor.White;
+
+            CalculateUnderAttackSquares();
         }
 
         public bool IsRightTurn(PieceColor pieceColor)
@@ -64,17 +107,17 @@ namespace Logic
             CurrentTurn = turn;
         }
 
-        public Square GetSquare(Square currentSquare, Vector2Int offset)
+        public Square GetSquare(PieceColor pieceColor, Square currentSquare, Vector2Int offset)
         {
-            int x;
-            int y;
+            int x = -1;
+            int y = -1;
 
-            if (CurrentTurn == PieceColor.White)
+            if (pieceColor == PieceColor.White)
             {
                 x = currentSquare.X + offset.x;
                 y = currentSquare.Y + offset.y;
             }
-            else
+            else if(pieceColor == PieceColor.Black)
             {
                 x = currentSquare.X - offset.x;
                 y = currentSquare.Y - offset.y;
@@ -87,30 +130,43 @@ namespace Logic
                 return NullSquare;
             }
 
-            return Squares[y + x * Width];
+            return squares[y + x * Width];
         }
 
         [ContextMenu("Find All Sections")]
         private void FindAllSections()
         {
             var squares = new List<Square>();
+            var wPieces = new List<Piece>();
+            var bPieces = new List<Piece>();
 
-            foreach (Transform squareTransform in board)
+            foreach (Transform squareTransform in squaresTransform)
             {
                 squares.Add(squareTransform.GetComponent<Square>());
             }
 
-            Construct(squares.ToArray());
+            foreach (Transform whitePieceTransform in whitePiecesTransform)
+            {
+                wPieces.Add(whitePieceTransform.GetComponent<Piece>());
+            }
 
+            foreach (Transform blackPieceTransform in blackPiecesTransform)
+            {
+                bPieces.Add(blackPieceTransform.GetComponent<Piece>());
+            }
+
+            Construct(squares.ToArray(), wPieces.ToArray(), bPieces.ToArray());
+
+            // Fill squares with coordinates
             for (int x = 0; x < Width; x++)
             {
                 for (int y = 0; y < Height; y++)
                 {
                     int index = y + x * Width;
 
-                    var section = Squares[index];
-                    section.X = x;
-                    section.Y = y;
+                    var square = this.squares[index];
+                    square.X = x;
+                    square.Y = y;
                 }
             }
         }
