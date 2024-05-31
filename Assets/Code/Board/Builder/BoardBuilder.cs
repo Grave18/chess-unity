@@ -12,16 +12,26 @@ namespace Board.Builder
         private const int Height = 8;
 
         [SerializeField] private GameManager gameManager;
-        [SerializeField] private Transform piecesParent;
+        [SerializeField] private Transform whitePiecesParent;
+        [SerializeField] private Transform blackPiecesParent;
         [SerializeField] private GameObject[] piecePrefabs;
         [SerializeField] private TextAsset boardPreset;
 
-        private readonly Dictionary<Square, GameObject> _pairs = new();
+        private readonly Dictionary<Square, GameObject> _whitePairs = new();
+        private readonly Dictionary<Square, GameObject> _blackPairs = new();
 
         [ContextMenu("Destroy All Pieces")]
         private void DestroyAllPieces()
         {
-            var pieces = piecesParent.Cast<Transform>().ToArray();
+            DestroyAllPieces(whitePiecesParent);
+            DestroyAllPieces(blackPiecesParent);
+            _whitePairs.Clear();
+            _whitePairs.Clear();
+        }
+
+        private void DestroyAllPieces(Transform parent)
+        {
+            var pieces = parent.Cast<Transform>().ToArray();
             foreach (Transform piece in pieces)
             {
                 DestroyImmediate(piece.gameObject);
@@ -32,7 +42,6 @@ namespace Board.Builder
         private void BuildBoard()
         {
             DestroyAllPieces();
-            _pairs.Clear();
 
             string text = boardPreset.text;
 
@@ -62,40 +71,40 @@ namespace Board.Builder
                     case '*':
                         break;
                     case 'b':
-                        _pairs[gameManager.Squares[iSquares]] = piecePrefabs[0]; // B_Bishop
+                        _blackPairs[gameManager.Squares[iSquares]] = piecePrefabs[0]; // B_Bishop
                         break;
                     case 'k':
-                        _pairs[gameManager.Squares[iSquares]] = piecePrefabs[1]; // B_King
+                        _blackPairs[gameManager.Squares[iSquares]] = piecePrefabs[1]; // B_King
                         break;
                     case 'h':
-                        _pairs[gameManager.Squares[iSquares]] = piecePrefabs[2]; // B_Knight
+                        _blackPairs[gameManager.Squares[iSquares]] = piecePrefabs[2]; // B_Knight
                         break;
                     case 'p':
-                        _pairs[gameManager.Squares[iSquares]] = piecePrefabs[3]; // B_Pawn
+                        _blackPairs[gameManager.Squares[iSquares]] = piecePrefabs[3]; // B_Pawn
                         break;
                     case 'q':
-                        _pairs[gameManager.Squares[iSquares]] = piecePrefabs[4]; // B_Queen
+                        _blackPairs[gameManager.Squares[iSquares]] = piecePrefabs[4]; // B_Queen
                         break;
                     case 'r':
-                        _pairs[gameManager.Squares[iSquares]] = piecePrefabs[5]; // B_Rook
+                        _blackPairs[gameManager.Squares[iSquares]] = piecePrefabs[5]; // B_Rook
                         break;
                     case 'B':
-                        _pairs[gameManager.Squares[iSquares]] = piecePrefabs[6]; // W_Bishop
+                        _whitePairs[gameManager.Squares[iSquares]] = piecePrefabs[6]; // W_Bishop
                         break;
                     case 'K':
-                        _pairs[gameManager.Squares[iSquares]] = piecePrefabs[7]; // W_King
+                        _whitePairs[gameManager.Squares[iSquares]] = piecePrefabs[7]; // W_King
                         break;
                     case 'H':
-                        _pairs[gameManager.Squares[iSquares]] = piecePrefabs[8]; // W_Knight
+                        _whitePairs[gameManager.Squares[iSquares]] = piecePrefabs[8]; // W_Knight
                         break;
                     case 'P':
-                        _pairs[gameManager.Squares[iSquares]] = piecePrefabs[9]; // W_Pawn
+                        _whitePairs[gameManager.Squares[iSquares]] = piecePrefabs[9]; // W_Pawn
                         break;
                     case 'Q':
-                        _pairs[gameManager.Squares[iSquares]] = piecePrefabs[10]; // W_Queen
+                        _whitePairs[gameManager.Squares[iSquares]] = piecePrefabs[10]; // W_Queen
                         break;
                     case 'R':
-                        _pairs[gameManager.Squares[iSquares]] = piecePrefabs[11]; // W_Rook
+                        _whitePairs[gameManager.Squares[iSquares]] = piecePrefabs[11]; // W_Rook
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -109,7 +118,13 @@ namespace Board.Builder
 
         private void InstantiatePieces()
         {
-            foreach (var (square, piece) in _pairs)
+            InstantiatePieces(_whitePairs, whitePiecesParent);
+            InstantiatePieces(_blackPairs, blackPiecesParent);
+        }
+
+        private void InstantiatePieces(Dictionary<Square, GameObject> pairs, Transform piecesParent)
+        {
+            foreach (var (square, piece) in pairs)
             {
                 var pieceInstance = Instantiate(piece, square.transform.position, piece.transform.rotation, piecesParent);
                 var pieceComponent = pieceInstance.GetComponent<Piece>();
