@@ -207,7 +207,7 @@ namespace Board
         }
 
         [ContextMenu("Get Section And Align")]
-        private void GetSectionAndAlign()
+        public void GetSectionAndAlign()
         {
             Construct(FindObjectOfType<GameManager>());
 

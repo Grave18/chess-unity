@@ -147,11 +147,12 @@ MonoBehaviour:
   commonSettings:
     SquareLayer:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 128
     Ease: 10
     Speed: 0.7
     SelectColor: {r: 1, g: 0, b: 0, a: 1}
     HighLightColor: {r: 0, g: 0, b: 1, a: 1}
+  underAttackSquares: []
   Moves:
   - {x: 1, y: 2}
   - {x: 2, y: 1}
