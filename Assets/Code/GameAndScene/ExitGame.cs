@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace GameLifeManagement
+namespace GameAndScene
 {
     public class ExitGame : MonoBehaviour
     {
