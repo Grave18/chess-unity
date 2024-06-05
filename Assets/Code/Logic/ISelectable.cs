@@ -1,4 +1,5 @@
 ﻿using Board;
+using Board.Pieces;
 using UnityEngine;
 
 namespace Logic

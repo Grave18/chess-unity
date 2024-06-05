@@ -29,75 +29,73 @@ namespace Logic
             }
         }
 
-        private void Highlight(bool isHit, Transform hitTransform)
-        {
-            if (isHit)
-            {
-                bool tryGetSelectable = hitTransform.TryGetComponent(out ISelectable selectable);
-
-                // Highlight
-                if (tryGetSelectable && !selectable.IsEqual(_previouslyHighlighted))
-                {
-                    selectable.Highlight();
-                    _previouslyHighlighted?.DisableHighlight();
-                    _previouslyHighlighted = selectable;
-                }
-            }
-            // Dehighlight if not hit anything
-            else
-            {
-                _previouslyHighlighted?.DisableHighlight();
-                _previouslyHighlighted = null;
-            }
-        }
-
         private void Select(bool isHit, Transform hitTransform)
         {
-            if (isHit)
-            {
-                bool tryGetSelectable = hitTransform.TryGetComponent(out ISelectable selectable);
-
-                if (!tryGetSelectable || selectable.IsEqual(_previouslySelected))
-                {
-                    return;
-                }
-
-                if (selectable.HasPiece())
-                {
-                    // Select
-                    if(_previouslySelected == null)
-                    {
-                        selectable.Select();
-                        _previouslySelected = selectable;
-                    }
-                    // Reselect
-                    else if(selectable.GetPieceColor() == _previouslySelected.GetPieceColor())
-                    {
-                        selectable.Select();
-                        _previouslySelected.DisableSelect();
-                        _previouslySelected = selectable;
-                    }
-                    // Eat
-                    else
-                    {
-                        _previouslySelected?.MoveToAndEat(hitTransform.position, selectable);
-                        _previouslySelected?.DisableSelect();
-                        _previouslySelected = null;
-                    }
-                }
-                // Move
-                else
-                {
-                    _previouslySelected?.MoveToAndEat(hitTransform.position, selectable);
-                    _previouslySelected?.DisableSelect();
-                    _previouslySelected = null;
-                }
-            }
             // Deselect if not hit anything
-            else
+            if (!isHit)
             {
                 _previouslySelected?.DisableSelect();
                 _previouslySelected = null;
+                return;
+            }
+
+            bool tryGetSelectable = hitTransform.TryGetComponent(out ISelectable selectable);
+
+            // Do nothing if select same thing
+            if (!tryGetSelectable || selectable.IsEqual(_previouslySelected))
+            {
+                return;
+            }
+
+            // Move
+            if (!selectable.HasPiece())
+            {
+                _previouslySelected?.MoveToAndEat(hitTransform.position, selectable);
+                _previouslySelected?.DisableSelect();
+                _previouslySelected = null;
+                return;
+            }
+
+            // Select
+            if (_previouslySelected == null)
+            {
+                selectable.Select();
+                _previouslySelected = selectable;
+            }
+            // Deselect previously selected and select new
+            else if (selectable.GetPieceColor() == _previouslySelected.GetPieceColor())
+            {
+                selectable.Select();
+                _previouslySelected.DisableSelect();
+                _previouslySelected = selectable;
+            }
+            // Eat
+            else
+            {
+                _previouslySelected?.MoveToAndEat(hitTransform.position, selectable);
+                _previouslySelected?.DisableSelect();
+                _previouslySelected = null;
+            }
+        }
+
+        private void Highlight(bool isHit, Transform hitTransform)
+        {
+            // Dehighlight if not hit anything
+            if (!isHit)
+            {
+                _previouslyHighlighted?.DisableHighlight();
+                _previouslyHighlighted = null;
+                return;
+            }
+
+            bool tryGetSelectable = hitTransform.TryGetComponent(out ISelectable selectable);
+
+            // Highlight
+            if (tryGetSelectable && !selectable.IsEqual(_previouslyHighlighted))
+            {
+                selectable.Highlight();
+                _previouslyHighlighted?.DisableHighlight();
+                _previouslyHighlighted = selectable;
             }
         }
     }

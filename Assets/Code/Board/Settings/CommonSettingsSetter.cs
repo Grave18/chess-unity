@@ -1,3 +1,4 @@
+using Board.Pieces;
 using UnityEngine;
 
 namespace Board.Settings

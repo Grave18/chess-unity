@@ -3,7 +3,7 @@ using DG.Tweening;
 using Logic;
 using UnityEngine;
 
-namespace Board
+namespace Board.Pieces
 {
     public abstract class Piece : MonoBehaviour, ISelectable
     {
