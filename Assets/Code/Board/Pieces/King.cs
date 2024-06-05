@@ -20,17 +20,17 @@ namespace Board.Pieces
                 {
                     if (underAttackSquare.GetPieceColor() == pieceColor)
                     {
-                        break;
+                        continue;
                     }
 
                     UnderAttackSquares.Add(underAttackSquare);
-                    break;
+                    continue;
                 }
 
                 // Off board
                 if (underAttackSquare == gameManager.NullSquare)
                 {
-                    break;
+                    continue;
                 }
 
                 // Empty Square
