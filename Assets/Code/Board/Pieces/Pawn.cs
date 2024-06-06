@@ -40,7 +40,7 @@ namespace Board.Pieces
             }
         }
 
-        protected override bool CanEatAt(Square square)
+        protected override bool CanEatAtInternal(Square square)
         {
             // Early exit if section has no piece or piece of the same color
             if (!square.HasPiece() || square.GetPieceColor() == pieceColor)
@@ -61,7 +61,7 @@ namespace Board.Pieces
             return false;
         }
 
-        protected override bool CanMoveTo(Square square)
+        protected override bool CanMoveToInternal(Square square)
         {
             if (square.HasPiece())
             {

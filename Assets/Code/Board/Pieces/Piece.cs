@@ -108,70 +108,80 @@ namespace Board.Pieces
             _renderer.material.SetColor(EmissionColor, Color.black);
         }
 
-        public void MoveToAndEat(Vector3 position, ISelectable selectable)
+        public bool CanMoveTo(Square square)
         {
-            if (_state != State.Selected)
+            if (_state != State.Selected || !gameManager.IsRightTurn(pieceColor))
             {
-                return;
+                return false;
             }
 
-            if (!gameManager.IsRightTurn(pieceColor))
+            return CanMoveToInternal(square);
+        }
+
+        public bool CanEatAt(Square square)
+        {
+            if (_state != State.Selected || !gameManager.IsRightTurn(pieceColor))
             {
-                return;
+                return false;
             }
 
-            Square square = selectable.GetSquare();
-            Piece piece = selectable.GetPiece();
+            return CanEatAtInternal(square);
+        }
 
-            // Must first check if you can eat
-            if (CanEatAt(square))
+        public Piece EatAt(Square square)
+        {
+            Piece piece = square.GetPiece();
+            piece?.MoveToBeaten();
+
+            return piece;
+        }
+
+        public void MoveTo(Square square)
+        {
+            Vector3 position = square.transform.position;
+
+            DisableSelect();
+            Move(position);
+            ResetCurrentSquare(square);
+            gameManager.ChangeTurn();
+        }
+
+        public void RemoveFromBeaten(Square square)
+        {
+            transform.position = square.transform.position;
+            currentSquare = square;
+            square.SetPiece(this);
+        }
+
+        private void Move(Vector3 position, TweenCallback callback = null)
+        {
+            // Move
+            float distance = Vector3.Distance(transform.position, position);
+            float duration = distance / commonSettings.Speed;
+            var tween = transform.DOMove(position, duration).SetEase(commonSettings.Ease);
+
+            if (callback != null)
             {
-                piece?.MoveToBeaten();
-
-                DisableSelect();
-                Move();
-                ResetCurrentSquare(square);
-                gameManager.ChangeTurn();
-            }
-            else if (CanMoveTo(square))
-            {
-                DisableSelect();
-                Move();
-                ResetCurrentSquare(square);
-                gameManager.ChangeTurn();
-            }
-
-            return;
-
-            void Move(TweenCallback callback = null)
-            {
-                // Move
-                float distance = Vector3.Distance(transform.position, position);
-                float duration = distance / commonSettings.Speed;
-                var tween = transform.DOMove(position, duration).SetEase(commonSettings.Ease);
-
-                if(callback != null)
-                {
-                    tween.onComplete = callback;
-                }
-            }
-
-            void ResetCurrentSquare(Square newSquare)
-            {
-                currentSquare.SetPiece(null);
-                currentSquare = newSquare;
-                currentSquare.SetPiece(this);
+                tween.onComplete = callback;
             }
         }
 
-        protected abstract bool CanEatAt(Square square);
-        protected abstract bool CanMoveTo(Square square);
+        private void ResetCurrentSquare(Square newSquare)
+        {
+            currentSquare.SetPiece(null);
+            currentSquare = newSquare;
+            currentSquare.SetPiece(this);
+        }
+
         public abstract void CalculateUnderAttackSquares();
+        protected abstract bool CanEatAtInternal(Square square);
+        protected abstract bool CanMoveToInternal(Square square);
 
         private void MoveToBeaten()
         {
             transform.position = new Vector3(-1.5f, 0f, 0f);
-            // currentSquare = null;
+            currentSquare.SetPiece(null);
+            currentSquare = null;
         }
 
         public Piece GetPiece()
@@ -188,7 +198,6 @@ namespace Board.Pieces
         {
             return currentSquare;
         }
-
 
         public bool IsSquare()
         {
@@ -211,7 +220,8 @@ namespace Board.Pieces
         {
             Construct(FindObjectOfType<GameManager>());
 
-            if (!Physics.Raycast(transform.position + Vector3.up, Vector3.down, out var hitInfo, 2f, commonSettings.SquareLayer))
+            if (!Physics.Raycast(transform.position + Vector3.up, Vector3.down, out var hitInfo, 2f,
+                                 commonSettings.SquareLayer))
             {
                 return;
             }

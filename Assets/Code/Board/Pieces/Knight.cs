@@ -37,12 +37,12 @@ namespace Board.Pieces
             }
         }
 
-        protected override bool CanEatAt(Square square)
+        protected override bool CanEatAtInternal(Square square)
         {
-            return CanMoveTo(square);
+            return CanMoveToInternal(square);
         }
 
-        protected override bool CanMoveTo(Square square)
+        protected override bool CanMoveToInternal(Square square)
         {
             if (square.HasPiece() && square.GetPieceColor() == pieceColor)
             {

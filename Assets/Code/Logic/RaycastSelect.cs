@@ -1,9 +1,13 @@
 using UnityEngine;
+using Board;
+using Board.Pieces;
+using Logic.CommandPattern;
 
 namespace Logic
 {
     public class RaycastSelect : MonoBehaviour
     {
+        [SerializeField] private CommandHandler commandHandler;
         [SerializeField] private Camera mainCamera;
         [SerializeField] private float maxDistance;
         [SerializeField] private LayerMask layerMask;
@@ -36,6 +40,7 @@ namespace Logic
             {
                 _previouslySelected?.DisableSelect();
                 _previouslySelected = null;
+
                 return;
             }
 
@@ -50,9 +55,17 @@ namespace Logic
             // Move
             if (!selectable.HasPiece())
             {
-                _previouslySelected?.MoveToAndEat(hitTransform.position, selectable);
+                Piece piece = _previouslySelected?.GetPiece();
+                Square square = selectable.GetSquare();
+
+                if (piece != null && piece.CanMoveTo(square))
+                {
+                    commandHandler.MoveTo(piece, square);
+                }
+
                 _previouslySelected?.DisableSelect();
                 _previouslySelected = null;
+
                 return;
             }
 
@@ -72,7 +85,14 @@ namespace Logic
             // Eat
             else
             {
-                _previouslySelected?.MoveToAndEat(hitTransform.position, selectable);
+                Piece piece = _previouslySelected?.GetPiece();
+                Square square = selectable.GetSquare();
+
+                if (piece != null && piece.CanEatAt(square))
+                {
+                    commandHandler.EatAt(piece, square);
+                }
+
                 _previouslySelected?.DisableSelect();
                 _previouslySelected = null;
             }
@@ -85,6 +105,7 @@ namespace Logic
             {
                 _previouslyHighlighted?.DisableHighlight();
                 _previouslyHighlighted = null;
+
                 return;
             }
 

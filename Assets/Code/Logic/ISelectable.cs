@@ -11,8 +11,6 @@ namespace Logic
         void Highlight();
         void DisableHighlight();
 
-        void MoveToAndEat(Vector3 position, ISelectable selectable);
-
         PieceColor GetPieceColor();
         Square GetSquare();
         Piece GetPiece();
