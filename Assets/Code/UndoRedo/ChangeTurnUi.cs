@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Ui
 {
-    public class PieceColorUiAdjust : MonoBehaviour
+    public class ChangeTurnUi : MonoBehaviour
     {
         [SerializeField] private GameManager gameManager;
         [SerializeField] private TMP_Dropdown dropdown;
