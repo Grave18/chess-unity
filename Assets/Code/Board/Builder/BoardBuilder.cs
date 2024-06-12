@@ -21,26 +21,8 @@ namespace Board.Builder
         private readonly Dictionary<Square, GameObject> _whitePairs = new();
         private readonly Dictionary<Square, GameObject> _blackPairs = new();
 
-        [ContextMenu("Destroy All Pieces")]
-        private void DestroyAllPieces()
-        {
-            DestroyAllPieces(whitePiecesParent);
-            DestroyAllPieces(blackPiecesParent);
-            _whitePairs.Clear();
-            _whitePairs.Clear();
-        }
-
-        private void DestroyAllPieces(Transform parent)
-        {
-            var pieces = parent.Cast<Transform>().ToArray();
-            foreach (Transform piece in pieces)
-            {
-                DestroyImmediate(piece.gameObject);
-            }
-        }
-
         [ContextMenu("Build Board")]
-        private void BuildBoard()
+        public void BuildBoard()
         {
             DestroyAllPieces();
 
@@ -115,6 +97,8 @@ namespace Board.Builder
             }
 
             InstantiatePieces();
+
+            gameManager.FindAllPieces();
         }
 
         private void InstantiatePieces()
@@ -123,13 +107,33 @@ namespace Board.Builder
             InstantiatePieces(_blackPairs, blackPiecesParent);
         }
 
-        private void InstantiatePieces(Dictionary<Square, GameObject> pairs, Transform piecesParent)
+        private static void InstantiatePieces(Dictionary<Square, GameObject> pairs, Transform piecesParent)
         {
             foreach (var (square, piece) in pairs)
             {
                 var pieceInstance = Instantiate(piece, square.transform.position, piece.transform.rotation, piecesParent);
                 var pieceComponent = pieceInstance.GetComponent<Piece>();
                 pieceComponent.GetSectionAndAlign();
+            }
+        }
+
+        [ContextMenu("Destroy All Pieces")]
+        public void DestroyAllPieces()
+        {
+            DestroyAllPieces(whitePiecesParent);
+            DestroyAllPieces(blackPiecesParent);
+            _whitePairs.Clear();
+            _whitePairs.Clear();
+
+            gameManager.ClearSquares();
+        }
+
+        private static void DestroyAllPieces(Transform parent)
+        {
+            var pieces = parent.Cast<Transform>().ToArray();
+            foreach (Transform piece in pieces)
+            {
+                DestroyImmediate(piece.gameObject);
             }
         }
     }

@@ -88,7 +88,6 @@ namespace Board.Pieces
             foreach (Vector2Int offset in move)
             {
                 var possibleSection = gameManager.GetSquare(pieceColor, currentSquare, offset);
-                Debug.Log($"Can Move: {possibleSection.name}");
 
                 if (possibleSection == square)
                 {

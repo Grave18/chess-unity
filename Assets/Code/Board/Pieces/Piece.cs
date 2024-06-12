@@ -39,7 +39,6 @@ namespace Board.Pieces
         private void Start()
         {
             currentSquare.SetPiece(this);
-            _renderer.material.EnableKeyword("_EMISSION");
         }
 
         public void SetCommonPieceSettings(CommonPieceSettings commonSettings)
@@ -57,7 +56,6 @@ namespace Board.Pieces
             _state = State.Selected;
 
             currentSquare.Select();
-            Debug.Log($"Piece: {name} is selected.");
 
             // _renderer.material.color = Color.red;
             _renderer.material.SetColor(EmissionColor, commonSettings.SelectColor);
@@ -73,7 +71,6 @@ namespace Board.Pieces
             _state = State.None;
 
             currentSquare.DisableSelect();
-            Debug.Log($"Piece: {name} selection is disabled.");
             // _renderer.material.color = Color.white;
             _renderer.material.SetColor(EmissionColor, Color.black);
         }
@@ -88,7 +85,6 @@ namespace Board.Pieces
             _state = State.Highlighted;
             currentSquare?.Highlight();
 
-            Debug.Log($"Piece: {name} is highlighted.");
             // _renderer.material.color = Color.blue;
             _renderer.material.SetColor(EmissionColor, commonSettings.HighLightColor);
         }
@@ -103,7 +99,6 @@ namespace Board.Pieces
             _state = State.None;
             currentSquare?.DisableHighlight();
 
-            Debug.Log($"Piece: {name} highlight is disabled.");
             // _renderer.material.color = Color.white;
             _renderer.material.SetColor(EmissionColor, Color.black);
         }
@@ -142,7 +137,12 @@ namespace Board.Pieces
 
             DisableSelect();
             Move(position);
-            ResetCurrentSquare(square);
+
+            // Reset current square
+            currentSquare.SetPiece(null);
+            currentSquare = square;
+            currentSquare.SetPiece(this);
+
             gameManager.ChangeTurn();
         }
 
@@ -151,6 +151,13 @@ namespace Board.Pieces
             transform.position = square.transform.position;
             currentSquare = square;
             square.SetPiece(this);
+        }
+
+        private void MoveToBeaten()
+        {
+            transform.position = new Vector3(-1.5f, 0f, 0f);
+            currentSquare.SetPiece(null);
+            currentSquare = null;
         }
 
         private void Move(Vector3 position, TweenCallback callback = null)
@@ -166,23 +173,7 @@ namespace Board.Pieces
             }
         }
 
-        private void ResetCurrentSquare(Square newSquare)
-        {
-            currentSquare.SetPiece(null);
-            currentSquare = newSquare;
-            currentSquare.SetPiece(this);
-        }
-
         public abstract void CalculateUnderAttackSquares();
-        protected abstract bool CanEatAtInternal(Square square);
-        protected abstract bool CanMoveToInternal(Square square);
-
-        private void MoveToBeaten()
-        {
-            transform.position = new Vector3(-1.5f, 0f, 0f);
-            currentSquare.SetPiece(null);
-            currentSquare = null;
-        }
 
         public Piece GetPiece()
         {
@@ -214,6 +205,9 @@ namespace Board.Pieces
         {
             return true;
         }
+
+        protected abstract bool CanEatAtInternal(Square square);
+        protected abstract bool CanMoveToInternal(Square square);
 
         [ContextMenu("Get Section And Align")]
         public void GetSectionAndAlign()

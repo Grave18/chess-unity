@@ -7,18 +7,24 @@ namespace Logic.CommandPattern
     {
         private readonly Piece _piece;
         private readonly Square _square;
+        private readonly PieceColor _turn;
+        private readonly SeriesList _seriesList;
+
         private Square _previousSquare;
         private Piece _beatenPiece;
 
-        public EatCommand(Piece piece, Square square)
+        public EatCommand(Piece piece, Square square, PieceColor turn, SeriesList seriesList)
         {
             _piece = piece;
             _square = square;
+            _turn = turn;
+            _seriesList = seriesList;
         }
 
         public override void Execute()
         {
             _previousSquare = _piece.GetSquare();
+            _seriesList.AddTurn(_piece, _square, _turn, TurnType.Capture);
 
             // Eat than move
             _beatenPiece = _piece.EatAt(_square);
@@ -31,6 +37,8 @@ namespace Logic.CommandPattern
             {
                 return;
             }
+
+            _seriesList.RemoveTurn(_turn);
 
             _piece.MoveTo(_previousSquare);
             _beatenPiece.RemoveFromBeaten(_square);

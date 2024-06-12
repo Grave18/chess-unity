@@ -20,7 +20,6 @@ namespace Board.Pieces
                     var underAttackSquare = gameManager.GetSquare(pieceColor, currentSquare, currentDir);
                     // Advance for one square
                     currentDir += direction;
-                    Debug.Log(underAttackSquare.name);
 
                     // Has Piece
                     if (underAttackSquare.HasPiece())

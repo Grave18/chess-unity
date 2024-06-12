@@ -4,18 +4,21 @@ using UnityEngine;
 
 namespace Logic.CommandPattern
 {
-    public class CommandHandler : MonoBehaviour
+    public class CommandManager : MonoBehaviour
     {
+        [SerializeField] private GameManager gameManager;
+        [SerializeField] private SeriesList seriesList;
+
         [SerializeField] private CommandBuffer _commandBuffer;
 
         public void MoveTo(Piece piece, Square square)
         {
-            _commandBuffer.AddAndExecute(new MoveCommand(piece, square));
+            _commandBuffer.AddAndExecute(new MoveCommand(piece, square, gameManager.CurrentTurn, seriesList));
         }
 
         public void EatAt(Piece piece, Square square)
         {
-            _commandBuffer.AddAndExecute(new EatCommand(piece, square));
+            _commandBuffer.AddAndExecute(new EatCommand(piece, square, gameManager.CurrentTurn, seriesList));
         }
 
         [ContextMenu("Undo")]

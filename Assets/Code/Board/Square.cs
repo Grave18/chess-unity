@@ -8,10 +8,14 @@ namespace Board
     {
         public int X;
         public int Y;
+        public string File;
+        public string Rank;
 
         [SerializeField] private Piece currentPiece;
 
         private MeshRenderer _renderer;
+
+        public string AlgebraicName => $"{File}{Rank}";
 
         private void Start()
         {

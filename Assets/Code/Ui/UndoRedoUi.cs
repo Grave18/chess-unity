@@ -6,14 +6,14 @@ namespace UndoRedo
 {
     public class UndoRedoUi : MonoBehaviour
     {
-        [SerializeField] private CommandHandler commandHandler;
+        [SerializeField] private CommandManager _commandManager;
         [SerializeField] private Button undo;
         [SerializeField] private Button redo;
 
         private void Start()
         {
-            undo.onClick.AddListener(commandHandler.Undo);
-            redo.onClick.AddListener(commandHandler.Redo);
+            undo.onClick.AddListener(_commandManager.Undo);
+            redo.onClick.AddListener(_commandManager.Redo);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Logic
 {
     public class RaycastSelect : MonoBehaviour
     {
-        [SerializeField] private CommandHandler commandHandler;
+        [SerializeField] private CommandManager _commandManager;
         [SerializeField] private Camera mainCamera;
         [SerializeField] private float maxDistance;
         [SerializeField] private LayerMask layerMask;
@@ -60,7 +60,7 @@ namespace Logic
 
                 if (piece != null && piece.CanMoveTo(square))
                 {
-                    commandHandler.MoveTo(piece, square);
+                    _commandManager.MoveTo(piece, square);
                 }
 
                 _previouslySelected?.DisableSelect();
@@ -90,7 +90,7 @@ namespace Logic
 
                 if (piece != null && piece.CanEatAt(square))
                 {
-                    commandHandler.EatAt(piece, square);
+                    _commandManager.EatAt(piece, square);
                 }
 
                 _previouslySelected?.DisableSelect();

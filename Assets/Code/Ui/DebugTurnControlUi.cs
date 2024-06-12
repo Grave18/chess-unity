@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Ui
 {
-    public class ChangeTurnUi : MonoBehaviour
+    public class DebugTurnControlUi : MonoBehaviour
     {
         [SerializeField] private GameManager gameManager;
         [SerializeField] private TMP_Dropdown dropdown;

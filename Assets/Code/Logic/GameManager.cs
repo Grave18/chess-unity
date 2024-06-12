@@ -39,13 +39,6 @@ namespace Logic
             CalculateUnderAttackSquares();
         }
 
-        public void Construct(Square[] squares, Piece[] whitePieces, Piece[] blackPieces)
-        {
-            this.squares = squares;
-            this.whitePieces = whitePieces;
-            this.blackPieces = blackPieces;
-        }
-
         /// <summary>
         ///  Calculate Under Attack Squares of opposite color
         /// </summary>
@@ -57,6 +50,7 @@ namespace Logic
             foreach (var piece in pieces)
             {
                 piece.CalculateUnderAttackSquares();
+
                 foreach (var pieceSquare in piece.UnderAttackSquares)
                 {
                     underAttackSet.Add(pieceSquare);
@@ -108,6 +102,12 @@ namespace Logic
             CurrentTurn = turn;
         }
 
+        public void ClearSquares()
+        {
+            whitePieces = new Piece[] { };
+            blackPieces = new Piece[] { };
+        }
+
         public Square GetSquare(PieceColor pieceColor, Square currentSquare, Vector2Int offset)
         {
             int x = -1;
@@ -118,7 +118,7 @@ namespace Logic
                 x = currentSquare.X + offset.x;
                 y = currentSquare.Y + offset.y;
             }
-            else if(pieceColor == PieceColor.Black)
+            else if (pieceColor == PieceColor.Black)
             {
                 x = currentSquare.X - offset.x;
                 y = currentSquare.Y - offset.y;
@@ -134,31 +134,44 @@ namespace Logic
             return squares[y + x * Width];
         }
 
-        [ContextMenu("Find All Sections")]
-        private void FindAllSections()
+        [ContextMenu("Find All Pieces")]
+        public void FindAllPieces()
         {
-            var squares = new List<Square>();
-            var wPieces = new List<Piece>();
-            var bPieces = new List<Piece>();
-
-            foreach (Transform squareTransform in squaresTransform)
-            {
-                squares.Add(squareTransform.GetComponent<Square>());
-            }
+            var whitePiecesTemp = new List<Piece>();
+            var blackPiecesTemp = new List<Piece>();
 
             foreach (Transform whitePieceTransform in whitePiecesTransform)
             {
-                wPieces.Add(whitePieceTransform.GetComponent<Piece>());
+                whitePiecesTemp.Add(whitePieceTransform.GetComponent<Piece>());
             }
 
             foreach (Transform blackPieceTransform in blackPiecesTransform)
             {
-                bPieces.Add(blackPieceTransform.GetComponent<Piece>());
+                blackPiecesTemp.Add(blackPieceTransform.GetComponent<Piece>());
             }
 
-            Construct(squares.ToArray(), wPieces.ToArray(), bPieces.ToArray());
+            whitePieces = whitePiecesTemp.ToArray();
+            blackPieces = blackPiecesTemp.ToArray();
+        }
 
-            // Fill squares with coordinates
+        [ContextMenu("Find All Sections")]
+        public void FindAllSections()
+        {
+            var squaresTemp = new List<Square>();
+
+            foreach (Transform squareTransform in squaresTransform)
+            {
+                squaresTemp.Add(squareTransform.GetComponent<Square>());
+            }
+
+            squares = squaresTemp.ToArray();
+
+            SetupSquares();
+        }
+
+        /// Fill squares with coordinates
+        private void SetupSquares()
+        {
             for (int x = 0; x < Width; x++)
             {
                 for (int y = 0; y < Height; y++)
@@ -168,6 +181,10 @@ namespace Logic
                     var square = this.squares[index];
                     square.X = x;
                     square.Y = y;
+
+                    square.File = $"{(char)(x + 'a')}";
+                    square.Rank = $"{y + 1}";
+
                 }
             }
         }
