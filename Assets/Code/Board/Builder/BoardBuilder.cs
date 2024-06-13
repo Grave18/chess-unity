@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Board.Pieces;
 using Logic;
@@ -24,9 +23,15 @@ namespace Board.Builder
         [ContextMenu("Build Board")]
         public void BuildBoard()
         {
-            DestroyAllPieces();
-
             string text = boardPreset.text;
+
+            if (text.Length != Width * Height + Height)
+            {
+                Debug.LogError("Invalid board preset");
+                return;
+            }
+
+            DestroyAllPieces();
 
             for (int x = 0, y = 0; y < Height;)
             {
@@ -43,15 +48,10 @@ namespace Board.Builder
                     continue;
                 }
 
-                if (text[iText] == ' ')
-                {
-                    x += 1;
-                    continue;
-                }
-
                 switch (text[iText])
                 {
                     case '*':
+                    case ' ':
                         break;
                     case 'b':
                         _blackPairs[gameManager.Squares[iSquares]] = piecePrefabs[0]; // B_Bishop
@@ -59,7 +59,7 @@ namespace Board.Builder
                     case 'k':
                         _blackPairs[gameManager.Squares[iSquares]] = piecePrefabs[1]; // B_King
                         break;
-                    case 'h':
+                    case 'n':
                         _blackPairs[gameManager.Squares[iSquares]] = piecePrefabs[2]; // B_Knight
                         break;
                     case 'p':
@@ -77,7 +77,7 @@ namespace Board.Builder
                     case 'K':
                         _whitePairs[gameManager.Squares[iSquares]] = piecePrefabs[7]; // W_King
                         break;
-                    case 'H':
+                    case 'N':
                         _whitePairs[gameManager.Squares[iSquares]] = piecePrefabs[8]; // W_Knight
                         break;
                     case 'P':
@@ -90,7 +90,8 @@ namespace Board.Builder
                         _whitePairs[gameManager.Squares[iSquares]] = piecePrefabs[11]; // W_Rook
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException();
+                        Debug.LogError($"{text[iText]} is not a valid character");
+                        return;
                 }
 
                 x += 1;
