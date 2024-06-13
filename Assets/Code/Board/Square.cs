@@ -1,6 +1,7 @@
 using Board.Pieces;
 using Logic;
 using UnityEngine;
+#pragma warning disable CS0252, CS0253
 
 namespace Board
 {
