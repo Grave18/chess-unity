@@ -7210,7 +7210,7 @@ MonoBehaviour:
   _commandBuffer:
     cursor: -1
     length: 0
-    capacity: 2
+    capacity: 10
 --- !u!4 &1604880652
 Transform:
   m_ObjectHideFlags: 0

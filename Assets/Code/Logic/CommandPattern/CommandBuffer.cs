@@ -1,76 +1,57 @@
-﻿using UnityEngine;
-
-namespace Logic.CommandPattern
+﻿namespace Logic.CommandPattern
 {
     [System.Serializable]
     public class CommandBuffer
     {
-        [SerializeField] private int cursor = -1;
-        [SerializeField] private int length;
-        [SerializeField] private int capacity = 2;
+        private const int InitialCapacity = 2;
 
-        private Command[] _commands = new Command[2];
+        private int _cursor = -1;
+        private int _length;
+        private int _capacity = InitialCapacity;
 
-        public int Length => length;
-        public int Capacity => _commands.Length;
+        private Command[] _commands = new Command[InitialCapacity];
+
+        public int Length => _length;
+        public int Capacity => _capacity;
 
         public void AddAndExecute(Command command)
         {
-            if (cursor == -1)
-            {
-                cursor += 1;
-            }
+            _cursor += 1;
 
-            // Add command
-            _commands[cursor] = command;
+            _commands[_cursor] = command;
+            _commands[_cursor].Execute();
+            _length = _cursor + 1;
 
-            // Execute
-            _commands[cursor].Execute();
-            cursor += 1;
-            length = cursor;
-
-            // Resize array
             ResizeArray();
         }
 
-        // Redo
         public void Redo()
         {
-            if(length == 0 || cursor == length)
+            if (_cursor + 1 == _length)
             {
                 return;
             }
 
-            if (cursor == -1)
-            {
-                cursor += 1;
-            }
-
-            _commands[cursor].Execute();
-            cursor += 1;
+            _cursor += 1;
+            _commands[_cursor].Execute();
         }
 
         public void Undo()
         {
-            if (length == 0 || cursor == -1)
+            if (_cursor == -1)
             {
                 return;
             }
 
-            if (cursor == length)
-            {
-                cursor -= 1;
-            }
-
-            _commands[cursor].Undo();
-            cursor -= 1;
+            _commands[_cursor].Undo();
+            _cursor -= 1;
         }
 
         private void ResizeArray()
         {
-            if (cursor == Capacity)
+            if (_cursor + 1 == _capacity)
             {
-                var temp = new Command[Capacity * 2];
+                var temp = new Command[_capacity * 2];
 
                 for(int i = 0; i < Length; i++)
                 {
@@ -79,7 +60,7 @@ namespace Logic.CommandPattern
 
                 _commands = temp;
 
-                capacity = _commands.Length;
+                _capacity = _commands.Length;
             }
         }
     }
