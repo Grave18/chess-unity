@@ -1,8 +1,9 @@
 ﻿using Board;
 using Board.Pieces;
+using Logic.CommandPattern;
 using UnityEngine;
 
-namespace Logic.CommandPattern
+namespace Logic
 {
     public class CommandManager : MonoBehaviour
     {
@@ -13,12 +14,17 @@ namespace Logic.CommandPattern
 
         public void MoveTo(Piece piece, Square square)
         {
-            _commandBuffer.AddAndExecute(new MoveCommand(piece, square, gameManager.CurrentTurn, seriesList));
+            _commandBuffer.AddAndExecute(new MoveCommand(piece, square, gameManager, seriesList));
         }
 
         public void EatAt(Piece piece, Square square)
         {
-            _commandBuffer.AddAndExecute(new EatCommand(piece, square, gameManager.CurrentTurn, seriesList));
+            _commandBuffer.AddAndExecute(new EatCommand(piece, square, gameManager, seriesList));
+        }
+
+        public void Castling(King piece, Square kingSquare, Rook rook, Square rookSquare, TurnType turnType)
+        {
+            _commandBuffer.AddAndExecute(new CastlingCommand(piece, kingSquare, rook, rookSquare, gameManager, seriesList, turnType));
         }
 
         [ContextMenu("Undo")]

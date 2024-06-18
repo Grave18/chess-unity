@@ -6,6 +6,9 @@ namespace Board.Pieces
     {
         [Header("Rook")]
         public Vector2Int[] MoveVectors;
+        [SerializeField] private bool isFirstMove = true;
+
+        public bool IsFirstMove => isFirstMove;
 
         public override void CalculateUnderAttackSquares()
         {
@@ -63,6 +66,7 @@ namespace Board.Pieces
             {
                 if (square == underAttackSquare)
                 {
+                    isFirstMove = false;
                     return true;
                 }
             }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Logic;
+using UnityEngine;
 
 namespace Board.Pieces
 {
@@ -6,6 +7,9 @@ namespace Board.Pieces
     {
         [Header("King")]
         public Vector2Int[] Moves;
+        [SerializeField] private bool isFirstMove = true;
+
+        public bool IsFirstMove => isFirstMove;
 
         public override void CalculateUnderAttackSquares()
         {
@@ -24,6 +28,7 @@ namespace Board.Pieces
                     }
 
                     UnderAttackSquares.Add(underAttackSquare);
+
                     continue;
                 }
 
@@ -36,6 +41,53 @@ namespace Board.Pieces
                 // Empty Square
                 UnderAttackSquares.Add(underAttackSquare);
             }
+        }
+
+        public bool CanCastlingAt(Square square, out Rook rook, out Square rookSquare, out TurnType turnType)
+        {
+            rook = null;
+            rookSquare = null;
+            turnType = TurnType.None;
+
+            if (!isFirstMove)
+            {
+                return false;
+            }
+
+            // Check short (right)
+            Square squarePlus1 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(1, 0));
+            Square squarePlus2 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(2, 0));
+            Square squareWithRook = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(3, 0));
+
+            if (!squarePlus1.HasPiece() && !squarePlus2.HasPiece() && squarePlus2.IsEqual(square) &&
+                squareWithRook.HasPiece() &&
+                squareWithRook.GetPiece() is Rook rookRight && rookRight.IsFirstMove)
+            {
+                rook = rookRight;
+                rookSquare = squarePlus1;
+                turnType = TurnType.CastlingShort;
+
+                return true;
+            }
+
+            // Check long (left)
+            Square squareMinus1 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(-1, 0));
+            Square squareMinus2 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(-2, 0));
+            Square squareMinus3 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(-3, 0));
+            squareWithRook = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(-4, 0));
+
+            if (!squareMinus1.HasPiece() && !squareMinus2.HasPiece() && !squareMinus3.HasPiece() &&
+                squareWithRook.HasPiece() &&
+                squareMinus2.IsEqual(square) && squareWithRook.GetPiece() is Rook rookLeft && rookLeft.IsFirstMove)
+            {
+                rook = rookLeft;
+                rookSquare = squareMinus1;
+                turnType = TurnType.CastlingLong;
+
+                return true;
+            }
+
+            return false;
         }
 
         protected override bool CanEatAtInternal(Square square)
@@ -56,6 +108,8 @@ namespace Board.Pieces
             {
                 if (underAttackSquare == square)
                 {
+                    isFirstMove = false;
+
                     return true;
                 }
             }

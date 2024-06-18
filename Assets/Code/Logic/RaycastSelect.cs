@@ -1,7 +1,6 @@
 using UnityEngine;
 using Board;
 using Board.Pieces;
-using Logic.CommandPattern;
 
 namespace Logic
 {
@@ -61,6 +60,12 @@ namespace Logic
                 if (piece != null && piece.CanMoveTo(square))
                 {
                     _commandManager.MoveTo(piece, square);
+                }
+
+                // Castling
+                if (piece is King king && king.CanCastlingAt(square, out Rook rook, out Square rookSquare, out TurnType turnType))
+                {
+                    _commandManager.Castling(king, square, rook, rookSquare, turnType);
                 }
 
                 _previouslySelected?.DisableSelect();

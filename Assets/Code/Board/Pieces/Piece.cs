@@ -13,6 +13,7 @@ namespace Board.Pieces
             None, Selected, Highlighted
         }
 
+        [Header("Piece")]
         [SerializeField] protected PieceColor pieceColor;
         [SerializeField] protected GameManager gameManager;
         [SerializeField] protected Square currentSquare;
@@ -143,8 +144,6 @@ namespace Board.Pieces
             currentSquare.SetPiece(null);
             currentSquare = square;
             currentSquare.SetPiece(this);
-
-            gameManager.ChangeTurn();
         }
 
         public void RemoveFromBeaten(Square square)

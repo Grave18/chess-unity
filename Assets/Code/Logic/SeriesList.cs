@@ -5,13 +5,6 @@ using Board;
 using Board.Pieces;
 using UnityEngine;
 
-// square.AlgebraicName = $"{(char)(x + 'A')}{y + 1}";
-
-public enum TurnType
-{
-    Move, Capture, Castling, EnPassant, Check, Mate
-}
-
 namespace Logic
 {
     public class SeriesList : MonoBehaviour
@@ -30,44 +23,55 @@ namespace Logic
 
             var turnString = new StringBuilder();
 
-            switch (piece)
+            if(turnType == TurnType.CastlingShort)
             {
-                case Bishop:
-                    turnString.Append("B");
-
-                    break;
-                case King:
-                    turnString.Append("K");
-
-                    break;
-                case Knight:
-                    turnString.Append("N");
-
-                    break;
-
-                case Pawn:
-                    if (turnType == TurnType.Capture)
-                    {
-                        turnString.Append(piece.GetSquare().File);
-                    }
-
-                    break;
-                case Queen:
-                    turnString.Append("Q");
-
-                    break;
-                case Rook:
-                    turnString.Append("R");
-
-                    break;
+                turnString.Append("0-0");
             }
-
-            if (turnType == TurnType.Capture)
+            else if (turnType == TurnType.CastlingLong)
             {
-                turnString.Append("x");
+                turnString.Append("0-0-0");
             }
+            else
+            {
+                switch (piece)
+                {
+                    case Bishop:
+                        turnString.Append("B");
 
-            turnString.Append(square.AlgebraicName);
+                        break;
+                    case King:
+                        turnString.Append("K");
+
+                        break;
+                    case Knight:
+                        turnString.Append("N");
+
+                        break;
+
+                    case Pawn:
+                        if (turnType == TurnType.Capture)
+                        {
+                            turnString.Append(piece.GetSquare().File);
+                        }
+
+                        break;
+                    case Queen:
+                        turnString.Append("Q");
+
+                        break;
+                    case Rook:
+                        turnString.Append("R");
+
+                        break;
+                }
+
+                if (turnType == TurnType.Capture)
+                {
+                    turnString.Append("x");
+                }
+
+                turnString.Append(square.AlgebraicName);
+            }
 
             if (turn == PieceColor.White)
             {
