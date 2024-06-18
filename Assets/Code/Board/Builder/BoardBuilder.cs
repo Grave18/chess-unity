@@ -15,7 +15,7 @@ namespace Board.Builder
         [SerializeField] private Transform whitePiecesParent;
         [SerializeField] private Transform blackPiecesParent;
         [SerializeField] private GameObject[] piecePrefabs;
-        [SerializeField] private TextAsset boardPreset;
+        [SerializeField] private BoardPreset boardPreset;
 
         private readonly Dictionary<Square, GameObject> _whitePairs = new();
         private readonly Dictionary<Square, GameObject> _blackPairs = new();
@@ -23,9 +23,11 @@ namespace Board.Builder
         [ContextMenu("Build Board")]
         public void BuildBoard()
         {
-            string text = boardPreset.text;
+            string text = boardPreset.Preset;
 
-            if (text.Length != Width * Height + Height)
+            text = ClearNewLineCharacters(text);
+
+            if (IsPresetNotValid(text))
             {
                 Debug.LogError("Invalid board preset");
                 return;
@@ -35,18 +37,9 @@ namespace Board.Builder
 
             for (int x = 0, y = 0; y < Height;)
             {
-                // Add y because of \n symbols
-                int iText = x + y * Width + y;
-                // Must invert y (Height - 1 - y)
+                int iText = x + y * Width;
+                // Must invert y (Height - 1 - y) also x and y are swapped
                 int iSquares = Height - 1 - y + x * Width;
-
-                if (text[iText] == '\n')
-                {
-                    x = 0;
-                    y += 1;
-
-                    continue;
-                }
 
                 switch (text[iText])
                 {
@@ -95,11 +88,27 @@ namespace Board.Builder
                 }
 
                 x += 1;
+
+                if (x == Width)
+                {
+                    x = 0;
+                    y += 1;
+                }
             }
 
             InstantiatePieces();
 
             gameManager.FindAllPieces();
+        }
+
+        private static bool IsPresetNotValid(string text)
+        {
+            return text.Length != Width * Height;
+        }
+
+        private static string ClearNewLineCharacters(string text)
+        {
+            return text.Replace("\r", string.Empty).Replace("\n", string.Empty).Replace("\t", string.Empty);
         }
 
         private void InstantiatePieces()
@@ -124,7 +133,7 @@ namespace Board.Builder
             DestroyAllPieces(whitePiecesParent);
             DestroyAllPieces(blackPiecesParent);
             _whitePairs.Clear();
-            _whitePairs.Clear();
+            _blackPairs.Clear();
 
             gameManager.ClearSquares();
         }
