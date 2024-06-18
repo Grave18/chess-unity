@@ -7,9 +7,6 @@ namespace Board.Pieces
     {
         [Header("King")]
         public Vector2Int[] Moves;
-        [SerializeField] private bool isFirstMove = true;
-
-        public bool IsFirstMove => isFirstMove;
 
         public override void CalculateUnderAttackSquares()
         {
@@ -49,7 +46,7 @@ namespace Board.Pieces
             rookSquare = null;
             turnType = TurnType.None;
 
-            if (!isFirstMove)
+            if (!IsFirstMove)
             {
                 return false;
             }
@@ -108,8 +105,6 @@ namespace Board.Pieces
             {
                 if (underAttackSquare == square)
                 {
-                    isFirstMove = false;
-
                     return true;
                 }
             }

@@ -11,6 +11,7 @@ namespace Logic.CommandPattern
         private readonly SeriesList _seriesList;
 
         private Square _previousSquare;
+        private bool _previousIsFirstMove;
 
         public MoveCommand(Piece piece, Square square, GameManager gameManager, SeriesList seriesList)
         {
@@ -25,6 +26,8 @@ namespace Logic.CommandPattern
             _seriesList.AddTurn(_piece, _square, _gameManager.CurrentTurn, TurnType.Move);
 
             _previousSquare = _piece.GetSquare();
+            _previousIsFirstMove = _piece.IsFirstMove;
+            _piece.IsFirstMove = false;
             _piece.MoveTo(_square);
 
             _gameManager.ChangeTurn();
@@ -40,7 +43,7 @@ namespace Logic.CommandPattern
             _seriesList.RemoveTurn(_gameManager.CurrentTurn);
 
             _piece.MoveTo(_previousSquare);
-            _previousSquare = null;
+            _piece.IsFirstMove = _previousIsFirstMove;
 
             _gameManager.ChangeTurn();
         }

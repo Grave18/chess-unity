@@ -18,6 +18,7 @@ namespace Board.Pieces
         [SerializeField] protected GameManager gameManager;
         [SerializeField] protected Square currentSquare;
 
+        public bool IsFirstMove = true;
         [SerializeField] private CommonPieceSettings commonSettings;
         [SerializeField] private List<Square> underAttackSquares;
 

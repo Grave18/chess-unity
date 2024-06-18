@@ -38,6 +38,9 @@ namespace Logic.CommandPattern
             _king.MoveTo(_kingSquare);
             _rook.MoveTo(_rookSquare);
 
+            _king.IsFirstMove = false;
+            _rook.IsFirstMove = false;
+
             _gameManager.ChangeTurn();
         }
 
@@ -53,8 +56,8 @@ namespace Logic.CommandPattern
             _king.MoveTo(_previousKingSquare);
             _rook.MoveTo(_previousRookSquare);
 
-            _previousKingSquare = null;
-            _previousRookSquare = null;
+            _rook.IsFirstMove = true;
+            _king.IsFirstMove = true;
 
             _gameManager.ChangeTurn();
         }

@@ -1,5 +1,6 @@
 ﻿using Board;
 using Board.Pieces;
+using UnityEditorInternal;
 
 namespace Logic.CommandPattern
 {
@@ -11,6 +12,7 @@ namespace Logic.CommandPattern
         private readonly SeriesList _seriesList;
 
         private Square _previousSquare;
+        private bool _previousIsFirstMove;
         private Piece _beatenPiece;
 
         public EatCommand(Piece piece, Square square, GameManager gameManager, SeriesList seriesList)
@@ -23,8 +25,11 @@ namespace Logic.CommandPattern
 
         public override void Execute()
         {
-            _previousSquare = _piece.GetSquare();
             _seriesList.AddTurn(_piece, _square, _gameManager.CurrentTurn, TurnType.Capture);
+
+            _previousSquare = _piece.GetSquare();
+            _previousIsFirstMove = _piece.IsFirstMove;
+            _piece.IsFirstMove = false;
 
             // Eat than move
             _beatenPiece = _piece.EatAt(_square);
@@ -43,8 +48,8 @@ namespace Logic.CommandPattern
             _seriesList.RemoveTurn(_gameManager.CurrentTurn);
 
             _piece.MoveTo(_previousSquare);
+            _piece.IsFirstMove = _previousIsFirstMove;
             _beatenPiece.RemoveFromBeaten(_square);
-            _previousSquare = null;
 
             _gameManager.ChangeTurn();
         }

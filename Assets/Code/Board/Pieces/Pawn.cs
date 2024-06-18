@@ -8,7 +8,6 @@ namespace Board.Pieces
         public Vector2Int[] MovesFirstMove;
         public Vector2Int[] Moves;
         public Vector2Int[] Eat;
-        [SerializeField] private bool isFirstMove = true;
 
         public override void CalculateUnderAttackSquares()
         {
@@ -69,7 +68,7 @@ namespace Board.Pieces
             }
 
             Vector2Int[] move;
-            if (isFirstMove)
+            if (IsFirstMove)
             {
                 move = MovesFirstMove;
 
@@ -91,8 +90,6 @@ namespace Board.Pieces
 
                 if (possibleSection == square)
                 {
-                    isFirstMove = false;
-
                     return true;
                 }
             }
