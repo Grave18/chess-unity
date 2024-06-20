@@ -174,7 +174,18 @@ namespace Board.Pieces
             }
         }
 
-        public abstract void CalculateUnderAttackSquares();
+        public void CalculateUnderAttackSquares()
+        {
+            // If piece is beaten cancel calculations
+            if (currentSquare == null)
+            {
+                return;
+            }
+
+            CalculateUnderAttackSquaresInternal();
+        }
+
+        protected abstract void CalculateUnderAttackSquaresInternal();
 
         public Piece GetPiece()
         {

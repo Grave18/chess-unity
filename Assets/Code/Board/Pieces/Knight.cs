@@ -7,7 +7,7 @@ namespace Board.Pieces
         [Header("Knight")]
         public Vector2Int[] Moves;
 
-        public override void CalculateUnderAttackSquares()
+        protected override void CalculateUnderAttackSquaresInternal()
         {
             UnderAttackSquares.Clear();
             foreach (Vector2Int offset in Moves)

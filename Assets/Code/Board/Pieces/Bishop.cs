@@ -7,7 +7,7 @@ namespace Board.Pieces
         [Header("Bishop")]
         public Vector2Int[] MoveVectors;
 
-        public override void CalculateUnderAttackSquares()
+        protected override void CalculateUnderAttackSquaresInternal()
         {
             UnderAttackSquares.Clear();
 
