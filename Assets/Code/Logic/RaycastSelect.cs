@@ -6,13 +6,14 @@ namespace Logic
 {
     public class RaycastSelect : MonoBehaviour
     {
-        [SerializeField] private CommandManager _commandManager;
+        [Header("References")]
+        [SerializeField] private CommandManager commandManager;
+        [SerializeField] private GameManager gameManager;
         [SerializeField] private Camera mainCamera;
+
+        [Header("Settings")]
         [SerializeField] private float maxDistance;
         [SerializeField] private LayerMask layerMask;
-
-        private ISelectable _previouslySelected;
-        private ISelectable _previouslyHighlighted;
 
         private void Update()
         {
@@ -37,8 +38,8 @@ namespace Logic
             // Deselect if not hit anything
             if (!isHit)
             {
-                _previouslySelected?.DisableSelect();
-                _previouslySelected = null;
+                gameManager.PreviouslySelected?.DisableSelect();
+                gameManager.PreviouslySelected = null;
 
                 return;
             }
@@ -46,7 +47,7 @@ namespace Logic
             bool tryGetSelectable = hitTransform.TryGetComponent(out ISelectable selectable);
 
             // Do nothing if select same thing
-            if (!tryGetSelectable || selectable.IsEqual(_previouslySelected))
+            if (!tryGetSelectable || selectable.IsEqual(gameManager.PreviouslySelected))
             {
                 return;
             }
@@ -54,52 +55,52 @@ namespace Logic
             // Move
             if (!selectable.HasPiece())
             {
-                Piece piece = _previouslySelected?.GetPiece();
+                Piece piece = gameManager.PreviouslySelected?.GetPiece();
                 Square square = selectable.GetSquare();
 
                 if (piece != null && piece.CanMoveTo(square))
                 {
-                    _commandManager.MoveTo(piece, square);
+                    commandManager.MoveTo(piece, square);
                 }
 
                 // Castling
                 if (piece is King king && king.CanCastlingAt(square, out Rook rook, out Square rookSquare, out TurnType turnType))
                 {
-                    _commandManager.Castling(king, square, rook, rookSquare, turnType);
+                    commandManager.Castling(king, square, rook, rookSquare, turnType);
                 }
 
-                _previouslySelected?.DisableSelect();
-                _previouslySelected = null;
+                gameManager.PreviouslySelected?.DisableSelect();
+                gameManager.PreviouslySelected = null;
 
                 return;
             }
 
             // Select
-            if (_previouslySelected == null)
+            if (gameManager.PreviouslySelected == null)
             {
                 selectable.Select();
-                _previouslySelected = selectable;
+                gameManager.PreviouslySelected = selectable;
             }
             // Deselect previously selected and select new
-            else if (selectable.GetPieceColor() == _previouslySelected.GetPieceColor())
+            else if (selectable.GetPieceColor() == gameManager.PreviouslySelected.GetPieceColor())
             {
                 selectable.Select();
-                _previouslySelected.DisableSelect();
-                _previouslySelected = selectable;
+                gameManager.PreviouslySelected.DisableSelect();
+                gameManager.PreviouslySelected = selectable;
             }
             // Eat
             else
             {
-                Piece piece = _previouslySelected?.GetPiece();
+                Piece piece = gameManager.PreviouslySelected?.GetPiece();
                 Square square = selectable.GetSquare();
 
                 if (piece != null && piece.CanEatAt(square))
                 {
-                    _commandManager.EatAt(piece, square);
+                    commandManager.EatAt(piece, square);
                 }
 
-                _previouslySelected?.DisableSelect();
-                _previouslySelected = null;
+                gameManager.PreviouslySelected?.DisableSelect();
+                gameManager.PreviouslySelected = null;
             }
         }
 
@@ -108,8 +109,8 @@ namespace Logic
             // Dehighlight if not hit anything
             if (!isHit)
             {
-                _previouslyHighlighted?.DisableHighlight();
-                _previouslyHighlighted = null;
+                gameManager.PreviouslyHighlighted?.DisableHighlight();
+                gameManager.PreviouslyHighlighted = null;
 
                 return;
             }
@@ -117,11 +118,11 @@ namespace Logic
             bool tryGetSelectable = hitTransform.TryGetComponent(out ISelectable selectable);
 
             // Highlight
-            if (tryGetSelectable && !selectable.IsEqual(_previouslyHighlighted))
+            if (tryGetSelectable && !selectable.IsEqual(gameManager.PreviouslyHighlighted))
             {
                 selectable.Highlight();
-                _previouslyHighlighted?.DisableHighlight();
-                _previouslyHighlighted = selectable;
+                gameManager.PreviouslyHighlighted?.DisableHighlight();
+                gameManager.PreviouslyHighlighted = selectable;
             }
         }
     }
