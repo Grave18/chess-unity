@@ -1,7 +1,8 @@
+#pragma warning disable CS0252, CS0253
+
 using Board.Pieces;
 using Logic;
 using UnityEngine;
-#pragma warning disable CS0252, CS0253
 
 namespace Board
 {
@@ -31,31 +32,6 @@ namespace Board
         public Piece GetPiece()
         {
             return currentPiece;
-        }
-
-        public void Select()
-        {
-            _renderer.material.color = Color.magenta;
-        }
-
-        public void DisableSelect()
-        {
-            _renderer.material.color = Color.white;
-        }
-
-        public void Highlight()
-        {
-            _renderer.material.color = Color.cyan;
-        }
-
-        public void DisableHighlight()
-        {
-            _renderer.material.color = Color.white;
-        }
-
-        public void MoveToAndEat(Vector3 position, ISelectable selectable)
-        {
-            // Must be empty
         }
 
         public PieceColor GetPieceColor()

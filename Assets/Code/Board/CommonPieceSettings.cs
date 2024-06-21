@@ -11,5 +11,6 @@ namespace Board
         public float Speed = 0.7f;
         public Color SelectColor = Color.red;
         public Color HighLightColor = Color.blue;
+        public Color DefaultColor = Color.black;
     }
 }
