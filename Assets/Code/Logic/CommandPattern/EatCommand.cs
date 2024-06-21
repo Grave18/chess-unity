@@ -11,6 +11,7 @@ namespace Logic.CommandPattern
         private readonly GameManager _gameManager;
         private readonly SeriesList _seriesList;
 
+        private PieceColor _previousTurn;
         private Square _previousSquare;
         private bool _previousIsFirstMove;
         private Piece _beatenPiece;
@@ -28,6 +29,7 @@ namespace Logic.CommandPattern
             _seriesList.AddTurn(_piece, _square, _gameManager.CurrentTurn, TurnType.Capture);
 
             _previousSquare = _piece.GetSquare();
+            _previousTurn = _gameManager.CurrentTurn;
             _previousIsFirstMove = _piece.IsFirstMove;
             _piece.IsFirstMove = false;
 
@@ -45,7 +47,7 @@ namespace Logic.CommandPattern
                 return;
             }
 
-            _seriesList.RemoveTurn(_gameManager.CurrentTurn);
+            _seriesList.RemoveTurn(_previousTurn);
 
             _piece.MoveTo(_previousSquare);
             _piece.IsFirstMove = _previousIsFirstMove;

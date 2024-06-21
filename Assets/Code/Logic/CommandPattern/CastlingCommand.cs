@@ -13,6 +13,7 @@ namespace Logic.CommandPattern
         private readonly SeriesList _seriesList;
         private readonly TurnType _turnType;
 
+        private PieceColor _previousTurn;
         private Square _previousKingSquare;
         private Square _previousRookSquare;
 
@@ -34,6 +35,7 @@ namespace Logic.CommandPattern
 
             _previousKingSquare = _king.GetSquare();
             _previousRookSquare = _rook.GetSquare();
+            _previousTurn = _gameManager.CurrentTurn;
 
             _king.MoveTo(_kingSquare);
             _rook.MoveTo(_rookSquare);
@@ -51,7 +53,7 @@ namespace Logic.CommandPattern
                 return;
             }
 
-            _seriesList.RemoveTurn(_gameManager.CurrentTurn);
+            _seriesList.RemoveTurn(_previousTurn);
 
             _king.MoveTo(_previousKingSquare);
             _rook.MoveTo(_previousRookSquare);
