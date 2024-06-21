@@ -24,7 +24,7 @@ namespace Board.Settings
 
             foreach (var piece in pieces)
             {
-                piece.SetCommonPieceSettings(commonSettings);
+                // piece.SetCommonPieceSettings(commonSettings);
             }
         }
     }

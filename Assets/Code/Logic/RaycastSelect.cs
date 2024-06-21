@@ -38,8 +38,8 @@ namespace Logic
             // Deselect if not hit anything
             if (!isHit)
             {
-                gameManager.PreviouslySelected?.DisableSelect();
-                gameManager.PreviouslySelected = null;
+                // gameManager.Selected?.DisableSelect();
+                gameManager.Selected = null;
 
                 return;
             }
@@ -47,7 +47,7 @@ namespace Logic
             bool tryGetSelectable = hitTransform.TryGetComponent(out ISelectable selectable);
 
             // Do nothing if select same thing
-            if (!tryGetSelectable || selectable.IsEqual(gameManager.PreviouslySelected))
+            if (!tryGetSelectable || selectable.IsEqual(gameManager.Selected))
             {
                 return;
             }
@@ -55,7 +55,7 @@ namespace Logic
             // Move
             if (!selectable.HasPiece())
             {
-                Piece piece = gameManager.PreviouslySelected?.GetPiece();
+                Piece piece = gameManager.Selected?.GetPiece();
                 Square square = selectable.GetSquare();
 
                 if (piece != null && piece.CanMoveTo(square))
@@ -69,29 +69,29 @@ namespace Logic
                     commandManager.Castling(king, square, rook, rookSquare, turnType);
                 }
 
-                gameManager.PreviouslySelected?.DisableSelect();
-                gameManager.PreviouslySelected = null;
+                // gameManager.Selected?.DisableSelect();
+                gameManager.Selected = null;
 
                 return;
             }
 
             // Select
-            if (gameManager.PreviouslySelected == null)
+            if (gameManager.Selected == null)
             {
-                selectable.Select();
-                gameManager.PreviouslySelected = selectable;
+                // selectable.Select();
+                gameManager.Selected = selectable;
             }
             // Deselect previously selected and select new
-            else if (selectable.GetPieceColor() == gameManager.PreviouslySelected.GetPieceColor())
+            else if (selectable.GetPieceColor() == gameManager.Selected.GetPieceColor())
             {
-                selectable.Select();
-                gameManager.PreviouslySelected.DisableSelect();
-                gameManager.PreviouslySelected = selectable;
+                // selectable.Select();
+                // gameManager.Selected.DisableSelect();
+                gameManager.Selected = selectable;
             }
             // Eat
             else
             {
-                Piece piece = gameManager.PreviouslySelected?.GetPiece();
+                Piece piece = gameManager.Selected?.GetPiece();
                 Square square = selectable.GetSquare();
 
                 if (piece != null && piece.CanEatAt(square))
@@ -99,8 +99,8 @@ namespace Logic
                     commandManager.EatAt(piece, square);
                 }
 
-                gameManager.PreviouslySelected?.DisableSelect();
-                gameManager.PreviouslySelected = null;
+                // gameManager.Selected?.DisableSelect();
+                gameManager.Selected = null;
             }
         }
 
@@ -109,8 +109,8 @@ namespace Logic
             // Dehighlight if not hit anything
             if (!isHit)
             {
-                gameManager.PreviouslyHighlighted?.DisableHighlight();
-                gameManager.PreviouslyHighlighted = null;
+                // gameManager.PreviouslyHighlighted?.DisableHighlight();
+                gameManager.Highlighted = null;
 
                 return;
             }
@@ -118,11 +118,11 @@ namespace Logic
             bool tryGetSelectable = hitTransform.TryGetComponent(out ISelectable selectable);
 
             // Highlight
-            if (tryGetSelectable && !selectable.IsEqual(gameManager.PreviouslyHighlighted))
+            if (tryGetSelectable && !selectable.IsEqual(gameManager.Highlighted))
             {
-                selectable.Highlight();
-                gameManager.PreviouslyHighlighted?.DisableHighlight();
-                gameManager.PreviouslyHighlighted = selectable;
+                // selectable.Highlight();
+                // gameManager.Highlighted?.DisableHighlight();
+                gameManager.Highlighted = selectable;
             }
         }
     }

@@ -8,23 +8,18 @@ namespace Board.Pieces
 {
     public abstract class Piece : MonoBehaviour, ISelectable
     {
-        private enum State
-        {
-            None, Selected, Highlighted
-        }
-
         [Header("Piece")]
         [SerializeField] protected PieceColor pieceColor;
         [SerializeField] protected GameManager gameManager;
         [SerializeField] protected Square currentSquare;
+        [SerializeField] private LayerMask squareLayer;
 
         public bool IsFirstMove = true;
-        [SerializeField] private CommonPieceSettings commonSettings;
         [SerializeField] private List<Square> underAttackSquares;
 
-        private MeshRenderer _renderer;
-        private State _state = State.None;
-        private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
+        [Header("Animation")]
+        [SerializeField] private float animationSpeed = 1f;
+        [SerializeField] private Ease animationEase = Ease.InOutCubic;
 
         // Getters
         public List<Square> UnderAttackSquares => underAttackSquares;
@@ -34,81 +29,14 @@ namespace Board.Pieces
             this.gameManager = gameManager;
         }
 
-        private void Awake()
-        {
-            _renderer = GetComponent<MeshRenderer>();
-        }
-
         private void Start()
         {
             currentSquare.SetPiece(this);
         }
 
-        public void SetCommonPieceSettings(CommonPieceSettings commonSettings)
-        {
-            this.commonSettings = commonSettings;
-        }
-
-        public void Select()
-        {
-            if (_state == State.Selected)
-            {
-                return;
-            }
-
-            _state = State.Selected;
-
-            currentSquare.Select();
-
-            // _renderer.material.color = Color.red;
-            _renderer.material.SetColor(EmissionColor, commonSettings.SelectColor);
-        }
-
-        public void DisableSelect()
-        {
-            if (_state != State.Selected)
-            {
-                return;
-            }
-
-            _state = State.None;
-
-            currentSquare.DisableSelect();
-            // _renderer.material.color = Color.white;
-            _renderer.material.SetColor(EmissionColor, Color.black);
-        }
-
-        public void Highlight()
-        {
-            if (_state == State.Selected || _state == State.Highlighted)
-            {
-                return;
-            }
-
-            _state = State.Highlighted;
-            currentSquare?.Highlight();
-
-            // _renderer.material.color = Color.blue;
-            _renderer.material.SetColor(EmissionColor, commonSettings.HighLightColor);
-        }
-
-        public void DisableHighlight()
-        {
-            if (_state != State.Highlighted)
-            {
-                return;
-            }
-
-            _state = State.None;
-            currentSquare?.DisableHighlight();
-
-            // _renderer.material.color = Color.white;
-            _renderer.material.SetColor(EmissionColor, Color.black);
-        }
-
         public bool CanMoveTo(Square square)
         {
-            if (_state != State.Selected || !gameManager.IsRightTurn(pieceColor))
+            if (!gameManager.Selected.IsEqual(this) || !gameManager.IsRightTurn(pieceColor))
             {
                 return false;
             }
@@ -118,7 +46,7 @@ namespace Board.Pieces
 
         public bool CanEatAt(Square square)
         {
-            if (_state != State.Selected || !gameManager.IsRightTurn(pieceColor))
+            if (!gameManager.Selected.IsEqual(this) || !gameManager.IsRightTurn(pieceColor))
             {
                 return false;
             }
@@ -138,7 +66,6 @@ namespace Board.Pieces
         {
             Vector3 position = square.transform.position;
 
-            DisableSelect();
             Move(position);
 
             // Reset current square
@@ -165,8 +92,8 @@ namespace Board.Pieces
         {
             // Move
             float distance = Vector3.Distance(transform.position, position);
-            float duration = distance / commonSettings.Speed;
-            var tween = transform.DOMove(position, duration).SetEase(commonSettings.Ease);
+            float duration = distance / animationSpeed;
+            var tween = transform.DOMove(position, duration).SetEase(animationEase);
 
             if (callback != null)
             {
@@ -227,7 +154,7 @@ namespace Board.Pieces
             Construct(FindObjectOfType<GameManager>());
 
             if (!Physics.Raycast(transform.position + Vector3.up, Vector3.down, out var hitInfo, 2f,
-                                 commonSettings.SquareLayer))
+                                 squareLayer))
             {
                 return;
             }

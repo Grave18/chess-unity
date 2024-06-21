@@ -144,15 +144,13 @@ MonoBehaviour:
   pieceColor: 0
   gameManager: {fileID: 0}
   currentSquare: {fileID: 0}
-  commonSettings:
-    SquareLayer:
-      serializedVersion: 2
-      m_Bits: 128
-    Ease: 10
-    Speed: 0.7
-    SelectColor: {r: 1, g: 0, b: 0, a: 1}
-    HighLightColor: {r: 0, g: 0, b: 1, a: 1}
+  squareLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  IsFirstMove: 1
   underAttackSquares: []
+  animationSpeed: 1
+  animationEase: 10
   MoveVectors:
   - {x: 1, y: 1}
   - {x: 1, y: -1}

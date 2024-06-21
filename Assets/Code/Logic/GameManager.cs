@@ -28,8 +28,8 @@ namespace Logic
         [SerializeField] private Piece[] blackPieces;
         [SerializeField] private Square[] underAttackSquares;
 
-        public ISelectable PreviouslySelected;
-        public ISelectable PreviouslyHighlighted;
+        public ISelectable Selected;
+        public ISelectable Highlighted;
 
         // Getters
         public Square NullSquare => squares[^1];
