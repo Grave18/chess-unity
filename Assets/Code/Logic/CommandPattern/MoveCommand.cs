@@ -31,6 +31,7 @@ namespace Logic.CommandPattern
             _previousTurn = _gameManager.CurrentTurn;
 
             _piece.IsFirstMove = false;
+
             _piece.MoveTo(_square);
 
             _gameManager.ChangeTurn();

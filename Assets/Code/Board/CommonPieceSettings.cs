@@ -12,5 +12,7 @@ namespace Board
         public Color SelectColor = Color.red;
         public Color HighLightColor = Color.blue;
         public Color DefaultColor = Color.black;
+        public Color PossibleMoveColor = Color.green;
+        public Color CaptureColor = Color.red;
     }
 }

@@ -9,6 +9,37 @@ namespace Board.Pieces
         public Vector2Int[] Moves;
         public Vector2Int[] Eat;
 
+        public override void CalculateMovesAndCaptures()
+        {
+            MoveSquares.Clear();
+            CaptureSquares.Clear();
+
+            // Calculate Move
+            var moves = IsFirstMove ? MovesFirstMove : Moves;
+            foreach (Vector2Int offset in moves)
+            {
+                var square = gameManager.GetSquare(pieceColor, currentSquare, offset);
+
+                if (square.HasPiece() || square == gameManager.NullSquare)
+                {
+                    break;
+                }
+
+                MoveSquares.Add(square);
+            }
+
+            // Calculate Captures
+            foreach (Vector2Int offset in Eat)
+            {
+                var square = gameManager.GetSquare(pieceColor, currentSquare, offset);
+
+                if (square.HasPiece() && square.GetPieceColor() != pieceColor)
+                {
+                    CaptureSquares.Add(square);
+                }
+            }
+        }
+
         protected override void CalculateUnderAttackSquaresInternal()
         {
             UnderAttackSquares.Clear();

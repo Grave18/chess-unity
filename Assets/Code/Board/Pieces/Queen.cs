@@ -7,6 +7,39 @@ namespace Board.Pieces
         [Header("Queen")]
         public Vector2Int[] MoveVectors;
 
+        public override void CalculateMovesAndCaptures()
+        {
+            MoveSquares.Clear();
+            CaptureSquares.Clear();
+
+            foreach (Vector2Int direction in MoveVectors)
+            {
+                var offset = direction;
+                while (true)
+                {
+                    var square = gameManager.GetSquare(pieceColor, currentSquare, offset);
+                    offset += direction;
+
+                    if (square == gameManager.NullSquare)
+                    {
+                        break;
+                    }
+
+                    if (square.HasPiece())
+                    {
+                        if (square.GetPieceColor() != pieceColor)
+                        {
+                            CaptureSquares.Add(square);
+                        }
+
+                        break;
+                    }
+
+                    MoveSquares.Add(square);
+                }
+            }
+        }
+
         protected override void CalculateUnderAttackSquaresInternal()
         {
             UnderAttackSquares.Clear();

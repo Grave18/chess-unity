@@ -14,21 +14,50 @@ namespace Board.Pieces
 
         private void Update()
         {
-            var renderer = gameManager.Selected?.GetPiece().GetComponent<MeshRenderer>();
+            Piece piece = gameManager.Selected?.GetPiece();
+            var pieceRenderer = piece?.GetComponent<MeshRenderer>();
+            ClearAllSquaresColors();
 
-            if (renderer == null)
+            // Highlight selected
+            if (pieceRenderer == null)
             {
                 _renderer?.material.SetColor(EmissionColor, commonSettings.DefaultColor);
+
                 return;
             }
 
-            if (_renderer != renderer)
+            if (_renderer != pieceRenderer)
             {
                 _renderer?.material.SetColor(EmissionColor, commonSettings.DefaultColor);
-                _renderer = renderer;
+                _renderer = pieceRenderer;
             }
 
             _renderer.material.SetColor(EmissionColor, commonSettings.SelectColor);
+
+            // Highlight moves and captures
+            piece.CalculateMovesAndCaptures();
+
+
+            foreach (Square square in piece.MoveSquares)
+            {
+                var squareRenderer = square.GetComponent<MeshRenderer>();
+                squareRenderer.material.SetColor(EmissionColor, commonSettings.PossibleMoveColor);
+            }
+
+            foreach (Square square in piece.CaptureSquares)
+            {
+                var squareRenderer = square.GetComponent<MeshRenderer>();
+                squareRenderer.material.SetColor(EmissionColor, commonSettings.CaptureColor);
+            }
+        }
+
+        private void ClearAllSquaresColors()
+        {
+            foreach (var square in gameManager.Squares)
+            {
+                var squareRenderer = square.GetComponent<MeshRenderer>();
+                squareRenderer.material.SetColor(EmissionColor, commonSettings.DefaultColor);
+            }
         }
     }
 }

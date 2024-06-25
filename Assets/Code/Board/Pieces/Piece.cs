@@ -16,6 +16,8 @@ namespace Board.Pieces
 
         public bool IsFirstMove = true;
         [SerializeField] private List<Square> underAttackSquares;
+        [SerializeField] private List<Square> moveSquares;
+        [SerializeField] private List<Square> captureSquares;
 
         [Header("Animation")]
         [SerializeField] private float animationSpeed = 1f;
@@ -23,6 +25,8 @@ namespace Board.Pieces
 
         // Getters
         public List<Square> UnderAttackSquares => underAttackSquares;
+        public List<Square> MoveSquares => moveSquares;
+        public List<Square> CaptureSquares => captureSquares;
 
         public void Construct(GameManager gameManager)
         {
@@ -74,18 +78,18 @@ namespace Board.Pieces
             currentSquare.SetPiece(this);
         }
 
-        public void RemoveFromBeaten(Square square)
-        {
-            transform.position = square.transform.position;
-            currentSquare = square;
-            square.SetPiece(this);
-        }
-
         private void MoveToBeaten()
         {
             transform.position = new Vector3(-1.5f, 0f, 0f);
             currentSquare.SetPiece(null);
             currentSquare = null;
+        }
+
+        public void RemoveFromBeaten(Square square)
+        {
+            transform.position = square.transform.position;
+            currentSquare = square;
+            square.SetPiece(this);
         }
 
         private void Move(Vector3 position, TweenCallback callback = null)
@@ -100,6 +104,8 @@ namespace Board.Pieces
                 tween.onComplete = callback;
             }
         }
+
+        public abstract void CalculateMovesAndCaptures();
 
         public void CalculateUnderAttackSquares()
         {

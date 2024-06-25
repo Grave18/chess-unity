@@ -27,12 +27,13 @@ namespace Logic
         [SerializeField] private Piece[] whitePieces;
         [SerializeField] private Piece[] blackPieces;
         [SerializeField] private Square[] underAttackSquares;
+        [SerializeField] private Square nullSquare;
 
         public ISelectable Selected;
         public ISelectable Highlighted;
 
         // Getters
-        public Square NullSquare => squares[^1];
+        public Square NullSquare => nullSquare;
         public bool IsAutoChange => isAutoChange;
         public Square[] Squares => squares;
         public Square[] UnderAttackSquares => underAttackSquares;
@@ -47,13 +48,21 @@ namespace Logic
         /// </summary>
         public void CalculateUnderAttackSquares()
         {
+            foreach (Piece piece in whitePieces)
+            {
+                piece.CalculateUnderAttackSquares();
+            }
+
+            foreach (Piece piece in blackPieces)
+            {
+                piece.CalculateUnderAttackSquares();
+            }
+
             var pieces = CurrentTurn == PieceColor.White ? blackPieces : whitePieces;
             var underAttackSet = new HashSet<Square>();
 
             foreach (var piece in pieces)
             {
-                piece.CalculateUnderAttackSquares();
-
                 foreach (var pieceSquare in piece.UnderAttackSquares)
                 {
                     underAttackSet.Add(pieceSquare);
@@ -157,7 +166,7 @@ namespace Logic
             blackPieces = blackPiecesTemp.ToArray();
         }
 
-        [ContextMenu("Find All Sections")]
+        [ContextMenu("Find All Squares")]
         public void FindAllSections()
         {
             var squaresTemp = new List<Square>();
@@ -181,13 +190,12 @@ namespace Logic
                 {
                     int index = y + x * Width;
 
-                    var square = this.squares[index];
+                    var square = squares[index];
                     square.X = x;
                     square.Y = y;
 
                     square.File = $"{(char)(x + 'a')}";
                     square.Rank = $"{y + 1}";
-
                 }
             }
         }

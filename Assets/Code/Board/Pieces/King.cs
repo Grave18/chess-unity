@@ -8,6 +8,45 @@ namespace Board.Pieces
         [Header("King")]
         public Vector2Int[] Moves;
 
+        public override void CalculateMovesAndCaptures()
+        {
+            MoveSquares.Clear();
+            CaptureSquares.Clear();
+
+            // Calculate Moves and Captures
+            foreach (Vector2Int offset in Moves)
+            {
+                var square = gameManager.GetSquare(pieceColor, currentSquare, offset);
+
+                if (square == gameManager.NullSquare)
+                {
+                    continue;
+                }
+
+                if (!square.HasPiece())
+                {
+                    MoveSquares.Add(square);
+                }
+                else if (square.GetPieceColor() != pieceColor)
+                {
+                    CaptureSquares.Add(square);
+                }
+            }
+
+            // Add castling
+            var shortCastlingSquare = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(2, 0));
+            var longCastlingSquare = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(-2, 0));
+            if (CanCastlingAt(shortCastlingSquare, out _, out _, out _))
+            {
+                MoveSquares.Add(shortCastlingSquare);
+            }
+
+            if (CanCastlingAt(longCastlingSquare, out _, out _, out _))
+            {
+                MoveSquares.Add(longCastlingSquare);
+            }
+        }
+
         protected override void CalculateUnderAttackSquaresInternal()
         {
             UnderAttackSquares.Clear();
