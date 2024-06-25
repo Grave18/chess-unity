@@ -41,13 +41,28 @@ namespace Board.Pieces
             foreach (Square square in piece.MoveSquares)
             {
                 var squareRenderer = square.GetComponent<MeshRenderer>();
-                squareRenderer.material.SetColor(EmissionColor, commonSettings.PossibleMoveColor);
+                squareRenderer.material.SetColor(EmissionColor, commonSettings.MoveColor);
             }
 
             foreach (Square square in piece.CaptureSquares)
             {
                 var squareRenderer = square.GetComponent<MeshRenderer>();
                 squareRenderer.material.SetColor(EmissionColor, commonSettings.CaptureColor);
+            }
+
+            if (piece is King king)
+            {
+                foreach (Square square in king.CannotMoveSquares)
+                {
+                    var squareRenderer = square.GetComponent<MeshRenderer>();
+                    squareRenderer.material.SetColor(EmissionColor, commonSettings.CanNotMoveColor);
+                }
+
+                foreach (var square in king.CastlingSquares)
+                {
+                    var squareRenderer = square.GetComponent<MeshRenderer>();
+                    squareRenderer.material.SetColor(EmissionColor, commonSettings.MoveColor);
+                }
             }
         }
 

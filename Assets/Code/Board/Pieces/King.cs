@@ -1,4 +1,6 @@
-﻿using Logic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Logic;
 using UnityEngine;
 
 namespace Board.Pieces
@@ -8,10 +10,18 @@ namespace Board.Pieces
         [Header("King")]
         public Vector2Int[] Moves;
 
+        [SerializeField] private List<Square> cannotMoveSquares;
+        [SerializeField] private List<Square> castlingSquares;
+
+        public List<Square> CannotMoveSquares => cannotMoveSquares;
+        public List<Square> CastlingSquares => castlingSquares;
+
         public override void CalculateMovesAndCaptures()
         {
             MoveSquares.Clear();
             CaptureSquares.Clear();
+            CannotMoveSquares.Clear();
+            CastlingSquares.Clear();
 
             // Calculate Moves and Captures
             foreach (Vector2Int offset in Moves)
@@ -25,7 +35,14 @@ namespace Board.Pieces
 
                 if (!square.HasPiece())
                 {
-                    MoveSquares.Add(square);
+                    if (gameManager.UnderAttackSquares.Contains(square))
+                    {
+                        cannotMoveSquares.Add(square);
+                    }
+                    else
+                    {
+                        MoveSquares.Add(square);
+                    }
                 }
                 else if (square.GetPieceColor() != pieceColor)
                 {
@@ -36,14 +53,15 @@ namespace Board.Pieces
             // Add castling
             var shortCastlingSquare = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(2, 0));
             var longCastlingSquare = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(-2, 0));
+
             if (CanCastlingAt(shortCastlingSquare, out _, out _, out _))
             {
-                MoveSquares.Add(shortCastlingSquare);
+                CastlingSquares.Add(shortCastlingSquare);
             }
 
             if (CanCastlingAt(longCastlingSquare, out _, out _, out _))
             {
-                MoveSquares.Add(longCastlingSquare);
+                CastlingSquares.Add(longCastlingSquare);
             }
         }
 
@@ -95,11 +113,8 @@ namespace Board.Pieces
             Square squarePlus2 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(2, 0));
             Square squareWithRook = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(3, 0));
 
-            if (!squarePlus1.HasPiece() && !squarePlus2.HasPiece() && squarePlus2.IsEqual(square) &&
-                squareWithRook.HasPiece() &&
-                squareWithRook.GetPiece() is Rook rookRight && rookRight.IsFirstMove)
+            if (CanCastleRight(out rook))
             {
-                rook = rookRight;
                 rookSquare = squarePlus1;
                 turnType = TurnType.CastlingShort;
 
@@ -112,11 +127,8 @@ namespace Board.Pieces
             Square squareMinus3 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(-3, 0));
             squareWithRook = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(-4, 0));
 
-            if (!squareMinus1.HasPiece() && !squareMinus2.HasPiece() && !squareMinus3.HasPiece() &&
-                squareWithRook.HasPiece() &&
-                squareMinus2.IsEqual(square) && squareWithRook.GetPiece() is Rook rookLeft && rookLeft.IsFirstMove)
+            if (CanCastleLeft(out rook))
             {
-                rook = rookLeft;
                 rookSquare = squareMinus1;
                 turnType = TurnType.CastlingLong;
 
@@ -124,31 +136,51 @@ namespace Board.Pieces
             }
 
             return false;
+
+            bool CanCastleRight(out Rook rook)
+            {
+                rook = null;
+                bool isSquares = !squarePlus1.HasPiece() && !squarePlus2.HasPiece() && squarePlus2.IsEqual(square);
+                bool isRook = squareWithRook.HasPiece() && squareWithRook.GetPiece() is Rook r && r.IsFirstMove;
+
+                if (isRook)
+                {
+                    rook = squareWithRook.GetPiece() as Rook;
+                }
+
+                bool isNotUnderAttack = !gameManager.UnderAttackSquares.Contains(squarePlus1)
+                                        && !gameManager.UnderAttackSquares.Contains(squarePlus2);
+
+                return isSquares && isRook && isNotUnderAttack;
+            }
+
+            bool CanCastleLeft(out Rook rook)
+            {
+                rook = null;
+                bool isSquares = !squareMinus1.HasPiece() && !squareMinus2.HasPiece()
+                                                          && !squareMinus3.HasPiece() && squareMinus2.IsEqual(square);
+                bool isRook = squareWithRook.HasPiece() && squareWithRook.GetPiece() is Rook r && r.IsFirstMove;
+
+                if (isRook)
+                {
+                    rook = squareWithRook.GetPiece() as Rook;
+                }
+
+                bool isNotUnderAttack = !gameManager.UnderAttackSquares.Contains(squareMinus1)
+                                        && !gameManager.UnderAttackSquares.Contains(squareMinus2);
+
+                return isSquares && isRook && isNotUnderAttack;
+            }
         }
 
         protected override bool CanEatAtInternal(Square square)
         {
-            return CanMoveToInternal(square);
+            return CaptureSquares.Contains(square);
         }
 
         protected override bool CanMoveToInternal(Square square)
         {
-            if (square.HasPiece() && square.GetPieceColor() == pieceColor)
-            {
-                return false;
-            }
-
-            CalculateUnderAttackSquares();
-
-            foreach (var underAttackSquare in UnderAttackSquares)
-            {
-                if (underAttackSquare == square)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return MoveSquares.Contains(square);
         }
     }
 }
