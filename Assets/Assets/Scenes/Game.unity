@@ -1606,15 +1606,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  sensitivity: 10
-  scrollSensitivity: 5
   distance: 3.5
   minDistance: 1
   maxDistance: 4
+  zoomSensitivity: 2.5
+  zoomSmoothTime: 0.15
   yawRad: -2.423573
   pitchRad: 0.7045957
   minPitchRad: 0.1
   maxPitchRad: 1
+  orbitSensitivity: 0.2
+  yawSmoothTime: 0.08
+  pitchSmoothTime: 0.08
 --- !u!1 &331832536
 GameObject:
   m_ObjectHideFlags: 0

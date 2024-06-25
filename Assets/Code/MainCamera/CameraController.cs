@@ -8,46 +8,66 @@ namespace MainCamera
         [SerializeField] private Transform target;
 
         [Header("Mouse")]
-        [Tooltip("Mouse sensitivity")]
-        [SerializeField] private float sensitivity = 10f;
-        [Tooltip("Mouse sensitivity")]
-        [SerializeField] private float scrollSensitivity = 100f;
-
-        [Header("Distance from target")]
+        [Header("Zoom")]
         [Tooltip("Camera distance from the target")]
-        [SerializeField] private float distance = 4f;
+        [SerializeField] private float distance = 3.5f;
         [SerializeField] private float minDistance = 1f;
         [SerializeField] private float maxDistance = 4f;
+        [SerializeField] private float zoomScrollWheelSensitivity = 2.5f;
+        [SerializeField] private float zoomKeyboardSensitivity = 0.2f;
+        [SerializeField] private float zoomSmoothTime = 0.15f;
 
-        [Header("Pitch")]
+        [Header("Orbiting")]
         [SerializeField] private float yawRad;
         [SerializeField] private float pitchRad;
         [SerializeField] private float minPitchRad = 0.1f;
         [SerializeField] private float maxPitchRad = 1f;
+        [SerializeField] private float orbitSensitivity = 10f;
+        [SerializeField] private float yawSmoothTime = 0.15f;
+        [SerializeField] private float pitchSmoothTime = 0.15f;
 
+        private float _zoomCurrentVelocity;
+        private float _yawCurrentVelocity;
+        private float _pitchCurrentVelocity;
+        private float _newDistance;
+        private float _newYawRad;
+        private float _newPitchRad;
+
+        private void Start()
+        {
+            _newDistance = distance;
+            _newYawRad = yawRad;
+            _newPitchRad = pitchRad;
+        }
 
         private void Update()
         {
             // Position
             var pos = transform.position;
 
-            float dt = Time.deltaTime;
-
             if (Input.GetButton("Fire2"))
             {
-                yawRad -= Input.GetAxis("Mouse X") * sensitivity * dt;
-                pitchRad -= Input.GetAxis("Mouse Y") * sensitivity * dt;
+                _newYawRad -= Input.GetAxis("Mouse X") * orbitSensitivity;
+                _newPitchRad -= Input.GetAxis("Mouse Y") * orbitSensitivity;
             }
 
-            yawRad += Input.GetAxis("Horizontal") * sensitivity * dt;
-            pitchRad += Input.GetAxis("Vertical") * sensitivity * dt;
+            _newYawRad += Input.GetAxis("Horizontal") * orbitSensitivity;
+            _newPitchRad += Input.GetAxis("Vertical") * orbitSensitivity;
+            _newPitchRad = Mathf.Clamp(_newPitchRad, minPitchRad, maxPitchRad);
 
-            pitchRad = Mathf.Clamp(pitchRad, minPitchRad, maxPitchRad);
+            // Smoothing orbit
+            yawRad = Mathf.SmoothDamp(yawRad, _newYawRad, ref _yawCurrentVelocity, yawSmoothTime);
+            pitchRad = Mathf.SmoothDamp(pitchRad, _newPitchRad, ref _pitchCurrentVelocity, pitchSmoothTime);
 
-            // Scroll
-            distance -= Input.GetAxis("Scroll") * scrollSensitivity * dt;
-            distance -= Input.GetAxis("Mouse ScrollWheel") * scrollSensitivity;
-            distance = Mathf.Clamp(distance, minDistance, maxDistance);
+            // Zoom
+            // From keyboard
+            _newDistance -= Input.GetAxis("Scroll") * zoomKeyboardSensitivity;
+            // From scroll wheel
+            _newDistance -= Input.GetAxis("Mouse ScrollWheel") * zoomScrollWheelSensitivity;
+            _newDistance = Mathf.Clamp(_newDistance, minDistance, maxDistance);
+
+            // Smoothing zoom
+            distance = Mathf.SmoothDamp(distance, _newDistance, ref _zoomCurrentVelocity, zoomSmoothTime);
 
             pos.x = distance * Mathf.Cos(yawRad) * Mathf.Cos(pitchRad);
             pos.y = distance * Mathf.Sin(pitchRad);
