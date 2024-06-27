@@ -11635,7 +11635,7 @@ GameObject:
   - component: {fileID: 2048994682}
   - component: {fileID: 2048994681}
   m_Layer: 0
-  m_Name: RaycastSelect
+  m_Name: Selector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17900,8 +17900,8 @@ SceneRoots:
   - {fileID: 1216111692}
   - {fileID: 1604880652}
   - {fileID: 1544682201}
-  - {fileID: 679097910}
   - {fileID: 2048994682}
+  - {fileID: 679097910}
   - {fileID: 714554424}
   - {fileID: 1783972075}
   - {fileID: 1190829612}
