@@ -7,6 +7,14 @@ using UnityEngine.Serialization;
 
 namespace Logic
 {
+    public enum CheckType
+    {
+        Check,
+        DoubleCheck,
+        CheckMate,
+        None
+    }
+
     public class GameManager : MonoBehaviour
     {
         private const int Width = 8;
@@ -31,8 +39,17 @@ namespace Logic
 
         public ISelectable Selected;
         public ISelectable Highlighted;
+        private readonly List<Piece> _attackers = new();
+        private CheckType _checkType;
 
         // Getters
+        public CheckType CheckType => _checkType;
+
+        /// <summary>
+        /// Pieces who is threatening the king
+        /// </summary>
+        public List<Piece> Attackers => _attackers;
+
         public Square NullSquare => nullSquare;
         public bool IsAutoChange => isAutoChange;
         public Square[] Squares => squares;
@@ -48,26 +65,33 @@ namespace Logic
         /// </summary>
         public void CalculateUnderAttackSquares()
         {
-            foreach (Piece piece in whitePieces)
-            {
-                piece.CalculateUnderAttackSquares();
-            }
-
-            foreach (Piece piece in blackPieces)
-            {
-                piece.CalculateUnderAttackSquares();
-            }
-
-            var pieces = CurrentTurn == PieceColor.White ? blackPieces : whitePieces;
+            var currentTurnPieces = CurrentTurn == PieceColor.White ? blackPieces : whitePieces;
             var underAttackSet = new HashSet<Square>();
 
-            foreach (var piece in pieces)
+            _attackers.Clear();
+
+            foreach (Piece piece in currentTurnPieces)
             {
+                piece.CalculateUnderAttackSquares();
+
+                if (TryCalculateCheck(piece.UnderAttackSquares))
+                {
+                    _attackers.Add(piece);
+                }
+
                 foreach (var pieceSquare in piece.UnderAttackSquares)
                 {
                     underAttackSet.Add(pieceSquare);
                 }
             }
+
+            // Infer check type
+            _checkType = _attackers.Count switch
+                {
+                    0 => CheckType.None,
+                    1 => CheckType.Check,
+                    _ => CheckType.DoubleCheck
+                };
 
             underAttackSquares = underAttackSet.ToArray();
         }
@@ -77,7 +101,7 @@ namespace Logic
             isAutoChange = value;
         }
 
-        public void SetCurrentTurn(int index)
+        public void SetTurn(int index)
         {
             if (index < 0 || index > 1)
             {
@@ -85,6 +109,18 @@ namespace Logic
             }
 
             CurrentTurn = (PieceColor)index;
+            CalculateUnderAttackSquares();
+        }
+
+        public void SetTurn(PieceColor turn)
+        {
+            if (turn == PieceColor.None)
+            {
+                return;
+            }
+
+            CurrentTurn = turn;
+            CalculateUnderAttackSquares();
         }
 
         public void ChangeTurn()
@@ -94,6 +130,7 @@ namespace Logic
                 return;
             }
 
+            // Change turn
             CurrentTurn = CurrentTurn == PieceColor.White ? PieceColor.Black : PieceColor.White;
 
             CalculateUnderAttackSquares();
@@ -102,16 +139,6 @@ namespace Logic
         public bool IsRightTurn(PieceColor pieceColor)
         {
             return pieceColor == CurrentTurn;
-        }
-
-        public void SetCurrentTurn(PieceColor turn)
-        {
-            if (turn == PieceColor.None)
-            {
-                return;
-            }
-
-            CurrentTurn = turn;
         }
 
         public void ClearSquares()
@@ -144,6 +171,19 @@ namespace Logic
             }
 
             return squares[y + x * Width];
+        }
+
+        private bool TryCalculateCheck(IEnumerable<Square> squares)
+        {
+            foreach (Square square in squares)
+            {
+                if (square.HasPiece() && square.GetPiece() is King king && king.GetPieceColor() == CurrentTurn)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         [ContextMenu("Find All Pieces")]

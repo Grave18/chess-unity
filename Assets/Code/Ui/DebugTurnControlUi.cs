@@ -13,7 +13,7 @@ namespace Ui
 
         private void Start()
         {
-            dropdown.onValueChanged.AddListener(gameManager.SetCurrentTurn);
+            dropdown.onValueChanged.AddListener(gameManager.SetTurn);
             toggle.onValueChanged.AddListener(gameManager.SetAutoChange);
         }
 

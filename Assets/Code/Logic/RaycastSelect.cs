@@ -1,6 +1,7 @@
 using UnityEngine;
 using Board;
 using Board.Pieces;
+using Logic.Notation;
 
 namespace Logic
 {
@@ -25,15 +26,15 @@ namespace Logic
 
             if (Input.GetButtonDown("Fire1"))
             {
-                Select(isHit, hitTransform);
+                Click(isHit, hitTransform);
             }
             else
             {
-                Highlight(isHit, hitTransform);
+                Hover(isHit, hitTransform);
             }
         }
 
-        private void Select(bool isHit, Transform hitTransform)
+        private void Click(bool isHit, Transform hitTransform)
         {
             // Deselect if not hit anything
             if (!isHit)
@@ -101,7 +102,6 @@ namespace Logic
             gameManager.Selected = selectable;
         }
 
-
         private void CapturePiece(ISelectable selectable)
         {
             Piece piece = gameManager.Selected.GetPiece();
@@ -114,7 +114,7 @@ namespace Logic
             }
         }
 
-        private void Highlight(bool isHit, Transform hitTransform)
+        private void Hover(bool isHit, Transform hitTransform)
         {
             // Dehighlight if not hit anything
             if (!isHit)

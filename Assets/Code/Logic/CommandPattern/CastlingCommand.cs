@@ -1,5 +1,6 @@
 ﻿using Board;
 using Board.Pieces;
+using Logic.Notation;
 
 namespace Logic.CommandPattern
 {

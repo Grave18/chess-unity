@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Logic;
+using Logic.Notation;
 using UnityEngine;
 
 namespace Board.Pieces

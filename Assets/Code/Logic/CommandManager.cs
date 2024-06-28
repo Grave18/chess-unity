@@ -1,6 +1,7 @@
 ﻿using Board;
 using Board.Pieces;
 using Logic.CommandPattern;
+using Logic.Notation;
 using UnityEngine;
 
 namespace Logic

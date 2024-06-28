@@ -1,14 +1,17 @@
-﻿namespace Logic
+﻿namespace Logic.Notation
 {
     public enum TurnType
     {
         Move,
+        MoveCheck,
         Capture,
+        CaptureCheck,
         CastlingShort,
         CastlingLong,
         EnPassant,
         Check,
-        Mate,
-        None
+        DoubleCheck,
+        CheckMate,
+        None,
     }
 }

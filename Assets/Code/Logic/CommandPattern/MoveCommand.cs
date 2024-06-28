@@ -1,5 +1,6 @@
 ﻿using Board;
 using Board.Pieces;
+using Logic.Notation;
 
 namespace Logic.CommandPattern
 {
@@ -24,7 +25,6 @@ namespace Logic.CommandPattern
 
         public override void Execute()
         {
-            _seriesList.AddTurn(_piece, _square, _gameManager.CurrentTurn, TurnType.Move);
 
             _previousSquare = _piece.GetSquare();
             _previousIsFirstMove = _piece.IsFirstMove;
@@ -35,6 +35,17 @@ namespace Logic.CommandPattern
             _piece.MoveTo(_square);
 
             _gameManager.ChangeTurn();
+
+            // Is it Check?
+            TurnType turnType = _gameManager.CheckType switch
+                {
+                    CheckType.Check => TurnType.Check,
+                    CheckType.DoubleCheck => TurnType.DoubleCheck,
+                    CheckType.CheckMate => TurnType.CheckMate,
+                    _ => TurnType.Move
+                };
+
+            _seriesList.AddTurn(_piece, _square, _previousTurn, turnType);
         }
 
         public override void Undo()

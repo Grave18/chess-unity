@@ -5,7 +5,7 @@ using Board;
 using Board.Pieces;
 using UnityEngine;
 
-namespace Logic
+namespace Logic.Notation
 {
     public class SeriesList : MonoBehaviour
     {
@@ -47,7 +47,6 @@ namespace Logic
                         turnString.Append("N");
 
                         break;
-
                     case Pawn:
                         if (turnType == TurnType.Capture)
                         {
@@ -71,6 +70,20 @@ namespace Logic
                 }
 
                 turnString.Append(square.AlgebraicName);
+
+                // CheckMate
+                if (turnType is TurnType.Check)
+                {
+                    turnString.Append("+");
+                }
+                else if (turnType == TurnType.DoubleCheck)
+                {
+                    turnString.Append("++");
+                }
+                if (turnType == TurnType.CheckMate)
+                {
+                    turnString.Append("#");
+                }
             }
 
             if (turn == PieceColor.White)
@@ -110,19 +123,6 @@ namespace Logic
             }
 
             return stringBuilder.ToString();
-        }
-    }
-
-    [System.Serializable]
-    public class Series
-    {
-        public int Count;
-        public string WhiteMove;
-        public string BlackMove;
-
-        public override string ToString()
-        {
-            return $"{Count}. {WhiteMove} {BlackMove}";
         }
     }
 }

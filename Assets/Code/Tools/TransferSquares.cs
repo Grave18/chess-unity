@@ -1,4 +1,6 @@
-﻿using Board;
+﻿#if UNITY_EDITOR
+
+using Board;
 using UnityEditor;
 using UnityEngine;
 
@@ -32,3 +34,5 @@ namespace Tools
         }
     }
 }
+
+#endif

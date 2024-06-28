@@ -13,12 +13,21 @@ namespace Logic.Highlighting
 
         [SerializeField] private CommonPieceSettings commonSettings;
 
+        [Header("Debug")]
+        [SerializeField] private bool isDebugHighlightUnderAttack;
+
         private void Update()
         {
             Piece piece = gameManager.Selected?.GetPiece();
             Square pieceSquare = gameManager.Selected?.GetSquare();
             var pieceHighlighter = pieceSquare?.GetComponent<SquareHighlighter>();
+
             ClearAllSquaresColors();
+
+            if (isDebugHighlightUnderAttack)
+            {
+                DebugHighlightUnderAttack();
+            }
 
             // Highlight selected
             if (pieceHighlighter == null)
@@ -27,18 +36,23 @@ namespace Logic.Highlighting
                 return;
             }
 
-            if (oldPieceHighlighter != pieceHighlighter)
+            HighlightSelected(pieceHighlighter, piece);
+            HighlightSquares(piece);
+
+        }
+
+        private void DebugHighlightUnderAttack()
+        {
+            Color color = gameManager.CurrentTurn == PieceColor.White ? Color.black : Color.white;
+            foreach (Square square in gameManager.UnderAttackSquares)
             {
-                oldPieceHighlighter?.Show(SquareShape.None, commonSettings.DefaultColor);
-                oldPieceHighlighter = pieceHighlighter;
+                var squareHighlighter = square.GetComponent<SquareHighlighter>();
+                squareHighlighter.Show(SquareShape.Dot, color);
             }
+        }
 
-            oldPieceHighlighter.Show(SquareShape.Circle, commonSettings.SelectColor);
-
-            // Highlight moves and captures
-            piece?.CalculateMovesAndCaptures();
-
-
+        private void HighlightSquares(Piece piece)
+        {
             foreach (Square square in piece.MoveSquares)
             {
                 var squareHighlighter = square.GetComponent<SquareHighlighter>();
@@ -65,6 +79,20 @@ namespace Logic.Highlighting
                     squareHighlighter.Show(SquareShape.Dot, commonSettings.MoveColor);
                 }
             }
+        }
+
+        private void HighlightSelected(SquareHighlighter pieceHighlighter, Piece piece)
+        {
+            if (oldPieceHighlighter != pieceHighlighter)
+            {
+                oldPieceHighlighter?.Show(SquareShape.None, commonSettings.DefaultColor);
+                oldPieceHighlighter = pieceHighlighter;
+            }
+
+            oldPieceHighlighter.Show(SquareShape.Circle, commonSettings.SelectColor);
+
+            // Highlight moves and captures
+            piece?.CalculateMovesAndCaptures();
         }
 
         private void ClearAllSquaresColors()
