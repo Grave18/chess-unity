@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Logic;
 using Logic.Notation;
 using UnityEngine;
 
@@ -10,11 +9,8 @@ namespace Board.Pieces
     {
         [Header("King")]
         public Vector2Int[] Moves;
-
-        [SerializeField] private List<Square> cannotMoveSquares;
         [SerializeField] private List<Square> castlingSquares;
 
-        public List<Square> CannotMoveSquares => cannotMoveSquares;
         public List<Square> CastlingSquares => castlingSquares;
 
         public override void CalculateMovesAndCaptures()
@@ -38,7 +34,7 @@ namespace Board.Pieces
                 {
                     if (gameManager.UnderAttackSquares.Contains(square))
                     {
-                        cannotMoveSquares.Add(square);
+                        CannotMoveSquares.Add(square);
                     }
                     else
                     {

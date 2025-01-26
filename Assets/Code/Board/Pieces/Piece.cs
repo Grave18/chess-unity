@@ -18,6 +18,7 @@ namespace Board.Pieces
         [SerializeField] private List<Square> underAttackSquares;
         [SerializeField] private List<Square> moveSquares;
         [SerializeField] private List<Square> captureSquares;
+        [SerializeField] private List<Square> cannotMoveSquares;
 
         [Header("Animation")]
         [SerializeField] private float animationSpeed = 1f;
@@ -27,6 +28,7 @@ namespace Board.Pieces
         public List<Square> UnderAttackSquares => underAttackSquares;
         public List<Square> MoveSquares => moveSquares;
         public List<Square> CaptureSquares => captureSquares;
+        public List<Square> CannotMoveSquares => cannotMoveSquares;
 
         public void Construct(GameManager gameManager)
         {

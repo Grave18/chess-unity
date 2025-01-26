@@ -35,11 +35,12 @@ namespace Logic
         [SerializeField] private Piece[] whitePieces;
         [SerializeField] private Piece[] blackPieces;
         [SerializeField] private Square[] underAttackSquares;
+        [SerializeField] private List<Piece> attackers;
+        [SerializeField] private List<Square> attackLine;
         [SerializeField] private Square nullSquare;
 
         public ISelectable Selected;
         public ISelectable Highlighted;
-        private readonly List<Piece> _attackers = new();
         private CheckType _checkType;
 
         // Getters
@@ -48,7 +49,8 @@ namespace Logic
         /// <summary>
         /// Pieces who is threatening the king
         /// </summary>
-        public List<Piece> Attackers => _attackers;
+        public List<Piece> Attackers => attackers;
+        public List<Square> AttackLine => attackLine;
 
         public Square NullSquare => nullSquare;
         public bool IsAutoChange => isAutoChange;
@@ -68,15 +70,22 @@ namespace Logic
             var currentTurnPieces = CurrentTurn == PieceColor.White ? blackPieces : whitePieces;
             var underAttackSet = new HashSet<Square>();
 
-            _attackers.Clear();
+            attackers.Clear();
 
             foreach (Piece piece in currentTurnPieces)
             {
                 piece.CalculateUnderAttackSquares();
 
+                // Try to add attackers
                 if (TryCalculateCheck(piece.UnderAttackSquares))
                 {
-                    _attackers.Add(piece);
+                    attackers.Add(piece);
+
+                    // Fill under attack line
+                    foreach (Square square in piece.UnderAttackSquares)
+                    {
+                        attackLine.Add(square);
+                    }
                 }
 
                 foreach (var pieceSquare in piece.UnderAttackSquares)
@@ -86,7 +95,7 @@ namespace Logic
             }
 
             // Infer check type
-            _checkType = _attackers.Count switch
+            _checkType = attackers.Count switch
                 {
                     0 => CheckType.None,
                     1 => CheckType.Check,

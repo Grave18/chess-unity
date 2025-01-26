@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Logic;
+using UnityEngine;
 
 namespace Board.Pieces
 {
@@ -25,17 +26,49 @@ namespace Board.Pieces
                         break;
                     }
 
-                    if (square.HasPiece())
+                    if (gameManager.CheckType == CheckType.None)
                     {
-                        if (square.GetPieceColor() != pieceColor)
+                        if (square.HasPiece())
                         {
-                            CaptureSquares.Add(square);
+                            if (square.GetPieceColor() != pieceColor)
+                            {
+                                CaptureSquares.Add(square);
+                            }
+                            // If piece will be captured, then square can be under attack
+                            else
+                            {
+                                MoveSquares.Add(square);
+                            }
+
+                            break;
                         }
-
-                        break;
+                        else
+                        {
+                            MoveSquares.Add(square);
+                        }
                     }
+                    else if(gameManager.CheckType == CheckType.Check)
+                    {
+                        if (square.HasPiece())
+                        {
+                            // Only if captured piece is attacking king
+                            if (square.GetPiece() == gameManager.Attackers[0])
+                            {
+                                CaptureSquares.Add(square);
+                            }
 
-                    MoveSquares.Add(square);
+                            break;
+                        }
+                        else
+                        {
+                            // Only if square lies on attack line
+                            if (gameManager.AttackLine.Contains(square))
+                            {
+                                MoveSquares.Add(square);
+                            }
+                        }
+                    }
+                    // Can't do any if DoubleCheck
                 }
             }
         }
