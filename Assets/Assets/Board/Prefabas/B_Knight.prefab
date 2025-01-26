@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3120915732225311960}
   - component: {fileID: 1761148181166295610}
   - component: {fileID: 1046063371478266021}
+  - component: {fileID: 5399115482058386331}
   m_Layer: 6
   m_Name: B_Knight
   m_TagString: Untagged
@@ -43,7 +44,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1638902586701994619}
-  m_Mesh: {fileID: 99702682916964025, guid: 951427b40db8f7e4bb8fcf521416855c, type: 3}
+  m_Mesh: {fileID: -8319465574948283117, guid: 951427b40db8f7e4bb8fcf521416855c, type: 3}
 --- !u!23 &-6181108603625267116
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -64,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 83e423b500e00d34e8fbf9992f8ed387, type: 2}
+  - {fileID: 2100000, guid: 419580f1081fbe8498f6dcda919c2d80, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -149,6 +150,9 @@ MonoBehaviour:
     m_Bits: 128
   IsFirstMove: 1
   underAttackSquares: []
+  moveSquares: []
+  captureSquares: []
+  cannotMoveSquares: []
   animationSpeed: 1
   animationEase: 10
   Moves:
@@ -160,3 +164,16 @@ MonoBehaviour:
   - {x: -2, y: -1}
   - {x: -2, y: 1}
   - {x: -1, y: 2}
+--- !u!114 &5399115482058386331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1638902586701994619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c93b05f31c0f904bb9f332f3dc6d735, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dissolveTime: 3

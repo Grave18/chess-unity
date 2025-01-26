@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1457960137040951407}
   - component: {fileID: 4107274128655537514}
   - component: {fileID: 4674816428082762422}
+  - component: {fileID: 3953470337034418372}
   m_Layer: 6
   m_Name: W_Queen
   m_TagString: Untagged
@@ -43,7 +44,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7151846400993999189}
-  m_Mesh: {fileID: -8015355144139272862, guid: 951427b40db8f7e4bb8fcf521416855c, type: 3}
+  m_Mesh: {fileID: 4385538395738152230, guid: 951427b40db8f7e4bb8fcf521416855c, type: 3}
 --- !u!23 &7655691809952198324
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -64,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1ac4da6081104c14582570f943a9a693, type: 2}
+  - {fileID: 2100000, guid: ec7636285ab94704db01862a9e38da75, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -149,6 +150,9 @@ MonoBehaviour:
     m_Bits: 128
   IsFirstMove: 1
   underAttackSquares: []
+  moveSquares: []
+  captureSquares: []
+  cannotMoveSquares: []
   animationSpeed: 1
   animationEase: 10
   MoveVectors:
@@ -160,3 +164,16 @@ MonoBehaviour:
   - {x: 1, y: -1}
   - {x: -1, y: -1}
   - {x: -1, y: 1}
+--- !u!114 &3953470337034418372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7151846400993999189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c93b05f31c0f904bb9f332f3dc6d735, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dissolveTime: 3

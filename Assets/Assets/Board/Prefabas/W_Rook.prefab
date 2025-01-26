@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3812459652447263925}
   - component: {fileID: 6884895978507628266}
   - component: {fileID: 6516812279390626994}
+  - component: {fileID: -5942328216971776932}
   m_Layer: 6
   m_Name: W_Rook
   m_TagString: Untagged
@@ -43,7 +44,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1581879247859674352}
-  m_Mesh: {fileID: -343934112809444866, guid: 951427b40db8f7e4bb8fcf521416855c, type: 3}
+  m_Mesh: {fileID: -2806363557253865630, guid: 951427b40db8f7e4bb8fcf521416855c, type: 3}
 --- !u!23 &4686776224593195547
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -64,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1ac4da6081104c14582570f943a9a693, type: 2}
+  - {fileID: 2100000, guid: ec7636285ab94704db01862a9e38da75, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -149,6 +150,9 @@ MonoBehaviour:
     m_Bits: 128
   IsFirstMove: 1
   underAttackSquares: []
+  moveSquares: []
+  captureSquares: []
+  cannotMoveSquares: []
   animationSpeed: 1
   animationEase: 10
   MoveVectors:
@@ -156,3 +160,16 @@ MonoBehaviour:
   - {x: 1, y: 0}
   - {x: 0, y: -1}
   - {x: -1, y: 0}
+--- !u!114 &-5942328216971776932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1581879247859674352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c93b05f31c0f904bb9f332f3dc6d735, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dissolveTime: 3
