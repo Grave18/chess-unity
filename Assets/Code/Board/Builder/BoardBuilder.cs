@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Board.Pieces;
+using EditorCools;
 using Logic;
 using UnityEngine;
 
@@ -20,6 +21,7 @@ namespace Board.Builder
         private readonly Dictionary<Square, GameObject> _whitePairs = new();
         private readonly Dictionary<Square, GameObject> _blackPairs = new();
 
+        [Button(space: 10f)]
         [ContextMenu("Build Board")]
         public void BuildBoard()
         {
@@ -127,6 +129,7 @@ namespace Board.Builder
             }
         }
 
+        [Button(space: 10f)]
         [ContextMenu("Destroy All Pieces")]
         public void DestroyAllPieces()
         {
