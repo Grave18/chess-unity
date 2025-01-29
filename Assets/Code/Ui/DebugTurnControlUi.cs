@@ -11,6 +11,18 @@ namespace Ui
         [SerializeField] private TMP_Dropdown dropdown;
         [SerializeField] private Toggle toggle;
 
+#if !UNITY_EDITOR && !DEVELOPMENT_BUILD
+
+        private void Awake()
+        {
+            // if(!Debug.isDebugBuild)
+            // {
+                gameObject.SetActive(false);
+                Destroy(gameObject);
+            // }
+        }
+
+#else
         private void Start()
         {
             dropdown.onValueChanged.AddListener(gameManager.SetTurn);
@@ -22,5 +34,7 @@ namespace Ui
             dropdown.value = (int)gameManager.CurrentTurn;
             toggle.isOn = gameManager.IsAutoChange;
         }
+
+#endif
     }
 }
