@@ -86,7 +86,7 @@ namespace Logic
             }
             // Castling
             else if (piece is King king &&
-                     king.CanCastlingAt(square, out Rook rook, out Square rookSquare, out TurnType turnType))
+                     king.CanCastlingAt(square, out Rook rook, out Square rookSquare, out NotationTurnType turnType))
             {
                 commandManager.Castling(king, square, rook, rookSquare, turnType);
                 gameManager.Selected = null;

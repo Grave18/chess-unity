@@ -13,7 +13,7 @@ namespace Logic.Notation
         [SerializeField] private List<Series> serieses;
         private Series _currentSeries;
 
-        public void AddTurn(Piece piece, Square square, PieceColor turn, TurnType turnType)
+        public void AddTurn(Piece piece, Square square, PieceColor turn, NotationTurnType notationTurnType)
         {
             if (_currentSeries == null)
             {
@@ -23,11 +23,11 @@ namespace Logic.Notation
 
             var turnString = new StringBuilder();
 
-            if(turnType == TurnType.CastlingShort)
+            if(notationTurnType == NotationTurnType.CastlingShort)
             {
                 turnString.Append("0-0");
             }
-            else if (turnType == TurnType.CastlingLong)
+            else if (notationTurnType == NotationTurnType.CastlingLong)
             {
                 turnString.Append("0-0-0");
             }
@@ -48,7 +48,7 @@ namespace Logic.Notation
 
                         break;
                     case Pawn:
-                        if (turnType == TurnType.Capture)
+                        if (notationTurnType == NotationTurnType.Capture)
                         {
                             turnString.Append(piece.GetSquare().File);
                         }
@@ -64,7 +64,7 @@ namespace Logic.Notation
                         break;
                 }
 
-                if (turnType == TurnType.Capture)
+                if (notationTurnType == NotationTurnType.Capture)
                 {
                     turnString.Append("x");
                 }
@@ -72,15 +72,15 @@ namespace Logic.Notation
                 turnString.Append(square.AlgebraicName);
 
                 // CheckMate
-                if (turnType is TurnType.Check)
+                if (notationTurnType is NotationTurnType.Check)
                 {
                     turnString.Append("+");
                 }
-                else if (turnType == TurnType.DoubleCheck)
+                else if (notationTurnType == NotationTurnType.DoubleCheck)
                 {
                     turnString.Append("++");
                 }
-                if (turnType == TurnType.CheckMate)
+                if (notationTurnType == NotationTurnType.CheckMate)
                 {
                     turnString.Append("#");
                 }

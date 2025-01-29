@@ -94,11 +94,11 @@ namespace Board.Pieces
             }
         }
 
-        public bool CanCastlingAt(Square square, out Rook rook, out Square rookSquare, out TurnType turnType)
+        public bool CanCastlingAt(Square square, out Rook rook, out Square rookSquare, out NotationTurnType notationTurnType)
         {
             rook = null;
             rookSquare = null;
-            turnType = TurnType.None;
+            notationTurnType = NotationTurnType.None;
 
             if (!IsFirstMove)
             {
@@ -113,7 +113,7 @@ namespace Board.Pieces
             if (CanCastleRight(out rook))
             {
                 rookSquare = squarePlus1;
-                turnType = TurnType.CastlingShort;
+                notationTurnType = NotationTurnType.CastlingShort;
 
                 return true;
             }
@@ -127,7 +127,7 @@ namespace Board.Pieces
             if (CanCastleLeft(out rook))
             {
                 rookSquare = squareMinus1;
-                turnType = TurnType.CastlingLong;
+                notationTurnType = NotationTurnType.CastlingLong;
 
                 return true;
             }

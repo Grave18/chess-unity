@@ -23,9 +23,9 @@ namespace Logic
             _commandBuffer.AddAndExecute(new EatCommand(piece, square, gameManager, seriesList));
         }
 
-        public void Castling(King piece, Square kingSquare, Rook rook, Square rookSquare, TurnType turnType)
+        public void Castling(King piece, Square kingSquare, Rook rook, Square rookSquare, NotationTurnType notationTurnType)
         {
-            _commandBuffer.AddAndExecute(new CastlingCommand(piece, kingSquare, rook, rookSquare, gameManager, seriesList, turnType));
+            _commandBuffer.AddAndExecute(new CastlingCommand(piece, kingSquare, rook, rookSquare, gameManager, seriesList, notationTurnType));
         }
 
         [ContextMenu("Undo")]

@@ -12,14 +12,14 @@ namespace Logic.CommandPattern
         private readonly Square _rookSquare;
         private readonly GameManager _gameManager;
         private readonly SeriesList _seriesList;
-        private readonly TurnType _turnType;
+        private readonly NotationTurnType _notationTurnType;
 
         private PieceColor _previousTurn;
         private Square _previousKingSquare;
         private Square _previousRookSquare;
 
         public CastlingCommand(King king, Square kingSquare, Rook rook, Square rookSquare, GameManager gameManager,
-            SeriesList seriesList, TurnType turnType)
+            SeriesList seriesList, NotationTurnType notationTurnType)
         {
             _king = king;
             _kingSquare = kingSquare;
@@ -27,12 +27,12 @@ namespace Logic.CommandPattern
             _rookSquare = rookSquare;
             _gameManager = gameManager;
             _seriesList = seriesList;
-            _turnType = turnType;
+            _notationTurnType = notationTurnType;
         }
 
         public override void Execute()
         {
-            _seriesList.AddTurn(null, null, _gameManager.CurrentTurn, _turnType);
+            _seriesList.AddTurn(null, null, _gameManager.CurrentTurn, _notationTurnType);
 
             _previousKingSquare = _king.GetSquare();
             _previousRookSquare = _rook.GetSquare();

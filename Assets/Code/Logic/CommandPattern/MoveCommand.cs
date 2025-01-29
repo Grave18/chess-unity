@@ -37,15 +37,15 @@ namespace Logic.CommandPattern
             _gameManager.ChangeTurn();
 
             // Is it Check?
-            TurnType turnType = _gameManager.CheckType switch
+            NotationTurnType notationTurnType = _gameManager.CheckType switch
                 {
-                    CheckType.Check => TurnType.Check,
-                    CheckType.DoubleCheck => TurnType.DoubleCheck,
-                    CheckType.CheckMate => TurnType.CheckMate,
-                    _ => TurnType.Move
+                    CheckType.Check => NotationTurnType.Check,
+                    CheckType.DoubleCheck => NotationTurnType.DoubleCheck,
+                    CheckType.CheckMate => NotationTurnType.CheckMate,
+                    _ => NotationTurnType.Move
                 };
 
-            _seriesList.AddTurn(_piece, _square, _previousTurn, turnType);
+            _seriesList.AddTurn(_piece, _square, _previousTurn, notationTurnType);
         }
 
         public override void Undo()

@@ -1,6 +1,6 @@
 ﻿namespace Logic.Notation
 {
-    public enum TurnType
+    public enum NotationTurnType
     {
         Move,
         MoveCheck,
