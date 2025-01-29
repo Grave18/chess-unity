@@ -26,7 +26,7 @@ namespace Board.Pieces
                         break;
                     }
 
-                    if (gameManager.CheckType == CheckType.None)
+                    if (gameManager.СheckType == CheckType.None)
                     {
                         if (square.HasPiece())
                         {
@@ -47,7 +47,7 @@ namespace Board.Pieces
                             MoveSquares.Add(square);
                         }
                     }
-                    else if(gameManager.CheckType == CheckType.Check)
+                    else if(gameManager.СheckType == CheckType.Check)
                     {
                         if (square.HasPiece())
                         {

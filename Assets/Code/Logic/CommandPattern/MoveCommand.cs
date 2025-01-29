@@ -37,7 +37,7 @@ namespace Logic.CommandPattern
             _gameManager.ChangeTurn();
 
             // Is it Check?
-            NotationTurnType notationTurnType = _gameManager.CheckType switch
+            NotationTurnType notationTurnType = _gameManager.СheckType switch
                 {
                     CheckType.Check => NotationTurnType.Check,
                     CheckType.DoubleCheck => NotationTurnType.DoubleCheck,

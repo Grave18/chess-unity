@@ -21,8 +21,6 @@ namespace Board.Builder
         private readonly Dictionary<Square, GameObject> _whitePairs = new();
         private readonly Dictionary<Square, GameObject> _blackPairs = new();
 
-        [Button(space: 10f)]
-        [ContextMenu("Build Board")]
         public void BuildBoard()
         {
             string text = boardPreset.Preset;
@@ -45,6 +43,7 @@ namespace Board.Builder
 
                 switch (text[iText])
                 {
+                    // Set prefabs for each square
                     case '*':
                     case ' ':
                         break;
@@ -129,9 +128,16 @@ namespace Board.Builder
             }
         }
 
+        [Button(name: "Build Board", space: 10f)]
+        [ContextMenu("Build Board")]
+        private void GameManagerRestart()
+        {
+            gameManager.Restart();
+        }
+
         [Button(space: 10f)]
         [ContextMenu("Destroy All Pieces")]
-        public void DestroyAllPieces()
+        private void DestroyAllPieces()
         {
             DestroyAllPieces(whitePiecesParent);
             DestroyAllPieces(blackPiecesParent);

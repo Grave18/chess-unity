@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Board;
+using Board.Builder;
 using Board.Pieces;
 using EditorCools;
 using UnityEngine;
@@ -14,14 +15,15 @@ namespace Logic
         private const int Height = 8;
 
         [Header("References")]
+        [SerializeField] private BoardBuilder boardBuilder;
         [SerializeField] private Transform squaresTransform;
         [SerializeField] private Transform whitePiecesTransform;
         [SerializeField] private Transform blackPiecesTransform;
 
-
         [Header("Settings")]
         [FormerlySerializedAs("CurrentTurn")]
         [SerializeField]private PieceColor currentTurn = PieceColor.White;
+        [SerializeField] private CheckType сheckType = CheckType.None;
         [SerializeField] private bool isAutoChange;
 
         [Header("Arrays")]
@@ -36,10 +38,9 @@ namespace Logic
 
         public ISelectable Selected;
         public ISelectable Highlighted;
-        private CheckType _checkType;
 
         // Getters
-        public CheckType CheckType => _checkType;
+        public CheckType СheckType => сheckType;
         public PieceColor CurrentTurn => currentTurn;
 
         /// <summary>
@@ -55,6 +56,24 @@ namespace Logic
 
         private void Start()
         {
+            Restart();
+        }
+
+        public void ClearSquares()
+        {
+            whitePieces = new Piece[] { };
+            blackPieces = new Piece[] { };
+        }
+
+        [Button(space: 10f)]
+        public void Restart()
+        {
+            currentTurn = PieceColor.White;
+            сheckType = CheckType.None;
+            boardBuilder.BuildBoard();
+            FindAllPieces();
+            FindAllSquares();
+
             CalculateUnderAttackSquares();
         }
 
@@ -91,7 +110,7 @@ namespace Logic
             }
 
             // Infer check type
-            _checkType = attackers.Count switch
+            сheckType = attackers.Count switch
                 {
                     0 => CheckType.None,
                     1 => CheckType.Check,
@@ -101,10 +120,20 @@ namespace Logic
             underAttackSquares = underAttackSet.ToArray();
         }
 
-        public void SetAutoChange(bool value)
+        private bool TryCalculateCheck(IEnumerable<Square> squares)
         {
-            isAutoChange = value;
+            foreach (Square square in squares)
+            {
+                if (square.HasPiece() && square.GetPiece() is King king && king.GetPieceColor() == currentTurn)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
+
+
 
         public void SetTurn(PieceColor turn)
         {
@@ -135,12 +164,6 @@ namespace Logic
             return pieceColor == currentTurn;
         }
 
-        public void ClearSquares()
-        {
-            whitePieces = new Piece[] { };
-            blackPieces = new Piece[] { };
-        }
-
         public Square GetSquare(PieceColor pieceColor, Square currentSquare, Vector2Int offset)
         {
             int x = -1;
@@ -167,18 +190,12 @@ namespace Logic
             return squares[y + x * Width];
         }
 
-        private bool TryCalculateCheck(IEnumerable<Square> squares)
+        // Editor tools
+        public void SetAutoChange(bool value)
         {
-            foreach (Square square in squares)
-            {
-                if (square.HasPiece() && square.GetPiece() is King king && king.GetPieceColor() == currentTurn)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            isAutoChange = value;
         }
+
 
         [Button(space: 10f)]
         [ContextMenu("Find All Pieces")]
@@ -203,7 +220,7 @@ namespace Logic
 
         [Button(space: 10f)]
         [ContextMenu("Find All Squares")]
-        public void FindAllSections()
+        public void FindAllSquares()
         {
             var squaresTemp = new List<Square>();
 
