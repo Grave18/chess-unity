@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Board;
 using Board.Pieces;
+using EditorCools;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -179,6 +180,7 @@ namespace Logic
             return false;
         }
 
+        [Button(space: 10f)]
         [ContextMenu("Find All Pieces")]
         public void FindAllPieces()
         {
@@ -199,6 +201,7 @@ namespace Logic
             blackPieces = blackPiecesTemp.ToArray();
         }
 
+        [Button(space: 10f)]
         [ContextMenu("Find All Squares")]
         public void FindAllSections()
         {
