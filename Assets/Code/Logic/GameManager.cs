@@ -7,14 +7,6 @@ using UnityEngine.Serialization;
 
 namespace Logic
 {
-    public enum CheckType
-    {
-        Check,
-        DoubleCheck,
-        CheckMate,
-        None
-    }
-
     public class GameManager : MonoBehaviour
     {
         private const int Width = 8;
@@ -25,8 +17,10 @@ namespace Logic
         [SerializeField] private Transform whitePiecesTransform;
         [SerializeField] private Transform blackPiecesTransform;
 
+
         [Header("Settings")]
-        public PieceColor CurrentTurn = PieceColor.White;
+        [FormerlySerializedAs("CurrentTurn")]
+        [SerializeField]private PieceColor currentTurn = PieceColor.White;
         [SerializeField] private bool isAutoChange;
 
         [Header("Arrays")]
@@ -45,6 +39,7 @@ namespace Logic
 
         // Getters
         public CheckType CheckType => _checkType;
+        public PieceColor CurrentTurn => currentTurn;
 
         /// <summary>
         /// Pieces who is threatening the king
@@ -67,7 +62,7 @@ namespace Logic
         /// </summary>
         public void CalculateUnderAttackSquares()
         {
-            var currentTurnPieces = CurrentTurn == PieceColor.White ? blackPieces : whitePieces;
+            var currentTurnPieces = currentTurn == PieceColor.White ? blackPieces : whitePieces;
             var underAttackSet = new HashSet<Square>();
 
             attackers.Clear();
@@ -110,17 +105,6 @@ namespace Logic
             isAutoChange = value;
         }
 
-        public void SetTurn(int index)
-        {
-            if (index < 0 || index > 1)
-            {
-                return;
-            }
-
-            CurrentTurn = (PieceColor)index;
-            CalculateUnderAttackSquares();
-        }
-
         public void SetTurn(PieceColor turn)
         {
             if (turn == PieceColor.None)
@@ -128,7 +112,7 @@ namespace Logic
                 return;
             }
 
-            CurrentTurn = turn;
+            currentTurn = turn;
             CalculateUnderAttackSquares();
         }
 
@@ -140,14 +124,14 @@ namespace Logic
             }
 
             // Change turn
-            CurrentTurn = CurrentTurn == PieceColor.White ? PieceColor.Black : PieceColor.White;
+            currentTurn = currentTurn == PieceColor.White ? PieceColor.Black : PieceColor.White;
 
             CalculateUnderAttackSquares();
         }
 
         public bool IsRightTurn(PieceColor pieceColor)
         {
-            return pieceColor == CurrentTurn;
+            return pieceColor == currentTurn;
         }
 
         public void ClearSquares()
@@ -186,7 +170,7 @@ namespace Logic
         {
             foreach (Square square in squares)
             {
-                if (square.HasPiece() && square.GetPiece() is King king && king.GetPieceColor() == CurrentTurn)
+                if (square.HasPiece() && square.GetPiece() is King king && king.GetPieceColor() == currentTurn)
                 {
                     return true;
                 }
@@ -248,5 +232,24 @@ namespace Logic
                 }
             }
         }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+
+        /// <summary>
+        /// For debug select tool
+        /// </summary>
+        /// <param name="index"></param>
+        public void SetTurn(int index)
+        {
+            if (index < 0 || index > 1)
+            {
+                return;
+            }
+
+            currentTurn = (PieceColor)index;
+            CalculateUnderAttackSquares();
+        }
+
+#endif
     }
 }
