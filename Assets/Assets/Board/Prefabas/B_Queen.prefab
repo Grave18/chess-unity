@@ -155,15 +155,15 @@ MonoBehaviour:
   cannotMoveSquares: []
   animationSpeed: 1
   animationEase: 10
-  MoveVectors:
-  - {x: 0, y: 1}
-  - {x: 1, y: 0}
-  - {x: 0, y: -1}
-  - {x: -1, y: 0}
+  moveVectors:
   - {x: 1, y: 1}
   - {x: 1, y: -1}
   - {x: -1, y: -1}
   - {x: -1, y: 1}
+  - {x: 0, y: 1}
+  - {x: 1, y: 0}
+  - {x: 0, y: -1}
+  - {x: -1, y: 0}
 --- !u!114 &-1033529194483795699
 MonoBehaviour:
   m_ObjectHideFlags: 0

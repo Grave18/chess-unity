@@ -2,6 +2,7 @@
 using Board;
 using Board.Pieces;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Logic.Highlighting
 {
@@ -15,7 +16,8 @@ namespace Logic.Highlighting
         [SerializeField] private CommonPieceSettings commonSettings;
 
         [Header("Debug")]
-        [SerializeField] private bool isDebugHighlightUnderAttackSquares;
+        [SerializeField] private bool isDebugUnderAttackSquares;
+        [SerializeField] private bool isDebugAttackLine;
 
         private SquareHighlighter _oldPieceHighlighter;
 
@@ -45,9 +47,14 @@ namespace Logic.Highlighting
 
             ClearAllHighlights();
 
-            if (isDebugHighlightUnderAttackSquares)
+            if (isDebugUnderAttackSquares)
             {
                 DebugHighlightUnderAttackSquares();
+            }
+
+            if (isDebugAttackLine)
+            {
+                DebugAttackLine();
             }
 
             // Highlight check king and attacker pieces
@@ -92,18 +99,6 @@ namespace Logic.Highlighting
                 if (kingSquare.TryGetComponent(out SquareHighlighter squareHighlighter))
                 {
                     squareHighlighter.Show(SquareShape.Circle, commonSettings.CaptureColor);
-                }
-            }
-        }
-
-        private void DebugHighlightUnderAttackSquares()
-        {
-            Color color = gameManager.CurrentTurn == PieceColor.White ? Color.black : Color.white;
-            foreach (Square square in gameManager.UnderAttackSquares)
-            {
-                if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
-                {
-                    squareHighlighter.Show(SquareShape.Dot, color);
                 }
             }
         }
@@ -178,6 +173,30 @@ namespace Logic.Highlighting
             {
                 var pieceFx = piece.GetComponent<Dissolve>();
                 pieceFx.HighlightPiece(enableHighlight: false);
+            }
+        }
+
+        private void DebugHighlightUnderAttackSquares()
+        {
+            Color color = gameManager.CurrentTurn == PieceColor.White ? Color.black : Color.white;
+            foreach (Square square in gameManager.UnderAttackSquares)
+            {
+                if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
+                {
+                    squareHighlighter.Show(SquareShape.Dot, color);
+                }
+            }
+        }
+
+        private void DebugAttackLine()
+        {
+            Color color = gameManager.CurrentTurn == PieceColor.White ? Color.black : Color.white;
+            foreach (Square square in gameManager.AttackLine)
+            {
+                if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
+                {
+                    squareHighlighter.Show(SquareShape.Dot, color);
+                }
             }
         }
     }

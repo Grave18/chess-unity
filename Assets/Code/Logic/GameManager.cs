@@ -100,7 +100,7 @@ namespace Logic
                 piece.CalculateUnderAttackSquares();
 
                 // Try to add attackers
-                if (TryCalculateCheck(piece.UnderAttackSquares))
+                if (IsPieceMakeCheck(piece.UnderAttackSquares))
                 {
                     attackers.Add(piece);
 
@@ -111,9 +111,9 @@ namespace Logic
                     }
                 }
 
-                foreach (var pieceSquare in piece.UnderAttackSquares)
+                foreach (Square underAttackSquare in piece.UnderAttackSquares)
                 {
-                    underAttackSet.Add(pieceSquare);
+                    underAttackSet.Add(underAttackSquare);
                 }
             }
 
@@ -128,9 +128,9 @@ namespace Logic
             underAttackSquares = underAttackSet.ToArray();
         }
 
-        private bool TryCalculateCheck(IEnumerable<Square> squares)
+        private bool IsPieceMakeCheck(IEnumerable<Square> underAttackSquares)
         {
-            foreach (Square square in squares)
+            foreach (Square square in underAttackSquares)
             {
                 if (square.HasPiece() && square.GetPiece() is King king && king.GetPieceColor() == currentTurn)
                 {
