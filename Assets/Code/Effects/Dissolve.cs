@@ -8,14 +8,19 @@ public class Dissolve : MonoBehaviour
 
     private static readonly int TimeId = Shader.PropertyToID("_T");
     private static readonly int SeedId = Shader.PropertyToID("_Seed");
+    private static readonly int IsHighlightedId = Shader.PropertyToID("_IsHighlighted");
 
     private MeshRenderer _meshRenderer;
     private Material _material;
 
-    private void Start()
+    private void Awake()
     {
         _meshRenderer = GetComponent<MeshRenderer>();
         _material = _meshRenderer.material;
+    }
+
+    private void Start()
+    {
         _material.SetFloat(SeedId, UnityEngine.Random.Range(0f, 100f));
 
         StartCoroutine(Appear());
@@ -55,5 +60,10 @@ public class Dissolve : MonoBehaviour
             _material.SetFloat(TimeId, calculatedTime);
             yield return null;
         }
+    }
+
+    public void HighlightPiece(bool enableHighlight)
+    {
+        _material.SetInt(IsHighlightedId, enableHighlight ? 1 : 0);
     }
 }

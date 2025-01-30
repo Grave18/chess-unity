@@ -61,6 +61,7 @@ Material:
     m_Floats:
     - _Float: 1
     - _Float_1: 0.819
+    - _IsHighlighted: 0
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Seed: 0
