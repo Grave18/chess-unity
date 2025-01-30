@@ -97,21 +97,23 @@ namespace Logic
 
             foreach (Piece piece in currentTurnPieces)
             {
-                piece.CalculateUnderAttackSquares();
+                piece.CalculateMovesAndCaptures();
 
                 // Try to add attackers
-                if (IsPieceMakeCheck(piece.UnderAttackSquares))
+                if (IsPieceMakeCheck(piece.CaptureSquares))
                 {
                     attackers.Add(piece);
 
+                    // TODO: maybe make split attack line
                     // Fill under attack line
-                    foreach (Square square in piece.UnderAttackSquares)
+                    foreach (Square square in piece.MoveSquares)
                     {
                         attackLine.Add(square);
                     }
                 }
 
-                foreach (Square underAttackSquare in piece.UnderAttackSquares)
+                // Calculate all squares on reach
+                foreach (Square underAttackSquare in piece.MoveSquares)
                 {
                     underAttackSet.Add(underAttackSquare);
                 }

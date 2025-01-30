@@ -8,24 +8,23 @@ namespace Board.Pieces
 {
     public abstract class Piece : MonoBehaviour, ISelectable
     {
-        [Header("Piece")]
+        [Header("Piece settings")]
         [SerializeField] protected PieceColor pieceColor;
-        [SerializeField] protected GameManager gameManager;
-        [SerializeField] protected Square currentSquare;
         [SerializeField] private LayerMask squareLayer;
-
-        public bool IsFirstMove = true;
-        [SerializeField] private List<Square> underAttackSquares;
-        [SerializeField] private List<Square> moveSquares;
-        [SerializeField] private List<Square> captureSquares;
-        [SerializeField] private List<Square> cannotMoveSquares;
 
         [Header("Animation")]
         [SerializeField] private float animationSpeed = 1f;
         [SerializeField] private Ease animationEase = Ease.InOutCubic;
 
+        [Header("Debug preview")]
+        public bool IsFirstMove = true;
+        [SerializeField] private List<Square> moveSquares;
+        [SerializeField] private List<Square> captureSquares;
+        [SerializeField] private List<Square> cannotMoveSquares;
+        [SerializeField] protected GameManager gameManager;
+        [SerializeField] protected Square currentSquare;
+
         // Getters
-        public List<Square> UnderAttackSquares => underAttackSquares;
         public List<Square> MoveSquares => moveSquares;
         public List<Square> CaptureSquares => captureSquares;
         public List<Square> CannotMoveSquares => cannotMoveSquares;
@@ -47,7 +46,7 @@ namespace Board.Pieces
                 return false;
             }
 
-            return CanMoveToInternal(square);
+            return MoveSquares.Contains(square);
         }
 
         public bool CanEatAt(Square square)
@@ -57,7 +56,7 @@ namespace Board.Pieces
                 return false;
             }
 
-            return CanEatAtInternal(square);
+            return CaptureSquares.Contains(square);
         }
 
         public Piece EatAt(Square square)
@@ -107,9 +106,7 @@ namespace Board.Pieces
             }
         }
 
-        public abstract void CalculateMovesAndCaptures();
-
-        public void CalculateUnderAttackSquares()
+        public void CalculateMovesAndCaptures()
         {
             // If piece is beaten cancel calculations
             if (currentSquare == null)
@@ -117,10 +114,10 @@ namespace Board.Pieces
                 return;
             }
 
-            CalculateUnderAttackSquaresInternal();
+            CalculateMovesAndCapturesInternal();
         }
 
-        protected abstract void CalculateUnderAttackSquaresInternal();
+        protected abstract void CalculateMovesAndCapturesInternal();
 
         public Piece GetPiece()
         {
@@ -167,9 +164,6 @@ namespace Board.Pieces
             currentSquare = hitInfo.collider.GetComponent<Square>();
             currentSquare.SetPiece(this);
         }
-
-        protected abstract bool CanEatAtInternal(Square square);
-        protected abstract bool CanMoveToInternal(Square square);
 
 #if UNITY_EDITOR
 

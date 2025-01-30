@@ -14,7 +14,7 @@ namespace Board.Pieces
 
         public List<Square> CastlingSquares => castlingSquares;
 
-        public override void CalculateMovesAndCaptures()
+        protected override void CalculateMovesAndCapturesInternal()
         {
             MoveSquares.Clear();
             CaptureSquares.Clear();
@@ -68,38 +68,6 @@ namespace Board.Pieces
             else if(longRook != null && longRook.IsFirstMove)
             {
                 CannotMoveSquares.Add(longCastlingSquare);
-            }
-        }
-
-        protected override void CalculateUnderAttackSquaresInternal()
-        {
-            UnderAttackSquares.Clear();
-
-            foreach (Vector2Int offset in Moves)
-            {
-                var underAttackSquare = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
-
-                // Has Piece
-                if (underAttackSquare.HasPiece())
-                {
-                    if (underAttackSquare.GetPieceColor() == pieceColor)
-                    {
-                        continue;
-                    }
-
-                    UnderAttackSquares.Add(underAttackSquare);
-
-                    continue;
-                }
-
-                // Off board
-                if (underAttackSquare == gameManager.NullSquare)
-                {
-                    continue;
-                }
-
-                // Empty Square
-                UnderAttackSquares.Add(underAttackSquare);
             }
         }
 
@@ -186,16 +154,6 @@ namespace Board.Pieces
 
             rookSquare = squareMinus1;
             return isSquares && isRook && isNotUnderAttack;
-        }
-
-        protected override bool CanEatAtInternal(Square square)
-        {
-            return CaptureSquares.Contains(square);
-        }
-
-        protected override bool CanMoveToInternal(Square square)
-        {
-            return MoveSquares.Contains(square);
         }
     }
 }
