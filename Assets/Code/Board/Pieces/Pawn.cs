@@ -18,7 +18,7 @@ namespace Board.Pieces
             var moves = IsFirstMove ? MovesFirstMove : Moves;
             foreach (Vector2Int offset in moves)
             {
-                var square = gameManager.GetSquare(pieceColor, currentSquare, offset);
+                var square = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
 
                 if (square.HasPiece() || square == gameManager.NullSquare)
                 {
@@ -31,7 +31,7 @@ namespace Board.Pieces
             // Calculate Captures
             foreach (Vector2Int offset in Eat)
             {
-                var square = gameManager.GetSquare(pieceColor, currentSquare, offset);
+                var square = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
 
                 if (square.HasPiece() && square.GetPieceColor() != pieceColor)
                 {
@@ -45,7 +45,7 @@ namespace Board.Pieces
             UnderAttackSquares.Clear();
             foreach (Vector2Int offset in Eat)
             {
-                var underAttackSquare = gameManager.GetSquare(pieceColor, currentSquare, offset);
+                var underAttackSquare = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
 
                 // Has Piece
                 if (underAttackSquare.HasPiece())
@@ -104,7 +104,7 @@ namespace Board.Pieces
                 move = MovesFirstMove;
 
                 // If move two sections check if passing section is empty
-                var passedSection = gameManager.GetSquare(pieceColor, currentSquare, move[0]);
+                var passedSection = gameManager.GetSquareRel(pieceColor, currentSquare, move[0]);
                 if (passedSection.HasPiece())
                 {
                     return false;
@@ -117,7 +117,7 @@ namespace Board.Pieces
 
             foreach (Vector2Int offset in move)
             {
-                var possibleSection = gameManager.GetSquare(pieceColor, currentSquare, offset);
+                var possibleSection = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
 
                 if (possibleSection == square)
                 {

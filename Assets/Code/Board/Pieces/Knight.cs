@@ -15,7 +15,7 @@ namespace Board.Pieces
             // Calculate Moves and Captures
             foreach (Vector2Int offset in Moves)
             {
-                var square = gameManager.GetSquare(pieceColor, currentSquare, offset);
+                var square = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
 
                 if (square == gameManager.NullSquare)
                 {
@@ -38,7 +38,7 @@ namespace Board.Pieces
             UnderAttackSquares.Clear();
             foreach (Vector2Int offset in Moves)
             {
-                var underAttackSquare = gameManager.GetSquare(pieceColor, currentSquare, offset);
+                var underAttackSquare = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
 
                 // Has Piece
                 if (underAttackSquare.HasPiece())

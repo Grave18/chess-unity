@@ -19,7 +19,7 @@ namespace Board.Pieces
                 var offset = direction;
                 while (true)
                 {
-                    var square = gameManager.GetSquare(pieceColor, currentSquare, offset);
+                    var square = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
                     offset += direction;
 
                     if (square == gameManager.NullSquare)
@@ -84,7 +84,7 @@ namespace Board.Pieces
 
                 while (true)
                 {
-                    var underAttackSquare = gameManager.GetSquare(pieceColor, currentSquare, currentDir);
+                    var underAttackSquare = gameManager.GetSquareRel(pieceColor, currentSquare, currentDir);
                     // Advance for one square
                     currentDir += direction;
 

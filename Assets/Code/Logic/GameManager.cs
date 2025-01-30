@@ -160,7 +160,15 @@ namespace Logic
             return pieceColor == currentTurn;
         }
 
-        public Square GetSquare(PieceColor pieceColor, Square currentSquare, Vector2Int offset)
+
+        /// <summary>
+        /// Get section relative to current piece color
+        /// </summary>
+        /// <param name="pieceColor">Color of the piece</param>
+        /// <param name="currentSquare">Current section of the piece</param>
+        /// <param name="offset">Offset from current section</param>
+        /// <returns>Section at the offset or null if out of bounds</returns>
+        public Square GetSquareRel(PieceColor pieceColor, Square currentSquare, Vector2Int offset)
         {
             int x = -1;
             int y = -1;
