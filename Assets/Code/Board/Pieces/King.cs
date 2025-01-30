@@ -117,10 +117,13 @@ namespace Board.Pieces
                 return false;
             }
 
+            // Need to flip board if black turn because kings are not mirrored
+            int flip = pieceColor == PieceColor.White ? 1 : -1;
+
             // Check short (right)
-            Square squarePlus1 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(1, 0));
-            Square squarePlus2 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(2, 0));
-            Square squareWithRook = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(3, 0));
+            Square squarePlus1 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(flip*1, 0));
+            Square squarePlus2 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(flip*2, 0));
+            Square squareWithRook = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(flip*3, 0));
 
             if (CanCastleRight(out rook))
             {
@@ -131,10 +134,10 @@ namespace Board.Pieces
             }
 
             // Check long (left)
-            Square squareMinus1 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(-1, 0));
-            Square squareMinus2 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(-2, 0));
-            Square squareMinus3 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(-3, 0));
-            squareWithRook = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(-4, 0));
+            Square squareMinus1 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(flip*-1, 0));
+            Square squareMinus2 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(flip*-2, 0));
+            Square squareMinus3 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(flip*-3, 0));
+            squareWithRook = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(flip*-4, 0));
 
             if (CanCastleLeft(out rook))
             {
