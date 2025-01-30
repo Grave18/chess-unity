@@ -118,13 +118,13 @@ namespace Board.Builder
             InstantiatePieces(_blackPairs, blackPiecesParent);
         }
 
-        private static void InstantiatePieces(Dictionary<Square, GameObject> pairs, Transform piecesParent)
+        private void InstantiatePieces(Dictionary<Square, GameObject> pairs, Transform piecesParent)
         {
             foreach (var (square, piece) in pairs)
             {
                 var pieceInstance = Instantiate(piece, square.transform.position, piece.transform.rotation, piecesParent);
                 var pieceComponent = pieceInstance.GetComponent<Piece>();
-                pieceComponent.GetSectionAndAlign();
+                pieceComponent.GetSectionAndAlign(gameManager);
             }
         }
 

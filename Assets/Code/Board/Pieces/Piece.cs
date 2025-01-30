@@ -153,16 +153,12 @@ namespace Board.Pieces
             return true;
         }
 
-        protected abstract bool CanEatAtInternal(Square square);
-        protected abstract bool CanMoveToInternal(Square square);
-
-        [ContextMenu("Get Section And Align")]
-        public void GetSectionAndAlign()
+        public void GetSectionAndAlign(GameManager gameManager)
         {
-            Construct(FindObjectOfType<GameManager>());
+            Construct(gameManager);
 
             if (!Physics.Raycast(transform.position + Vector3.up, Vector3.down, out var hitInfo, 2f,
-                                 squareLayer))
+                    squareLayer))
             {
                 return;
             }
@@ -171,5 +167,18 @@ namespace Board.Pieces
             currentSquare = hitInfo.collider.GetComponent<Square>();
             currentSquare.SetPiece(this);
         }
+
+        protected abstract bool CanEatAtInternal(Square square);
+        protected abstract bool CanMoveToInternal(Square square);
+
+#if UNITY_EDITOR
+
+        [ContextMenu("Get Section And Align")]
+        private void GetSectionAndAlign()
+        {
+            GetSectionAndAlign(FindObjectOfType<GameManager>());
+        }
+
+#endif
     }
 }
