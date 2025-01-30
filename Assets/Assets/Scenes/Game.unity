@@ -7418,8 +7418,8 @@ Transform:
   - {fileID: 543450652193350432}
   - {fileID: 1548834808}
   - {fileID: 1405112761}
-  - {fileID: 6037401179958863972}
   - {fileID: 1785828114}
+  - {fileID: 6037401179958863972}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1190829613
@@ -17306,7 +17306,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6037401179958863972}
   m_Layer: 0
-  m_Name: OldSquares
+  m_Name: SquaresGraphics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

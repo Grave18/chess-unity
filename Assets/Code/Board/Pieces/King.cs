@@ -24,7 +24,7 @@ namespace Board.Pieces
             // Calculate Moves and Captures
             foreach (Vector2Int offset in Moves)
             {
-                var square = gameManager.GetSquare(pieceColor, currentSquare, offset);
+                Square square = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
 
                 if (square == gameManager.NullSquare)
                 {
@@ -48,29 +48,26 @@ namespace Board.Pieces
                 }
             }
 
-            // Add castling
-            Square shortCastlingSquare = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(2, 0));
-            Square longCastlingSquare = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(-2, 0));
+            // Add castling. Do need absolute position
+            Square shortCastlingSquare = gameManager.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(2, 0));
+            Square longCastlingSquare = gameManager.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(-2, 0));
 
-            List<Square> possibleSquares = new();
-            if (CanCastlingAt(shortCastlingSquare, out _, out _, out _))
+            if (CanCastlingShort(shortCastlingSquare, out Rook shortRook, out _))
             {
-                possibleSquares.Add(shortCastlingSquare);
+                CastlingSquares.Add(shortCastlingSquare);
+            }
+            else if(shortRook != null && shortRook.IsFirstMove)
+            {
+                CannotMoveSquares.Add(shortCastlingSquare);
             }
 
-            if (CanCastlingAt(longCastlingSquare, out _, out _, out _))
+            if (CanCastleLong(longCastlingSquare, out Rook longRook, out _))
             {
-                possibleSquares.Add(longCastlingSquare);
+                CastlingSquares.Add(longCastlingSquare);
             }
-
-            // Can not castle under attack
-            if (gameManager.CheckType == CheckType.None)
+            else if(longRook != null && longRook.IsFirstMove)
             {
-                CastlingSquares.AddRange(possibleSquares);
-            }
-            else
-            {
-                CannotMoveSquares.AddRange(possibleSquares);
+                CannotMoveSquares.Add(longCastlingSquare);
             }
         }
 
@@ -80,7 +77,7 @@ namespace Board.Pieces
 
             foreach (Vector2Int offset in Moves)
             {
-                var underAttackSquare = gameManager.GetSquare(pieceColor, currentSquare, offset);
+                var underAttackSquare = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
 
                 // Has Piece
                 if (underAttackSquare.HasPiece())
@@ -112,77 +109,83 @@ namespace Board.Pieces
             rookSquare = null;
             notationTurnType = NotationTurnType.None;
 
+            if (CanCastlingShort(square, out Rook sRook, out Square sRookSquare))
+            {
+                rook = sRook;
+                rookSquare = sRookSquare;
+                notationTurnType = NotationTurnType.CastlingShort;
+                return true;
+            }
+
+            if (CanCastleLong(square, out Rook lRook, out Square lRookSquare))
+            {
+                rook = lRook;
+                rookSquare = lRookSquare;
+                notationTurnType = NotationTurnType.CastlingLong;
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool CanCastlingShort(Square square, out Rook rook, out Square rookSquare)
+        {
+            rook = null;
+            rookSquare = null;
+
             if (!IsFirstMove)
             {
                 return false;
             }
 
-            // Need to flip board if black turn because kings are not mirrored
-            int flip = pieceColor == PieceColor.White ? 1 : -1;
+            // Piece color must be White because black king is not mirrored. Don't need relative position
+            // Check short
+            Square squarePlus1 = gameManager.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(1, 0));
+            Square squarePlus2 = gameManager.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(2, 0));
+            Square squareWithShortRook = gameManager.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(3, 0));
 
-            // Check short (right)
-            Square squarePlus1 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(flip*1, 0));
-            Square squarePlus2 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(flip*2, 0));
-            Square squareWithRook = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(flip*3, 0));
+            bool isSquares = !squarePlus1.HasPiece() && !squarePlus2.HasPiece() && squarePlus2.IsEqual(square);
+            bool isRook = squareWithShortRook.HasPiece() && squareWithShortRook.GetPiece() is Rook r && r.IsFirstMove;
 
-            if (CanCastleRight(out rook))
+            if (isRook)
             {
-                rookSquare = squarePlus1;
-                notationTurnType = NotationTurnType.CastlingShort;
-
-                return true;
+                rook = squareWithShortRook.GetPiece() as Rook;
             }
 
-            // Check long (left)
-            Square squareMinus1 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(flip*-1, 0));
-            Square squareMinus2 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(flip*-2, 0));
-            Square squareMinus3 = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(flip*-3, 0));
-            squareWithRook = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(flip*-4, 0));
+            bool isNotUnderAttack = gameManager.CheckType == CheckType.None
+                                    && !gameManager.UnderAttackSquares.Contains(squarePlus1)
+                                    && !gameManager.UnderAttackSquares.Contains(squarePlus2);
 
-            if (CanCastleLeft(out rook))
+            rookSquare = squarePlus1;
+            return isSquares && isRook && isNotUnderAttack;
+        }
+
+        private bool CanCastleLong(Square square, out Rook rook, out Square rookSquare)
+        {
+            rook = null;
+            rookSquare = null;
+
+            // Check long
+            Square squareMinus1 = gameManager.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(-1, 0));
+            Square squareMinus2 = gameManager.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(-2, 0));
+            Square squareMinus3 = gameManager.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(-3, 0));
+            Square squareWithLongRook = gameManager.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(-4, 0));
+
+            bool isSquares = !squareMinus1.HasPiece() && !squareMinus2.HasPiece()
+                                                      && !squareMinus3.HasPiece() && squareMinus2.IsEqual(square);
+            bool isRook = squareWithLongRook.HasPiece() && squareWithLongRook.GetPiece() is Rook r && r.IsFirstMove;
+
+            if (isRook)
             {
-                rookSquare = squareMinus1;
-                notationTurnType = NotationTurnType.CastlingLong;
-
-                return true;
+                rook = squareWithLongRook.GetPiece() as Rook;
             }
 
-            return false;
+            bool isNotUnderAttack = gameManager.CheckType == CheckType.None
+                                    && !gameManager.UnderAttackSquares.Contains(squareMinus1)
+                                    && !gameManager.UnderAttackSquares.Contains(squareMinus2);
 
-            bool CanCastleRight(out Rook rook)
-            {
-                rook = null;
-                bool isSquares = !squarePlus1.HasPiece() && !squarePlus2.HasPiece() && squarePlus2.IsEqual(square);
-                bool isRook = squareWithRook.HasPiece() && squareWithRook.GetPiece() is Rook r && r.IsFirstMove;
-
-                if (isRook)
-                {
-                    rook = squareWithRook.GetPiece() as Rook;
-                }
-
-                bool isNotUnderAttack = !gameManager.UnderAttackSquares.Contains(squarePlus1)
-                                        && !gameManager.UnderAttackSquares.Contains(squarePlus2);
-
-                return isSquares && isRook && isNotUnderAttack;
-            }
-
-            bool CanCastleLeft(out Rook rook)
-            {
-                rook = null;
-                bool isSquares = !squareMinus1.HasPiece() && !squareMinus2.HasPiece()
-                                                          && !squareMinus3.HasPiece() && squareMinus2.IsEqual(square);
-                bool isRook = squareWithRook.HasPiece() && squareWithRook.GetPiece() is Rook r && r.IsFirstMove;
-
-                if (isRook)
-                {
-                    rook = squareWithRook.GetPiece() as Rook;
-                }
-
-                bool isNotUnderAttack = !gameManager.UnderAttackSquares.Contains(squareMinus1)
-                                        && !gameManager.UnderAttackSquares.Contains(squareMinus2);
-
-                return isSquares && isRook && isNotUnderAttack;
-            }
+            rookSquare = squareMinus1;
+            return isSquares && isRook && isNotUnderAttack;
         }
 
         protected override bool CanEatAtInternal(Square square)

@@ -89,8 +89,10 @@ namespace Logic.Highlighting
 
                 // Highlight king square with red circle
                 Square kingSquare = assumeKing.GetSquare();
-                var squareHighlighter = kingSquare.GetComponent<SquareHighlighter>();
-                squareHighlighter.Show(SquareShape.Circle, commonSettings.CaptureColor);
+                if (kingSquare.TryGetComponent(out SquareHighlighter squareHighlighter))
+                {
+                    squareHighlighter.Show(SquareShape.Circle, commonSettings.CaptureColor);
+                }
             }
         }
 
@@ -99,8 +101,10 @@ namespace Logic.Highlighting
             Color color = gameManager.CurrentTurn == PieceColor.White ? Color.black : Color.white;
             foreach (Square square in gameManager.UnderAttackSquares)
             {
-                var squareHighlighter = square.GetComponent<SquareHighlighter>();
-                squareHighlighter.Show(SquareShape.Dot, color);
+                if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
+                {
+                    squareHighlighter.Show(SquareShape.Dot, color);
+                }
             }
         }
 
@@ -108,29 +112,37 @@ namespace Logic.Highlighting
         {
             foreach (Square square in piece.MoveSquares)
             {
-                var squareHighlighter = square.GetComponent<SquareHighlighter>();
-                squareHighlighter.Show(SquareShape.Dot, commonSettings.MoveColor);
+                if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
+                {
+                    squareHighlighter.Show(SquareShape.Dot, commonSettings.MoveColor);
+                }
             }
 
             foreach (Square square in piece.CaptureSquares)
             {
-                var squareHighlighter = square.GetComponent<SquareHighlighter>();
-                squareHighlighter.Show(SquareShape.Circle, commonSettings.CaptureColor);
+                if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
+                {
+                    squareHighlighter.Show(SquareShape.Circle, commonSettings.CaptureColor);
+                }
             }
 
             if (piece is King king)
             {
                 foreach (var square in king.CastlingSquares)
                 {
-                    var squareHighlighter = square.GetComponent<SquareHighlighter>();
-                    squareHighlighter.Show(SquareShape.Dot, commonSettings.CastlingColor);
+                    if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
+                    {
+                        squareHighlighter.Show(SquareShape.Dot, commonSettings.CastlingColor);
+                    }
                 }
             }
 
             foreach (Square square in piece.CannotMoveSquares)
             {
-                var squareHighlighter = square.GetComponent<SquareHighlighter>();
-                squareHighlighter.Show(SquareShape.Cross, commonSettings.CanNotMoveColor);
+                if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
+                {
+                    squareHighlighter.Show(SquareShape.Cross, commonSettings.CanNotMoveColor);
+                }
             }
         }
 
