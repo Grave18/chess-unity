@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Board;
@@ -21,9 +23,9 @@ namespace Logic
         [SerializeField] private Transform blackPiecesTransform;
 
         [Header("Settings")]
-        [FormerlySerializedAs("CurrentTurn")]
-        [SerializeField]private PieceColor currentTurn = PieceColor.White;
-        [SerializeField] private CheckType сheckType = CheckType.None;
+        [SerializeField] private PieceColor currentTurn = PieceColor.White;
+        [SerializeField] private PieceColor defaultTurn = PieceColor.White;
+        [SerializeField] private CheckType checkType = CheckType.None;
         [SerializeField] private bool isAutoChange;
 
         [Header("Arrays")]
@@ -39,8 +41,10 @@ namespace Logic
         public ISelectable Selected;
         public ISelectable Highlighted;
 
+        public event Action<PieceColor, CheckType> OnTurnChanged;
+
         // Getters
-        public CheckType СheckType => сheckType;
+        public CheckType CheckType => checkType;
         public PieceColor CurrentTurn => currentTurn;
 
         /// <summary>
@@ -53,6 +57,9 @@ namespace Logic
         public bool IsAutoChange => isAutoChange;
         public Square[] Squares => squares;
         public Square[] UnderAttackSquares => underAttackSquares;
+
+        public Piece[] WhitePieces => whitePieces;
+        public Piece[] BlackPieces => blackPieces;
 
         private void Start()
         {
@@ -68,13 +75,14 @@ namespace Logic
         [Button(space: 10f)]
         public void Restart()
         {
-            currentTurn = PieceColor.White;
-            сheckType = CheckType.None;
+            currentTurn = defaultTurn;
+            checkType = CheckType.None;
             boardBuilder.BuildBoard();
             FindAllPieces();
             FindAllSquares();
 
             CalculateUnderAttackSquares();
+            OnTurnChanged?.Invoke(currentTurn, checkType);
         }
 
         /// <summary>
@@ -110,7 +118,7 @@ namespace Logic
             }
 
             // Infer check type
-            сheckType = attackers.Count switch
+            checkType = attackers.Count switch
                 {
                     0 => CheckType.None,
                     1 => CheckType.Check,
@@ -133,19 +141,6 @@ namespace Logic
             return false;
         }
 
-
-
-        public void SetTurn(PieceColor turn)
-        {
-            if (turn == PieceColor.None)
-            {
-                return;
-            }
-
-            currentTurn = turn;
-            CalculateUnderAttackSquares();
-        }
-
         public void ChangeTurn()
         {
             if (!isAutoChange)
@@ -157,6 +152,7 @@ namespace Logic
             currentTurn = currentTurn == PieceColor.White ? PieceColor.Black : PieceColor.White;
 
             CalculateUnderAttackSquares();
+            OnTurnChanged?.Invoke(currentTurn, checkType);
         }
 
         public bool IsRightTurn(PieceColor pieceColor)
@@ -195,7 +191,6 @@ namespace Logic
         {
             isAutoChange = value;
         }
-
 
         [Button(space: 10f)]
         [ContextMenu("Find All Pieces")]
@@ -268,6 +263,7 @@ namespace Logic
 
             currentTurn = (PieceColor)index;
             CalculateUnderAttackSquares();
+            OnTurnChanged?.Invoke(currentTurn, checkType);
         }
 
 #endif

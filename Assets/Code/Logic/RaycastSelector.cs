@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Board;
 using Board.Pieces;
@@ -5,7 +6,7 @@ using Logic.Notation;
 
 namespace Logic
 {
-    public class RaycastSelect : MonoBehaviour
+    public class RaycastSelector : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] private CommandManager commandManager;
@@ -15,6 +16,8 @@ namespace Logic
         [Header("Settings")]
         [SerializeField] private float maxDistance;
         [SerializeField] private LayerMask layerMask;
+
+        public event Action OnClick;
 
         private void Update()
         {
@@ -27,6 +30,7 @@ namespace Logic
             if (Input.GetButtonDown("Fire1"))
             {
                 Click(isHit, hitTransform);
+                OnClick?.Invoke();
             }
             else
             {
@@ -80,10 +84,11 @@ namespace Logic
                 DeselectCurrent();
             }
             // Castling
-            else if (piece is King king &&
-                     king.CanCastlingAt(square, out Rook rook, out Square rookSquare, out NotationTurnType turnType))
+            else if (gameManager.CheckType == CheckType.None
+                     && piece is King king
+                     && king.CanCastlingAt(square, out Rook rook, out Square rookSquare, out NotationTurnType notationTurnType))
             {
-                commandManager.Castling(king, square, rook, rookSquare, turnType);
+                commandManager.Castling(king, square, rook, rookSquare, notationTurnType);
                 DeselectCurrent();
             }
         }

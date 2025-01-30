@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Logic;
 using Logic.Notation;
 using UnityEngine;
 
@@ -48,17 +49,28 @@ namespace Board.Pieces
             }
 
             // Add castling
-            var shortCastlingSquare = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(2, 0));
-            var longCastlingSquare = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(-2, 0));
+            Square shortCastlingSquare = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(2, 0));
+            Square longCastlingSquare = gameManager.GetSquare(pieceColor, currentSquare, new Vector2Int(-2, 0));
 
+            List<Square> possibleSquares = new();
             if (CanCastlingAt(shortCastlingSquare, out _, out _, out _))
             {
-                CastlingSquares.Add(shortCastlingSquare);
+                possibleSquares.Add(shortCastlingSquare);
             }
 
             if (CanCastlingAt(longCastlingSquare, out _, out _, out _))
             {
-                CastlingSquares.Add(longCastlingSquare);
+                possibleSquares.Add(longCastlingSquare);
+            }
+
+            // Can not castle under attack
+            if (gameManager.CheckType == CheckType.None)
+            {
+                CastlingSquares.AddRange(possibleSquares);
+            }
+            else
+            {
+                CannotMoveSquares.AddRange(possibleSquares);
             }
         }
 

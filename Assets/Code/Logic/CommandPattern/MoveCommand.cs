@@ -25,7 +25,6 @@ namespace Logic.CommandPattern
 
         public override void Execute()
         {
-
             _previousSquare = _piece.GetSquare();
             _previousIsFirstMove = _piece.IsFirstMove;
             _previousTurn = _gameManager.CurrentTurn;
@@ -37,7 +36,7 @@ namespace Logic.CommandPattern
             _gameManager.ChangeTurn();
 
             // Is it Check?
-            NotationTurnType notationTurnType = _gameManager.СheckType switch
+            NotationTurnType notationTurnType = _gameManager.CheckType switch
                 {
                     CheckType.Check => NotationTurnType.Check,
                     CheckType.DoubleCheck => NotationTurnType.DoubleCheck,

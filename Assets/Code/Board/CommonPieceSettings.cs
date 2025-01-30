@@ -17,5 +17,6 @@ namespace Board
         public Color MoveColor = Color.green;
         public Color CaptureColor = Color.red;
         public Color CanNotMoveColor = Color.red;
+        public Color CastlingColor = Color.yellow;
     }
 }

@@ -1,4 +1,5 @@
-﻿using Logic;
+﻿using System.Linq;
+using Logic;
 using UnityEngine;
 
 namespace Board.Pieces
@@ -26,7 +27,7 @@ namespace Board.Pieces
                         break;
                     }
 
-                    if (gameManager.СheckType == CheckType.None)
+                    if (gameManager.CheckType == CheckType.None)
                     {
                         if (square.HasPiece())
                         {
@@ -47,12 +48,12 @@ namespace Board.Pieces
                             MoveSquares.Add(square);
                         }
                     }
-                    else if(gameManager.СheckType == CheckType.Check)
+                    else if(gameManager.CheckType == CheckType.Check)
                     {
                         if (square.HasPiece())
                         {
                             // Only if captured piece is attacking king
-                            if (square.GetPiece() == gameManager.Attackers[0])
+                            if (square.GetPiece() == gameManager.Attackers.First())
                             {
                                 CaptureSquares.Add(square);
                             }
