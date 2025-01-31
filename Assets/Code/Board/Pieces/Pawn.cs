@@ -12,11 +12,7 @@ namespace Board.Pieces
 
         protected override void CalculateMovesAndCapturesInternal()
         {
-            MoveSquares.Clear();
-            CaptureSquares.Clear();
-
-            // Calculate Move
-            Vector2Int[] currentMoves = IsFirstMove ? movesFirstMove : this.moves;
+            Vector2Int[] currentMoves = IsFirstMove ? movesFirstMove : moves;
             foreach (Vector2Int offset in currentMoves)
             {
                 Square square = gameManager.GetSquareRel(pieceColor, currentSquare, offset);

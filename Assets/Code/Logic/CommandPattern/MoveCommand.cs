@@ -27,7 +27,7 @@ namespace Logic.CommandPattern
         {
             _previousSquare = _piece.GetSquare();
             _previousIsFirstMove = _piece.IsFirstMove;
-            _previousTurn = _gameManager.CurrentTurn;
+            _previousTurn = _gameManager.CurrentTurnColor;
 
             _piece.IsFirstMove = false;
 

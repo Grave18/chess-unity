@@ -1,21 +1,19 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Board.Pieces
 {
     public class Knight : Piece
     {
         [Header("Knight")]
-        public Vector2Int[] Moves;
+        [FormerlySerializedAs("Moves")]
+        [SerializeField] private Vector2Int[] moves;
 
         protected override void CalculateMovesAndCapturesInternal()
         {
-            MoveSquares.Clear();
-            CaptureSquares.Clear();
-
-            // Calculate Moves and Captures
-            foreach (Vector2Int offset in Moves)
+            foreach (Vector2Int offset in moves)
             {
-                var square = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
+                Square square = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
 
                 if (square == gameManager.NullSquare)
                 {

@@ -18,11 +18,12 @@ namespace Board.Pieces
 
         [Header("Debug preview")]
         public bool IsFirstMove = true;
-        [SerializeField] private List<Square> moveSquares;
-        [SerializeField] private List<Square> captureSquares;
-        [SerializeField] private List<Square> cannotMoveSquares;
         [SerializeField] protected GameManager gameManager;
         [SerializeField] protected Square currentSquare;
+        // All kind of squares
+        [SerializeField] protected List<Square> moveSquares;
+        [SerializeField] protected List<Square> captureSquares;
+        [SerializeField] protected List<Square> cannotMoveSquares;
 
         // Getters
         public List<Square> MoveSquares => moveSquares;
@@ -106,6 +107,41 @@ namespace Board.Pieces
             }
         }
 
+        public virtual void CalculateConstrains()
+        {
+            if(gameManager.CheckType == CheckType.None)
+            {
+                return;
+            }
+
+            // This constrains only if check
+            // Update move
+            var tempMoveSquares = new List<Square>(moveSquares);
+            foreach (Square moveSquare in moveSquares)
+            {
+                if (!gameManager.AttackLine.Contains(moveSquare))
+                {
+                    tempMoveSquares.Remove(moveSquare);
+                    cannotMoveSquares.Add(moveSquare);
+                }
+            }
+            moveSquares = tempMoveSquares;
+
+            // Update capture
+            var tempCaptureSquares = new List<Square>(captureSquares);
+            foreach (Square captureSquare in captureSquares)
+            {
+                Piece capturePiece = captureSquare.GetPiece();
+                if (!gameManager.Attackers.Contains(capturePiece))
+                {
+                    tempCaptureSquares.Remove(captureSquare);
+                }
+            }
+            captureSquares = tempCaptureSquares;
+
+            // Can't do any if DoubleCheck
+        }
+
         public void CalculateMovesAndCaptures()
         {
             // If piece is beaten cancel calculations
@@ -114,9 +150,12 @@ namespace Board.Pieces
                 return;
             }
 
+            moveSquares.Clear();
+            captureSquares.Clear();
+            cannotMoveSquares.Clear();
+
             CalculateMovesAndCapturesInternal();
         }
-
         protected abstract void CalculateMovesAndCapturesInternal();
 
         public Piece GetPiece()

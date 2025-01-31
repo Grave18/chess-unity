@@ -26,11 +26,11 @@ namespace Logic.CommandPattern
 
         public override void Execute()
         {
-            _seriesList.AddTurn(_piece, _square, _gameManager.CurrentTurn, NotationTurnType.Capture);
+            _seriesList.AddTurn(_piece, _square, _gameManager.CurrentTurnColor, NotationTurnType.Capture);
 
             _previousSquare = _piece.GetSquare();
             _previousIsFirstMove = _piece.IsFirstMove;
-            _previousTurn = _gameManager.CurrentTurn;
+            _previousTurn = _gameManager.CurrentTurnColor;
 
             _piece.IsFirstMove = false;
 

@@ -32,11 +32,11 @@ namespace Logic.CommandPattern
 
         public override void Execute()
         {
-            _seriesList.AddTurn(null, null, _gameManager.CurrentTurn, _notationTurnType);
+            _seriesList.AddTurn(null, null, _gameManager.CurrentTurnColor, _notationTurnType);
 
             _previousKingSquare = _king.GetSquare();
             _previousRookSquare = _rook.GetSquare();
-            _previousTurn = _gameManager.CurrentTurn;
+            _previousTurn = _gameManager.CurrentTurnColor;
 
             _king.MoveTo(_kingSquare);
             _rook.MoveTo(_rookSquare);

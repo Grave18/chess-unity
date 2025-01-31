@@ -84,11 +84,10 @@ namespace Logic
                 DeselectCurrent();
             }
             // Castling
-            else if (gameManager.CheckType == CheckType.None
-                     && piece is King king
-                     && king.CanCastlingAt(square, out Rook rook, out Square rookSquare, out NotationTurnType notationTurnType))
+            else if (piece is King king
+                     && king.CanCastlingAt(square, out CastlingInfo castlingInfo))
             {
-                commandManager.Castling(king, square, rook, rookSquare, notationTurnType);
+                commandManager.Castling(king, square, castlingInfo.Rook, castlingInfo.RookSquare, castlingInfo.NotationTurnType);
                 DeselectCurrent();
             }
         }

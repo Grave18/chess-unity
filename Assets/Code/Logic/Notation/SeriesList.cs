@@ -103,11 +103,13 @@ namespace Logic.Notation
         {
             if (turn == PieceColor.White)
             {
+                if(serieses.Count == 0) return;
                 serieses.Remove(serieses.Last());
                 _currentSeries = null;
             }
             else if (turn == PieceColor.Black)
             {
+                if(serieses.Count == 0) return;
                 serieses.Last().BlackMove = string.Empty;
                 _currentSeries = serieses.Last();
             }

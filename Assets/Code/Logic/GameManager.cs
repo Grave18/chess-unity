@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Board;
@@ -23,8 +22,8 @@ namespace Logic
         [SerializeField] private Transform blackPiecesTransform;
 
         [Header("Settings")]
-        [SerializeField] private PieceColor currentTurn = PieceColor.White;
-        [SerializeField] private PieceColor defaultTurn = PieceColor.White;
+        [SerializeField] private PieceColor currentTurnColor = PieceColor.White;
+        [SerializeField] private PieceColor defaultTurnColor = PieceColor.White;
         [SerializeField] private CheckType checkType = CheckType.None;
         [SerializeField] private bool isAutoChange;
 
@@ -45,7 +44,7 @@ namespace Logic
 
         // Getters
         public CheckType CheckType => checkType;
-        public PieceColor CurrentTurn => currentTurn;
+        public PieceColor CurrentTurnColor => currentTurnColor;
 
         /// <summary>
         /// Pieces who is threatening the king
@@ -75,72 +74,88 @@ namespace Logic
         [Button(space: 10f)]
         public void Restart()
         {
-            currentTurn = defaultTurn;
+            currentTurnColor = defaultTurnColor;
             checkType = CheckType.None;
             boardBuilder.BuildBoard();
             FindAllPieces();
             FindAllSquares();
 
             CalculateUnderAttackSquares();
-            OnTurnChanged?.Invoke(currentTurn, checkType);
+            OnTurnChanged?.Invoke(currentTurnColor, checkType);
         }
 
         /// <summary>
         ///  Calculate Under Attack Squares of opposite color
         /// </summary>
-        public void CalculateUnderAttackSquares()
+        private void CalculateUnderAttackSquares()
         {
-            var currentTurnPieces = currentTurn == PieceColor.White ? blackPieces : whitePieces;
-            var underAttackSet = new HashSet<Square>();
+            Piece[] currentTurnPieces = currentTurnColor == PieceColor.White ? whitePieces : blackPieces;
+            Piece[] prevTurnPieces = currentTurnColor == PieceColor.Black ? whitePieces : blackPieces;
 
-            attackers.Clear();
+            underAttackSquares = GetUnderAttackSquares(prevTurnPieces);
+            checkType = CalculateCheck(prevTurnPieces);
 
             foreach (Piece piece in currentTurnPieces)
             {
                 piece.CalculateMovesAndCaptures();
+                piece.CalculateConstrains();
+            }
+        }
 
-                // Try to add attackers
-                if (IsPieceMakeCheck(piece.CaptureSquares))
-                {
-                    attackers.Add(piece);
+        private static Square[] GetUnderAttackSquares(Piece[] currentTurnPieces)
+        {
+            var underAttackSet = new HashSet<Square>();
+            foreach (Piece piece in currentTurnPieces)
+            {
+                piece.CalculateMovesAndCaptures();
 
-                    // TODO: maybe make split attack line
-                    // Fill under attack line
-                    foreach (Square square in piece.MoveSquares)
-                    {
-                        attackLine.Add(square);
-                    }
-                }
-
-                // Calculate all squares on reach
                 foreach (Square underAttackSquare in piece.MoveSquares)
                 {
                     underAttackSet.Add(underAttackSquare);
                 }
             }
-
-            // Infer check type
-            checkType = attackers.Count switch
-                {
-                    0 => CheckType.None,
-                    1 => CheckType.Check,
-                    _ => CheckType.DoubleCheck
-                };
-
-            underAttackSquares = underAttackSet.ToArray();
+            return underAttackSet.ToArray();
         }
 
-        private bool IsPieceMakeCheck(IEnumerable<Square> underAttackSquares)
+        private CheckType CalculateCheck(Piece[] pieces)
         {
-            foreach (Square square in underAttackSquares)
+            // 2) Calculate check
+            attackers.Clear();
+            attackLine.Clear();
+            foreach (Piece piece in pieces)
             {
-                if (square.HasPiece() && square.GetPiece() is King king && king.GetPieceColor() == currentTurn)
+                // Try to add attackers
+                if (IsPieceMakeCheck(piece))
                 {
-                    return true;
+                    attackers.Add(piece);
+
+                    // Fill under attack line
+                    if (piece is LongRange longRange)
+                    {
+                        attackLine.AddRange(longRange.AttackLineSquares);
+                    }
                 }
             }
 
-            return false;
+            return attackers.Count switch
+            {
+                0 => CheckType.None,
+                1 => CheckType.Check,
+                _ => CheckType.DoubleCheck
+            };
+
+            bool IsPieceMakeCheck(Piece piece)
+            {
+                foreach (Square square in piece.CaptureSquares)
+                {
+                    if (square.HasPiece() && square.GetPiece() is King king && king.GetPieceColor() != piece.GetPieceColor())
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
         }
 
         public void ChangeTurn()
@@ -151,17 +166,16 @@ namespace Logic
             }
 
             // Change turn
-            currentTurn = currentTurn == PieceColor.White ? PieceColor.Black : PieceColor.White;
+            currentTurnColor = currentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
 
             CalculateUnderAttackSquares();
-            OnTurnChanged?.Invoke(currentTurn, checkType);
+            OnTurnChanged?.Invoke(currentTurnColor, checkType);
         }
 
         public bool IsRightTurn(PieceColor pieceColor)
         {
-            return pieceColor == currentTurn;
+            return pieceColor == currentTurnColor;
         }
-
 
         /// <summary>
         /// Get section relative to current piece color
@@ -271,9 +285,9 @@ namespace Logic
                 return;
             }
 
-            currentTurn = (PieceColor)index;
+            currentTurnColor = (PieceColor)index;
             CalculateUnderAttackSquares();
-            OnTurnChanged?.Invoke(currentTurn, checkType);
+            OnTurnChanged?.Invoke(currentTurnColor, checkType);
         }
 
 #endif

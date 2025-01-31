@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Logic;
 using UnityEngine;
 
@@ -8,16 +9,16 @@ namespace Board.Pieces
     {
         [Header("Long Range")]
         [SerializeField] private Vector2Int[] moveVectors;
-        public Vector2Int[] MoveVectors => moveVectors;
+        [SerializeField] private List<Square> attackLineSquares;
+
+        public List<Square> AttackLineSquares => attackLineSquares;
 
         protected override void CalculateMovesAndCapturesInternal()
         {
-            MoveSquares.Clear();
-            CaptureSquares.Clear();
-
-            foreach (Vector2Int direction in MoveVectors)
+            foreach (Vector2Int direction in moveVectors)
             {
                 Vector2Int offset = direction;
+                List<Square> possibleAttackLine = new();
                 while (true)
                 {
                     Square square = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
@@ -25,52 +26,28 @@ namespace Board.Pieces
 
                     if (square == gameManager.NullSquare)
                     {
+                        MoveSquares.AddRange(possibleAttackLine);
                         break;
                     }
 
-                    if (gameManager.CheckType == CheckType.None)
+                    if (square.HasPiece())
                     {
-                        if (square.HasPiece())
+                        if (square.GetPieceColor() != pieceColor)
                         {
-                            if (square.GetPieceColor() != pieceColor)
-                            {
-                                CaptureSquares.Add(square);
-                            }
-                            // If piece will be captured, then square can be under attack
-                            else
-                            {
-                                MoveSquares.Add(square);
-                            }
+                            CaptureSquares.Add(square);
 
-                            break;
-                        }
-                        else
-                        {
-                            MoveSquares.Add(square);
-                        }
-                    }
-                    else if(gameManager.CheckType == CheckType.Check)
-                    {
-                        if (square.HasPiece())
-                        {
-                            // Only if captured piece is attacking king
-                            if (square.GetPiece() == gameManager.Attackers.First())
+                            // Find attack line to king
+                            if (square.GetPiece() is King)
                             {
-                                CaptureSquares.Add(square);
+                                attackLineSquares = possibleAttackLine;
                             }
+                        }
 
-                            break;
-                        }
-                        else
-                        {
-                            // Only if square lies on attack line
-                            if (gameManager.AttackLine.Contains(square))
-                            {
-                                MoveSquares.Add(square);
-                            }
-                        }
+                        MoveSquares.AddRange(possibleAttackLine);
+                        break;
                     }
-                    // Can't do any if DoubleCheck
+
+                    possibleAttackLine.Add(square);
                 }
             }
         }

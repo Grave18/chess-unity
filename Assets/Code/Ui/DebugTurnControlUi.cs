@@ -15,11 +15,8 @@ namespace Ui
 
         private void Awake()
         {
-            // if(!Debug.isDebugBuild)
-            // {
-                gameObject.SetActive(false);
-                Destroy(gameObject);
-            // }
+            gameObject.SetActive(false);
+            Destroy(gameObject);
         }
 
 #else
@@ -27,12 +24,20 @@ namespace Ui
         {
             dropdown.onValueChanged.AddListener(gameManager.SetTurn);
             toggle.onValueChanged.AddListener(gameManager.SetAutoChange);
+            gameManager.OnTurnChanged += UpdateValues;
         }
 
-        private void Update()
+        private void UpdateValues(PieceColor discard1, CheckType discard2)
         {
-            dropdown.value = (int)gameManager.CurrentTurn;
+            dropdown.onValueChanged.RemoveListener(gameManager.SetTurn);
+            toggle.onValueChanged.RemoveListener(gameManager.SetAutoChange);
+
+            // Must not trigger functions in gameManager while updated from manager
+            dropdown.value = (int)gameManager.CurrentTurnColor;
             toggle.isOn = gameManager.IsAutoChange;
+
+            dropdown.onValueChanged.AddListener(gameManager.SetTurn);
+            toggle.onValueChanged.AddListener(gameManager.SetAutoChange);
         }
 
 #endif
