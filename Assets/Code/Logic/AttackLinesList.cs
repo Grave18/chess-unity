@@ -9,7 +9,7 @@ namespace Logic
     public class AttackLine
     {
         public Piece Attacker { get; set; }
-        public List<Square> Line  { get; set; }
+        public HashSet<Square> Line  { get; set; }
         public bool IsCheck { get; set; }
 
         public bool Contains(Square moveSquare)

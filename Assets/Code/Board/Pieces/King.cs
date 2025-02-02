@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Logic;
 using Logic.Notation;
 using UnityEngine;
@@ -13,20 +12,18 @@ namespace Board.Pieces
         [FormerlySerializedAs("Moves")]
         [SerializeField] private Vector2Int[] moves;
 
-        private List<CastlingInfo> _castlingSquares = new();
-
-        public List<CastlingInfo> CastlingSquares => _castlingSquares;
+        public List<CastlingInfo> CastlingSquares { get; } = new();
 
         public override void CalculateConstrains()
         {
-            // Different implementation
+            // Constrains calculated in CalculateMovesAndCaptures
             // Common code don't needed
         }
 
         // Also calculate castling
         protected override void CalculateMovesAndCapturesInternal()
         {
-            _castlingSquares.Clear();
+            CastlingSquares.Clear();
 
             // Calculate Moves and Captures
             foreach (Vector2Int offset in moves)
@@ -59,22 +56,22 @@ namespace Board.Pieces
             Square shortCastlingSquare = gameManager.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(2, 0));
             if (CanCastlingShort(shortCastlingSquare, out CastlingInfo shortCastlingInfo))
             {
-                _castlingSquares.Add(shortCastlingInfo);
+                CastlingSquares.Add(shortCastlingInfo);
             }
             else if(shortCastlingInfo.IsBlocked)
             {
-                cannotMoveSquares.Add(shortCastlingSquare);
+                CannotMoveSquares.Add(shortCastlingSquare);
             }
 
             // Add long castling. Do need absolute position
             Square longCastlingSquare = gameManager.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(-2, 0));
             if (CanCastleLong(longCastlingSquare, out CastlingInfo longCastlingInfo))
             {
-                _castlingSquares.Add(longCastlingInfo);
+                CastlingSquares.Add(longCastlingInfo);
             }
             else if(longCastlingInfo.IsBlocked)
             {
-                cannotMoveSquares.Add(longCastlingSquare);
+                CannotMoveSquares.Add(longCastlingSquare);
             }
         }
 
@@ -82,7 +79,7 @@ namespace Board.Pieces
         {
             castlingInfo = default;
 
-            foreach (CastlingInfo ci in _castlingSquares)
+            foreach (CastlingInfo ci in CastlingSquares)
             {
                 if (ci.CastlingSquare.IsEqual(square))
                 {

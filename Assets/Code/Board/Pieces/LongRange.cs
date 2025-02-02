@@ -7,9 +7,9 @@ namespace Board.Pieces
     {
         [Header("Long Range")]
         [SerializeField] private Vector2Int[] moveVectors;
-        [SerializeField] private List<Square> attackLineSquares;
+        private HashSet<Square> attackLineSquares = new();
 
-        public List<Square> AttackLineSquares => attackLineSquares;
+        public HashSet<Square> AttackLineSquares => attackLineSquares;
         public bool HasAttackLine => attackLineSquares.Count > 0;
 
         protected override void CalculateMovesAndCapturesInternal()
@@ -17,7 +17,7 @@ namespace Board.Pieces
             foreach (Vector2Int direction in moveVectors)
             {
                 Vector2Int offset = direction;
-                List<Square> possibleAttackLine = new();
+                HashSet<Square> possibleAttackLine = new();
                 bool isFindingKing = false;
                 while (true)
                 {

@@ -30,14 +30,14 @@ namespace Logic
         [SerializeField] private Square[] squares;
         [SerializeField] private Piece[] whitePieces;
         [SerializeField] private Piece[] blackPieces;
-        [SerializeField] private Square[] underAttackSquares;
         [SerializeField] private Square nullSquare;
 
         [Header("Selections")]
         public ISelectable Selected;
         public ISelectable Highlighted;
 
-        private AttackLinesList _attackLines = new();
+        public AttackLinesList AttackLines { get; } = new();
+        public HashSet<Square> UnderAttackSquares { get; private set; } = new();
 
         public event Action<PieceColor, CheckType> OnTurnChanged;
 
@@ -45,12 +45,10 @@ namespace Logic
         public CheckType CheckType => checkType;
         public PieceColor CurrentTurnColor => currentTurnColor;
 
-        public AttackLinesList AttackLines => _attackLines;
 
         public Square NullSquare => nullSquare;
         public bool IsAutoChange => isAutoChange;
         public Square[] Squares => squares;
-        public Square[] UnderAttackSquares => underAttackSquares;
 
         public Piece[] WhitePieces => whitePieces;
         public Piece[] BlackPieces => blackPieces;
@@ -87,7 +85,7 @@ namespace Logic
             Piece[] currentTurnPieces = currentTurnColor == PieceColor.White ? whitePieces : blackPieces;
             Piece[] prevTurnPieces = currentTurnColor == PieceColor.Black ? whitePieces : blackPieces;
 
-            underAttackSquares = GetUnderAttackSquares(prevTurnPieces);
+            UnderAttackSquares = GetUnderAttackSquares(prevTurnPieces);
             checkType = CalculateCheck(prevTurnPieces);
 
             foreach (Piece piece in currentTurnPieces)
@@ -97,7 +95,7 @@ namespace Logic
             }
         }
 
-        private static Square[] GetUnderAttackSquares(Piece[] currentTurnPieces)
+        private static HashSet<Square> GetUnderAttackSquares(Piece[] currentTurnPieces)
         {
             var underAttackSet = new HashSet<Square>();
             foreach (Piece piece in currentTurnPieces)
@@ -110,12 +108,12 @@ namespace Logic
                 }
             }
 
-            return underAttackSet.ToArray();
+            return underAttackSet;
         }
 
         private CheckType CalculateCheck(Piece[] pieces)
         {
-            _attackLines.Clear();
+            AttackLines.Clear();
             foreach (Piece piece in pieces)
             {
                 // Fill under attack line
@@ -123,13 +121,14 @@ namespace Logic
                 {
                     if (!longRange.HasAttackLine) continue;
 
+                    // TODO: Add constructor to AttackLine
                     var attackLine = new AttackLine
                     {
                         Attacker = piece,
                         Line = longRange.AttackLineSquares,
                         IsCheck = IsPieceMakeCheck(piece),
                     };
-                    _attackLines.Add(attackLine);
+                    AttackLines.Add(attackLine);
                 }
                 else
                 {
@@ -138,14 +137,14 @@ namespace Logic
                     var attackLine = new AttackLine
                     {
                         Attacker = piece,
-                        Line = new List<Square>(),
+                        Line = new HashSet<Square>(),
                         IsCheck = true,
                     };
-                    _attackLines.Add(attackLine);
+                    AttackLines.Add(attackLine);
                 }
             }
 
-            return _attackLines.CountCheck() switch
+            return AttackLines.CountCheck() switch
             {
                 0 => CheckType.None,
                 1 => CheckType.Check,
