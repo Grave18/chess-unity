@@ -1,23 +1,51 @@
 using Logic;
+using TMPro;
 using UnityEngine;
 
-public class NotificationPanel : MonoBehaviour
+namespace Ui
 {
-    [SerializeField] private GameManager gameManager;
-    [SerializeField] private GameObject notificationText;
-
-    private void OnEnable()
+    public class NotificationPanel : MonoBehaviour
     {
-        gameManager.OnTurnChanged += UpdateNotificationText;
-    }
+        [SerializeField] private GameManager gameManager;
+        [SerializeField] private TMP_Text notificationText;
 
-    private void OnDisable()
-    {
-        gameManager.OnTurnChanged -= UpdateNotificationText;
-    }
+        private GameObject _textGo;
+        private void Awake()
+        {
+            _textGo = notificationText.gameObject;
+        }
 
-    private void UpdateNotificationText(PieceColor pieceColor, CheckType checkType)
-    {
-        notificationText.SetActive(checkType != CheckType.None);
+        private void OnEnable()
+        {
+            gameManager.OnTurnChanged += UpdateNotificationText;
+        }
+
+        private void OnDisable()
+        {
+            gameManager.OnTurnChanged -= UpdateNotificationText;
+        }
+
+        private void UpdateNotificationText(PieceColor pieceColor, CheckType checkType)
+        {
+            switch (checkType)
+            {
+                case CheckType.Check:
+                    _textGo.SetActive(true);
+                    notificationText.text = "Check";
+                    break;
+                case CheckType.DoubleCheck:
+                    _textGo.SetActive(true);
+                    notificationText.text = "Double Check";
+                    break;
+                case CheckType.CheckMate:
+                    _textGo.SetActive(true);
+                    notificationText.text = "Check Mate";
+                    break;
+                case CheckType.None:
+                    notificationText.text = "";
+                    _textGo.SetActive(false);
+                    break;
+            }
+        }
     }
 }

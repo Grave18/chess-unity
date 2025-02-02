@@ -6,7 +6,6 @@ using Board.Builder;
 using Board.Pieces;
 using EditorCools;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Logic
 {
@@ -28,17 +27,17 @@ namespace Logic
         [SerializeField] private bool isAutoChange;
 
         [Header("Arrays")]
-        [FormerlySerializedAs("Squares")]
         [SerializeField] private Square[] squares;
         [SerializeField] private Piece[] whitePieces;
         [SerializeField] private Piece[] blackPieces;
         [SerializeField] private Square[] underAttackSquares;
-        [SerializeField] private List<Piece> attackers;
-        [SerializeField] private List<Square> attackLine;
         [SerializeField] private Square nullSquare;
 
+        [Header("Selections")]
         public ISelectable Selected;
         public ISelectable Highlighted;
+
+        private AttackLinesList _attackLines = new();
 
         public event Action<PieceColor, CheckType> OnTurnChanged;
 
@@ -46,11 +45,7 @@ namespace Logic
         public CheckType CheckType => checkType;
         public PieceColor CurrentTurnColor => currentTurnColor;
 
-        /// <summary>
-        /// Pieces who is threatening the king
-        /// </summary>
-        public List<Piece> Attackers => attackers;
-        public List<Square> AttackLine => attackLine;
+        public AttackLinesList AttackLines => _attackLines;
 
         public Square NullSquare => nullSquare;
         public bool IsAutoChange => isAutoChange;
@@ -114,30 +109,43 @@ namespace Logic
                     underAttackSet.Add(underAttackSquare);
                 }
             }
+
             return underAttackSet.ToArray();
         }
 
         private CheckType CalculateCheck(Piece[] pieces)
         {
-            // 2) Calculate check
-            attackers.Clear();
-            attackLine.Clear();
+            _attackLines.Clear();
             foreach (Piece piece in pieces)
             {
-                // Try to add attackers
-                if (IsPieceMakeCheck(piece))
+                // Fill under attack line
+                if (piece is LongRange longRange)
                 {
-                    attackers.Add(piece);
+                    if (!longRange.HasAttackLine) continue;
 
-                    // Fill under attack line
-                    if (piece is LongRange longRange)
+                    var attackLine = new AttackLine
                     {
-                        attackLine.AddRange(longRange.AttackLineSquares);
-                    }
+                        Attacker = piece,
+                        Line = longRange.AttackLineSquares,
+                        IsCheck = IsPieceMakeCheck(piece),
+                    };
+                    _attackLines.Add(attackLine);
+                }
+                else
+                {
+                    if (!IsPieceMakeCheck(piece)) continue;
+
+                    var attackLine = new AttackLine
+                    {
+                        Attacker = piece,
+                        Line = new List<Square>(),
+                        IsCheck = true,
+                    };
+                    _attackLines.Add(attackLine);
                 }
             }
 
-            return attackers.Count switch
+            return _attackLines.CountCheck() switch
             {
                 0 => CheckType.None,
                 1 => CheckType.Check,
@@ -148,7 +156,8 @@ namespace Logic
             {
                 foreach (Square square in piece.CaptureSquares)
                 {
-                    if (square.HasPiece() && square.GetPiece() is King king && king.GetPieceColor() != piece.GetPieceColor())
+                    if (square.HasPiece() && square.GetPiece() is King king &&
+                        king.GetPieceColor() != piece.GetPieceColor())
                     {
                         return true;
                     }

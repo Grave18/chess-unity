@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Logic;
 using UnityEngine;
 
 namespace Board.Pieces
@@ -12,6 +10,7 @@ namespace Board.Pieces
         [SerializeField] private List<Square> attackLineSquares;
 
         public List<Square> AttackLineSquares => attackLineSquares;
+        public bool HasAttackLine => attackLineSquares.Count > 0;
 
         protected override void CalculateMovesAndCapturesInternal()
         {
@@ -19,6 +18,7 @@ namespace Board.Pieces
             {
                 Vector2Int offset = direction;
                 List<Square> possibleAttackLine = new();
+                bool isFindingKing = false;
                 while (true)
                 {
                     Square square = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
@@ -26,28 +26,52 @@ namespace Board.Pieces
 
                     if (square == gameManager.NullSquare)
                     {
-                        MoveSquares.AddRange(possibleAttackLine);
                         break;
+                    }
+
+                    if (isFindingKing)
+                    {
+                        if (square.HasPiece())
+                        {
+                            if (square.GetPiece() is King king && king.GetPieceColor() != pieceColor)
+                            {
+                                attackLineSquares = possibleAttackLine;
+                            }
+
+                            break;
+                        }
+
+                        possibleAttackLine.Add(square);
+                        continue;
                     }
 
                     if (square.HasPiece())
                     {
                         if (square.GetPieceColor() != pieceColor)
                         {
+                            possibleAttackLine.Add(square);
                             CaptureSquares.Add(square);
 
                             // Find attack line to king
                             if (square.GetPiece() is King)
                             {
                                 attackLineSquares = possibleAttackLine;
+                                break;
                             }
+
+                            isFindingKing = true;
                         }
-
-                        MoveSquares.AddRange(possibleAttackLine);
-                        break;
+                        else
+                        {
+                            // If same color then break
+                            break;
+                        }
                     }
-
-                    possibleAttackLine.Add(square);
+                    else
+                    {
+                        possibleAttackLine.Add(square);
+                        MoveSquares.Add(square);
+                    }
                 }
             }
         }

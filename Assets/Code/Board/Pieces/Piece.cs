@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using Logic;
 using UnityEngine;
+
 #pragma warning disable CS0252, CS0253
 
 namespace Board.Pieces
@@ -10,6 +11,7 @@ namespace Board.Pieces
     {
         [Header("Piece settings")]
         [SerializeField] protected PieceColor pieceColor;
+
         [SerializeField] private LayerMask squareLayer;
 
         [Header("Animation")]
@@ -19,7 +21,9 @@ namespace Board.Pieces
         [Header("Debug preview")]
         public bool IsFirstMove = true;
         [SerializeField] protected GameManager gameManager;
+
         [SerializeField] protected Square currentSquare;
+
         // All kind of squares
         [SerializeField] protected List<Square> moveSquares;
         [SerializeField] protected List<Square> captureSquares;
@@ -109,22 +113,74 @@ namespace Board.Pieces
 
         public virtual void CalculateConstrains()
         {
-            if(gameManager.CheckType == CheckType.None)
+            if (gameManager.CheckType == CheckType.None)
             {
-                return;
-            }
+                if (!gameManager.AttackLines.Contains(currentSquare, isCheck: false))
+                {
+                    return;
+                }
 
-            // This constrains only if check
+                if (!gameManager.AttackLines.TryGetAttackLine(this, out AttackLine attackLine))
+                {
+                    return;
+                }
+
+                CalculatePin(attackLine);
+            }
+            else if (gameManager.CheckType == CheckType.Check)
+            {
+                if (gameManager.AttackLines.TryGetAttackLine(this, out AttackLine attackLine)
+                    && !attackLine.IsCheck)
+                {
+                    DisableMovesAndCaptures();
+                }
+                else
+                {
+                    UpdateMovesAndCaptures();
+                }
+            }
+            else if (gameManager.CheckType == CheckType.DoubleCheck)
+            {
+                DisableMovesAndCaptures();
+            }
+        }
+
+        private void DisableMovesAndCaptures()
+        {
+            // Disable all
             // Update move
             var tempMoveSquares = new List<Square>(moveSquares);
             foreach (Square moveSquare in moveSquares)
             {
-                if (!gameManager.AttackLine.Contains(moveSquare))
+                tempMoveSquares.Remove(moveSquare);
+                cannotMoveSquares.Add(moveSquare);
+            }
+
+            moveSquares = tempMoveSquares;
+
+            // Update capture
+            var tempCaptureSquares = new List<Square>(captureSquares);
+            foreach (Square captureSquare in captureSquares)
+            {
+                tempCaptureSquares.Remove(captureSquare);
+            }
+
+            captureSquares = tempCaptureSquares;
+        }
+
+        private void UpdateMovesAndCaptures()
+        {
+            // Update move
+            var tempMoveSquares = new List<Square>(moveSquares);
+            foreach (Square moveSquare in moveSquares)
+            {
+                if (!gameManager.AttackLines.Contains(moveSquare, isCheck: true))
                 {
                     tempMoveSquares.Remove(moveSquare);
                     cannotMoveSquares.Add(moveSquare);
                 }
             }
+
             moveSquares = tempMoveSquares;
 
             // Update capture
@@ -132,14 +188,41 @@ namespace Board.Pieces
             foreach (Square captureSquare in captureSquares)
             {
                 Piece capturePiece = captureSquare.GetPiece();
-                if (!gameManager.Attackers.Contains(capturePiece))
+                if (!gameManager.AttackLines.ContainsAttacker(capturePiece, isCheck: true))
                 {
                     tempCaptureSquares.Remove(captureSquare);
                 }
             }
-            captureSquares = tempCaptureSquares;
 
-            // Can't do any if DoubleCheck
+            captureSquares = tempCaptureSquares;
+        }
+
+        private void CalculatePin(AttackLine attackLine)
+        {
+            var tempMoveSquares = new List<Square>(moveSquares);
+
+            foreach (Square moveSquare in moveSquares)
+            {
+                if (!attackLine.Contains(moveSquare))
+                {
+                    tempMoveSquares.Remove(moveSquare);
+                    cannotMoveSquares.Add(moveSquare);
+                }
+            }
+
+            moveSquares = tempMoveSquares;
+
+            // Update captures
+            var tempCaptureSquares = new List<Square>(captureSquares);
+            foreach (Square captureSquare in captureSquares)
+            {
+                if (captureSquare.GetPiece() != attackLine.Attacker)
+                {
+                    tempCaptureSquares.Remove(captureSquare);
+                }
+            }
+
+            captureSquares = tempCaptureSquares;
         }
 
         public void CalculateMovesAndCaptures()
@@ -156,6 +239,7 @@ namespace Board.Pieces
 
             CalculateMovesAndCapturesInternal();
         }
+
         protected abstract void CalculateMovesAndCapturesInternal();
 
         public Piece GetPiece()

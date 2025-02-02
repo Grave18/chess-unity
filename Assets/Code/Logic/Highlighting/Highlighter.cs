@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Board;
+﻿using Board;
 using Board.Pieces;
 using UnityEngine;
 
@@ -57,7 +56,7 @@ namespace Logic.Highlighting
             }
 
             // Highlight check king and attacker pieces
-            if (gameManager.CheckType == CheckType.Check)
+            if (gameManager.CheckType is CheckType.Check or CheckType.DoubleCheck)
             {
                 HighlightCheck(piece);
             }
@@ -75,10 +74,14 @@ namespace Logic.Highlighting
 
         private void HighlightCheck(Piece piece)
         {
-            // Attacker
-            Piece attacker = gameManager.Attackers.First();
-            var attackerFx = attacker.GetComponent<Dissolve>();
-            attackerFx.HighlightPiece(enableHighlight: true);
+            // Attackers
+            foreach (AttackLine attackLine in gameManager.AttackLines)
+            {
+                if (attackLine.IsCheck && attackLine.Attacker.TryGetComponent(out Dissolve attackerFx))
+                {
+                    attackerFx.HighlightPiece(enableHighlight: true);
+                }
+            }
 
             // King
             Piece[] pieces = gameManager.CurrentTurnColor == PieceColor.White ? gameManager.WhitePieces : gameManager.BlackPieces;
@@ -135,7 +138,7 @@ namespace Logic.Highlighting
             {
                 if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
                 {
-                    squareHighlighter.Show(SquareShape.Cross, commonSettings.CanNotMoveColor);
+                    squareHighlighter.Show(SquareShape.Dot, commonSettings.CanNotMoveColor);
                 }
             }
         }
@@ -187,9 +190,9 @@ namespace Logic.Highlighting
         private void DebugAttackLine()
         {
             Color color = gameManager.CurrentTurnColor == PieceColor.White ? Color.black : Color.white;
-            foreach (Square square in gameManager.AttackLine)
+            foreach (AttackLine attackLine in gameManager.AttackLines)
             {
-                if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
+                if (attackLine.Attacker.TryGetComponent(out SquareHighlighter squareHighlighter))
                 {
                     squareHighlighter.Show(SquareShape.Dot, color);
                 }
