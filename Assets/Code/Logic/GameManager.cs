@@ -149,25 +149,14 @@ namespace Logic
                 {
                     if (!longRange.HasAttackLine) continue;
 
-                    // TODO: Add constructor to AttackLine
-                    var attackLine = new AttackLine
-                    {
-                        Attacker = piece,
-                        Line = longRange.AttackLineSquares,
-                        IsCheck = IsPieceMakeCheck(piece),
-                    };
+                    var attackLine = new AttackLine(piece, IsPieceMakeCheck(piece), longRange.AttackLineSquares);
                     AttackLines.Add(attackLine);
                 }
                 else
                 {
                     if (!IsPieceMakeCheck(piece)) continue;
 
-                    var attackLine = new AttackLine
-                    {
-                        Attacker = piece,
-                        Line = new HashSet<Square>(),
-                        IsCheck = true,
-                    };
+                    var attackLine = new AttackLine(piece, true);
                     AttackLines.Add(attackLine);
                 }
             }

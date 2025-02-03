@@ -8,9 +8,16 @@ namespace Logic
 {
     public class AttackLine
     {
-        public Piece Attacker { get; set; }
-        public HashSet<Square> Line  { get; set; }
-        public bool IsCheck { get; set; }
+        public Piece Attacker { get; }
+        public HashSet<Square> Line  { get; }
+        public bool IsCheck { get; }
+
+        public AttackLine(Piece attacker, bool isCheck, HashSet<Square> line = null)
+        {
+            Attacker = attacker;
+            IsCheck = isCheck;
+            Line = line ?? new HashSet<Square>();
+        }
 
         public bool Contains(Square moveSquare)
         {
