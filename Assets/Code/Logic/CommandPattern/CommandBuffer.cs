@@ -47,6 +47,12 @@
             _cursor -= 1;
         }
 
+        public void Clear()
+        {
+            _cursor = -1;
+            _length = 0;
+        }
+
         private void ResizeArray()
         {
             if (_cursor + 1 == _capacity)

@@ -46,7 +46,12 @@ namespace Board.Pieces
                         MoveSquares.Add(square);
                     }
                 }
-                else if (square.GetPieceColor() != pieceColor)
+                else if (square.GetPieceColor() == pieceColor)
+                {
+                    DefendSquares.Add(square);
+                }
+                else if (square.GetPieceColor() != pieceColor
+                         && !gameManager.UnderAttackSquares.Contains(square))
                 {
                     CaptureSquares.Add(square);
                 }

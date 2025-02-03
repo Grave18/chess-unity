@@ -26,11 +26,27 @@ namespace Board.Pieces
 
         // All kind of squares
 
-        public HashSet<Square> MoveSquares {get; private set;} = new();
-        public HashSet<Square> CaptureSquares {get; private set;} = new();
-        public HashSet<Square> CannotMoveSquares {get;} = new();
+        public HashSet<Square> MoveSquares { get; private set; } = new();
+        public HashSet<Square> CaptureSquares { get; private set; } = new();
+        public HashSet<Square> DefendSquares { get; } = new();
+        public HashSet<Square> CannotMoveSquares { get; } = new();
 
-        public void Construct(GameManager gameManager)
+        public void GetSectionAndAlign(GameManager gameManager)
+        {
+            Construct(gameManager);
+
+            if (!Physics.Raycast(transform.position + Vector3.up, Vector3.down, out var hitInfo, 2f,
+                    squareLayer))
+            {
+                return;
+            }
+
+            transform.position = hitInfo.transform.position;
+            currentSquare = hitInfo.collider.GetComponent<Square>();
+            currentSquare.SetPiece(this);
+        }
+
+        private void Construct(GameManager gameManager)
         {
             this.gameManager = gameManager;
         }
@@ -85,13 +101,15 @@ namespace Board.Pieces
             transform.position = new Vector3(-1.5f, 0f, 0f);
             currentSquare.SetPiece(null);
             currentSquare = null;
+            gameManager.RemovePiece(this);
         }
 
         public void RemoveFromBeaten(Square square)
         {
             transform.position = square.transform.position;
-            currentSquare = square;
             square.SetPiece(this);
+            currentSquare = square;
+            gameManager.AddPiece(this);
         }
 
         private void Move(Vector3 position, TweenCallback callback = null)
@@ -223,6 +241,7 @@ namespace Board.Pieces
             MoveSquares.Clear();
             CaptureSquares.Clear();
             CannotMoveSquares.Clear();
+            DefendSquares.Clear();
 
             CalculateMovesAndCapturesInternal();
         }
@@ -258,21 +277,6 @@ namespace Board.Pieces
         public bool HasPiece()
         {
             return true;
-        }
-
-        public void GetSectionAndAlign(GameManager gameManager)
-        {
-            Construct(gameManager);
-
-            if (!Physics.Raycast(transform.position + Vector3.up, Vector3.down, out var hitInfo, 2f,
-                    squareLayer))
-            {
-                return;
-            }
-
-            transform.position = hitInfo.transform.position;
-            currentSquare = hitInfo.collider.GetComponent<Square>();
-            currentSquare.SetPiece(this);
         }
 
 #if UNITY_EDITOR

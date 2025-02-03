@@ -28,62 +28,84 @@ namespace Logic
 
         [Header("Arrays")]
         [SerializeField] private Square[] squares;
-        [SerializeField] private Piece[] whitePieces;
-        [SerializeField] private Piece[] blackPieces;
         [SerializeField] private Square nullSquare;
 
         [Header("Selections")]
         public ISelectable Selected;
         public ISelectable Highlighted;
 
+        public HashSet<Piece> WhitePieces { get; } = new();
+        public HashSet<Piece> BlackPieces { get; } = new();
+
         public AttackLinesList AttackLines { get; } = new();
         public HashSet<Square> UnderAttackSquares { get; private set; } = new();
 
         public event Action<PieceColor, CheckType> OnTurnChanged;
+        public event Action OnRestart;
 
         // Getters
         public CheckType CheckType => checkType;
         public PieceColor CurrentTurnColor => currentTurnColor;
 
-
         public Square NullSquare => nullSquare;
         public bool IsAutoChange => isAutoChange;
         public Square[] Squares => squares;
 
-        public Piece[] WhitePieces => whitePieces;
-        public Piece[] BlackPieces => blackPieces;
 
         private void Start()
         {
             Restart();
         }
 
-        public void ClearSquares()
+        public void ClearPieces()
         {
-            whitePieces = new Piece[] { };
-            blackPieces = new Piece[] { };
+            WhitePieces.Clear();
+            BlackPieces.Clear();
+        }
+
+        public void RemovePiece(Piece piece)
+        {
+            if (piece.GetPieceColor() == PieceColor.White)
+            {
+                WhitePieces.Remove(piece);
+            }
+            else
+            {
+                BlackPieces.Remove(piece);
+            }
+        }
+
+        public void AddPiece(Piece piece)
+        {
+            if (piece.GetPieceColor() == PieceColor.White)
+            {
+                WhitePieces.Add(piece);
+            }
+            else
+            {
+                BlackPieces.Add(piece);
+            }
         }
 
         [Button(space: 10f)]
         public void Restart()
         {
+            FindAllSquares();
             currentTurnColor = defaultTurnColor;
             checkType = CheckType.None;
             boardBuilder.BuildBoard();
             FindAllPieces();
-            FindAllSquares();
 
-            CalculateUnderAttackSquares();
+            MainCalculations();
             OnTurnChanged?.Invoke(currentTurnColor, checkType);
+            OnRestart?.Invoke();
         }
 
-        /// <summary>
-        ///  Calculate Under Attack Squares of opposite color
-        /// </summary>
-        private void CalculateUnderAttackSquares()
+        // Calculations for all turns. Need to call every turn change
+        private void MainCalculations()
         {
-            Piece[] currentTurnPieces = currentTurnColor == PieceColor.White ? whitePieces : blackPieces;
-            Piece[] prevTurnPieces = currentTurnColor == PieceColor.Black ? whitePieces : blackPieces;
+            HashSet<Piece> currentTurnPieces = currentTurnColor == PieceColor.White ? WhitePieces : BlackPieces;
+            HashSet<Piece> prevTurnPieces = currentTurnColor == PieceColor.Black ? WhitePieces : BlackPieces;
 
             UnderAttackSquares = GetUnderAttackSquares(prevTurnPieces);
             checkType = CalculateCheck(prevTurnPieces);
@@ -93,9 +115,11 @@ namespace Logic
                 piece.CalculateMovesAndCaptures();
                 piece.CalculateConstrains();
             }
+
+            CalculateCheckMateOrStalemate(currentTurnPieces);
         }
 
-        private static HashSet<Square> GetUnderAttackSquares(Piece[] currentTurnPieces)
+        private static HashSet<Square> GetUnderAttackSquares(HashSet<Piece> currentTurnPieces)
         {
             var underAttackSet = new HashSet<Square>();
             foreach (Piece piece in currentTurnPieces)
@@ -106,12 +130,16 @@ namespace Logic
                 {
                     underAttackSet.Add(underAttackSquare);
                 }
+                foreach (Square defendSquare in piece.DefendSquares)
+                {
+                    underAttackSet.Add(defendSquare);
+                }
             }
 
             return underAttackSet;
         }
 
-        private CheckType CalculateCheck(Piece[] pieces)
+        private CheckType CalculateCheck(HashSet<Piece> pieces)
         {
             AttackLines.Clear();
             foreach (Piece piece in pieces)
@@ -166,6 +194,23 @@ namespace Logic
             }
         }
 
+        private void CalculateCheckMateOrStalemate(HashSet<Piece> currentTurnPieces)
+        {
+            // If all pieces have no moves
+            if (currentTurnPieces.Any(piece => piece.MoveSquares.Count  > 0
+                || piece.CaptureSquares.Count > 0))
+            {
+                return;
+            }
+
+            checkType = checkType switch
+                {
+                    CheckType.None => CheckType.Stalemate,
+                    CheckType.Check or CheckType.DoubleCheck => CheckType.CheckMate,
+                    _ => checkType
+                };
+        }
+
         public void ChangeTurn()
         {
             if (!isAutoChange)
@@ -176,7 +221,7 @@ namespace Logic
             // Change turn
             currentTurnColor = currentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
 
-            CalculateUnderAttackSquares();
+            MainCalculations();
             OnTurnChanged?.Invoke(currentTurnColor, checkType);
         }
 
@@ -228,21 +273,16 @@ namespace Logic
         [ContextMenu("Find All Pieces")]
         public void FindAllPieces()
         {
-            var whitePiecesTemp = new List<Piece>();
-            var blackPiecesTemp = new List<Piece>();
 
             foreach (Transform whitePieceTransform in whitePiecesTransform)
             {
-                whitePiecesTemp.Add(whitePieceTransform.GetComponent<Piece>());
+                WhitePieces.Add(whitePieceTransform.GetComponent<Piece>());
             }
 
             foreach (Transform blackPieceTransform in blackPiecesTransform)
             {
-                blackPiecesTemp.Add(blackPieceTransform.GetComponent<Piece>());
+                BlackPieces.Add(blackPieceTransform.GetComponent<Piece>());
             }
-
-            whitePieces = whitePiecesTemp.ToArray();
-            blackPieces = blackPiecesTemp.ToArray();
         }
 
         [Button(space: 10f)]
@@ -294,7 +334,7 @@ namespace Logic
             }
 
             currentTurnColor = (PieceColor)index;
-            CalculateUnderAttackSquares();
+            MainCalculations();
             OnTurnChanged?.Invoke(currentTurnColor, checkType);
         }
 

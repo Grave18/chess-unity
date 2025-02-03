@@ -2,9 +2,10 @@
 {
     public enum CheckType
     {
+        None,
         Check,
         DoubleCheck,
         CheckMate,
-        None
+        Stalemate
     }
 }

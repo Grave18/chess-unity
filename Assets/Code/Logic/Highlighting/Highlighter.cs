@@ -1,4 +1,5 @@
-﻿using Board;
+﻿using System.Collections.Generic;
+using Board;
 using Board.Pieces;
 using UnityEngine;
 
@@ -84,7 +85,7 @@ namespace Logic.Highlighting
             }
 
             // King
-            Piece[] pieces = gameManager.CurrentTurnColor == PieceColor.White ? gameManager.WhitePieces : gameManager.BlackPieces;
+            HashSet<Piece> pieces = gameManager.CurrentTurnColor == PieceColor.White ? gameManager.WhitePieces : gameManager.BlackPieces;
 
             foreach (Piece assumeKing in pieces)
             {

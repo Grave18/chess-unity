@@ -144,7 +144,7 @@ namespace Board.Builder
             _whitePairs.Clear();
             _blackPairs.Clear();
 
-            gameManager.ClearSquares();
+            gameManager.ClearPieces();
         }
 
         private static void DestroyAllPieces(Transform parent)

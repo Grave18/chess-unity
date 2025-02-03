@@ -28,6 +28,10 @@ namespace Board.Pieces
                 {
                     CaptureSquares.Add(square);
                 }
+                else if (square.GetPieceColor() == pieceColor)
+                {
+                    DefendSquares.Add(square);
+                }
             }
         }
     }

@@ -1,6 +1,7 @@
 using Logic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Ui
 {
@@ -8,15 +9,12 @@ namespace Ui
     {
         [SerializeField] private GameManager gameManager;
         [SerializeField] private TMP_Text notificationText;
-
-        private GameObject _textGo;
-        private void Awake()
-        {
-            _textGo = notificationText.gameObject;
-        }
+        [SerializeField] private Button restartButton;
 
         private void OnEnable()
         {
+            restartButton.onClick.AddListener(gameManager.Restart);
+            
             gameManager.OnTurnChanged += UpdateNotificationText;
         }
 
@@ -29,23 +27,32 @@ namespace Ui
         {
             switch (checkType)
             {
+                case CheckType.None:
+                    SetPanel(text: "", isText: false, isButton: false);
+                    break;
                 case CheckType.Check:
-                    _textGo.SetActive(true);
-                    notificationText.text = "Check";
+                    SetPanel(text: "Check", isText: true, isButton: false);
                     break;
                 case CheckType.DoubleCheck:
-                    _textGo.SetActive(true);
-                    notificationText.text = "Double Check";
+                    SetPanel(text: "Double check", isText: true, isButton: false);
                     break;
                 case CheckType.CheckMate:
-                    _textGo.SetActive(true);
-                    notificationText.text = "Check Mate";
+                    SetPanel(text: "Checkmate", isText: true, isButton: true);
                     break;
-                case CheckType.None:
-                    notificationText.text = "";
-                    _textGo.SetActive(false);
+                case CheckType.Stalemate:
+                    SetPanel(text: "Stalemate", isText: true, isButton: true);
+                    break;
+                default:
+                    SetPanel(text: "", isText: false, isButton: false);
                     break;
             }
+        }
+
+        private void SetPanel(string text, bool isText, bool isButton)
+        {
+            notificationText.gameObject.SetActive(isText);
+            restartButton.gameObject.SetActive(isButton);
+            notificationText.text = text;
         }
     }
 }

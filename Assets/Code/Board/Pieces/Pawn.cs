@@ -30,9 +30,16 @@ namespace Board.Pieces
             {
                 Square square = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
 
-                if (square.HasPiece() && square.GetPieceColor() != pieceColor)
+                if (square.HasPiece())
                 {
-                    CaptureSquares.Add(square);
+                    if (square.GetPieceColor() != pieceColor)
+                    {
+                        CaptureSquares.Add(square);
+                    }
+                    else
+                    {
+                        DefendSquares.Add(square);
+                    }
                 }
             }
         }

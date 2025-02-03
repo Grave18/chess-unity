@@ -63,7 +63,8 @@ namespace Board.Pieces
                         }
                         else
                         {
-                            // If same color then break
+                            // If same color
+                            DefendSquares.Add(square);
                             break;
                         }
                     }

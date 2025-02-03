@@ -126,5 +126,10 @@ namespace Logic.Notation
 
             return stringBuilder.ToString();
         }
+
+        public void Clear()
+        {
+            serieses.Clear();
+        }
     }
 }
