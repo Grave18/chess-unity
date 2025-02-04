@@ -21,9 +21,10 @@ namespace Board.Builder
         private readonly Dictionary<Square, GameObject> _whitePairs = new();
         private readonly Dictionary<Square, GameObject> _blackPairs = new();
 
-        public void BuildBoard()
+        public void BuildBoard(out PieceColor turnColor)
         {
             string text = boardPreset.Preset;
+            turnColor = boardPreset.TurnColor;
 
             text = ClearNewLineCharacters(text);
 
@@ -139,17 +140,17 @@ namespace Board.Builder
         [ContextMenu("Destroy All Pieces")]
         private void DestroyAllPieces()
         {
-            DestroyAllPieces(whitePiecesParent);
-            DestroyAllPieces(blackPiecesParent);
+            DestroyColorPieces(whitePiecesParent);
+            DestroyColorPieces(blackPiecesParent);
             _whitePairs.Clear();
             _blackPairs.Clear();
 
             gameManager.ClearPieces();
         }
 
-        private static void DestroyAllPieces(Transform parent)
+        private static void DestroyColorPieces(Transform parent)
         {
-            var pieces = parent.Cast<Transform>().ToArray();
+            Transform[] pieces = parent.Cast<Transform>().ToArray();
             foreach (Transform piece in pieces)
             {
                 DestroyImmediate(piece.gameObject);

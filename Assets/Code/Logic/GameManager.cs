@@ -22,7 +22,6 @@ namespace Logic
 
         [Header("Settings")]
         [SerializeField] private PieceColor currentTurnColor = PieceColor.White;
-        [SerializeField] private PieceColor defaultTurnColor = PieceColor.White;
         [SerializeField] private CheckType checkType = CheckType.None;
         [SerializeField] private bool isAutoChange;
 
@@ -54,6 +53,7 @@ namespace Logic
 
         private void Start()
         {
+            FindAllSquares();
             Restart();
         }
 
@@ -90,13 +90,11 @@ namespace Logic
         [Button(space: 10f)]
         public void Restart()
         {
-            FindAllSquares();
-            currentTurnColor = defaultTurnColor;
             checkType = CheckType.None;
-            boardBuilder.BuildBoard();
+            boardBuilder.BuildBoard(out currentTurnColor);
             FindAllPieces();
-
             MainCalculations();
+
             OnTurnChanged?.Invoke(currentTurnColor, checkType);
             OnRestart?.Invoke();
         }
