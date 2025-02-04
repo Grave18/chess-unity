@@ -35,32 +35,16 @@ namespace Logic.Notation
             {
                 switch (piece)
                 {
-                    case Bishop:
-                        turnString.Append("B");
-
-                        break;
-                    case King:
-                        turnString.Append("K");
-
-                        break;
-                    case Knight:
-                        turnString.Append("N");
-
-                        break;
+                    case Bishop: turnString.Append("B"); break;
+                    case King:   turnString.Append("K"); break;
+                    case Knight: turnString.Append("N"); break;
+                    case Queen:  turnString.Append("Q"); break;
+                    case Rook:   turnString.Append("R"); break;
                     case Pawn:
                         if (notationTurnType == NotationTurnType.Capture)
                         {
                             turnString.Append(piece.GetSquare().File);
                         }
-
-                        break;
-                    case Queen:
-                        turnString.Append("Q");
-
-                        break;
-                    case Rook:
-                        turnString.Append("R");
-
                         break;
                 }
 
@@ -119,9 +103,22 @@ namespace Logic.Notation
         {
             var stringBuilder = new StringBuilder();
 
-            foreach (var series in serieses)
+            foreach (Series series in serieses)
             {
                 stringBuilder.AppendLine(series.ToString());
+            }
+
+            if (gameManager.IsEndgame())
+            {
+                string endGameText = gameManager.GetWinner() switch
+                {
+                    PieceColor.White => "1-0",
+                    PieceColor.Black => "0-1",
+                    // ½-½
+                    PieceColor.None => "\u00bd-\u00bd",
+                    _ => string.Empty,
+                };
+                stringBuilder.AppendLine(endGameText);
             }
 
             return stringBuilder.ToString();

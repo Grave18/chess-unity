@@ -50,7 +50,6 @@ namespace Logic
         public bool IsAutoChange => isAutoChange;
         public Square[] Squares => squares;
 
-
         private void Start()
         {
             FindAllSquares();
@@ -85,6 +84,21 @@ namespace Logic
             {
                 BlackPieces.Add(piece);
             }
+        }
+
+        public PieceColor GetWinner()
+        {
+            return currentTurnColor switch
+            {
+                PieceColor.White when checkType == CheckType.CheckMate => PieceColor.Black,
+                PieceColor.Black when checkType == CheckType.CheckMate => PieceColor.White,
+                _ => PieceColor.None
+            };
+        }
+
+        public bool IsEndgame()
+        {
+            return checkType is CheckType.CheckMate or CheckType.Stalemate;
         }
 
         [Button(space: 10f)]
