@@ -84,11 +84,19 @@ namespace Board.Pieces
             return piece;
         }
 
-        public void MoveTo(Square square)
+        public void MoveTo(Square square, TweenCallback callback = null)
         {
             Vector3 position = square.transform.position;
 
-            Move(position);
+            // Move
+            float distance = Vector3.Distance(transform.position, position);
+            float duration = distance / animationSpeed;
+            var tween = transform.DOMove(position, duration).SetEase(animationEase);
+
+            if (callback != null)
+            {
+                tween.onComplete = callback;
+            }
 
             // Reset current square
             currentSquare.SetPiece(null);
@@ -110,19 +118,6 @@ namespace Board.Pieces
             square.SetPiece(this);
             currentSquare = square;
             gameManager.AddPiece(this);
-        }
-
-        private void Move(Vector3 position, TweenCallback callback = null)
-        {
-            // Move
-            float distance = Vector3.Distance(transform.position, position);
-            float duration = distance / animationSpeed;
-            var tween = transform.DOMove(position, duration).SetEase(animationEase);
-
-            if (callback != null)
-            {
-                tween.onComplete = callback;
-            }
         }
 
         public virtual void CalculateConstrains()

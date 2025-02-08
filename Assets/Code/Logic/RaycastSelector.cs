@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using Board;
 using Board.Pieces;
-using Logic.Notation;
 
 namespace Logic
 {
@@ -74,18 +73,17 @@ namespace Logic
 
         private void MakeMove(ISelectable selectable)
         {
-            Piece piece = gameManager.Selected?.GetPiece();
+            Piece piece = gameManager.Selected.GetPiece();
             Square square = selectable.GetSquare();
 
             // Move
-            if (piece != null && piece.CanMoveTo(square))
+            if (piece.CanMoveTo(square))
             {
                 commandManager.MoveTo(piece, square);
                 DeselectCurrent();
             }
             // Castling
-            else if (piece is King king
-                     && king.CanCastlingAt(square, out CastlingInfo castlingInfo))
+            else if (piece is King king && king.CanCastlingAt(square, out CastlingInfo castlingInfo))
             {
                 commandManager.Castling(king, square, castlingInfo.Rook, castlingInfo.RookSquare, castlingInfo.NotationTurnType);
                 DeselectCurrent();

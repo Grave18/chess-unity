@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Board.Pieces;
 using EditorCools;
 using Logic;
+using Ui.Promotion;
 using UnityEngine;
 
 namespace Board.Builder
@@ -12,7 +15,10 @@ namespace Board.Builder
         private const int Width = 8;
         private const int Height = 8;
 
+        [Header("References")]
         [SerializeField] private GameManager gameManager;
+        [SerializeField] private PromotionPanel promotionPanel;
+
         [SerializeField] private Transform whitePiecesParent;
         [SerializeField] private Transform blackPiecesParent;
         [SerializeField] private GameObject[] piecePrefabs;
@@ -20,6 +26,68 @@ namespace Board.Builder
 
         private readonly Dictionary<Square, GameObject> _whitePairs = new();
         private readonly Dictionary<Square, GameObject> _blackPairs = new();
+
+        private PieceType _pieceType = PieceType.None;
+
+        public GameObject[] PiecePrefabs => piecePrefabs;
+
+        public void RequestPieceFromSelector(PieceColor pieceColor, Square square, Action<Piece> callback)
+        {
+            promotionPanel.Show(pieceColor);
+            Time.timeScale = 0f;
+            StartCoroutine(WaitForSelection());
+            return;
+
+            IEnumerator WaitForSelection()
+            {
+                yield return new WaitUntil(() => _pieceType != PieceType.None);
+
+                Piece piece = GetPiece(_pieceType, pieceColor, square);
+                callback?.Invoke(piece);
+
+                // Reset state
+                _pieceType = PieceType.None;
+                Time.timeScale = 1f;
+            }
+        }
+
+        public void Select(PieceType pieceType)
+        {
+            _pieceType = pieceType;
+            promotionPanel.Hide();
+        }
+
+        public Piece GetPiece(PieceType pieceType, PieceColor pieceColor, Square square)
+        {
+            Transform piecesParent = pieceColor == PieceColor.White
+                ? whitePiecesParent
+                : blackPiecesParent;
+
+            GameObject piecePrefab = pieceColor == PieceColor.White
+                ? pieceType switch
+                    {
+                        // White
+                        PieceType.Queen => piecePrefabs[10],
+                        PieceType.Rook => piecePrefabs[11],
+                        PieceType.Bishop => piecePrefabs[6],
+                        PieceType.Knight => piecePrefabs[8],
+                        PieceType.Pawn => piecePrefabs[9],
+                        _ => null,
+                    }
+                : pieceType switch
+                    {
+                        // Black
+                        PieceType.Queen => piecePrefabs[4],
+                        PieceType.Rook => piecePrefabs[5],
+                        PieceType.Bishop => piecePrefabs[0],
+                        PieceType.Knight => piecePrefabs[2],
+                        PieceType.Pawn => piecePrefabs[3],
+                        _ => null,
+                    };
+
+            InstantiatePiece(piecesParent, piecePrefab, square, out Piece piece);
+            return piece;
+        }
 
         public void BuildBoard(out PieceColor turnColor)
         {
@@ -123,10 +191,15 @@ namespace Board.Builder
         {
             foreach (var (square, piece) in pairs)
             {
-                var pieceInstance = Instantiate(piece, square.transform.position, piece.transform.rotation, piecesParent);
-                var pieceComponent = pieceInstance.GetComponent<Piece>();
-                pieceComponent.GetSectionAndAlign(gameManager);
+                InstantiatePiece(piecesParent, piece, square, out _);
             }
+        }
+
+        private void InstantiatePiece(Transform piecesParent, GameObject piecePrefab, Square square, out Piece piece)
+        {
+            GameObject pieceInstance = Instantiate(piecePrefab, square.transform.position, piecePrefab.transform.rotation, piecesParent);
+            piece = pieceInstance.GetComponent<Piece>();
+            piece.GetSectionAndAlign(gameManager);
         }
 
         [Button(name: "Build Board", space: 10f)]

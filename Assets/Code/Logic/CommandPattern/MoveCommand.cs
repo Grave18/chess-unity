@@ -33,7 +33,7 @@ namespace Logic.CommandPattern
 
             _piece.MoveTo(_square);
 
-            _gameManager.ChangeTurn();
+            _gameManager.EndTurn();
 
             // Is it Check?
             NotationTurnType notationTurnType = _gameManager.CheckType switch
@@ -59,7 +59,7 @@ namespace Logic.CommandPattern
             _piece.MoveTo(_previousSquare);
             _piece.IsFirstMove = _previousIsFirstMove;
 
-            _gameManager.ChangeTurn();
+            _gameManager.EndTurn();
         }
     }
 }

@@ -13,5 +13,7 @@
         DoubleCheck,
         CheckMate,
         None,
+        PromoteMove,
+        PromoteCapture
     }
 }

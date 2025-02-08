@@ -44,7 +44,7 @@ namespace Logic.CommandPattern
             _king.IsFirstMove = false;
             _rook.IsFirstMove = false;
 
-            _gameManager.ChangeTurn();
+            _gameManager.EndTurn();
         }
 
         public override void Undo()
@@ -62,7 +62,7 @@ namespace Logic.CommandPattern
             _rook.IsFirstMove = true;
             _king.IsFirstMove = true;
 
-            _gameManager.ChangeTurn();
+            _gameManager.EndTurn();
         }
     }
 }

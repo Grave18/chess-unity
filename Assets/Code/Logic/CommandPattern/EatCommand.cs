@@ -37,7 +37,7 @@ namespace Logic.CommandPattern
             _beatenPiece = _piece.EatAt(_square);
             _piece.MoveTo(_square);
 
-            _gameManager.ChangeTurn();
+            _gameManager.EndTurn();
         }
 
         public override void Undo()
@@ -54,7 +54,7 @@ namespace Logic.CommandPattern
 
             _beatenPiece.RemoveFromBeaten(_square);
 
-            _gameManager.ChangeTurn();
+            _gameManager.EndTurn();
         }
     }
 }

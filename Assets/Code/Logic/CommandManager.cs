@@ -1,4 +1,5 @@
 ﻿using Board;
+using Board.Builder;
 using Board.Pieces;
 using Logic.CommandPattern;
 using Logic.Notation;
@@ -10,6 +11,8 @@ namespace Logic
     public class CommandManager : MonoBehaviour
     {
         [SerializeField] private GameManager gameManager;
+        [SerializeField] private BoardBuilder boardBuilder;
+
         [SerializeField] private SeriesList seriesList;
 
         [FormerlySerializedAs("_commandBuffer")]
@@ -27,12 +30,26 @@ namespace Logic
 
         public void MoveTo(Piece piece, Square square)
         {
-            commandBuffer.AddAndExecute(new MoveCommand(piece, square, gameManager, seriesList));
+            if (piece is Pawn && square.Rank is "8" or "1")
+            {
+                commandBuffer.AddAndExecute(new MoveAndPromoteCommand(piece, square, gameManager, boardBuilder, seriesList));
+            }
+            else
+            {
+                commandBuffer.AddAndExecute(new MoveCommand(piece, square, gameManager, seriesList));
+            }
         }
 
         public void EatAt(Piece piece, Square square)
         {
-            commandBuffer.AddAndExecute(new EatCommand(piece, square, gameManager, seriesList));
+            if (piece is Pawn && square.Rank is "8" or "1")
+            {
+                commandBuffer.AddAndExecute(new EatAndPromoteCommand(piece, square, gameManager, boardBuilder, seriesList));
+            }
+            else
+            {
+                commandBuffer.AddAndExecute(new EatCommand(piece, square, gameManager, seriesList));
+            }
         }
 
         public void Castling(King piece, Square kingSquare, Rook rook, Square rookSquare, NotationTurnType notationTurnType)

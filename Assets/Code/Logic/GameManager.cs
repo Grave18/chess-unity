@@ -35,6 +35,8 @@ namespace Logic
 
         public HashSet<Piece> WhitePieces { get; } = new();
         public HashSet<Piece> BlackPieces { get; } = new();
+        private HashSet<Piece> CurrentTurnPieces => currentTurnColor == PieceColor.White ? WhitePieces : BlackPieces;
+        private HashSet<Piece> PrevTurnPieces => currentTurnColor == PieceColor.Black ? WhitePieces : BlackPieces;
 
         public AttackLinesList AttackLines { get; } = new();
         public HashSet<Square> UnderAttackSquares { get; private set; } = new();
@@ -116,8 +118,8 @@ namespace Logic
         // Calculations for all turns. Need to call every turn change
         private void MainCalculations()
         {
-            HashSet<Piece> currentTurnPieces = currentTurnColor == PieceColor.White ? WhitePieces : BlackPieces;
-            HashSet<Piece> prevTurnPieces = currentTurnColor == PieceColor.Black ? WhitePieces : BlackPieces;
+            HashSet<Piece> currentTurnPieces = CurrentTurnPieces;
+            HashSet<Piece> prevTurnPieces = PrevTurnPieces;
 
             UnderAttackSquares = GetUnderAttackSquares(prevTurnPieces);
             checkType = CalculateCheck(prevTurnPieces);
@@ -212,13 +214,13 @@ namespace Logic
                 };
         }
 
-        public void ChangeTurn()
+        public void StartTurn()
         {
-            if (!isAutoChange)
-            {
-                return;
-            }
 
+        }
+
+        public void EndTurn()
+        {
             // Change turn
             currentTurnColor = currentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
 
