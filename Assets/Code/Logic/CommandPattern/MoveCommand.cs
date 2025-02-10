@@ -1,4 +1,5 @@
-﻿using Board;
+﻿using System.Threading.Tasks;
+using Board;
 using Board.Pieces;
 using Logic.Notation;
 
@@ -23,7 +24,7 @@ namespace Logic.CommandPattern
             _seriesList = seriesList;
         }
 
-        public override void Execute()
+        public override async Task ExecuteAsync()
         {
             _previousSquare = _piece.GetSquare();
             _previousIsFirstMove = _piece.IsFirstMove;
@@ -31,7 +32,7 @@ namespace Logic.CommandPattern
 
             _piece.IsFirstMove = false;
 
-            _piece.MoveTo(_square);
+            await _piece.MoveToAsync(_square);
 
             _gameManager.EndTurn();
 
@@ -47,7 +48,7 @@ namespace Logic.CommandPattern
             _seriesList.AddTurn(_piece, _square, _previousTurn, notationTurnType);
         }
 
-        public override void Undo()
+        public override async Task UndoAsync()
         {
             if (_previousSquare == null)
             {
@@ -56,7 +57,8 @@ namespace Logic.CommandPattern
 
             _seriesList.RemoveTurn(_previousTurn);
 
-            _piece.MoveTo(_previousSquare);
+            await _piece.MoveToAsync(_previousSquare);
+
             _piece.IsFirstMove = _previousIsFirstMove;
 
             _gameManager.EndTurn();

@@ -19,7 +19,7 @@
             _cursor += 1;
 
             _commands[_cursor] = command;
-            _commands[_cursor].Execute();
+            _commands[_cursor].ExecuteAsync();
             _length = _cursor + 1;
 
             ResizeArray();
@@ -33,7 +33,7 @@
             }
 
             _cursor += 1;
-            _commands[_cursor].Execute();
+            _commands[_cursor].ExecuteAsync();
         }
 
         public void Undo()
@@ -43,7 +43,7 @@
                 return;
             }
 
-            _commands[_cursor].Undo();
+            _commands[_cursor].UndoAsync();
             _cursor -= 1;
         }
 

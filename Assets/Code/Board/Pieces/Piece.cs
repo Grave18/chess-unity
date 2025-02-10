@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DG.Tweening;
 using Logic;
 using UnityEngine;
@@ -84,19 +85,19 @@ namespace Board.Pieces
             return piece;
         }
 
-        public void MoveTo(Square square, TweenCallback callback = null)
+        public async Task MoveToAsync(Square square)
         {
             Vector3 position = square.transform.position;
 
             // Move
             float distance = Vector3.Distance(transform.position, position);
             float duration = distance / animationSpeed;
-            var tween = transform.DOMove(position, duration).SetEase(animationEase);
 
-            if (callback != null)
-            {
-                tween.onComplete = callback;
-            }
+            Tween moveTween = transform
+                .DOMove(position, duration)
+                .SetEase(animationEase);
+
+            await moveTween.AsyncWaitForCompletion();
 
             // Reset current square
             currentSquare.SetPiece(null);

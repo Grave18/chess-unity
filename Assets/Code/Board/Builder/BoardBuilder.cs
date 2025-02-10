@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Board.Pieces;
 using EditorCools;
 using Logic;
@@ -15,8 +14,9 @@ namespace Board.Builder
         private const int Width = 8;
         private const int Height = 8;
 
-        [Header("References")]
-        [SerializeField] private GameManager gameManager;
+        [Header("References")] [SerializeField]
+        private GameManager gameManager;
+
         [SerializeField] private PromotionPanel promotionPanel;
 
         [SerializeField] private Transform whitePiecesParent;
@@ -27,34 +27,23 @@ namespace Board.Builder
         private readonly Dictionary<Square, GameObject> _whitePairs = new();
         private readonly Dictionary<Square, GameObject> _blackPairs = new();
 
-        private PieceType _pieceType = PieceType.None;
+        private TaskCompletionSource<PieceType> _pieceTypeCompletionSource = new();
 
         public GameObject[] PiecePrefabs => piecePrefabs;
 
-        public void RequestPieceFromSelector(PieceColor pieceColor, Square square, Action<Piece> callback)
+        public async Task<Piece> GetPieceFromSelectorAsync(PieceColor pieceColor, Square square)
         {
             promotionPanel.Show(pieceColor);
-            Time.timeScale = 0f;
-            StartCoroutine(WaitForSelection());
-            return;
+            PieceType pieceType = await _pieceTypeCompletionSource.Task;
+            promotionPanel.Hide();
 
-            IEnumerator WaitForSelection()
-            {
-                yield return new WaitUntil(() => _pieceType != PieceType.None);
-
-                Piece piece = GetPiece(_pieceType, pieceColor, square);
-                callback?.Invoke(piece);
-
-                // Reset state
-                _pieceType = PieceType.None;
-                Time.timeScale = 1f;
-            }
+            return GetPiece(pieceType, pieceColor, square);
         }
 
         public void Select(PieceType pieceType)
         {
-            _pieceType = pieceType;
-            promotionPanel.Hide();
+            _pieceTypeCompletionSource.SetResult(pieceType);
+            _pieceTypeCompletionSource = new TaskCompletionSource<PieceType>();
         }
 
         public Piece GetPiece(PieceType pieceType, PieceColor pieceColor, Square square)
@@ -65,25 +54,25 @@ namespace Board.Builder
 
             GameObject piecePrefab = pieceColor == PieceColor.White
                 ? pieceType switch
-                    {
-                        // White
-                        PieceType.Queen => piecePrefabs[10],
-                        PieceType.Rook => piecePrefabs[11],
-                        PieceType.Bishop => piecePrefabs[6],
-                        PieceType.Knight => piecePrefabs[8],
-                        PieceType.Pawn => piecePrefabs[9],
-                        _ => null,
-                    }
+                {
+                    // White
+                    PieceType.Queen => piecePrefabs[10],
+                    PieceType.Rook => piecePrefabs[11],
+                    PieceType.Bishop => piecePrefabs[6],
+                    PieceType.Knight => piecePrefabs[8],
+                    PieceType.Pawn => piecePrefabs[9],
+                    _ => null,
+                }
                 : pieceType switch
-                    {
-                        // Black
-                        PieceType.Queen => piecePrefabs[4],
-                        PieceType.Rook => piecePrefabs[5],
-                        PieceType.Bishop => piecePrefabs[0],
-                        PieceType.Knight => piecePrefabs[2],
-                        PieceType.Pawn => piecePrefabs[3],
-                        _ => null,
-                    };
+                {
+                    // Black
+                    PieceType.Queen => piecePrefabs[4],
+                    PieceType.Rook => piecePrefabs[5],
+                    PieceType.Bishop => piecePrefabs[0],
+                    PieceType.Knight => piecePrefabs[2],
+                    PieceType.Pawn => piecePrefabs[3],
+                    _ => null,
+                };
 
             InstantiatePiece(piecesParent, piecePrefab, square, out Piece piece);
             return piece;
@@ -197,7 +186,8 @@ namespace Board.Builder
 
         private void InstantiatePiece(Transform piecesParent, GameObject piecePrefab, Square square, out Piece piece)
         {
-            GameObject pieceInstance = Instantiate(piecePrefab, square.transform.position, piecePrefab.transform.rotation, piecesParent);
+            GameObject pieceInstance = Instantiate(piecePrefab, square.transform.position,
+                piecePrefab.transform.rotation, piecesParent);
             piece = pieceInstance.GetComponent<Piece>();
             piece.GetSectionAndAlign(gameManager);
         }

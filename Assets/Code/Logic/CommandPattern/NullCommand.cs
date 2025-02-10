@@ -1,8 +1,10 @@
-﻿namespace Logic.CommandPattern
+﻿using System.Threading.Tasks;
+
+namespace Logic.CommandPattern
 {
     public class NullCommand : Command
     {
-        public override void Execute() { }
-        public override void Undo() { }
+        public override async Task ExecuteAsync() => await Task.Delay(0);
+        public override async Task UndoAsync() => await Task.Delay(0);
     }
 }

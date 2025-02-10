@@ -1,4 +1,5 @@
-﻿using Board;
+﻿using System.Threading.Tasks;
+using Board;
 using Board.Pieces;
 using Logic.Notation;
 
@@ -24,7 +25,7 @@ namespace Logic.CommandPattern
             _seriesList = seriesList;
         }
 
-        public override void Execute()
+        public override async Task ExecuteAsync()
         {
             _seriesList.AddTurn(_piece, _square, _gameManager.CurrentTurnColor, NotationTurnType.Capture);
 
@@ -35,12 +36,12 @@ namespace Logic.CommandPattern
             _piece.IsFirstMove = false;
 
             _beatenPiece = _piece.EatAt(_square);
-            _piece.MoveTo(_square);
+            await _piece.MoveToAsync(_square);
 
             _gameManager.EndTurn();
         }
 
-        public override void Undo()
+        public override async Task UndoAsync()
         {
             if (_previousSquare == null || _beatenPiece == null)
             {
@@ -49,7 +50,7 @@ namespace Logic.CommandPattern
 
             _seriesList.RemoveTurn(_previousTurn);
 
-            _piece.MoveTo(_previousSquare);
+            await _piece.MoveToAsync(_previousSquare);
             _piece.IsFirstMove = _previousIsFirstMove;
 
             _beatenPiece.RemoveFromBeaten(_square);

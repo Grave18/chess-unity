@@ -1,4 +1,5 @@
-﻿using Board;
+﻿using System.Threading.Tasks;
+using Board;
 using Board.Pieces;
 using Logic.Notation;
 
@@ -30,7 +31,7 @@ namespace Logic.CommandPattern
             _notationTurnType = notationTurnType;
         }
 
-        public override void Execute()
+        public override async Task ExecuteAsync()
         {
             _seriesList.AddTurn(null, null, _gameManager.CurrentTurnColor, _notationTurnType);
 
@@ -38,8 +39,8 @@ namespace Logic.CommandPattern
             _previousRookSquare = _rook.GetSquare();
             _previousTurn = _gameManager.CurrentTurnColor;
 
-            _king.MoveTo(_kingSquare);
-            _rook.MoveTo(_rookSquare);
+            await _king.MoveToAsync(_kingSquare);
+            await _rook.MoveToAsync(_rookSquare);
 
             _king.IsFirstMove = false;
             _rook.IsFirstMove = false;
@@ -47,7 +48,7 @@ namespace Logic.CommandPattern
             _gameManager.EndTurn();
         }
 
-        public override void Undo()
+        public override async Task UndoAsync()
         {
             if (_previousKingSquare == null || _previousRookSquare == null)
             {
@@ -56,8 +57,8 @@ namespace Logic.CommandPattern
 
             _seriesList.RemoveTurn(_previousTurn);
 
-            _king.MoveTo(_previousKingSquare);
-            _rook.MoveTo(_previousRookSquare);
+            await _rook.MoveToAsync(_previousRookSquare);
+            await _king.MoveToAsync(_previousKingSquare);
 
             _rook.IsFirstMove = true;
             _king.IsFirstMove = true;

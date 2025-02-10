@@ -1,8 +1,8 @@
-﻿using Board;
+﻿using System.Threading.Tasks;
+using Board;
 using Board.Builder;
 using Board.Pieces;
 using Logic.Notation;
-using Ui;
 using UnityEngine;
 
 namespace Logic.CommandPattern
@@ -29,7 +29,7 @@ namespace Logic.CommandPattern
             _seriesList = seriesList;
         }
 
-        public override void Execute()
+        public override async Task ExecuteAsync()
         {
             // _seriesList.AddTurn(_piece, _square, _gameManager.CurrentTurnColor, NotationTurnType.Capture);
 
@@ -39,33 +39,30 @@ namespace Logic.CommandPattern
             _piece.IsFirstMove = false;
 
             _beatenPiece = _piece.EatAt(_square);
-            _piece.MoveTo(_square, OnEndMoveTo);
-            return;
 
-            void OnEndMoveTo()
-            {
-                _gameManager.RemovePiece(_piece);
-                Object.Destroy(_piece.gameObject);
+            await _piece.MoveToAsync(_square);
 
-                // _piece = _boardBuilder.GetPieceFromSelector(_piece.GetPieceColor(), _square);
-                _gameManager.AddPiece(_piece);
+            _gameManager.RemovePiece(_piece);
+            Object.Destroy(_piece.gameObject);
 
-                _gameManager.EndTurn();
+            // _piece = _boardBuilder.GetPieceFromSelector(_piece.GetPieceColor(), _square);
+            _gameManager.AddPiece(_piece);
 
-                // Is it Check?
-                // NotationTurnType notationTurnType = _gameManager.CheckType switch
-                // {
-                //     CheckType.Check => NotationTurnType.Check,
-                //     CheckType.DoubleCheck => NotationTurnType.DoubleCheck,
-                //     CheckType.CheckMate => NotationTurnType.CheckMate,
-                //     _ => NotationTurnType.Move
-                // };
+            _gameManager.EndTurn();
 
-                _seriesList.AddTurn(_piece, _square, _previousTurnColor, NotationTurnType.PromoteCapture);
-            }
+            // Is it Check?
+            // NotationTurnType notationTurnType = _gameManager.CheckType switch
+            // {
+            //     CheckType.Check => NotationTurnType.Check,
+            //     CheckType.DoubleCheck => NotationTurnType.DoubleCheck,
+            //     CheckType.CheckMate => NotationTurnType.CheckMate,
+            //     _ => NotationTurnType.Move
+            // };
+
+            _seriesList.AddTurn(_piece, _square, _previousTurnColor, NotationTurnType.PromoteCapture);
         }
 
-        public override void Undo()
+        public override async Task UndoAsync()
         {
             if (_previousSquare == null || _beatenPiece == null)
             {
@@ -79,7 +76,7 @@ namespace Logic.CommandPattern
             // Add pawn and go back
             _piece = _boardBuilder.GetPiece(PieceType.Pawn, _piece.GetPieceColor(), _square);
             _gameManager.AddPiece(_piece);
-            _piece.MoveTo(_previousSquare);
+            await _piece.MoveToAsync(_previousSquare);
 
             // Add beaten piece
             _beatenPiece.RemoveFromBeaten(_square);
