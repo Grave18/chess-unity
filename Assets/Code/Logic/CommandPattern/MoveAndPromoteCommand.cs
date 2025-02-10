@@ -10,6 +10,7 @@ namespace Logic.CommandPattern
     public class MoveAndPromoteCommand : Command
     {
         private Piece _piece;
+        private PieceType _promotedPieceType;
         private readonly Square _square;
         private readonly GameManager _gameManager;
         private readonly BoardBuilder _boardBuilder;
@@ -30,17 +31,29 @@ namespace Logic.CommandPattern
 
         public override async Task ExecuteAsync()
         {
+            _gameManager.StartTurn();
+
             _previousSquare = _piece.GetSquare();
             _previousTurnColor = _gameManager.CurrentTurnColor;
 
             await _piece.MoveToAsync(_square);
 
-            Piece piece = await _boardBuilder.GetPieceFromSelectorAsync(_piece.GetPieceColor(), _square);
+            Piece piece;
+            if(_promotedPieceType == PieceType.None)
+            {
+                (piece, _promotedPieceType) = await _boardBuilder.GetPieceFromSelectorAsync(_piece.GetPieceColor(), _square);
+            }
+            else
+            {
+                piece = _boardBuilder.GetPiece(_promotedPieceType, _piece.GetPieceColor(), _square);
+            }
 
             _gameManager.RemovePiece(_piece);
             Object.Destroy(_piece.gameObject);
+
             _piece = piece;
-            _gameManager.AddPiece(piece);
+            _gameManager.AddPiece(_piece);
+
             _gameManager.EndTurn();
 
             // Is it Check?
@@ -61,6 +74,8 @@ namespace Logic.CommandPattern
             {
                 return;
             }
+
+            _gameManager.StartTurn();
 
             // Remove promoted piece
             _gameManager.RemovePiece(_piece);

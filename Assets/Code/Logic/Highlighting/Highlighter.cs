@@ -2,6 +2,7 @@
 using Board;
 using Board.Pieces;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Logic.Highlighting
 {
@@ -9,7 +10,7 @@ namespace Logic.Highlighting
     {
         [Header("References")]
         [SerializeField] private GameManager gameManager;
-        [SerializeField] private RaycastSelector raycastSelector;
+        [FormerlySerializedAs("raycastSelector")] [SerializeField] private Selector selector;
 
         [Header("Settings")]
         [SerializeField] private CommonPieceSettings commonSettings;
@@ -23,13 +24,13 @@ namespace Logic.Highlighting
         private void OnEnable()
         {
             gameManager.OnTurnChanged += UpdateHighlighting;
-            raycastSelector.OnClick += UpdateHighlighting;
+            selector.OnClick += UpdateHighlighting;
         }
 
         private void OnDisable()
         {
             gameManager.OnTurnChanged -= UpdateHighlighting;
-            raycastSelector.OnClick -= UpdateHighlighting;
+            selector.OnClick -= UpdateHighlighting;
         }
 
         // Stab method for action

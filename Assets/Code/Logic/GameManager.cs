@@ -21,6 +21,7 @@ namespace Logic
         [SerializeField] private Transform blackPiecesTransform;
 
         [Header("Settings")]
+        [SerializeField] private GameState gameState = GameState.Idle;
         [SerializeField] private PieceColor currentTurnColor = PieceColor.White;
         [SerializeField] private CheckType checkType = CheckType.None;
         [SerializeField] private bool isAutoChange;
@@ -47,6 +48,7 @@ namespace Logic
         // Getters
         public CheckType CheckType => checkType;
         public PieceColor CurrentTurnColor => currentTurnColor;
+        public GameState GameState => gameState;
 
         public Square NullSquare => nullSquare;
         public bool IsAutoChange => isAutoChange;
@@ -109,14 +111,29 @@ namespace Logic
             checkType = CheckType.None;
             boardBuilder.BuildBoard(out currentTurnColor);
             FindAllPieces();
-            MainCalculations();
+            EndMoveCalculations();
 
             OnTurnChanged?.Invoke(currentTurnColor, checkType);
             OnRestart?.Invoke();
         }
 
+        public void StartTurn()
+        {
+            gameState = GameState.Move;
+        }
+
+        public void EndTurn()
+        {
+            // Change turn
+            currentTurnColor = currentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
+            gameState = GameState.Idle;
+
+            EndMoveCalculations();
+            OnTurnChanged?.Invoke(currentTurnColor, checkType);
+        }
+
         // Calculations for all turns. Need to call every turn change
-        private void MainCalculations()
+        private void EndMoveCalculations()
         {
             HashSet<Piece> currentTurnPieces = CurrentTurnPieces;
             HashSet<Piece> prevTurnPieces = PrevTurnPieces;
@@ -212,20 +229,6 @@ namespace Logic
                     CheckType.Check or CheckType.DoubleCheck => CheckType.CheckMate,
                     _ => checkType
                 };
-        }
-
-        public void StartTurn()
-        {
-
-        }
-
-        public void EndTurn()
-        {
-            // Change turn
-            currentTurnColor = currentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
-
-            MainCalculations();
-            OnTurnChanged?.Invoke(currentTurnColor, checkType);
         }
 
         public bool IsRightTurn(PieceColor pieceColor)
@@ -337,7 +340,7 @@ namespace Logic
             }
 
             currentTurnColor = (PieceColor)index;
-            MainCalculations();
+            EndMoveCalculations();
             OnTurnChanged?.Invoke(currentTurnColor, checkType);
         }
 

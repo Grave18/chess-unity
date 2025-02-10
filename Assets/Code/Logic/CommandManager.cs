@@ -60,12 +60,22 @@ namespace Logic
         [ContextMenu("Undo")]
         public void Undo()
         {
+            if(gameManager.GameState != GameState.Idle)
+            {
+                return;
+            }
+
             commandBuffer.Undo();
         }
 
         [ContextMenu("Redo")]
         public void Redo()
         {
+            if(gameManager.GameState != GameState.Idle)
+            {
+                return;
+            }
+
             commandBuffer.Redo();
         }
 

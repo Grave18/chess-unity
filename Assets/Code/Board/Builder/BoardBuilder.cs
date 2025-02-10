@@ -31,13 +31,14 @@ namespace Board.Builder
 
         public GameObject[] PiecePrefabs => piecePrefabs;
 
-        public async Task<Piece> GetPieceFromSelectorAsync(PieceColor pieceColor, Square square)
+        public async Task<(Piece, PieceType)> GetPieceFromSelectorAsync(PieceColor pieceColor, Square square)
         {
             promotionPanel.Show(pieceColor);
             PieceType pieceType = await _pieceTypeCompletionSource.Task;
             promotionPanel.Hide();
 
-            return GetPiece(pieceType, pieceColor, square);
+            Piece piece = GetPiece(pieceType, pieceColor, square);
+            return (piece, pieceType);
         }
 
         public void Select(PieceType pieceType)

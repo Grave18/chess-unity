@@ -27,6 +27,7 @@ namespace Logic.CommandPattern
 
         public override async Task ExecuteAsync()
         {
+            _gameManager.StartTurn();
             _seriesList.AddTurn(_piece, _square, _gameManager.CurrentTurnColor, NotationTurnType.Capture);
 
             _previousSquare = _piece.GetSquare();
@@ -48,6 +49,7 @@ namespace Logic.CommandPattern
                 return;
             }
 
+            _gameManager.StartTurn();
             _seriesList.RemoveTurn(_previousTurn);
 
             await _piece.MoveToAsync(_previousSquare);

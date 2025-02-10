@@ -5,7 +5,7 @@ using Board.Pieces;
 
 namespace Logic
 {
-    public class RaycastSelector : MonoBehaviour
+    public class Selector : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] private CommandManager commandManager;
@@ -26,7 +26,7 @@ namespace Logic
             bool isHit = Physics.Raycast(ray, out var hit, maxDistance, layerMask);
             Transform hitTransform = hit.transform;
 
-            if (Input.GetButtonDown("Fire1"))
+            if (Input.GetButtonDown("Fire1") && gameManager.GameState == GameState.Idle)
             {
                 Click(isHit, hitTransform);
                 OnClick?.Invoke();

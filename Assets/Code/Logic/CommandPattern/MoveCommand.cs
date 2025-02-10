@@ -26,6 +26,8 @@ namespace Logic.CommandPattern
 
         public override async Task ExecuteAsync()
         {
+            _gameManager.StartTurn();
+
             _previousSquare = _piece.GetSquare();
             _previousIsFirstMove = _piece.IsFirstMove;
             _previousTurn = _gameManager.CurrentTurnColor;
@@ -54,6 +56,8 @@ namespace Logic.CommandPattern
             {
                 return;
             }
+
+            _gameManager.StartTurn();
 
             _seriesList.RemoveTurn(_previousTurn);
 

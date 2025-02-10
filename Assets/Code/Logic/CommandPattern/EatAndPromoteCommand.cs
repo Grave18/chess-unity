@@ -10,6 +10,7 @@ namespace Logic.CommandPattern
     public class EatAndPromoteCommand : Command
     {
         private Piece _piece;
+        private PieceType _promotedPieceType;
         private readonly Square _square;
         private readonly GameManager _gameManager;
         private readonly BoardBuilder _boardBuilder;
@@ -31,21 +32,28 @@ namespace Logic.CommandPattern
 
         public override async Task ExecuteAsync()
         {
-            // _seriesList.AddTurn(_piece, _square, _gameManager.CurrentTurnColor, NotationTurnType.Capture);
+            _gameManager.StartTurn();
 
             _previousSquare = _piece.GetSquare();
             _previousTurnColor = _gameManager.CurrentTurnColor;
 
-            _piece.IsFirstMove = false;
-
             _beatenPiece = _piece.EatAt(_square);
-
             await _piece.MoveToAsync(_square);
+
+            Piece piece;
+            if(_promotedPieceType == PieceType.None)
+            {
+                (piece, _promotedPieceType) = await _boardBuilder.GetPieceFromSelectorAsync(_piece.GetPieceColor(), _square);
+            }
+            else
+            {
+                piece = _boardBuilder.GetPiece(_promotedPieceType, _piece.GetPieceColor(), _square);
+            }
 
             _gameManager.RemovePiece(_piece);
             Object.Destroy(_piece.gameObject);
 
-            // _piece = _boardBuilder.GetPieceFromSelector(_piece.GetPieceColor(), _square);
+            _piece = piece;
             _gameManager.AddPiece(_piece);
 
             _gameManager.EndTurn();
@@ -68,6 +76,8 @@ namespace Logic.CommandPattern
             {
                 return;
             }
+
+            _gameManager.StartTurn();
 
             // Remove promoted piece
             _gameManager.RemovePiece(_piece);
