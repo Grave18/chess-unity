@@ -1,4 +1,6 @@
-﻿namespace Logic.CommandPattern
+﻿using Board.Pieces;
+
+namespace Logic.CommandPattern
 {
     [System.Serializable]
     public class CommandBuffer
@@ -45,6 +47,17 @@
 
             _commands[_cursor].UndoAsync();
             _cursor -= 1;
+        }
+
+        /// <summary>
+        /// Returns the last moved piece from last buffer entry
+        /// </summary>
+        /// <returns> Last moved piece </returns>
+        public Piece GetLastMovedPiece()
+        {
+            return _cursor == -1
+                ? null
+                : _commands[_cursor].GetPiece();
         }
 
         public void Clear()

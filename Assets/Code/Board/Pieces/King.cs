@@ -53,7 +53,7 @@ namespace Board.Pieces
                 else if (square.GetPieceColor() != pieceColor
                          && !gameManager.UnderAttackSquares.Contains(square))
                 {
-                    CaptureSquares.Add(square);
+                    CaptureSquares.Add(square, square.GetPiece());
                 }
             }
 

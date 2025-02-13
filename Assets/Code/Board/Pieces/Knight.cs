@@ -26,7 +26,7 @@ namespace Board.Pieces
                 }
                 else if (square.GetPieceColor() != pieceColor)
                 {
-                    CaptureSquares.Add(square);
+                    CaptureSquares.Add(square, square.GetPiece());
                 }
                 else if (square.GetPieceColor() == pieceColor)
                 {

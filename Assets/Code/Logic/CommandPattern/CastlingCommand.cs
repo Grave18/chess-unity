@@ -68,5 +68,10 @@ namespace Logic.CommandPattern
 
             _gameManager.EndTurn();
         }
+
+        public override Piece GetPiece()
+        {
+            return _king;
+        }
     }
 }

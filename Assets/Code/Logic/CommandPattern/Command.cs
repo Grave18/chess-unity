@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Board.Pieces;
 
 namespace Logic.CommandPattern
 {
@@ -6,5 +7,6 @@ namespace Logic.CommandPattern
     {
         public abstract Task ExecuteAsync();
         public abstract Task UndoAsync();
+        public abstract Piece GetPiece();
     }
 }

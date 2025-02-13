@@ -16,6 +16,7 @@ namespace Logic
 
         [Header("References")]
         [SerializeField] private BoardBuilder boardBuilder;
+        [SerializeField] private CommandManager commandManager;
         [SerializeField] private Transform squaresTransform;
         [SerializeField] private Transform whitePiecesTransform;
         [SerializeField] private Transform blackPiecesTransform;
@@ -109,6 +110,7 @@ namespace Logic
         public void Restart()
         {
             checkType = CheckType.None;
+            gameState = GameState.Idle;
             boardBuilder.BuildBoard(out currentTurnColor);
             FindAllPieces();
             EndMoveCalculations();
@@ -201,7 +203,7 @@ namespace Logic
 
             bool IsPieceMakeCheck(Piece piece)
             {
-                foreach (Square square in piece.CaptureSquares)
+                foreach ((Square square, Piece _) in piece.CaptureSquares)
                 {
                     if (square.HasPiece() && square.GetPiece() is King king &&
                         king.GetPieceColor() != piece.GetPieceColor())
@@ -229,6 +231,15 @@ namespace Logic
                     CheckType.Check or CheckType.DoubleCheck => CheckType.CheckMate,
                     _ => checkType
                 };
+        }
+
+        /// <summary>
+        /// Get last moved piece from command buffer
+        /// </summary>
+        /// <returns> Last moved piece </returns>
+        public Piece GetLastMovedPiece()
+        {
+            return commandManager.GetLastMovedPiece();
         }
 
         public bool IsRightTurn(PieceColor pieceColor)

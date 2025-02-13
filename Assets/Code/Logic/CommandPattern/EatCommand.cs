@@ -8,19 +8,22 @@ namespace Logic.CommandPattern
     public class EatCommand : Command
     {
         private readonly Piece _piece;
-        private readonly Square _square;
+        private readonly Piece _beatenPiece;
+        private readonly Square _moveToSquare;
+        private readonly Square _beatenPieceSquare;
         private readonly GameManager _gameManager;
         private readonly SeriesList _seriesList;
 
         private PieceColor _previousTurn;
         private Square _previousSquare;
         private bool _previousIsFirstMove;
-        private Piece _beatenPiece;
 
-        public EatCommand(Piece piece, Square square, GameManager gameManager, SeriesList seriesList)
+        public EatCommand(Piece piece, Piece beatenPiece, Square moveToSquare, GameManager gameManager, SeriesList seriesList)
         {
             _piece = piece;
-            _square = square;
+            _beatenPiece = beatenPiece;
+            _beatenPieceSquare = _beatenPiece.GetSquare();
+            _moveToSquare = moveToSquare;
             _gameManager = gameManager;
             _seriesList = seriesList;
         }
@@ -28,7 +31,7 @@ namespace Logic.CommandPattern
         public override async Task ExecuteAsync()
         {
             _gameManager.StartTurn();
-            _seriesList.AddTurn(_piece, _square, _gameManager.CurrentTurnColor, NotationTurnType.Capture);
+            _seriesList.AddTurn(_piece, _moveToSquare, _gameManager.CurrentTurnColor, NotationTurnType.Capture);
 
             _previousSquare = _piece.GetSquare();
             _previousIsFirstMove = _piece.IsFirstMove;
@@ -36,8 +39,8 @@ namespace Logic.CommandPattern
 
             _piece.IsFirstMove = false;
 
-            _beatenPiece = _piece.EatAt(_square);
-            await _piece.MoveToAsync(_square);
+            _beatenPiece.MoveToBeaten();
+            await _piece.MoveToAsync(_moveToSquare);
 
             _gameManager.EndTurn();
         }
@@ -55,9 +58,14 @@ namespace Logic.CommandPattern
             await _piece.MoveToAsync(_previousSquare);
             _piece.IsFirstMove = _previousIsFirstMove;
 
-            _beatenPiece.RemoveFromBeaten(_square);
+            _beatenPiece.RemoveFromBeaten(_beatenPieceSquare);
 
             _gameManager.EndTurn();
+        }
+
+        public override Piece GetPiece()
+        {
+            return _piece;
         }
     }
 }

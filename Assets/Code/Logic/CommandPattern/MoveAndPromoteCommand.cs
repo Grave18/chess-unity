@@ -3,15 +3,15 @@ using Board;
 using Board.Builder;
 using Board.Pieces;
 using Logic.Notation;
-using UnityEngine;
 
 namespace Logic.CommandPattern
 {
     public class MoveAndPromoteCommand : Command
     {
         private Piece _piece;
-        private PieceType _promotedPieceType;
-        private readonly Square _square;
+        private Piece _backupPawn;
+        private Piece _promotedPiece;
+        private readonly Square _moveToSquare;
         private readonly GameManager _gameManager;
         private readonly BoardBuilder _boardBuilder;
         private readonly SeriesList _seriesList;
@@ -19,11 +19,11 @@ namespace Logic.CommandPattern
         private PieceColor _previousTurnColor;
         private Square _previousSquare;
 
-        public MoveAndPromoteCommand(Piece piece, Square square, GameManager gameManager, BoardBuilder boardBuilder,
+        public MoveAndPromoteCommand(Piece piece, Square moveToSquare, GameManager gameManager, BoardBuilder boardBuilder,
             SeriesList seriesList)
         {
             _piece = piece;
-            _square = square;
+            _moveToSquare = moveToSquare;
             _gameManager = gameManager;
             _boardBuilder = boardBuilder;
             _seriesList = seriesList;
@@ -33,27 +33,32 @@ namespace Logic.CommandPattern
         {
             _gameManager.StartTurn();
 
+            // Backup
             _previousSquare = _piece.GetSquare();
             _previousTurnColor = _gameManager.CurrentTurnColor;
 
-            await _piece.MoveToAsync(_square);
+            // Move selected piece
+            await _piece.MoveToAsync(_moveToSquare);
 
-            Piece piece;
-            if(_promotedPieceType == PieceType.None)
+            // Get promoted piece
+            if(_promotedPiece == null)
             {
-                (piece, _promotedPieceType) = await _boardBuilder.GetPieceFromSelectorAsync(_piece.GetPieceColor(), _square);
+                (_promotedPiece, _) = await _boardBuilder.GetPieceFromSelectorAsync(_piece.GetPieceColor(), _moveToSquare);
             }
             else
             {
-                piece = _boardBuilder.GetPiece(_promotedPieceType, _piece.GetPieceColor(), _square);
+               _promotedPiece.AddToBoard();
             }
 
-            _gameManager.RemovePiece(_piece);
-            Object.Destroy(_piece.gameObject);
+            // Backup and hide pawn
+            _backupPawn = _piece;
+            _backupPawn.RemoveFromBoard();
 
-            _piece = piece;
+            // Substitute pawn to promoted piece
+            _piece = _promotedPiece;
             _gameManager.AddPiece(_piece);
 
+            // End turn and add to notation
             _gameManager.EndTurn();
 
             // Is it Check?
@@ -65,7 +70,7 @@ namespace Logic.CommandPattern
             //     _ => NotationTurnType.Move
             // };
 
-            _seriesList.AddTurn(_piece, _square, _previousTurnColor, NotationTurnType.PromoteMove);
+            _seriesList.AddTurn(_piece, _moveToSquare, _previousTurnColor, NotationTurnType.PromoteMove);
         }
 
         public override async Task UndoAsync()
@@ -78,17 +83,21 @@ namespace Logic.CommandPattern
             _gameManager.StartTurn();
 
             // Remove promoted piece
-            _gameManager.RemovePiece(_piece);
-            Object.Destroy(_piece.gameObject);
+            _promotedPiece.RemoveFromBoard();
 
             // Add pawn and go back
-            _piece = _boardBuilder.GetPiece(PieceType.Pawn, _piece.GetPieceColor(), _square);
-            _gameManager.AddPiece(_piece);
+            _backupPawn.AddToBoard();
+            _piece = _backupPawn;
             await _piece.MoveToAsync(_previousSquare);
 
             // Remove from notation and end turn
             _seriesList.RemoveTurn(_previousTurnColor);
             _gameManager.EndTurn();
+        }
+
+        public override Piece GetPiece()
+        {
+            return _piece;
         }
     }
 }

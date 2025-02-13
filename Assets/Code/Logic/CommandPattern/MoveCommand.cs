@@ -31,7 +31,6 @@ namespace Logic.CommandPattern
             _previousSquare = _piece.GetSquare();
             _previousIsFirstMove = _piece.IsFirstMove;
             _previousTurn = _gameManager.CurrentTurnColor;
-
             _piece.IsFirstMove = false;
 
             await _piece.MoveToAsync(_square);
@@ -66,6 +65,11 @@ namespace Logic.CommandPattern
             _piece.IsFirstMove = _previousIsFirstMove;
 
             _gameManager.EndTurn();
+        }
+
+        public override Piece GetPiece()
+        {
+            return _piece;
         }
     }
 }

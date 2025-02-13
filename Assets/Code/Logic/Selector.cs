@@ -39,67 +39,56 @@ namespace Logic
 
         private void Click(bool isHit, Transform hitTransform)
         {
-            // Deselect if not hit anything
-            if (!isHit)
+            // Deselect if not hit anything or clicked on already selected
+            if (IsHitNothingOrAlreadySelected(isHit, hitTransform, out ISelectable selectable))
             {
                 DeselectCurrent();
                 return;
             }
 
-            bool tryGetSelectable = hitTransform.TryGetComponent(out ISelectable selectable);
-
-            // Deselect if clicked on already selected
-            if (!tryGetSelectable || selectable.IsEqual(gameManager.Selected))
-            {
-                DeselectCurrent();
-                return;
-            }
-
-            // Select if right turn
+            // Select if clicked on current turn piece
             if (selectable.HasPiece() && gameManager.IsRightTurn(selectable.GetPieceColor()))
             {
                 Select(selectable);
+                return;
             }
-            // Make move if destination square is empty
-            else if (gameManager.Selected != null && !selectable.HasPiece())
-            {
-                MakeMove(selectable);
-            }
-            else if(gameManager.Selected != null && !gameManager.IsRightTurn(selectable.GetPieceColor()))
-            {
-                CapturePiece(selectable);
-            }
-        }
 
-        private void MakeMove(ISelectable selectable)
-        {
+            // Exit early if no selected piece
+            if (gameManager.Selected == null)
+            {
+                return;
+            }
+
             Piece piece = gameManager.Selected.GetPiece();
-            Square square = selectable.GetSquare();
+            Square moveToSquare = selectable.GetSquare();
 
             // Move
-            if (piece.CanMoveTo(square))
+            if (piece.CanMoveTo(moveToSquare))
             {
-                commandManager.MoveTo(piece, square);
+                commandManager.MoveTo(piece, moveToSquare);
                 DeselectCurrent();
             }
             // Castling
-            else if (piece is King king && king.CanCastlingAt(square, out CastlingInfo castlingInfo))
+            else if (piece is King king && king.CanCastlingAt(moveToSquare, out CastlingInfo castlingInfo))
             {
-                commandManager.Castling(king, square, castlingInfo.Rook, castlingInfo.RookSquare, castlingInfo.NotationTurnType);
+                commandManager.Castling(king, moveToSquare, castlingInfo.Rook, castlingInfo.RookSquare, castlingInfo.NotationTurnType);
+                DeselectCurrent();
+            }
+            // Eat
+            else if (piece.CanEatAt(moveToSquare, out Piece beatenPiece))
+            {
+                commandManager.EatAt(piece, beatenPiece, moveToSquare);
                 DeselectCurrent();
             }
         }
 
-        private void CapturePiece(ISelectable selectable)
+        private bool IsHitNothingOrAlreadySelected(bool isHit, Transform hitTransform, out ISelectable selectable)
         {
-            Piece piece = gameManager.Selected.GetPiece();
-            Square square = selectable.GetSquare();
+            selectable = null;
 
-            if (piece.CanEatAt(square))
-            {
-                commandManager.EatAt(piece, square);
-                DeselectCurrent();
-            }
+            return !isHit
+                   || !hitTransform.TryGetComponent(out selectable)
+                   || selectable.IsEqual(gameManager.Selected);
         }
 
         private void Select(ISelectable selectable)

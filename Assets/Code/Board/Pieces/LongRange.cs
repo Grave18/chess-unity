@@ -50,7 +50,7 @@ namespace Board.Pieces
                         if (square.GetPieceColor() != pieceColor)
                         {
                             possibleAttackLine.Add(square);
-                            CaptureSquares.Add(square);
+                            CaptureSquares.Add(square, square.GetPiece());
 
                             // Find attack line to king
                             if (square.GetPiece() is King)

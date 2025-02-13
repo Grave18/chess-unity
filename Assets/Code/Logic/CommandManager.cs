@@ -40,15 +40,21 @@ namespace Logic
             }
         }
 
-        public void EatAt(Piece piece, Square square)
+        /// <summary>
+        /// Eat or eat and promote
+        /// </summary>
+        /// <param name="piece"> Piece being moved </param>
+        /// <param name="beatenPiece"> Piece being eaten </param>
+        /// <param name="moveToSquare"> Square where move piece is going </param>
+        public void EatAt(Piece piece, Piece beatenPiece, Square moveToSquare)
         {
-            if (piece is Pawn && square.Rank is "8" or "1")
+            if (piece is Pawn && moveToSquare.Rank is "8" or "1")
             {
-                commandBuffer.AddAndExecute(new EatAndPromoteCommand(piece, square, gameManager, boardBuilder, seriesList));
+                commandBuffer.AddAndExecute(new EatAndPromoteCommand(piece, beatenPiece, moveToSquare, gameManager, boardBuilder, seriesList));
             }
             else
             {
-                commandBuffer.AddAndExecute(new EatCommand(piece, square, gameManager, seriesList));
+                commandBuffer.AddAndExecute(new EatCommand(piece, beatenPiece, moveToSquare, gameManager, seriesList));
             }
         }
 
@@ -77,6 +83,15 @@ namespace Logic
             }
 
             commandBuffer.Redo();
+        }
+
+        /// <summary>
+        /// Get last moved piece from last buffer entry in command buffer
+        /// </summary>
+        /// <returns> Last moved piece </returns>
+        public Piece GetLastMovedPiece()
+        {
+            return commandBuffer.GetLastMovedPiece();
         }
 
         private void Restart()

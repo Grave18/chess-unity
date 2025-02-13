@@ -28,7 +28,7 @@ namespace Board.Pieces
         // All kind of squares
 
         public HashSet<Square> MoveSquares { get; private set; } = new();
-        public HashSet<Square> CaptureSquares { get; private set; } = new();
+        public Dictionary<Square, Piece> CaptureSquares { get; private set; } = new();
         public HashSet<Square> DefendSquares { get; } = new();
         public HashSet<Square> CannotMoveSquares { get; } = new();
 
@@ -59,53 +59,30 @@ namespace Board.Pieces
 
         public bool CanMoveTo(Square square)
         {
-            if (!gameManager.Selected.IsEqual(this) || !gameManager.IsRightTurn(pieceColor))
-            {
-                return false;
-            }
-
             return MoveSquares.Contains(square);
         }
 
-        public bool CanEatAt(Square square)
+        public bool CanEatAt(Square square, out Piece piece)
         {
-            if (!gameManager.Selected.IsEqual(this) || !gameManager.IsRightTurn(pieceColor))
-            {
-                return false;
-            }
-
-            return CaptureSquares.Contains(square);
+            return CaptureSquares.TryGetValue(square, out piece);;
         }
 
-        public Piece EatAt(Square square)
+        public void AddToBoard()
         {
-            Piece piece = square.GetPiece();
-            piece?.MoveToBeaten();
-
-            return piece;
+            gameManager.AddPiece(this);
+            gameObject.SetActive(true);
         }
 
-        public async Task MoveToAsync(Square square)
+        /// <summary>
+        /// Remove from game manager and destroy
+        /// </summary>
+        public void RemoveFromBoard()
         {
-            Vector3 position = square.transform.position;
-
-            // Move
-            float distance = Vector3.Distance(transform.position, position);
-            float duration = distance / animationSpeed;
-
-            Tween moveTween = transform
-                .DOMove(position, duration)
-                .SetEase(animationEase);
-
-            await moveTween.AsyncWaitForCompletion();
-
-            // Reset current square
-            currentSquare.SetPiece(null);
-            currentSquare = square;
-            currentSquare.SetPiece(this);
+            gameManager.RemovePiece(this);
+            gameObject.SetActive(false);
         }
 
-        private void MoveToBeaten()
+        public void MoveToBeaten()
         {
             transform.position = new Vector3(-1.5f, 0f, 0f);
             currentSquare.SetPiece(null);
@@ -121,8 +98,32 @@ namespace Board.Pieces
             gameManager.AddPiece(this);
         }
 
+        public async Task MoveToAsync(Square square)
+        {
+            Vector3 position = square.transform.position;
+
+            // Move
+            float distance = Vector3.Distance(transform.position, position);
+            float duration = distance / animationSpeed;
+
+            Tween moveTween = transform
+                .DOMove(position, duration)
+                .SetEase(animationEase);
+
+            // Reset current square
+            currentSquare.SetPiece(null);
+            currentSquare = square;
+            currentSquare.SetPiece(this);
+
+            await moveTween.AsyncWaitForCompletion();
+        }
+
+        /// <summary>
+        /// Calculate all constrains after captures and moves are calculated
+        /// </summary>
         public virtual void CalculateConstrains()
         {
+            // Only calculate pins
             if (gameManager.CheckType == CheckType.None)
             {
                 if (!gameManager.AttackLines.Contains(currentSquare, isCheck: false))
@@ -137,6 +138,7 @@ namespace Board.Pieces
 
                 CalculatePin(attackLine);
             }
+            // Can move king, capture attacker or block attack line
             else if (gameManager.CheckType == CheckType.Check)
             {
                 if (gameManager.AttackLines.TryGetAttackLine(this, out AttackLine attackLine)
@@ -149,6 +151,7 @@ namespace Board.Pieces
                     UpdateMovesAndCaptures();
                 }
             }
+            // Only king can move out of attack or capture threatening piece
             else if (gameManager.CheckType == CheckType.DoubleCheck)
             {
                 DisableMovesAndCaptures();
@@ -185,8 +188,8 @@ namespace Board.Pieces
             MoveSquares = tempMoveSquares;
 
             // Update capture
-            var tempCaptureSquares = new HashSet<Square>(CaptureSquares);
-            foreach (Square captureSquare in CaptureSquares)
+            var tempCaptureSquares = new Dictionary<Square, Piece>(CaptureSquares);
+            foreach ((Square captureSquare, Piece _) in CaptureSquares)
             {
                 Piece capturePiece = captureSquare.GetPiece();
                 if (!gameManager.AttackLines.ContainsAttacker(capturePiece, isCheck: true))
@@ -214,8 +217,8 @@ namespace Board.Pieces
             MoveSquares = tempMoveSquares;
 
             // Update captures
-            var tempCaptureSquares = new HashSet<Square>(CaptureSquares);
-            foreach (Square captureSquare in CaptureSquares)
+            var tempCaptureSquares = new Dictionary<Square, Piece>(CaptureSquares);
+            foreach ((Square captureSquare, Piece _) in CaptureSquares)
             {
                 if (captureSquare.GetPiece() != attackLine.Attacker)
                 {
