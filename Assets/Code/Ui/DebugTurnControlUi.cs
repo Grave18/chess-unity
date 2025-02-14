@@ -1,13 +1,15 @@
 using Logic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Ui
 {
     public class DebugTurnControlUi : MonoBehaviour
     {
-        [SerializeField] private GameManager gameManager;
+        [FormerlySerializedAs("gameManager")]
+        [SerializeField] private Game game;
         [SerializeField] private TMP_Dropdown dropdown;
         [SerializeField] private Toggle toggle;
 
@@ -22,22 +24,22 @@ namespace Ui
 #else
         private void Start()
         {
-            dropdown.onValueChanged.AddListener(gameManager.SetTurn);
-            toggle.onValueChanged.AddListener(gameManager.SetAutoChange);
-            gameManager.OnTurnChanged += UpdateValues;
+            dropdown.onValueChanged.AddListener(game.SetTurn);
+            toggle.onValueChanged.AddListener(game.SetAutoChange);
+            game.OnEndTurn += UpdateValues;
         }
 
         private void UpdateValues(PieceColor discard1, CheckType discard2)
         {
-            dropdown.onValueChanged.RemoveListener(gameManager.SetTurn);
-            toggle.onValueChanged.RemoveListener(gameManager.SetAutoChange);
+            dropdown.onValueChanged.RemoveListener(game.SetTurn);
+            toggle.onValueChanged.RemoveListener(game.SetAutoChange);
 
             // Must not trigger functions in gameManager while updated from manager
-            dropdown.value = (int)gameManager.CurrentTurnColor;
-            toggle.isOn = gameManager.IsAutoChange;
+            dropdown.value = (int)game.CurrentTurnColor;
+            toggle.isOn = game.IsAutoChange;
 
-            dropdown.onValueChanged.AddListener(gameManager.SetTurn);
-            toggle.onValueChanged.AddListener(gameManager.SetAutoChange);
+            dropdown.onValueChanged.AddListener(game.SetTurn);
+            toggle.onValueChanged.AddListener(game.SetAutoChange);
         }
 
 #endif

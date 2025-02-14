@@ -1,7 +1,7 @@
-using Board.Pieces;
+using ChessBoard.Pieces;
 using UnityEngine;
 
-namespace Board.Settings
+namespace ChessBoard.Settings
 {
     public class CommonSettingsSetter : MonoBehaviour
     {

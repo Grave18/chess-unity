@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Board;
-using Board.Pieces;
+using ChessBoard;
+using ChessBoard.Pieces;
 
 namespace Logic
 {

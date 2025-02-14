@@ -1,26 +1,28 @@
 using Logic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Ui
 {
     public class NotificationPanel : MonoBehaviour
     {
-        [SerializeField] private GameManager gameManager;
+        [FormerlySerializedAs("gameManager")]
+        [SerializeField] private Game game;
         [SerializeField] private TMP_Text notificationText;
         [SerializeField] private Button restartButton;
 
         private void OnEnable()
         {
-            restartButton.onClick.AddListener(gameManager.Restart);
-            
-            gameManager.OnTurnChanged += UpdateNotificationText;
+            restartButton.onClick.AddListener(game.Restart);
+
+            game.OnEndTurn += UpdateNotificationText;
         }
 
         private void OnDisable()
         {
-            gameManager.OnTurnChanged -= UpdateNotificationText;
+            game.OnEndTurn -= UpdateNotificationText;
         }
 
         private void UpdateNotificationText(PieceColor pieceColor, CheckType checkType)

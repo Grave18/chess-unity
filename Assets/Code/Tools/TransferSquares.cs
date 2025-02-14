@@ -1,6 +1,6 @@
 ﻿#if UNITY_EDITOR
 
-using Board;
+using ChessBoard;
 using UnityEditor;
 using UnityEngine;
 

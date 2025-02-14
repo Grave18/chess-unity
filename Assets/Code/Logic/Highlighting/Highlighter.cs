@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Board;
-using Board.Pieces;
+using ChessBoard;
+using ChessBoard.Pieces;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -8,8 +8,9 @@ namespace Logic.Highlighting
 {
     public class Highlighter : MonoBehaviour
     {
+        [FormerlySerializedAs("gameManager")]
         [Header("References")]
-        [SerializeField] private GameManager gameManager;
+        [SerializeField] private Game game;
         [FormerlySerializedAs("raycastSelector")] [SerializeField] private Selector selector;
 
         [Header("Settings")]
@@ -23,13 +24,13 @@ namespace Logic.Highlighting
 
         private void OnEnable()
         {
-            gameManager.OnTurnChanged += UpdateHighlighting;
+            game.OnEndTurn += UpdateHighlighting;
             selector.OnClick += UpdateHighlighting;
         }
 
         private void OnDisable()
         {
-            gameManager.OnTurnChanged -= UpdateHighlighting;
+            game.OnEndTurn -= UpdateHighlighting;
             selector.OnClick -= UpdateHighlighting;
         }
 
@@ -41,8 +42,8 @@ namespace Logic.Highlighting
 
         private void UpdateHighlighting()
         {
-            Piece piece = gameManager.Selected?.GetPiece();
-            Square pieceSquare = gameManager.Selected?.GetSquare();
+            Piece piece = game.Selected?.GetPiece();
+            Square pieceSquare = game.Selected?.GetSquare();
             var pieceHighlighter = pieceSquare?.GetComponent<SquareHighlighter>();
 
             ClearAllHighlights();
@@ -58,7 +59,7 @@ namespace Logic.Highlighting
             }
 
             // Highlight check king and attacker pieces
-            if (gameManager.CheckType is CheckType.Check or CheckType.DoubleCheck)
+            if (game.CheckType is CheckType.Check or CheckType.DoubleCheck)
             {
                 HighlightCheck(piece);
             }
@@ -77,7 +78,7 @@ namespace Logic.Highlighting
         private void HighlightCheck(Piece piece)
         {
             // Attackers
-            foreach (AttackLine attackLine in gameManager.AttackLines)
+            foreach (AttackLine attackLine in game.AttackLines)
             {
                 if (attackLine.IsCheck && attackLine.Attacker.TryGetComponent(out Dissolve attackerFx))
                 {
@@ -86,7 +87,7 @@ namespace Logic.Highlighting
             }
 
             // King
-            HashSet<Piece> pieces = gameManager.CurrentTurnColor == PieceColor.White ? gameManager.WhitePieces : gameManager.BlackPieces;
+            HashSet<Piece> pieces = game.CurrentTurnColor == PieceColor.White ? game.WhitePieces : game.BlackPieces;
 
             foreach (Piece assumeKing in pieces)
             {
@@ -158,19 +159,19 @@ namespace Logic.Highlighting
 
         private void ClearAllHighlights()
         {
-            foreach (Square square in gameManager.Squares)
+            foreach (Square square in game.Squares)
             {
                 var squareHighlighter = square.GetComponent<SquareHighlighter>();
                 squareHighlighter.Show(SquareShape.None, commonSettings.DefaultColor);
             }
 
-            foreach (Piece piece in gameManager.WhitePieces)
+            foreach (Piece piece in game.WhitePieces)
             {
                 var pieceFx = piece.GetComponent<Dissolve>();
                 pieceFx.HighlightPiece(enableHighlight: false);
             }
 
-            foreach (Piece piece in gameManager.BlackPieces)
+            foreach (Piece piece in game.BlackPieces)
             {
                 var pieceFx = piece.GetComponent<Dissolve>();
                 pieceFx.HighlightPiece(enableHighlight: false);
@@ -179,8 +180,8 @@ namespace Logic.Highlighting
 
         private void DebugHighlightUnderAttackSquares()
         {
-            Color color = gameManager.CurrentTurnColor == PieceColor.White ? Color.black : Color.white;
-            foreach (Square square in gameManager.UnderAttackSquares)
+            Color color = game.CurrentTurnColor == PieceColor.White ? Color.black : Color.white;
+            foreach (Square square in game.UnderAttackSquares)
             {
                 if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
                 {
@@ -191,8 +192,8 @@ namespace Logic.Highlighting
 
         private void DebugAttackLine()
         {
-            Color color = gameManager.CurrentTurnColor == PieceColor.White ? Color.black : Color.white;
-            foreach (AttackLine attackLine in gameManager.AttackLines)
+            Color color = game.CurrentTurnColor == PieceColor.White ? Color.black : Color.white;
+            foreach (AttackLine attackLine in game.AttackLines)
             {
                 if (attackLine.Attacker.TryGetComponent(out SquareHighlighter squareHighlighter))
                 {

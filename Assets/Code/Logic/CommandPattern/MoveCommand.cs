@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Board;
-using Board.Pieces;
+using ChessBoard;
+using ChessBoard.Pieces;
 using Logic.Notation;
 
 namespace Logic.CommandPattern
@@ -9,36 +9,36 @@ namespace Logic.CommandPattern
     {
         private readonly Piece _piece;
         private readonly Square _square;
-        private readonly GameManager _gameManager;
+        private readonly Game _game;
         private readonly SeriesList _seriesList;
 
         private PieceColor _previousTurn;
         private Square _previousSquare;
         private bool _previousIsFirstMove;
 
-        public MoveCommand(Piece piece, Square square, GameManager gameManager, SeriesList seriesList)
+        public MoveCommand(Piece piece, Square square, Game game, SeriesList seriesList)
         {
             _piece = piece;
             _square = square;
-            _gameManager = gameManager;
+            _game = game;
             _seriesList = seriesList;
         }
 
         public override async Task ExecuteAsync()
         {
-            _gameManager.StartTurn();
+            _game.StartTurn();
 
             _previousSquare = _piece.GetSquare();
             _previousIsFirstMove = _piece.IsFirstMove;
-            _previousTurn = _gameManager.CurrentTurnColor;
+            _previousTurn = _game.CurrentTurnColor;
             _piece.IsFirstMove = false;
 
             await _piece.MoveToAsync(_square);
 
-            _gameManager.EndTurn();
+            _game.EndTurn();
 
             // Is it Check?
-            NotationTurnType notationTurnType = _gameManager.CheckType switch
+            NotationTurnType notationTurnType = _game.CheckType switch
                 {
                     CheckType.Check => NotationTurnType.Check,
                     CheckType.DoubleCheck => NotationTurnType.DoubleCheck,
@@ -56,7 +56,7 @@ namespace Logic.CommandPattern
                 return;
             }
 
-            _gameManager.StartTurn();
+            _game.StartTurn();
 
             _seriesList.RemoveTurn(_previousTurn);
 
@@ -64,7 +64,7 @@ namespace Logic.CommandPattern
 
             _piece.IsFirstMove = _previousIsFirstMove;
 
-            _gameManager.EndTurn();
+            _game.EndTurn();
         }
 
         public override Piece GetPiece()

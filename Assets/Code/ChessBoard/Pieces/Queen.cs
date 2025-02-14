@@ -1,4 +1,4 @@
-﻿namespace Board.Pieces
+﻿namespace ChessBoard.Pieces
 {
     public class Queen : LongRange
     {

@@ -1,17 +1,17 @@
 #pragma warning disable CS0252, CS0253
 
-using Board.Pieces;
+using ChessBoard.Pieces;
 using Logic;
 using UnityEngine;
 
-namespace Board
+namespace ChessBoard
 {
     public class Square : MonoBehaviour, ISelectable
     {
-        public int X;
-        public int Y;
-        public string File;
-        public string Rank;
+        [field:SerializeField] public int X { get; set; }
+        [field:SerializeField] public int Y { get; set; }
+        [field:SerializeField] public string File { get; set; }
+        [field:SerializeField] public string Rank { get; set; }
 
         [SerializeField] private Piece currentPiece;
 

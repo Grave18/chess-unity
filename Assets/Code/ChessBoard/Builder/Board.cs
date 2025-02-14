@@ -1,21 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Board.Pieces;
+using ChessBoard.Pieces;
 using EditorCools;
 using Logic;
 using Ui.Promotion;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-namespace Board.Builder
+namespace ChessBoard.Builder
 {
-    public class BoardBuilder : MonoBehaviour
+    public class Board : MonoBehaviour
     {
         private const int Width = 8;
         private const int Height = 8;
 
-        [Header("References")] [SerializeField]
-        private GameManager gameManager;
+        [FormerlySerializedAs("gameManager")] [Header("References")] [SerializeField]
+        private Game game;
 
         [SerializeField] private PromotionPanel promotionPanel;
 
@@ -107,40 +108,40 @@ namespace Board.Builder
                     case ' ':
                         break;
                     case 'b':
-                        _blackPairs[gameManager.Squares[iSquares]] = piecePrefabs[0]; // B_Bishop
+                        _blackPairs[game.Squares[iSquares]] = piecePrefabs[0]; // B_Bishop
                         break;
                     case 'k':
-                        _blackPairs[gameManager.Squares[iSquares]] = piecePrefabs[1]; // B_King
+                        _blackPairs[game.Squares[iSquares]] = piecePrefabs[1]; // B_King
                         break;
                     case 'n':
-                        _blackPairs[gameManager.Squares[iSquares]] = piecePrefabs[2]; // B_Knight
+                        _blackPairs[game.Squares[iSquares]] = piecePrefabs[2]; // B_Knight
                         break;
                     case 'p':
-                        _blackPairs[gameManager.Squares[iSquares]] = piecePrefabs[3]; // B_Pawn
+                        _blackPairs[game.Squares[iSquares]] = piecePrefabs[3]; // B_Pawn
                         break;
                     case 'q':
-                        _blackPairs[gameManager.Squares[iSquares]] = piecePrefabs[4]; // B_Queen
+                        _blackPairs[game.Squares[iSquares]] = piecePrefabs[4]; // B_Queen
                         break;
                     case 'r':
-                        _blackPairs[gameManager.Squares[iSquares]] = piecePrefabs[5]; // B_Rook
+                        _blackPairs[game.Squares[iSquares]] = piecePrefabs[5]; // B_Rook
                         break;
                     case 'B':
-                        _whitePairs[gameManager.Squares[iSquares]] = piecePrefabs[6]; // W_Bishop
+                        _whitePairs[game.Squares[iSquares]] = piecePrefabs[6]; // W_Bishop
                         break;
                     case 'K':
-                        _whitePairs[gameManager.Squares[iSquares]] = piecePrefabs[7]; // W_King
+                        _whitePairs[game.Squares[iSquares]] = piecePrefabs[7]; // W_King
                         break;
                     case 'N':
-                        _whitePairs[gameManager.Squares[iSquares]] = piecePrefabs[8]; // W_Knight
+                        _whitePairs[game.Squares[iSquares]] = piecePrefabs[8]; // W_Knight
                         break;
                     case 'P':
-                        _whitePairs[gameManager.Squares[iSquares]] = piecePrefabs[9]; // W_Pawn
+                        _whitePairs[game.Squares[iSquares]] = piecePrefabs[9]; // W_Pawn
                         break;
                     case 'Q':
-                        _whitePairs[gameManager.Squares[iSquares]] = piecePrefabs[10]; // W_Queen
+                        _whitePairs[game.Squares[iSquares]] = piecePrefabs[10]; // W_Queen
                         break;
                     case 'R':
-                        _whitePairs[gameManager.Squares[iSquares]] = piecePrefabs[11]; // W_Rook
+                        _whitePairs[game.Squares[iSquares]] = piecePrefabs[11]; // W_Rook
                         break;
                     default:
                         Debug.LogError($"{text[iText]} is not a valid character");
@@ -158,7 +159,7 @@ namespace Board.Builder
 
             InstantiatePieces();
 
-            gameManager.FindAllPieces();
+            game.FindAllPieces();
         }
 
         private static bool IsPresetNotValid(string text)
@@ -190,14 +191,14 @@ namespace Board.Builder
             GameObject pieceInstance = Instantiate(piecePrefab, square.transform.position,
                 piecePrefab.transform.rotation, piecesParent);
             piece = pieceInstance.GetComponent<Piece>();
-            piece.GetSectionAndAlign(gameManager);
+            piece.GetSectionAndAlign(game);
         }
 
         [Button(name: "Build Board", space: 10f)]
         [ContextMenu("Build Board")]
         private void GameManagerRestart()
         {
-            gameManager.Restart();
+            game.Restart();
         }
 
         [Button(space: 10f)]
@@ -209,7 +210,7 @@ namespace Board.Builder
             _whitePairs.Clear();
             _blackPairs.Clear();
 
-            gameManager.ClearPieces();
+            game.ClearPieces();
         }
 
         private static void DestroyColorPieces(Transform parent)

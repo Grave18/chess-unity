@@ -1,15 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Board;
-using Board.Pieces;
+using ChessBoard;
+using ChessBoard.Pieces;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Logic.Notation
 {
     public class SeriesList : MonoBehaviour
     {
-        [SerializeField] private GameManager gameManager;
+        [FormerlySerializedAs("gameManager")]
+        [SerializeField] private Game game;
         [SerializeField] private List<Series> serieses;
         private Series _currentSeries;
 
@@ -108,9 +110,9 @@ namespace Logic.Notation
                 stringBuilder.AppendLine(series.ToString());
             }
 
-            if (gameManager.IsEndgame())
+            if (game.IsEndgame())
             {
-                string endGameText = gameManager.GetWinner() switch
+                string endGameText = game.GetWinner() switch
                 {
                     PieceColor.White => "1-0",
                     PieceColor.Black => "0-1",

@@ -3,10 +3,11 @@ using System.Threading.Tasks;
 using DG.Tweening;
 using Logic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 #pragma warning disable CS0252, CS0253
 
-namespace Board.Pieces
+namespace ChessBoard.Pieces
 {
     public abstract class Piece : MonoBehaviour, ISelectable
     {
@@ -20,10 +21,11 @@ namespace Board.Pieces
         [SerializeField] private Ease animationEase = Ease.InOutCubic;
 
         [Header("Debug preview")]
-        public bool IsFirstMove = true;
-        [SerializeField] protected GameManager gameManager;
-
+        [FormerlySerializedAs("gameManager")]
+        [SerializeField] protected Game game;
         [SerializeField] protected Square currentSquare;
+
+        public bool IsFirstMove { get; set; } = true;
 
         // All kind of squares
 
@@ -32,9 +34,9 @@ namespace Board.Pieces
         public HashSet<Square> DefendSquares { get; } = new();
         public HashSet<Square> CannotMoveSquares { get; } = new();
 
-        public void GetSectionAndAlign(GameManager gameManager)
+        public void GetSectionAndAlign(Game game)
         {
-            Construct(gameManager);
+            Construct(game);
 
             if (!Physics.Raycast(transform.position + Vector3.up, Vector3.down, out var hitInfo, 2f,
                     squareLayer))
@@ -47,9 +49,9 @@ namespace Board.Pieces
             currentSquare.SetPiece(this);
         }
 
-        private void Construct(GameManager gameManager)
+        private void Construct(Game game)
         {
-            this.gameManager = gameManager;
+            this.game = game;
         }
 
         private void Start()
@@ -69,7 +71,7 @@ namespace Board.Pieces
 
         public void AddToBoard()
         {
-            gameManager.AddPiece(this);
+            game.AddPiece(this);
             gameObject.SetActive(true);
         }
 
@@ -78,7 +80,7 @@ namespace Board.Pieces
         /// </summary>
         public void RemoveFromBoard()
         {
-            gameManager.RemovePiece(this);
+            game.RemovePiece(this);
             gameObject.SetActive(false);
         }
 
@@ -87,7 +89,7 @@ namespace Board.Pieces
             transform.position = new Vector3(-1.5f, 0f, 0f);
             currentSquare.SetPiece(null);
             currentSquare = null;
-            gameManager.RemovePiece(this);
+            game.RemovePiece(this);
         }
 
         public void RemoveFromBeaten(Square square)
@@ -95,7 +97,7 @@ namespace Board.Pieces
             transform.position = square.transform.position;
             square.SetPiece(this);
             currentSquare = square;
-            gameManager.AddPiece(this);
+            game.AddPiece(this);
         }
 
         public async Task MoveToAsync(Square square)
@@ -124,14 +126,14 @@ namespace Board.Pieces
         public virtual void CalculateConstrains()
         {
             // Only calculate pins
-            if (gameManager.CheckType == CheckType.None)
+            if (game.CheckType == CheckType.None)
             {
-                if (!gameManager.AttackLines.Contains(currentSquare, isCheck: false))
+                if (!game.AttackLines.Contains(currentSquare, isCheck: false))
                 {
                     return;
                 }
 
-                if (!gameManager.AttackLines.TryGetAttackLine(this, out AttackLine attackLine))
+                if (!game.AttackLines.TryGetAttackLine(this, out AttackLine attackLine))
                 {
                     return;
                 }
@@ -139,9 +141,9 @@ namespace Board.Pieces
                 CalculatePin(attackLine);
             }
             // Can move king, capture attacker or block attack line
-            else if (gameManager.CheckType == CheckType.Check)
+            else if (game.CheckType == CheckType.Check)
             {
-                if (gameManager.AttackLines.TryGetAttackLine(this, out AttackLine attackLine)
+                if (game.AttackLines.TryGetAttackLine(this, out AttackLine attackLine)
                     && !attackLine.IsCheck)
                 {
                     DisableMovesAndCaptures();
@@ -152,7 +154,7 @@ namespace Board.Pieces
                 }
             }
             // Only king can move out of attack or capture threatening piece
-            else if (gameManager.CheckType == CheckType.DoubleCheck)
+            else if (game.CheckType == CheckType.DoubleCheck)
             {
                 DisableMovesAndCaptures();
             }
@@ -178,7 +180,7 @@ namespace Board.Pieces
             var tempMoveSquares = new HashSet<Square>(MoveSquares);
             foreach (Square moveSquare in MoveSquares)
             {
-                if (!gameManager.AttackLines.Contains(moveSquare, isCheck: true))
+                if (!game.AttackLines.Contains(moveSquare, isCheck: true))
                 {
                     tempMoveSquares.Remove(moveSquare);
                     CannotMoveSquares.Add(moveSquare);
@@ -192,7 +194,7 @@ namespace Board.Pieces
             foreach ((Square captureSquare, Piece _) in CaptureSquares)
             {
                 Piece capturePiece = captureSquare.GetPiece();
-                if (!gameManager.AttackLines.ContainsAttacker(capturePiece, isCheck: true))
+                if (!game.AttackLines.ContainsAttacker(capturePiece, isCheck: true))
                 {
                     tempCaptureSquares.Remove(captureSquare);
                 }
@@ -283,7 +285,7 @@ namespace Board.Pieces
         [ContextMenu("Get Section And Align")]
         private void GetSectionAndAlign()
         {
-            GetSectionAndAlign(FindObjectOfType<GameManager>());
+            GetSectionAndAlign(FindObjectOfType<Game>());
         }
 
 #endif

@@ -1,19 +1,21 @@
 ﻿using Logic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace UndoRedo
 {
     public class UndoRedoUi : MonoBehaviour
     {
-        [SerializeField] private CommandManager _commandManager;
+        [FormerlySerializedAs("_commandManager")]
+        [SerializeField] private CommandInvoker commandInvoker;
         [SerializeField] private Button undo;
         [SerializeField] private Button redo;
 
         private void Start()
         {
-            undo.onClick.AddListener(_commandManager.Undo);
-            redo.onClick.AddListener(_commandManager.Redo);
+            undo.onClick.AddListener(commandInvoker.Undo);
+            redo.onClick.AddListener(commandInvoker.Redo);
         }
     }
 }

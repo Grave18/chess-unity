@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Board.Pieces
+namespace ChessBoard.Pieces
 {
     public class Pawn : Piece
     {
@@ -20,9 +20,9 @@ namespace Board.Pieces
             // Calculate moves
             foreach (Vector2Int offset in currentMoves)
             {
-                Square square = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
+                Square square = game.GetSquareRel(pieceColor, currentSquare, offset);
 
-                if (square.HasPiece() || square == gameManager.NullSquare)
+                if (square.HasPiece() || square == game.NullSquare)
                 {
                     break;
                 }
@@ -33,7 +33,7 @@ namespace Board.Pieces
             // Calculate Captures and defends
             foreach (Vector2Int offset in eat)
             {
-                Square square = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
+                Square square = game.GetSquareRel(pieceColor, currentSquare, offset);
 
                 // Captures and defends
                 if (square.HasPiece())
@@ -50,11 +50,11 @@ namespace Board.Pieces
                 // En Passant
                 else
                 {
-                    Square squareWithPawn = gameManager.GetSquareRel(pieceColor, square, new Vector2Int(0, -1));
+                    Square squareWithPawn = game.GetSquareRel(pieceColor, square, new Vector2Int(0, -1));
 
                     // Check if pawn make 2 squares and moved list turn
                     if(squareWithPawn.HasPiece() && squareWithPawn.GetPiece() is Pawn pawn
-                       && gameManager.GetLastMovedPiece() is Pawn lastMovedPawn && lastMovedPawn == pawn)
+                       && game.GetLastMovedPiece() is Pawn lastMovedPawn && lastMovedPawn == pawn)
                     {
                         CaptureSquares.Add(square, pawn);
                     }

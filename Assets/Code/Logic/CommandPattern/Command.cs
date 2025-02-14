@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Board.Pieces;
+using ChessBoard.Pieces;
 
 namespace Logic.CommandPattern
 {

@@ -1,6 +1,6 @@
 ﻿using Logic.Notation;
 
-namespace Board.Pieces
+namespace ChessBoard.Pieces
 {
     public struct CastlingInfo
     {

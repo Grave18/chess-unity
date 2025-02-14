@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Board;
-using Board.Pieces;
+using ChessBoard;
+using ChessBoard.Pieces;
 using Logic.Notation;
 
 namespace Logic.CommandPattern
@@ -11,38 +11,38 @@ namespace Logic.CommandPattern
         private readonly Piece _beatenPiece;
         private readonly Square _moveToSquare;
         private readonly Square _beatenPieceSquare;
-        private readonly GameManager _gameManager;
+        private readonly Game _game;
         private readonly SeriesList _seriesList;
 
         private PieceColor _previousTurn;
         private Square _previousSquare;
         private bool _previousIsFirstMove;
 
-        public EatCommand(Piece piece, Piece beatenPiece, Square moveToSquare, GameManager gameManager, SeriesList seriesList)
+        public EatCommand(Piece piece, Piece beatenPiece, Square moveToSquare, Game game, SeriesList seriesList)
         {
             _piece = piece;
             _beatenPiece = beatenPiece;
             _beatenPieceSquare = _beatenPiece.GetSquare();
             _moveToSquare = moveToSquare;
-            _gameManager = gameManager;
+            _game = game;
             _seriesList = seriesList;
         }
 
         public override async Task ExecuteAsync()
         {
-            _gameManager.StartTurn();
-            _seriesList.AddTurn(_piece, _moveToSquare, _gameManager.CurrentTurnColor, NotationTurnType.Capture);
+            _game.StartTurn();
+            _seriesList.AddTurn(_piece, _moveToSquare, _game.CurrentTurnColor, NotationTurnType.Capture);
 
             _previousSquare = _piece.GetSquare();
             _previousIsFirstMove = _piece.IsFirstMove;
-            _previousTurn = _gameManager.CurrentTurnColor;
+            _previousTurn = _game.CurrentTurnColor;
 
             _piece.IsFirstMove = false;
 
             _beatenPiece.MoveToBeaten();
             await _piece.MoveToAsync(_moveToSquare);
 
-            _gameManager.EndTurn();
+            _game.EndTurn();
         }
 
         public override async Task UndoAsync()
@@ -52,7 +52,7 @@ namespace Logic.CommandPattern
                 return;
             }
 
-            _gameManager.StartTurn();
+            _game.StartTurn();
             _seriesList.RemoveTurn(_previousTurn);
 
             await _piece.MoveToAsync(_previousSquare);
@@ -60,7 +60,7 @@ namespace Logic.CommandPattern
 
             _beatenPiece.RemoveFromBeaten(_beatenPieceSquare);
 
-            _gameManager.EndTurn();
+            _game.EndTurn();
         }
 
         public override Piece GetPiece()

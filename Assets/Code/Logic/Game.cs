@@ -1,22 +1,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Board;
-using Board.Builder;
-using Board.Pieces;
+using ChessBoard;
+using ChessBoard.Builder;
+using ChessBoard.Pieces;
 using EditorCools;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Logic
 {
-    public class GameManager : MonoBehaviour
+    public class Game : MonoBehaviour
     {
         private const int Width = 8;
         private const int Height = 8;
 
         [Header("References")]
-        [SerializeField] private BoardBuilder boardBuilder;
-        [SerializeField] private CommandManager commandManager;
+        [FormerlySerializedAs("boardBuilder")]
+        [SerializeField] private Board board;
+        [FormerlySerializedAs("commandManager")]
+        [SerializeField] private CommandInvoker commandInvoker;
         [SerializeField] private Transform squaresTransform;
         [SerializeField] private Transform whitePiecesTransform;
         [SerializeField] private Transform blackPiecesTransform;
@@ -43,7 +46,7 @@ namespace Logic
         public AttackLinesList AttackLines { get; } = new();
         public HashSet<Square> UnderAttackSquares { get; private set; } = new();
 
-        public event Action<PieceColor, CheckType> OnTurnChanged;
+        public event Action<PieceColor, CheckType> OnEndTurn;
         public event Action OnRestart;
 
         // Getters
@@ -111,65 +114,67 @@ namespace Logic
         {
             checkType = CheckType.None;
             gameState = GameState.Idle;
-            boardBuilder.BuildBoard(out currentTurnColor);
+            board.BuildBoard(out currentTurnColor);
             FindAllPieces();
-            EndMoveCalculations();
+            CalculateEndMove();
 
-            OnTurnChanged?.Invoke(currentTurnColor, checkType);
+            OnEndTurn?.Invoke(currentTurnColor, checkType);
             OnRestart?.Invoke();
         }
 
+        /// <summary>
+        /// Set state as move
+        /// </summary>
         public void StartTurn()
         {
             gameState = GameState.Move;
         }
 
+        /// <summary>
+        /// Change color, rest state, perform calculations
+        /// </summary>
         public void EndTurn()
         {
-            // Change turn
             currentTurnColor = currentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
             gameState = GameState.Idle;
 
-            EndMoveCalculations();
-            OnTurnChanged?.Invoke(currentTurnColor, checkType);
+            CalculateEndMove();
+            OnEndTurn?.Invoke(currentTurnColor, checkType);
         }
 
         // Calculations for all turns. Need to call every turn change
-        private void EndMoveCalculations()
+        private void CalculateEndMove()
         {
-            HashSet<Piece> currentTurnPieces = CurrentTurnPieces;
-            HashSet<Piece> prevTurnPieces = PrevTurnPieces;
+            UnderAttackSquares = GetUnderAttackSquares(PrevTurnPieces);
+            checkType = CalculateCheck(PrevTurnPieces);
 
-            UnderAttackSquares = GetUnderAttackSquares(prevTurnPieces);
-            checkType = CalculateCheck(prevTurnPieces);
-
-            foreach (Piece piece in currentTurnPieces)
+            foreach (Piece piece in CurrentTurnPieces)
             {
                 piece.CalculateMovesAndCaptures();
                 piece.CalculateConstrains();
             }
 
-            CalculateCheckMateOrStalemate(currentTurnPieces);
+            CalculateCheckMateOrStalemate(CurrentTurnPieces);
         }
 
-        private static HashSet<Square> GetUnderAttackSquares(HashSet<Piece> currentTurnPieces)
+        private static HashSet<Square> GetUnderAttackSquares(HashSet<Piece> pieces)
         {
-            var underAttackSet = new HashSet<Square>();
-            foreach (Piece piece in currentTurnPieces)
+            var underAttackSquares = new HashSet<Square>();
+            foreach (Piece piece in pieces)
             {
                 piece.CalculateMovesAndCaptures();
 
-                foreach (Square underAttackSquare in piece.MoveSquares)
+                foreach (Square moveSquare in piece.MoveSquares)
                 {
-                    underAttackSet.Add(underAttackSquare);
+                    underAttackSquares.Add(moveSquare);
                 }
                 foreach (Square defendSquare in piece.DefendSquares)
                 {
-                    underAttackSet.Add(defendSquare);
+                    underAttackSquares.Add(defendSquare);
                 }
             }
 
-            return underAttackSet;
+            return underAttackSquares;
         }
 
         private CheckType CalculateCheck(HashSet<Piece> pieces)
@@ -239,7 +244,7 @@ namespace Logic
         /// <returns> Last moved piece </returns>
         public Piece GetLastMovedPiece()
         {
-            return commandManager.GetLastMovedPiece();
+            return commandInvoker.GetLastMovedPiece();
         }
 
         public bool IsRightTurn(PieceColor pieceColor)
@@ -351,8 +356,8 @@ namespace Logic
             }
 
             currentTurnColor = (PieceColor)index;
-            EndMoveCalculations();
-            OnTurnChanged?.Invoke(currentTurnColor, checkType);
+            CalculateEndMove();
+            OnEndTurn?.Invoke(currentTurnColor, checkType);
         }
 
 #endif

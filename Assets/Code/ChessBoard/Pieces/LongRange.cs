@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Board.Pieces
+namespace ChessBoard.Pieces
 {
     public class LongRange : Piece
     {
@@ -21,10 +21,10 @@ namespace Board.Pieces
                 bool isFindingKing = false;
                 while (true)
                 {
-                    Square square = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
+                    Square square = game.GetSquareRel(pieceColor, currentSquare, offset);
                     offset += direction;
 
-                    if (square == gameManager.NullSquare)
+                    if (square == game.NullSquare)
                     {
                         break;
                     }

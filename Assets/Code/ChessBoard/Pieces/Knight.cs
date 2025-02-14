@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Board.Pieces
+namespace ChessBoard.Pieces
 {
     public class Knight : Piece
     {
@@ -13,9 +13,9 @@ namespace Board.Pieces
         {
             foreach (Vector2Int offset in moves)
             {
-                Square square = gameManager.GetSquareRel(pieceColor, currentSquare, offset);
+                Square square = game.GetSquareRel(pieceColor, currentSquare, offset);
 
-                if (square == gameManager.NullSquare)
+                if (square == game.NullSquare)
                 {
                     continue;
                 }

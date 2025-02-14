@@ -1,7 +1,7 @@
 using Logic;
 using UnityEngine;
 
-namespace Board.Builder
+namespace ChessBoard.Builder
 {
     [CreateAssetMenu(fileName = "BoardPreset", menuName = "Board/BoardPreset")]
     public class BoardPreset : ScriptableObject

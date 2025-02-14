@@ -1,5 +1,5 @@
-﻿using Board;
-using Board.Pieces;
+﻿using ChessBoard;
+using ChessBoard.Pieces;
 
 namespace Logic
 {

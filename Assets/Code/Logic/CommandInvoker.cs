@@ -1,6 +1,6 @@
-﻿using Board;
-using Board.Builder;
-using Board.Pieces;
+﻿using ChessBoard;
+using ChessBoard.Builder;
+using ChessBoard.Pieces;
 using Logic.CommandPattern;
 using Logic.Notation;
 using UnityEngine;
@@ -8,10 +8,12 @@ using UnityEngine.Serialization;
 
 namespace Logic
 {
-    public class CommandManager : MonoBehaviour
+    public class CommandInvoker : MonoBehaviour
     {
-        [SerializeField] private GameManager gameManager;
-        [SerializeField] private BoardBuilder boardBuilder;
+        [FormerlySerializedAs("gameManager")]
+        [SerializeField] private Game game;
+        [FormerlySerializedAs("boardBuilder")]
+        [SerializeField] private Board board;
 
         [SerializeField] private SeriesList seriesList;
 
@@ -20,23 +22,23 @@ namespace Logic
 
         private void OnEnable()
         {
-            gameManager.OnRestart += Restart;
+            game.OnRestart += Restart;
         }
 
         private void OnDisable()
         {
-            gameManager.OnRestart -= Restart;
+            game.OnRestart -= Restart;
         }
 
         public void MoveTo(Piece piece, Square square)
         {
             if (piece is Pawn && square.Rank is "8" or "1")
             {
-                commandBuffer.AddAndExecute(new MoveAndPromoteCommand(piece, square, gameManager, boardBuilder, seriesList));
+                commandBuffer.AddAndExecute(new MoveAndPromoteCommand(piece, square, game, board, seriesList));
             }
             else
             {
-                commandBuffer.AddAndExecute(new MoveCommand(piece, square, gameManager, seriesList));
+                commandBuffer.AddAndExecute(new MoveCommand(piece, square, game, seriesList));
             }
         }
 
@@ -50,23 +52,23 @@ namespace Logic
         {
             if (piece is Pawn && moveToSquare.Rank is "8" or "1")
             {
-                commandBuffer.AddAndExecute(new EatAndPromoteCommand(piece, beatenPiece, moveToSquare, gameManager, boardBuilder, seriesList));
+                commandBuffer.AddAndExecute(new EatAndPromoteCommand(piece, beatenPiece, moveToSquare, game, board, seriesList));
             }
             else
             {
-                commandBuffer.AddAndExecute(new EatCommand(piece, beatenPiece, moveToSquare, gameManager, seriesList));
+                commandBuffer.AddAndExecute(new EatCommand(piece, beatenPiece, moveToSquare, game, seriesList));
             }
         }
 
         public void Castling(King piece, Square kingSquare, Rook rook, Square rookSquare, NotationTurnType notationTurnType)
         {
-            commandBuffer.AddAndExecute(new CastlingCommand(piece, kingSquare, rook, rookSquare, gameManager, seriesList, notationTurnType));
+            commandBuffer.AddAndExecute(new CastlingCommand(piece, kingSquare, rook, rookSquare, game, seriesList, notationTurnType));
         }
 
         [ContextMenu("Undo")]
         public void Undo()
         {
-            if(gameManager.GameState != GameState.Idle)
+            if(game.GameState != GameState.Idle)
             {
                 return;
             }
@@ -77,7 +79,7 @@ namespace Logic
         [ContextMenu("Redo")]
         public void Redo()
         {
-            if(gameManager.GameState != GameState.Idle)
+            if(game.GameState != GameState.Idle)
             {
                 return;
             }

@@ -1,7 +1,7 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
-namespace Board
+namespace ChessBoard
 {
     [System.Serializable]
     public class CommonPieceSettings
