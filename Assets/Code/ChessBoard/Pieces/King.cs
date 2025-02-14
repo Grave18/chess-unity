@@ -16,8 +16,15 @@ namespace ChessBoard.Pieces
 
         public override void CalculateConstrains()
         {
-            // Constrains calculated in CalculateMovesAndCaptures
-            // Common code don't needed
+            var moveSquaresTemp = new List<Square>(MoveSquares);
+            foreach (Square square in moveSquaresTemp)
+            {
+                if (game.UnderAttackSquares.Contains(square))
+                {
+                    MoveSquares.Remove(square);
+                    CannotMoveSquares.Add(square);
+                }
+            }
         }
 
         // Also calculate castling
@@ -37,19 +44,14 @@ namespace ChessBoard.Pieces
 
                 if (!square.HasPiece())
                 {
-                    if (game.UnderAttackSquares.Contains(square))
-                    {
-                        CannotMoveSquares.Add(square);
-                    }
-                    else
-                    {
-                        MoveSquares.Add(square);
-                    }
+                    MoveSquares.Add(square);
                 }
+                // Defend square where same color piece stands
                 else if (square.GetPieceColor() == pieceColor)
                 {
                     DefendSquares.Add(square);
                 }
+                // Capture
                 else if (square.GetPieceColor() != pieceColor
                          && !game.UnderAttackSquares.Contains(square))
                 {
