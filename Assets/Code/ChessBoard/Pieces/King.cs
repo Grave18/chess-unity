@@ -60,7 +60,7 @@ namespace ChessBoard.Pieces
             }
 
             // Add short castling. Do need absolute position
-            Square shortCastlingSquare = game.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(2, 0));
+            Square shortCastlingSquare = game.GetSquareAbs(currentSquare, new Vector2Int(2, 0));
             if (CanCastlingShort(shortCastlingSquare, out CastlingInfo shortCastlingInfo))
             {
                 CastlingSquares.Add(shortCastlingInfo);
@@ -71,7 +71,7 @@ namespace ChessBoard.Pieces
             }
 
             // Add long castling. Do need absolute position
-            Square longCastlingSquare = game.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(-2, 0));
+            Square longCastlingSquare = game.GetSquareAbs(currentSquare, new Vector2Int(-2, 0));
             if (CanCastleLong(longCastlingSquare, out CastlingInfo longCastlingInfo))
             {
                 CastlingSquares.Add(longCastlingInfo);
@@ -100,61 +100,54 @@ namespace ChessBoard.Pieces
 
         private bool CanCastlingShort(Square square, out CastlingInfo castlingInfo)
         {
-            castlingInfo = default;
+            // Squares to the right
+            Square squarePlus1 = game.GetSquareAbs(currentSquare, new Vector2Int(1, 0));
+            Square squarePlus2 = game.GetSquareAbs(currentSquare, new Vector2Int(2, 0));
+            Square squareWithShortRook = game.GetSquareAbs(currentSquare, new Vector2Int(3, 0));
 
-            // Piece color must be White because black king is not mirrored. Don't need relative position
-            // Check short
-            Square squarePlus1 = game.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(1, 0));
-            Square squarePlus2 = game.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(2, 0));
-            Square squareWithShortRook = game.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(3, 0));
+            // Conditions
+            bool isSquaresHasNoPiece = !squarePlus1.HasPiece() && !squarePlus2.HasPiece() && squarePlus2.IsEqual(square);
+            bool isSquaresUnderAttack = game.UnderAttackSquares.Contains(squarePlus1)
+                                    || game.UnderAttackSquares.Contains(squarePlus2);
+            bool isRook = squareWithShortRook.HasPiece() && squareWithShortRook.GetPiece() is Rook { IsFirstMove: true };
 
-            bool isSquares = !squarePlus1.HasPiece() && !squarePlus2.HasPiece() && squarePlus2.IsEqual(square);
-            bool isRook = squareWithShortRook.HasPiece() && squareWithShortRook.GetPiece() is Rook r && r.IsFirstMove;
-
-            if (isRook)
-            {
-                castlingInfo.Rook = squareWithShortRook.GetPiece() as Rook;
-            }
-
-            bool isNotUnderAttack = !game.UnderAttackSquares.Contains(squarePlus1)
-                                    && !game.UnderAttackSquares.Contains(squarePlus2);
-
+            // Set castling info
+            castlingInfo.Rook = isRook ? squareWithShortRook.GetPiece() as Rook : null;
             castlingInfo.CastlingSquare = square;
             castlingInfo.RookSquare = squarePlus1;
-            castlingInfo.IsBlocked = !isNotUnderAttack || game.CheckType != CheckType.None;
             castlingInfo.NotationTurnType = NotationTurnType.CastlingShort;
+            castlingInfo.IsBlocked = castlingInfo.Rook != null
+                                     && IsFirstMove
+                                     && (isSquaresUnderAttack || game.CheckType is CheckType.Check or CheckType.DoubleCheck);
 
-            return IsFirstMove && isSquares && isRook && isNotUnderAttack && game.CheckType == CheckType.None;
+            return IsFirstMove && isSquaresHasNoPiece && isRook && !isSquaresUnderAttack && game.CheckType == CheckType.None;
         }
 
         private bool CanCastleLong(Square square, out CastlingInfo castlingInfo)
         {
-            castlingInfo = default;
+            // Squares to the left
+            Square squareMinus1 = game.GetSquareAbs(currentSquare, new Vector2Int(-1, 0));
+            Square squareMinus2 = game.GetSquareAbs(currentSquare, new Vector2Int(-2, 0));
+            Square squareMinus3 = game.GetSquareAbs(currentSquare, new Vector2Int(-3, 0));
+            Square squareWithLongRook = game.GetSquareAbs(currentSquare, new Vector2Int(-4, 0));
 
-            // Check long
-            Square squareMinus1 = game.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(-1, 0));
-            Square squareMinus2 = game.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(-2, 0));
-            Square squareMinus3 = game.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(-3, 0));
-            Square squareWithLongRook = game.GetSquareRel(PieceColor.White, currentSquare, new Vector2Int(-4, 0));
-
-            bool isSquares = !squareMinus1.HasPiece() && !squareMinus2.HasPiece()
+            // Conditions
+            bool isSquaresHasNoPiece = !squareMinus1.HasPiece() && !squareMinus2.HasPiece()
                                                       && !squareMinus3.HasPiece() && squareMinus2.IsEqual(square);
-            bool isRook = squareWithLongRook.HasPiece() && squareWithLongRook.GetPiece() is Rook r && r.IsFirstMove;
+            bool isSquaresUnderAttack = game.UnderAttackSquares.Contains(squareMinus1)
+                                        || game.UnderAttackSquares.Contains(squareMinus2);
+            bool isRook = squareWithLongRook.HasPiece() && squareWithLongRook.GetPiece() is Rook { IsFirstMove: true };
 
-            if (isRook)
-            {
-                castlingInfo.Rook = squareWithLongRook.GetPiece() as Rook;
-            }
-
-            bool isNotUnderAttack = !game.UnderAttackSquares.Contains(squareMinus1)
-                                    && !game.UnderAttackSquares.Contains(squareMinus2);
-
+            // Set castling info
+            castlingInfo.Rook = isRook ? squareWithLongRook.GetPiece() as Rook : null;
             castlingInfo.CastlingSquare = square;
             castlingInfo.RookSquare = squareMinus1;
-            castlingInfo.IsBlocked = !isNotUnderAttack || game.CheckType != CheckType.None;
             castlingInfo.NotationTurnType = NotationTurnType.CastlingLong;
+            castlingInfo.IsBlocked = castlingInfo.Rook != null
+                                     && IsFirstMove
+                                     && (isSquaresUnderAttack || game.CheckType is CheckType.Check or CheckType.DoubleCheck);
 
-            return IsFirstMove && isSquares && isRook && isNotUnderAttack && game.CheckType == CheckType.None;
+            return IsFirstMove && isSquaresHasNoPiece && isRook && !isSquaresUnderAttack && game.CheckType == CheckType.None;
         }
     }
 }

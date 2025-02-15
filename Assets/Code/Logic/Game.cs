@@ -285,6 +285,17 @@ namespace Logic
             return squares[y + x * Width];
         }
 
+        /// <summary>
+        /// Get section relative to absolute position (white side)
+        /// </summary>
+        /// <param name="currentSquare"> Current square </param>
+        /// <param name="offset"> Offset from current square </param>
+        /// <returns> Square at the offset or NullSquare if out of bounds </returns>
+        public Square GetSquareAbs(Square currentSquare, Vector2Int offset)
+        {
+            return GetSquareRel(PieceColor.White, currentSquare, offset);
+        }
+
         // Editor tools
         public void SetAutoChange(bool value)
         {
