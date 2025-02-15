@@ -10,20 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a1bcdec3d2da74446843c7a1d5112fda, type: 3}
-  m_Name: BoardPin
+  m_Name: BoardPinRook
   m_EditorClassIdentifier: 
+  turnColor: 1
   preset: '**k*****
 
     ********
 
-    ****q***
+    ********
 
-    r*******
+    **r*****
 
-    ******B*
+    ********
 
-    *QR*****
+    **R*****
 
-    ***P****
+    ********
 
-    P**B***R'
+    ********'

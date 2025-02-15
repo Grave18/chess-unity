@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Logic.Notation;
+using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace ChessBoard.Pieces
@@ -40,7 +41,7 @@ namespace ChessBoard.Pieces
                 {
                     if (square.GetPieceColor() != pieceColor)
                     {
-                        CaptureSquares.Add(square, square.GetPiece());
+                        CaptureSquares.Add(square, new CaptureInfo(square.GetPiece()));
                     }
                     else
                     {
@@ -56,7 +57,7 @@ namespace ChessBoard.Pieces
                     if(squareWithPawn.HasPiece() && squareWithPawn.GetPiece() is Pawn pawn
                        && game.GetLastMovedPiece() is Pawn lastMovedPawn && lastMovedPawn == pawn)
                     {
-                        CaptureSquares.Add(square, pawn);
+                        CaptureSquares.Add(square, new CaptureInfo(pawn, NotationTurnType.EnPassant));
                     }
                 }
             }

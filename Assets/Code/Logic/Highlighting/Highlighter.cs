@@ -118,7 +118,7 @@ namespace Logic.Highlighting
                 }
             }
 
-            foreach ((Square square, Piece _) in piece.CaptureSquares)
+            foreach ((Square square, _) in piece.CaptureSquares)
             {
                 if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
                 {

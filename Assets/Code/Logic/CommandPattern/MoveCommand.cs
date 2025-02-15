@@ -12,7 +12,6 @@ namespace Logic.CommandPattern
         private readonly Game _game;
         private readonly SeriesList _seriesList;
 
-        private PieceColor _previousTurn;
         private Square _previousSquare;
         private bool _previousIsFirstMove;
 
@@ -28,25 +27,17 @@ namespace Logic.CommandPattern
         {
             _game.StartTurn();
 
+            // Backup
             _previousSquare = _piece.GetSquare();
             _previousIsFirstMove = _piece.IsFirstMove;
-            _previousTurn = _game.CurrentTurnColor;
             _piece.IsFirstMove = false;
 
+            // Move
             await _piece.MoveToAsync(_square);
 
+            // End turn and add to notation
             _game.EndTurn();
-
-            // Is it Check?
-            NotationTurnType notationTurnType = _game.CheckType switch
-                {
-                    CheckType.Check => NotationTurnType.Check,
-                    CheckType.DoubleCheck => NotationTurnType.DoubleCheck,
-                    CheckType.CheckMate => NotationTurnType.CheckMate,
-                    _ => NotationTurnType.Move
-                };
-
-            _seriesList.AddTurn(_piece, _square, _previousTurn, notationTurnType);
+            _seriesList.AddTurn(_piece, _square, _game.PreviousTurnColor, NotationTurnType.Move, _game.CheckType);
         }
 
         public override async Task UndoAsync()
@@ -58,13 +49,13 @@ namespace Logic.CommandPattern
 
             _game.StartTurn();
 
-            _seriesList.RemoveTurn(_previousTurn);
-
+            // Move back
             await _piece.MoveToAsync(_previousSquare);
-
             _piece.IsFirstMove = _previousIsFirstMove;
 
+            // Remove from notation and end turn
             _game.EndTurn();
+            _seriesList.RemoveTurn(_game.CurrentTurnColor);
         }
 
         public override Piece GetPiece()

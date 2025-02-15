@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1bcdec3d2da74446843c7a1d5112fda, type: 3}
   m_Name: BoardEnPassant
   m_EditorClassIdentifier: 
-  turnColor: 1
+  turnColor: 0
   preset: '*n******
 
     ***p**p*

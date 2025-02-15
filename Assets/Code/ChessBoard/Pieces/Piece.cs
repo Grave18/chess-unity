@@ -30,7 +30,7 @@ namespace ChessBoard.Pieces
         // All kind of squares
 
         public HashSet<Square> MoveSquares { get; private set; } = new();
-        public Dictionary<Square, Piece> CaptureSquares { get; private set; } = new();
+        public Dictionary<Square, CaptureInfo> CaptureSquares { get; private set; } = new();
         public HashSet<Square> DefendSquares { get; } = new();
         public HashSet<Square> CannotMoveSquares { get; } = new();
 
@@ -64,9 +64,11 @@ namespace ChessBoard.Pieces
             return MoveSquares.Contains(square);
         }
 
-        public bool CanEatAt(Square square, out Piece piece)
+        public bool CanEatAt(Square square, out CaptureInfo captureInfo)
         {
-            return CaptureSquares.TryGetValue(square, out piece);;
+            captureInfo = default;
+
+            return CaptureSquares.TryGetValue(square, out captureInfo);
         }
 
         public void AddToBoard()
@@ -169,66 +171,58 @@ namespace ChessBoard.Pieces
             }
 
             MoveSquares.Clear();
-
-            // Update capture
             CaptureSquares.Clear();
         }
 
         private void UpdateMovesAndCaptures()
         {
             // Update move
-            var tempMoveSquares = new HashSet<Square>(MoveSquares);
-            foreach (Square moveSquare in MoveSquares)
+            var tempMoveSquares = new List<Square>(MoveSquares);
+
+            foreach (Square moveSquare in tempMoveSquares)
             {
                 if (!game.AttackLines.Contains(moveSquare, isCheck: true))
                 {
-                    tempMoveSquares.Remove(moveSquare);
+                    MoveSquares.Remove(moveSquare);
                     CannotMoveSquares.Add(moveSquare);
                 }
             }
 
-            MoveSquares = tempMoveSquares;
-
             // Update capture
-            var tempCaptureSquares = new Dictionary<Square, Piece>(CaptureSquares);
-            foreach ((Square captureSquare, Piece _) in CaptureSquares)
+            var tempCaptureSquares = new List<Square>(CaptureSquares.Keys);
+
+            foreach (Square captureSquare in tempCaptureSquares)
             {
                 Piece capturePiece = captureSquare.GetPiece();
                 if (!game.AttackLines.ContainsAttacker(capturePiece, isCheck: true))
                 {
-                    tempCaptureSquares.Remove(captureSquare);
+                    CaptureSquares.Remove(captureSquare);
                 }
             }
-
-            CaptureSquares = tempCaptureSquares;
         }
 
         private void CalculatePin(AttackLine attackLine)
         {
-            var tempMoveSquares = new HashSet<Square>(MoveSquares);
+            var tempMoveSquares = new List<Square>(MoveSquares);
 
-            foreach (Square moveSquare in MoveSquares)
+            foreach (Square moveSquare in tempMoveSquares)
             {
                 if (!attackLine.Contains(moveSquare))
                 {
-                    tempMoveSquares.Remove(moveSquare);
+                    MoveSquares.Remove(moveSquare);
                     CannotMoveSquares.Add(moveSquare);
                 }
             }
 
-            MoveSquares = tempMoveSquares;
-
             // Update captures
-            var tempCaptureSquares = new Dictionary<Square, Piece>(CaptureSquares);
-            foreach ((Square captureSquare, Piece _) in CaptureSquares)
+            var tempCaptureSquares = new List<Square>(CaptureSquares.Keys);
+            foreach (Square captureSquare in tempCaptureSquares)
             {
                 if (captureSquare.GetPiece() != attackLine.Attacker)
                 {
-                    tempCaptureSquares.Remove(captureSquare);
+                    CaptureSquares.Remove(captureSquare);
                 }
             }
-
-            CaptureSquares = tempCaptureSquares;
         }
 
         public void CalculateMovesAndCaptures()

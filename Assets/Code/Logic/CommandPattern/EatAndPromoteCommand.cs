@@ -68,17 +68,7 @@ namespace Logic.CommandPattern
 
             // End turn and add to notation
             _game.EndTurn();
-
-            // Is it Check?
-            // NotationTurnType notationTurnType = _gameManager.CheckType switch
-            // {
-            //     CheckType.Check => NotationTurnType.Check,
-            //     CheckType.DoubleCheck => NotationTurnType.DoubleCheck,
-            //     CheckType.CheckMate => NotationTurnType.CheckMate,
-            //     _ => NotationTurnType.Move
-            // };
-
-            _seriesList.AddTurn(_piece, _moveToSquare, _previousTurnColor, NotationTurnType.PromoteCapture);
+            _seriesList.AddTurn(_backupPawn, _moveToSquare, _previousTurnColor, NotationTurnType.Capture, _game.CheckType, _promotedPiece);
         }
 
         public override async Task UndoAsync()
@@ -102,8 +92,8 @@ namespace Logic.CommandPattern
             _beatenPiece.RemoveFromBeaten(_beatenPieceSquare);
 
             // Remove from notation and end turn
-            _seriesList.RemoveTurn(_previousTurnColor);
             _game.EndTurn();
+            _seriesList.RemoveTurn(_game.CurrentTurnColor);
         }
 
         public override Piece GetPiece()

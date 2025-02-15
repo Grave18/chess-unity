@@ -46,17 +46,19 @@ namespace Logic
         /// Eat or eat and promote
         /// </summary>
         /// <param name="piece"> Piece being moved </param>
-        /// <param name="beatenPiece"> Piece being eaten </param>
         /// <param name="moveToSquare"> Square where move piece is going </param>
-        public void EatAt(Piece piece, Piece beatenPiece, Square moveToSquare)
+        /// <param name="captureInfo"> Info with piece that is being eaten and notation type </param>
+        public void EatAt(Piece piece, Square moveToSquare, CaptureInfo captureInfo)
         {
+            // Promotion capture
             if (piece is Pawn && moveToSquare.Rank is "8" or "1")
             {
-                commandBuffer.AddAndExecute(new EatAndPromoteCommand(piece, beatenPiece, moveToSquare, game, board, seriesList));
+                commandBuffer.AddAndExecute(new EatAndPromoteCommand(piece, captureInfo.BeatenPiece, moveToSquare, game, board, seriesList));
             }
+            // Capture
             else
             {
-                commandBuffer.AddAndExecute(new EatCommand(piece, beatenPiece, moveToSquare, game, seriesList));
+                commandBuffer.AddAndExecute(new EatCommand(piece, captureInfo.BeatenPiece, moveToSquare, game, seriesList, captureInfo.NotationTurnType));
             }
         }
 

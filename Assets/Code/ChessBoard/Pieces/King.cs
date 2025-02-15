@@ -55,7 +55,7 @@ namespace ChessBoard.Pieces
                 else if (square.GetPieceColor() != pieceColor
                          && !game.UnderAttackSquares.Contains(square))
                 {
-                    CaptureSquares.Add(square, square.GetPiece());
+                    CaptureSquares.Add(square, new CaptureInfo(square.GetPiece()));
                 }
             }
 

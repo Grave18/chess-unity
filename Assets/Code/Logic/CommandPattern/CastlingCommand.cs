@@ -15,7 +15,6 @@ namespace Logic.CommandPattern
         private readonly SeriesList _seriesList;
         private readonly NotationTurnType _notationTurnType;
 
-        private PieceColor _previousTurn;
         private Square _previousKingSquare;
         private Square _previousRookSquare;
 
@@ -34,11 +33,9 @@ namespace Logic.CommandPattern
         public override async Task ExecuteAsync()
         {
             _game.StartTurn();
-            _seriesList.AddTurn(null, null, _game.CurrentTurnColor, _notationTurnType);
 
             _previousKingSquare = _king.GetSquare();
             _previousRookSquare = _rook.GetSquare();
-            _previousTurn = _game.CurrentTurnColor;
 
             await _king.MoveToAsync(_kingSquare);
             await _rook.MoveToAsync(_rookSquare);
@@ -47,6 +44,7 @@ namespace Logic.CommandPattern
             _rook.IsFirstMove = false;
 
             _game.EndTurn();
+            _seriesList.AddTurn(null, null, _game.PreviousTurnColor, _notationTurnType, _game.CheckType);
         }
 
         public override async Task UndoAsync()
@@ -58,8 +56,6 @@ namespace Logic.CommandPattern
 
             _game.StartTurn();
 
-            _seriesList.RemoveTurn(_previousTurn);
-
             await _rook.MoveToAsync(_previousRookSquare);
             await _king.MoveToAsync(_previousKingSquare);
 
@@ -67,6 +63,7 @@ namespace Logic.CommandPattern
             _king.IsFirstMove = true;
 
             _game.EndTurn();
+            _seriesList.RemoveTurn(_game.CurrentTurnColor);
         }
 
         public override Piece GetPiece()

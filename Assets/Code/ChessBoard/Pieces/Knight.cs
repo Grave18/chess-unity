@@ -26,7 +26,7 @@ namespace ChessBoard.Pieces
                 }
                 else if (square.GetPieceColor() != pieceColor)
                 {
-                    CaptureSquares.Add(square, square.GetPiece());
+                    CaptureSquares.Add(square, new CaptureInfo(square.GetPiece()));
                 }
                 else if (square.GetPieceColor() == pieceColor)
                 {

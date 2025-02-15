@@ -13,12 +13,12 @@ namespace Logic.CommandPattern
         private readonly Square _beatenPieceSquare;
         private readonly Game _game;
         private readonly SeriesList _seriesList;
+        private readonly NotationTurnType _notationTurnType;
 
-        private PieceColor _previousTurn;
         private Square _previousSquare;
         private bool _previousIsFirstMove;
 
-        public EatCommand(Piece piece, Piece beatenPiece, Square moveToSquare, Game game, SeriesList seriesList)
+        public EatCommand(Piece piece, Piece beatenPiece, Square moveToSquare, Game game, SeriesList seriesList, NotationTurnType notationTurnType)
         {
             _piece = piece;
             _beatenPiece = beatenPiece;
@@ -26,23 +26,27 @@ namespace Logic.CommandPattern
             _moveToSquare = moveToSquare;
             _game = game;
             _seriesList = seriesList;
+            _notationTurnType = notationTurnType;
         }
 
         public override async Task ExecuteAsync()
         {
             _game.StartTurn();
-            _seriesList.AddTurn(_piece, _moveToSquare, _game.CurrentTurnColor, NotationTurnType.Capture);
 
+            // Backup
             _previousSquare = _piece.GetSquare();
             _previousIsFirstMove = _piece.IsFirstMove;
-            _previousTurn = _game.CurrentTurnColor;
-
             _piece.IsFirstMove = false;
 
+            // Move to beaten
             _beatenPiece.MoveToBeaten();
+
+            // Move selected piece
             await _piece.MoveToAsync(_moveToSquare);
 
+            // End turn and add to notation
             _game.EndTurn();
+            _seriesList.AddTurn(_piece, _moveToSquare, _game.PreviousTurnColor, _notationTurnType, _game.CheckType);
         }
 
         public override async Task UndoAsync()
@@ -53,14 +57,17 @@ namespace Logic.CommandPattern
             }
 
             _game.StartTurn();
-            _seriesList.RemoveTurn(_previousTurn);
 
+            // Move selected piece
             await _piece.MoveToAsync(_previousSquare);
             _piece.IsFirstMove = _previousIsFirstMove;
 
+            // Add beaten piece to board
             _beatenPiece.RemoveFromBeaten(_beatenPieceSquare);
 
+            // Remove from notation and end turn
             _game.EndTurn();
+            _seriesList.RemoveTurn(_game.CurrentTurnColor);
         }
 
         public override Piece GetPiece()

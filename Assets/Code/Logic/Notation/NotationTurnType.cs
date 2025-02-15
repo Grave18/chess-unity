@@ -2,18 +2,11 @@
 {
     public enum NotationTurnType
     {
+        None,
         Move,
-        MoveCheck,
         Capture,
-        CaptureCheck,
+        EnPassant,
         CastlingShort,
         CastlingLong,
-        EnPassant,
-        Check,
-        DoubleCheck,
-        CheckMate,
-        None,
-        PromoteMove,
-        PromoteCapture
     }
 }

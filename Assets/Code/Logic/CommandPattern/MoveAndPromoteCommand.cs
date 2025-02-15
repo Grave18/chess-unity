@@ -61,16 +61,7 @@ namespace Logic.CommandPattern
             // End turn and add to notation
             _game.EndTurn();
 
-            // Is it Check?
-            // NotationTurnType notationTurnType = _gameManager.CheckType switch
-            // {
-            //     CheckType.Check => NotationTurnType.Check,
-            //     CheckType.DoubleCheck => NotationTurnType.DoubleCheck,
-            //     CheckType.CheckMate => NotationTurnType.CheckMate,
-            //     _ => NotationTurnType.Move
-            // };
-
-            _seriesList.AddTurn(_piece, _moveToSquare, _previousTurnColor, NotationTurnType.PromoteMove);
+            _seriesList.AddTurn(_backupPawn, _moveToSquare, _previousTurnColor, NotationTurnType.Move, _game.CheckType, _promotedPiece);
         }
 
         public override async Task UndoAsync()

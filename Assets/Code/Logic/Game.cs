@@ -52,6 +52,7 @@ namespace Logic
         // Getters
         public CheckType CheckType => checkType;
         public PieceColor CurrentTurnColor => currentTurnColor;
+        public PieceColor PreviousTurnColor => currentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
         public GameState GameState => gameState;
 
         public Square NullSquare => nullSquare;
@@ -208,7 +209,7 @@ namespace Logic
 
             bool IsPieceMakeCheck(Piece piece)
             {
-                foreach ((Square square, Piece _) in piece.CaptureSquares)
+                foreach ((Square square, _) in piece.CaptureSquares)
                 {
                     if (square.HasPiece() && square.GetPiece() is King king &&
                         king.GetPieceColor() != piece.GetPieceColor())

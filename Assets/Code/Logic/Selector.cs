@@ -78,9 +78,9 @@ namespace Logic
                 DeselectCurrent();
             }
             // Eat
-            else if (piece.CanEatAt(moveToSquare, out Piece beatenPiece))
+            else if (piece.CanEatAt(moveToSquare, out CaptureInfo captureInfo))
             {
-                commandInvoker.EatAt(piece, beatenPiece, moveToSquare);
+                commandInvoker.EatAt(piece, moveToSquare, captureInfo);
                 DeselectCurrent();
             }
         }
