@@ -115,7 +115,7 @@ namespace Logic
         {
             checkType = CheckType.None;
             gameState = GameState.Idle;
-            board.BuildBoard(out currentTurnColor);
+            board.BuildBoard();
             FindAllPieces();
             CalculateEndMove();
 
@@ -359,7 +359,16 @@ namespace Logic
         /// <summary>
         /// For debug select tool
         /// </summary>
-        /// <param name="index"></param>
+        /// <param name="color"></param>
+        public void SetTurn(PieceColor color)
+        {
+            currentTurnColor = color;
+            gameState = GameState.Idle;
+
+            CalculateEndMove();
+            OnEndTurn?.Invoke(currentTurnColor, checkType);
+        }
+
         public void SetTurn(int index)
         {
             if (index < 0 || index > 1)
@@ -367,11 +376,8 @@ namespace Logic
                 return;
             }
 
-            currentTurnColor = (PieceColor)index;
-            CalculateEndMove();
-            OnEndTurn?.Invoke(currentTurnColor, checkType);
+            SetTurn((PieceColor)index);
         }
-
 #endif
     }
 }

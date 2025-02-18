@@ -80,10 +80,40 @@ namespace ChessBoard.Builder
             return piece;
         }
 
-        public void BuildBoard(out PieceColor turnColor)
+        [Button(name: "Build Board", space: 10f)]
+        [ContextMenu("Build Board")]
+        public void BuildBoard()
         {
-            string text = boardPreset.Preset;
-            turnColor = boardPreset.TurnColor;
+            BuildBoard(boardPreset, out PieceColor color);
+            game.SetTurn(color);
+        }
+
+        /// <summary>
+        /// Can be used for debug
+        /// </summary>
+        public void BuildBoard(BoardPreset preset)
+        {
+            boardPreset = preset;
+            BuildBoard(preset, out PieceColor color);
+            game.SetTurn(color);
+        }
+
+        [Button(space: 10f)]
+        [ContextMenu("Destroy All Pieces")]
+        public void DestroyAllPieces()
+        {
+            DestroyColorPieces(whitePiecesParent);
+            DestroyColorPieces(blackPiecesParent);
+            _whitePairs.Clear();
+            _blackPairs.Clear();
+
+            game.ClearPieces();
+        }
+
+        private void BuildBoard(BoardPreset preset, out PieceColor turnColor)
+        {
+            string text = preset.Preset;
+            turnColor = preset.TurnColor;
 
             text = ClearNewLineCharacters(text);
 
@@ -192,25 +222,6 @@ namespace ChessBoard.Builder
                 piecePrefab.transform.rotation, piecesParent);
             piece = pieceInstance.GetComponent<Piece>();
             piece.GetSectionAndAlign(game);
-        }
-
-        [Button(name: "Build Board", space: 10f)]
-        [ContextMenu("Build Board")]
-        private void GameManagerRestart()
-        {
-            game.Restart();
-        }
-
-        [Button(space: 10f)]
-        [ContextMenu("Destroy All Pieces")]
-        private void DestroyAllPieces()
-        {
-            DestroyColorPieces(whitePiecesParent);
-            DestroyColorPieces(blackPiecesParent);
-            _whitePairs.Clear();
-            _blackPairs.Clear();
-
-            game.ClearPieces();
         }
 
         private static void DestroyColorPieces(Transform parent)
