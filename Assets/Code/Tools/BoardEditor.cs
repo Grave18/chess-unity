@@ -69,7 +69,6 @@ namespace Tools
                 alignment = TextAnchor.MiddleCenter,
                 stretchWidth = true,
                 stretchHeight = true,
-
             };
         }
 
@@ -86,7 +85,7 @@ namespace Tools
                 Debug.LogError("Board preset not set.");
             }
 
-            _board.BuildBoard(_boardPreset);
+            _ = _board.BuildBoardAsync(_boardPreset);
         }
     }
 }

@@ -6,6 +6,7 @@ using EditorCools;
 using Logic;
 using Ui.Promotion;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Serialization;
 
 namespace ChessBoard.Builder
@@ -22,15 +23,13 @@ namespace ChessBoard.Builder
 
         [SerializeField] private Transform whitePiecesParent;
         [SerializeField] private Transform blackPiecesParent;
-        [SerializeField] private GameObject[] piecePrefabs;
+        [SerializeField] private AssetReferenceGameObject[] piecePrefabs;
         [SerializeField] private BoardPreset boardPreset;
 
-        private readonly Dictionary<Square, GameObject> _whitePairs = new();
-        private readonly Dictionary<Square, GameObject> _blackPairs = new();
+        private readonly Dictionary<Square, AssetReferenceGameObject> _whitePairs = new();
+        private readonly Dictionary<Square, AssetReferenceGameObject> _blackPairs = new();
 
         private TaskCompletionSource<PieceType> _pieceTypeCompletionSource = new();
-
-        public GameObject[] PiecePrefabs => piecePrefabs;
 
         public async Task<(Piece, PieceType)> GetPieceFromSelectorAsync(PieceColor pieceColor, Square square)
         {
@@ -38,7 +37,7 @@ namespace ChessBoard.Builder
             PieceType pieceType = await _pieceTypeCompletionSource.Task;
             promotionPanel.Hide();
 
-            Piece piece = GetPiece(pieceType, pieceColor, square);
+            Piece piece = await GetPieceAsync(pieceType, pieceColor, square);
             return (piece, pieceType);
         }
 
@@ -48,13 +47,15 @@ namespace ChessBoard.Builder
             _pieceTypeCompletionSource = new TaskCompletionSource<PieceType>();
         }
 
-        public Piece GetPiece(PieceType pieceType, PieceColor pieceColor, Square square)
+        public async Task<Piece> GetPieceAsync(PieceType pieceType, PieceColor pieceColor, Square square)
         {
-            Transform piecesParent = pieceColor == PieceColor.White
+            Transform piecesParent
+                = pieceColor == PieceColor.White
                 ? whitePiecesParent
                 : blackPiecesParent;
 
-            GameObject piecePrefab = pieceColor == PieceColor.White
+            AssetReferenceGameObject piecePrefab
+                = pieceColor == PieceColor.White
                 ? pieceType switch
                 {
                     // White
@@ -76,27 +77,11 @@ namespace ChessBoard.Builder
                     _ => null,
                 };
 
-            InstantiatePiece(piecesParent, piecePrefab, square, out Piece piece);
+            Piece piece = await InstantiatePieceAsync(piecesParent, piecePrefab, square);
             return piece;
         }
 
-        [Button(name: "Build Board", space: 10f)]
-        [ContextMenu("Build Board")]
-        public void BuildBoard()
-        {
-            BuildBoard(boardPreset, out PieceColor color);
-            game.SetTurn(color);
-        }
 
-        /// <summary>
-        /// Can be used for debug
-        /// </summary>
-        public void BuildBoard(BoardPreset preset)
-        {
-            boardPreset = preset;
-            BuildBoard(preset, out PieceColor color);
-            game.SetTurn(color);
-        }
 
         [Button(space: 10f)]
         [ContextMenu("Destroy All Pieces")]
@@ -110,10 +95,17 @@ namespace ChessBoard.Builder
             game.ClearPieces();
         }
 
-        private void BuildBoard(BoardPreset preset, out PieceColor turnColor)
+        [Button(name: "Build Board", space: 10f)]
+        [ContextMenu("Build Board")]
+        public async Task BuildBoardAsync()
         {
+            await BuildBoardAsync(boardPreset);
+        }
+
+        public async Task BuildBoardAsync(BoardPreset preset)
+        {
+            boardPreset = preset;
             string text = preset.Preset;
-            turnColor = preset.TurnColor;
 
             text = ClearNewLineCharacters(text);
 
@@ -187,9 +179,10 @@ namespace ChessBoard.Builder
                 }
             }
 
-            InstantiatePieces();
+            await InstantiatePieces();
 
             game.FindAllPieces();
+            game.SetTurn(preset.TurnColor);
         }
 
         private static bool IsPresetNotValid(string text)
@@ -202,26 +195,47 @@ namespace ChessBoard.Builder
             return text.Replace("\r", string.Empty).Replace("\n", string.Empty).Replace("\t", string.Empty);
         }
 
-        private void InstantiatePieces()
+        private async Task InstantiatePieces()
         {
-            InstantiatePieces(_whitePairs, whitePiecesParent);
-            InstantiatePieces(_blackPairs, blackPiecesParent);
+            Task taskWhite = InstantiatePiecesAsync(_whitePairs, whitePiecesParent);
+            Task taskBlack = InstantiatePiecesAsync(_blackPairs, blackPiecesParent);
+
+            await Task.WhenAll(taskWhite, taskBlack);
         }
 
-        private void InstantiatePieces(Dictionary<Square, GameObject> pairs, Transform piecesParent)
+        private async Task InstantiatePiecesAsync(Dictionary<Square, AssetReferenceGameObject> pairs, Transform piecesParent)
         {
+            var tasks = new List<Task<Piece>>();
             foreach (var (square, piece) in pairs)
             {
-                InstantiatePiece(piecesParent, piece, square, out _);
+                tasks.Add(InstantiatePieceAsync(piecesParent, piece, square));
             }
+
+            await Task.WhenAll(tasks);
         }
 
-        private void InstantiatePiece(Transform piecesParent, GameObject piecePrefab, Square square, out Piece piece)
+        private async Task<Piece> InstantiatePieceAsync(Transform piecesParent, AssetReferenceGameObject assetReference, Square square)
         {
-            GameObject pieceInstance = Instantiate(piecePrefab, square.transform.position,
-                piecePrefab.transform.rotation, piecesParent);
-            piece = pieceInstance.GetComponent<Piece>();
-            piece.GetSectionAndAlign(game);
+            if (assetReference == null)
+            {
+                return null;
+            }
+
+            GameObject pieceInstance = await assetReference.InstantiateAsync(square.transform.position, Quaternion.identity, piecesParent).Task;
+
+            var piece = pieceInstance.GetComponent<Piece>();
+            RotateBlack(piece);
+            piece.Init(game);
+
+            return piece;
+        }
+
+        private static void RotateBlack(Piece piece)
+        {
+            if (piece.GetPieceColor() == PieceColor.Black)
+            {
+                piece.transform.Rotate(0f, 180f, 0f);
+            }
         }
 
         private static void DestroyColorPieces(Transform parent)
@@ -229,7 +243,34 @@ namespace ChessBoard.Builder
             Transform[] pieces = parent.Cast<Transform>().ToArray();
             foreach (Transform piece in pieces)
             {
-                DestroyImmediate(piece.gameObject);
+                if (Application.isPlaying)
+                {
+                    if (!Addressables.ReleaseInstance(piece.gameObject))
+                    {
+                        Destroy(piece.gameObject);
+                    }
+                }
+                else
+                {
+                    DestroyImmediate(piece.gameObject);
+                }
+            }
+        }
+
+        private void OnDestroy()
+        {
+            ReleaseAssets();
+        }
+
+        private void ReleaseAssets()
+        {
+            var assetReferences = _blackPairs.Values.Concat(_whitePairs.Values);
+            foreach (AssetReferenceGameObject assetReference in assetReferences)
+            {
+                if (assetReference != null && assetReference.IsValid())
+                {
+                    assetReference.ReleaseAsset();
+                }
             }
         }
     }

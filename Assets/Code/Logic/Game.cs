@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ChessBoard;
 using ChessBoard.Builder;
 using ChessBoard.Pieces;
@@ -62,7 +63,7 @@ namespace Logic
         private void Start()
         {
             FindAllSquares();
-            Restart();
+            _ = RestartAsync();
         }
 
         public void ClearPieces()
@@ -111,12 +112,13 @@ namespace Logic
         }
 
         [Button(space: 10f)]
-        public void Restart()
+        public async Task RestartAsync()
         {
             checkType = CheckType.None;
             gameState = GameState.Idle;
-            board.BuildBoard();
-            FindAllPieces();
+
+            await board.BuildBoardAsync();
+
             CalculateEndMove();
 
             OnEndTurn?.Invoke(currentTurnColor, checkType);

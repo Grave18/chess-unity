@@ -29,34 +29,16 @@ namespace ChessBoard.Pieces
 
         // All kind of squares
 
-        public HashSet<Square> MoveSquares { get; private set; } = new();
-        public Dictionary<Square, CaptureInfo> CaptureSquares { get; private set; } = new();
+        public HashSet<Square> MoveSquares { get; } = new();
+        public Dictionary<Square, CaptureInfo> CaptureSquares { get; } = new();
         public HashSet<Square> DefendSquares { get; } = new();
         public HashSet<Square> CannotMoveSquares { get; } = new();
 
-        public void GetSectionAndAlign(Game game)
-        {
-            Construct(game);
-
-            if (!Physics.Raycast(transform.position + Vector3.up, Vector3.down, out var hitInfo, 2f,
-                    squareLayer))
-            {
-                return;
-            }
-
-            transform.position = hitInfo.transform.position;
-            currentSquare = hitInfo.collider.GetComponent<Square>();
-            currentSquare.SetPiece(this);
-        }
-
-        private void Construct(Game game)
+        public void Init(Game game)
         {
             this.game = game;
-        }
 
-        private void Start()
-        {
-            currentSquare.SetPiece(this);
+            SetPositionAndSquare();
         }
 
         public bool CanMoveTo(Square square)
@@ -274,12 +256,25 @@ namespace ChessBoard.Pieces
             return true;
         }
 
+        private void SetPositionAndSquare()
+        {
+            if (!Physics.Raycast(transform.position + Vector3.up, Vector3.down, out var hitInfo, 2f,
+                    squareLayer))
+            {
+                return;
+            }
+
+            transform.position = hitInfo.transform.position;
+            currentSquare = hitInfo.collider.GetComponent<Square>();
+            currentSquare.SetPiece(this);
+        }
+
 #if UNITY_EDITOR
 
         [ContextMenu("Get Section And Align")]
         private void GetSectionAndAlign()
         {
-            GetSectionAndAlign(FindObjectOfType<Game>());
+            Init(FindObjectOfType<Game>());
         }
 
 #endif
