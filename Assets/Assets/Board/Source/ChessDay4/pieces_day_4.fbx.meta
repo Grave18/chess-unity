@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c475bbd9a8bd1bb4dacb1530bde3c115
+guid: 739e62104bced414fbd85d915f2ebb0f
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,8 +7,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Board_day_4
-    second: {fileID: 2100000, guid: 6475d3f2b4bc22149b2964e6b345a97a, type: 2}
+      name: Black_Piece_day_4
+    second: {fileID: 2100000, guid: f6cc3466a48e98e4b8ecae20d3b78c99, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: White_Piece_day_4
+    second: {fileID: 2100000, guid: 39d0aaf99829e4343a727262aff07b19, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

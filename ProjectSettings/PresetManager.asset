@@ -12,5 +12,5 @@ PresetManager:
     second:
     - m_Preset: {fileID: 2655988077585873504, guid: 80f1e607a0d2ead46957b17535bcbe9d,
         type: 2}
-      m_Filter: fbx
+      m_Filter: 
       m_Disabled: 0
