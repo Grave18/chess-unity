@@ -15,7 +15,7 @@ namespace Ui
 
         private void OnEnable()
         {
-            restartButton.onClick.AddListener(() => _ = game.RestartAsync());
+            restartButton.onClick.AddListener(game.Restart);
 
             game.OnEndTurn += UpdateNotificationText;
         }

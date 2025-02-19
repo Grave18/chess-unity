@@ -7,7 +7,6 @@ using Logic;
 using Ui.Promotion;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.Serialization;
 
 namespace ChessBoard.Builder
 {
@@ -16,20 +15,29 @@ namespace ChessBoard.Builder
         private const int Width = 8;
         private const int Height = 8;
 
-        [FormerlySerializedAs("gameManager")] [Header("References")] [SerializeField]
-        private Game game;
+        [Header("References")]
+        [SerializeField] private Transform prefabsParent;
 
+        [Header("Ui")]
         [SerializeField] private PromotionPanel promotionPanel;
 
-        [SerializeField] private Transform whitePiecesParent;
-        [SerializeField] private Transform blackPiecesParent;
-        [SerializeField] private AssetReferenceGameObject[] piecePrefabs;
-        [SerializeField] private BoardPreset boardPreset;
+        private Game _game;
+        private GameObject[] _prefabs;
+        private readonly Dictionary<Square, GameObject> _piecePairs = new();
 
-        private readonly Dictionary<Square, AssetReferenceGameObject> _whitePairs = new();
-        private readonly Dictionary<Square, AssetReferenceGameObject> _blackPairs = new();
+        private GameObject _boardInstance;
+        private BoardPreset _boardPreset;
 
+        // Selected in Ui
         private TaskCompletionSource<PieceType> _pieceTypeCompletionSource = new();
+
+        public void Init(Game game, BoardPreset boardPreset, GameObject[] prefabs)
+        {
+            _game = game;
+            _prefabs = prefabs;
+            _boardPreset = boardPreset;
+            Build();
+        }
 
         public async Task<(Piece, PieceType)> GetPieceFromSelectorAsync(PieceColor pieceColor, Square square)
         {
@@ -37,7 +45,7 @@ namespace ChessBoard.Builder
             PieceType pieceType = await _pieceTypeCompletionSource.Task;
             promotionPanel.Hide();
 
-            Piece piece = await GetPieceAsync(pieceType, pieceColor, square);
+            Piece piece = GetPiece(pieceType, pieceColor, square);
             return (piece, pieceType);
         }
 
@@ -47,127 +55,55 @@ namespace ChessBoard.Builder
             _pieceTypeCompletionSource = new TaskCompletionSource<PieceType>();
         }
 
-        public async Task<Piece> GetPieceAsync(PieceType pieceType, PieceColor pieceColor, Square square)
-        {
-            Transform piecesParent
-                = pieceColor == PieceColor.White
-                ? whitePiecesParent
-                : blackPiecesParent;
-
-            AssetReferenceGameObject piecePrefab
-                = pieceColor == PieceColor.White
-                ? pieceType switch
-                {
-                    // White
-                    PieceType.Queen => piecePrefabs[10],
-                    PieceType.Rook => piecePrefabs[11],
-                    PieceType.Bishop => piecePrefabs[6],
-                    PieceType.Knight => piecePrefabs[8],
-                    PieceType.Pawn => piecePrefabs[9],
-                    _ => null,
-                }
-                : pieceType switch
-                {
-                    // Black
-                    PieceType.Queen => piecePrefabs[4],
-                    PieceType.Rook => piecePrefabs[5],
-                    PieceType.Bishop => piecePrefabs[0],
-                    PieceType.Knight => piecePrefabs[2],
-                    PieceType.Pawn => piecePrefabs[3],
-                    _ => null,
-                };
-
-            Piece piece = await InstantiatePieceAsync(piecesParent, piecePrefab, square);
-            return piece;
-        }
-
-
-
         [Button(space: 10f)]
-        [ContextMenu("Destroy All Pieces")]
-        public void DestroyAllPieces()
+        public void Build()
         {
-            DestroyColorPieces(whitePiecesParent);
-            DestroyColorPieces(blackPiecesParent);
-            _whitePairs.Clear();
-            _blackPairs.Clear();
+            string preset = _boardPreset.Preset;
 
-            game.ClearPieces();
-        }
+            preset = ClearNewLineCharacters(preset);
 
-        [Button(name: "Build Board", space: 10f)]
-        [ContextMenu("Build Board")]
-        public async Task BuildBoardAsync()
-        {
-            await BuildBoardAsync(boardPreset);
-        }
-
-        public async Task BuildBoardAsync(BoardPreset preset)
-        {
-            boardPreset = preset;
-            string text = preset.Preset;
-
-            text = ClearNewLineCharacters(text);
-
-            if (IsPresetNotValid(text))
+            if (IsPresetNotValid(preset))
             {
                 Debug.LogError("Invalid board preset");
                 return;
             }
 
-            DestroyAllPieces();
+            DestroyBoardAndPieces();
+            LoadPreset(preset);
+            InstantiatePieces();
+            InstantiateBoard();
+            _game.FindAllPieces();
+        }
 
+        private void LoadPreset(string preset)
+        {
             for (int x = 0, y = 0; y < Height;)
             {
-                int iText = x + y * Width;
+                int indexOfSymbol = x + y * Width;
                 // Must invert y (Height - 1 - y) also x and y are swapped
-                int iSquares = Height - 1 - y + x * Width;
+                int indexOfSquare = Height - 1 - y + x * Width;
 
-                switch (text[iText])
+                switch (preset[indexOfSymbol])
                 {
                     // Set prefabs for each square
                     case '*':
                     case ' ':
                         break;
-                    case 'b':
-                        _blackPairs[game.Squares[iSquares]] = piecePrefabs[0]; // B_Bishop
-                        break;
-                    case 'k':
-                        _blackPairs[game.Squares[iSquares]] = piecePrefabs[1]; // B_King
-                        break;
-                    case 'n':
-                        _blackPairs[game.Squares[iSquares]] = piecePrefabs[2]; // B_Knight
-                        break;
-                    case 'p':
-                        _blackPairs[game.Squares[iSquares]] = piecePrefabs[3]; // B_Pawn
-                        break;
-                    case 'q':
-                        _blackPairs[game.Squares[iSquares]] = piecePrefabs[4]; // B_Queen
-                        break;
-                    case 'r':
-                        _blackPairs[game.Squares[iSquares]] = piecePrefabs[5]; // B_Rook
-                        break;
-                    case 'B':
-                        _whitePairs[game.Squares[iSquares]] = piecePrefabs[6]; // W_Bishop
-                        break;
-                    case 'K':
-                        _whitePairs[game.Squares[iSquares]] = piecePrefabs[7]; // W_King
-                        break;
-                    case 'N':
-                        _whitePairs[game.Squares[iSquares]] = piecePrefabs[8]; // W_Knight
-                        break;
-                    case 'P':
-                        _whitePairs[game.Squares[iSquares]] = piecePrefabs[9]; // W_Pawn
-                        break;
-                    case 'Q':
-                        _whitePairs[game.Squares[iSquares]] = piecePrefabs[10]; // W_Queen
-                        break;
-                    case 'R':
-                        _whitePairs[game.Squares[iSquares]] = piecePrefabs[11]; // W_Rook
-                        break;
+                    case 'b': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[0];  break; // B_Bishop
+                    case 'k': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[1];  break; // B_King
+                    case 'n': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[2];  break; // B_Knight
+                    case 'p': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[3];  break; // B_Pawn
+                    case 'q': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[4];  break; // B_Queen
+                    case 'r': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[5];  break; // B_Rook
+                    case 'B': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[6];  break; // W_Bishop
+                    case 'K': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[7];  break; // W_King
+                    case 'N': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[8];  break; // W_Knight
+                    case 'P': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[9];  break; // W_Pawn
+                    case 'Q': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[10]; break; // W_Queen
+                    case 'R': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[11]; break; // W_Rook
                     default:
-                        Debug.LogError($"{text[iText]} is not a valid character");
-                        return;
+                        Debug.LogError($"{preset[indexOfSymbol]} is not a valid character");
+                        break;
                 }
 
                 x += 1;
@@ -178,11 +114,6 @@ namespace ChessBoard.Builder
                     y += 1;
                 }
             }
-
-            await InstantiatePieces();
-
-            game.FindAllPieces();
-            game.SetTurn(preset.TurnColor);
         }
 
         private static bool IsPresetNotValid(string text)
@@ -195,83 +126,90 @@ namespace ChessBoard.Builder
             return text.Replace("\r", string.Empty).Replace("\n", string.Empty).Replace("\t", string.Empty);
         }
 
-        private async Task InstantiatePieces()
+        private void InstantiatePieces()
         {
-            Task taskWhite = InstantiatePiecesAsync(_whitePairs, whitePiecesParent);
-            Task taskBlack = InstantiatePiecesAsync(_blackPairs, blackPiecesParent);
-
-            await Task.WhenAll(taskWhite, taskBlack);
-        }
-
-        private async Task InstantiatePiecesAsync(Dictionary<Square, AssetReferenceGameObject> pairs, Transform piecesParent)
-        {
-            var tasks = new List<Task<Piece>>();
-            foreach (var (square, piece) in pairs)
+            foreach (var (square, piece) in _piecePairs)
             {
-                tasks.Add(InstantiatePieceAsync(piecesParent, piece, square));
+                InstantiatePiece(piece, square);
             }
-
-            await Task.WhenAll(tasks);
         }
 
-        private async Task<Piece> InstantiatePieceAsync(Transform piecesParent, AssetReferenceGameObject assetReference, Square square)
+        private Piece InstantiatePiece(GameObject piecePrefab, Square square)
         {
-            if (assetReference == null)
+            if (piecePrefab == null)
             {
                 return null;
             }
 
-            GameObject pieceInstance = await assetReference.InstantiateAsync(square.transform.position, Quaternion.identity, piecesParent).Task;
-
+            GameObject pieceInstance = Instantiate(piecePrefab, square.transform.position, piecePrefab.transform.rotation, prefabsParent);
             var piece = pieceInstance.GetComponent<Piece>();
-            RotateBlack(piece);
-            piece.Init(game);
+
+            piece.Init(_game);
 
             return piece;
         }
 
-        private static void RotateBlack(Piece piece)
+        private void InstantiateBoard()
         {
-            if (piece.GetPieceColor() == PieceColor.Black)
-            {
-                piece.transform.Rotate(0f, 180f, 0f);
-            }
+            _boardInstance = Instantiate(_prefabs[12], transform);
         }
 
-        private static void DestroyColorPieces(Transform parent)
+        private Piece GetPiece(PieceType pieceType, PieceColor pieceColor, Square square)
         {
-            Transform[] pieces = parent.Cast<Transform>().ToArray();
+            GameObject piecePrefab
+                = pieceColor == PieceColor.White
+                    ? pieceType switch
+                    {
+                        // White
+                        PieceType.Queen => _prefabs[10],
+                        PieceType.Rook => _prefabs[11],
+                        PieceType.Bishop => _prefabs[6],
+                        PieceType.Knight => _prefabs[8],
+                        PieceType.Pawn => _prefabs[9],
+                        _ => null,
+                    }
+                    : pieceType switch
+                    {
+                        // Black
+                        PieceType.Queen => _prefabs[4],
+                        PieceType.Rook => _prefabs[5],
+                        PieceType.Bishop => _prefabs[0],
+                        PieceType.Knight => _prefabs[2],
+                        PieceType.Pawn => _prefabs[3],
+                        _ => null,
+                    };
+
+            Piece piece = InstantiatePiece(piecePrefab, square);
+            return piece;
+        }
+
+        [Button(space: 10f)]
+        public void DestroyBoardAndPieces()
+        {
+            DestroyPieces();
+            DestroyBoard();
+            _piecePairs.Clear();
+            _boardInstance = null;
+            _game.ClearPieces();
+        }
+
+        private void DestroyPieces()
+        {
+            Transform[] pieces = prefabsParent.Cast<Transform>().ToArray();
             foreach (Transform piece in pieces)
             {
-                if (Application.isPlaying)
-                {
-                    if (!Addressables.ReleaseInstance(piece.gameObject))
-                    {
-                        Destroy(piece.gameObject);
-                    }
-                }
-                else
-                {
-                    DestroyImmediate(piece.gameObject);
-                }
+                Destroy(piece.gameObject);
             }
         }
 
-        private void OnDestroy()
+        private void DestroyBoard()
         {
-            ReleaseAssets();
-        }
-
-        private void ReleaseAssets()
-        {
-            var assetReferences = _blackPairs.Values.Concat(_whitePairs.Values);
-            foreach (AssetReferenceGameObject assetReference in assetReferences)
+            if (_boardInstance == null)
             {
-                if (assetReference != null && assetReference.IsValid())
-                {
-                    assetReference.ReleaseAsset();
-                }
+                return;
             }
+
+            Destroy(_boardInstance.gameObject);
         }
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ChessBoard;
 using ChessBoard.Builder;
 using ChessBoard.Pieces;
@@ -17,13 +16,9 @@ namespace Logic
         private const int Height = 8;
 
         [Header("References")]
-        [FormerlySerializedAs("boardBuilder")]
-        [SerializeField] private Board board;
-        [FormerlySerializedAs("commandManager")]
         [SerializeField] private CommandInvoker commandInvoker;
         [SerializeField] private Transform squaresTransform;
-        [SerializeField] private Transform whitePiecesTransform;
-        [SerializeField] private Transform blackPiecesTransform;
+        [SerializeField] private Transform piecesTransform;
 
         [Header("Settings")]
         [SerializeField] private GameState gameState = GameState.Idle;
@@ -35,9 +30,11 @@ namespace Logic
         [SerializeField] private Square[] squares;
         [SerializeField] private Square nullSquare;
 
-        [Header("Selections")]
-        public ISelectable Selected;
-        public ISelectable Highlighted;
+        private Board _board;
+
+        public ISelectable Selected { get; set; }
+        public ISelectable Highlighted { get; set; }
+
 
         public HashSet<Piece> WhitePieces { get; } = new();
         public HashSet<Piece> BlackPieces { get; } = new();
@@ -60,10 +57,28 @@ namespace Logic
         public bool IsAutoChange => isAutoChange;
         public Square[] Squares => squares;
 
-        private void Start()
+        public void Init(Board board, PieceColor turnColor)
         {
+            _board = board;
+            currentTurnColor = turnColor;
             FindAllSquares();
-            _ = RestartAsync();
+            CalculateEndMove();
+
+            OnEndTurn?.Invoke(currentTurnColor, checkType);
+            OnRestart?.Invoke();
+        }
+
+        [Button(space: 10f)]
+        public void Restart()
+        {
+            checkType = CheckType.None;
+            gameState = GameState.Idle;
+
+            _board.Build();
+            CalculateEndMove();
+
+            OnEndTurn?.Invoke(currentTurnColor, checkType);
+            OnRestart?.Invoke();
         }
 
         public void ClearPieces()
@@ -109,20 +124,6 @@ namespace Logic
         public bool IsEndgame()
         {
             return checkType is CheckType.CheckMate or CheckType.Stalemate;
-        }
-
-        [Button(space: 10f)]
-        public async Task RestartAsync()
-        {
-            checkType = CheckType.None;
-            gameState = GameState.Idle;
-
-            await board.BuildBoardAsync();
-
-            CalculateEndMove();
-
-            OnEndTurn?.Invoke(currentTurnColor, checkType);
-            OnRestart?.Invoke();
         }
 
         /// <summary>
@@ -306,24 +307,28 @@ namespace Logic
         }
 
         [Button(space: 10f)]
-        [ContextMenu("Find All Pieces")]
         public void FindAllPieces()
         {
-
-            foreach (Transform whitePieceTransform in whitePiecesTransform)
+            foreach (Transform pieceTransform in piecesTransform)
             {
-                WhitePieces.Add(whitePieceTransform.GetComponent<Piece>());
-            }
+                if (!pieceTransform.TryGetComponent(out Piece piece))
+                {
+                    continue;
+                }
 
-            foreach (Transform blackPieceTransform in blackPiecesTransform)
-            {
-                BlackPieces.Add(blackPieceTransform.GetComponent<Piece>());
+                if (piece.GetPieceColor() == PieceColor.White)
+                {
+                    WhitePieces.Add(piece);
+                }
+                else
+                {
+                    BlackPieces.Add(piece);
+                }
             }
         }
 
         [Button(space: 10f)]
-        [ContextMenu("Find All Squares")]
-        public void FindAllSquares()
+        private void FindAllSquares()
         {
             var squaresTemp = new List<Square>();
 
@@ -337,7 +342,7 @@ namespace Logic
             SetupSquares();
         }
 
-        /// Fill squares with coordinates
+        // Fill squares with coordinates
         private void SetupSquares()
         {
             for (int x = 0; x < Width; x++)
@@ -357,20 +362,6 @@ namespace Logic
         }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-
-        /// <summary>
-        /// For debug select tool
-        /// </summary>
-        /// <param name="color"></param>
-        public void SetTurn(PieceColor color)
-        {
-            currentTurnColor = color;
-            gameState = GameState.Idle;
-
-            CalculateEndMove();
-            OnEndTurn?.Invoke(currentTurnColor, checkType);
-        }
-
         public void SetTurn(int index)
         {
             if (index < 0 || index > 1)
@@ -378,7 +369,11 @@ namespace Logic
                 return;
             }
 
-            SetTurn((PieceColor)index);
+            currentTurnColor = (PieceColor)index;
+            gameState = GameState.Idle;
+
+            CalculateEndMove();
+            OnEndTurn?.Invoke(currentTurnColor, checkType);
         }
 #endif
     }

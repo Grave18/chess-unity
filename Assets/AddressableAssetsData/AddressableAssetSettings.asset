@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 468a46d0ae32c3544b7d98094e6448a9, type: 3}
   m_Name: AddressableAssetSettings
   m_EditorClassIdentifier: 
-  m_DefaultGroup: a1bb093482a94854a9a802cd9674f67f
+  m_DefaultGroup: 9dffec23d6dc6654fac3fe39da1ca5de
   m_currentHash:
     serializedVersion: 2
-    Hash: c13f8cc3fc5aa17ba729190ff5638792
+    Hash: 00000000000000000000000000000000
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -44,6 +44,8 @@ MonoBehaviour:
   m_BuildAddressablesWithPlayerBuild: 0
   m_overridePlayerVersion: '[UnityEditor.PlayerSettings.bundleVersion]'
   m_GroupAssets:
+  - {fileID: 11400000, guid: f87a0a1af5fbdcb4bad9eaaa14a13838, type: 2}
+  - {fileID: 11400000, guid: 4d03566516fd7b94b844b234a5528b41, type: 2}
   - {fileID: 11400000, guid: 36a4d8430364b99418148fb4a68dff46, type: 2}
   - {fileID: 11400000, guid: 15d7765e39a54c449badf23355bd689d, type: 2}
   m_BuildSettings:
@@ -88,6 +90,7 @@ MonoBehaviour:
     m_LabelNames:
     - default
     - ChessDay4
+    - Prototype
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: e48bb622215c9e14c81fa65c2ccd3434, type: 2}
