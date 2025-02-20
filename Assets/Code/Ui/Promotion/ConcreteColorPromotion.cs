@@ -1,4 +1,4 @@
-﻿using ChessBoard.Builder;
+﻿using ChessBoard;
 using ChessBoard.Pieces;
 using UnityEngine;
 using UnityEngine.Serialization;

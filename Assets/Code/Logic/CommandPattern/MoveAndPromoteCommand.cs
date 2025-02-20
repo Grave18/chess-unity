@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using ChessBoard;
-using ChessBoard.Builder;
 using ChessBoard.Pieces;
 using Logic.Notation;
 

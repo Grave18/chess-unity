@@ -1,5 +1,4 @@
 ﻿using ChessBoard;
-using ChessBoard.Builder;
 using ChessBoard.Pieces;
 using Logic.CommandPattern;
 using Logic.Notation;

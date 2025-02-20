@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ChessBoard;
-using ChessBoard.Builder;
 using ChessBoard.Pieces;
 using EditorCools;
 using UnityEngine;

@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AssetsAndResources;
 using ChessBoard.Pieces;
 using EditorCools;
 using Logic;
 using Ui.Promotion;
 using UnityEngine;
 
-namespace ChessBoard.Builder
+namespace ChessBoard
 {
     public class Board : MonoBehaviour
     {
