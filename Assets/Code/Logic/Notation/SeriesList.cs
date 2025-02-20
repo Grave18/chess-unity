@@ -120,7 +120,7 @@ namespace Logic.Notation
                 stringBuilder.AppendLine(series.ToString());
             }
 
-            if (game.IsEndgame())
+            if (game.IsGameOver())
             {
                 string endGameText = game.GetWinner() switch
                 {

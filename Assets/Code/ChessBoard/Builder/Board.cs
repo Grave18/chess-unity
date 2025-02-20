@@ -6,20 +6,26 @@ using EditorCools;
 using Logic;
 using Ui.Promotion;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace ChessBoard.Builder
 {
     public class Board : MonoBehaviour
     {
-        private const int Width = 8;
-        private const int Height = 8;
+        public const int Width = 8;
+        public const int Height = 8;
 
         [Header("References")]
-        [SerializeField] private Transform prefabsParent;
+        [SerializeField] private Transform piecesParent;
+        [SerializeField] private Transform squaresParent;
+        [SerializeField] private Square nullSquare;
 
         [Header("Ui")]
         [SerializeField] private PromotionPanel promotionPanel;
+
+        // This is piece references what is on board in current game
+        public HashSet<Piece> WhitePieces { get; } = new();
+        public HashSet<Piece> BlackPieces { get; } = new();
+        public Square[] Squares { get; private set; }
 
         private Game _game;
         private GameObject[] _prefabs;
@@ -30,6 +36,8 @@ namespace ChessBoard.Builder
 
         // Selected in Ui
         private TaskCompletionSource<PieceType> _pieceTypeCompletionSource = new();
+
+        public Square NullSquare => nullSquare;
 
         public void Init(Game game, BoardPreset boardPreset, GameObject[] prefabs)
         {
@@ -55,6 +63,30 @@ namespace ChessBoard.Builder
             _pieceTypeCompletionSource = new TaskCompletionSource<PieceType>();
         }
 
+        public void AddPiece(Piece piece)
+        {
+            if (piece.GetPieceColor() == PieceColor.White)
+            {
+                WhitePieces.Add(piece);
+            }
+            else
+            {
+                BlackPieces.Add(piece);
+            }
+        }
+
+        public void RemovePiece(Piece piece)
+        {
+            if (piece.GetPieceColor() == PieceColor.White)
+            {
+                WhitePieces.Remove(piece);
+            }
+            else
+            {
+                BlackPieces.Remove(piece);
+            }
+        }
+
         [Button(space: 10f)]
         public void Build()
         {
@@ -69,10 +101,10 @@ namespace ChessBoard.Builder
             }
 
             DestroyBoardAndPieces();
+            FindAllSquares();
             LoadPreset(preset);
             InstantiatePieces();
             InstantiateBoard();
-            _game.FindAllPieces();
         }
 
         private void LoadPreset(string preset)
@@ -83,24 +115,25 @@ namespace ChessBoard.Builder
                 // Must invert y (Height - 1 - y) also x and y are swapped
                 int indexOfSquare = Height - 1 - y + x * Width;
 
+                Square square = Squares[indexOfSquare];
                 switch (preset[indexOfSymbol])
                 {
                     // Set prefabs for each square
                     case '*':
                     case ' ':
                         break;
-                    case 'b': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[0];  break; // B_Bishop
-                    case 'k': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[1];  break; // B_King
-                    case 'n': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[2];  break; // B_Knight
-                    case 'p': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[3];  break; // B_Pawn
-                    case 'q': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[4];  break; // B_Queen
-                    case 'r': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[5];  break; // B_Rook
-                    case 'B': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[6];  break; // W_Bishop
-                    case 'K': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[7];  break; // W_King
-                    case 'N': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[8];  break; // W_Knight
-                    case 'P': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[9];  break; // W_Pawn
-                    case 'Q': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[10]; break; // W_Queen
-                    case 'R': _piecePairs[_game.Squares[indexOfSquare]] = _prefabs[11]; break; // W_Rook
+                    case 'b': _piecePairs[square] = _prefabs[0];  break; // B_Bishop
+                    case 'k': _piecePairs[square] = _prefabs[1];  break; // B_King
+                    case 'n': _piecePairs[square] = _prefabs[2];  break; // B_Knight
+                    case 'p': _piecePairs[square] = _prefabs[3];  break; // B_Pawn
+                    case 'q': _piecePairs[square] = _prefabs[4];  break; // B_Queen
+                    case 'r': _piecePairs[square] = _prefabs[5];  break; // B_Rook
+                    case 'B': _piecePairs[square] = _prefabs[6];  break; // W_Bishop
+                    case 'K': _piecePairs[square] = _prefabs[7];  break; // W_King
+                    case 'N': _piecePairs[square] = _prefabs[8];  break; // W_Knight
+                    case 'P': _piecePairs[square] = _prefabs[9];  break; // W_Pawn
+                    case 'Q': _piecePairs[square] = _prefabs[10]; break; // W_Queen
+                    case 'R': _piecePairs[square] = _prefabs[11]; break; // W_Rook
                     default:
                         Debug.LogError($"{preset[indexOfSymbol]} is not a valid character");
                         break;
@@ -130,7 +163,8 @@ namespace ChessBoard.Builder
         {
             foreach (var (square, piece) in _piecePairs)
             {
-                InstantiatePiece(piece, square);
+                Piece pieceInstance = InstantiatePiece(piece, square);
+                AddPiece(pieceInstance);
             }
         }
 
@@ -141,7 +175,7 @@ namespace ChessBoard.Builder
                 return null;
             }
 
-            GameObject pieceInstance = Instantiate(piecePrefab, square.transform.position, piecePrefab.transform.rotation, prefabsParent);
+            GameObject pieceInstance = Instantiate(piecePrefab, square.transform.position, piecePrefab.transform.rotation, piecesParent);
             var piece = pieceInstance.GetComponent<Piece>();
 
             piece.Init(_game);
@@ -183,6 +217,39 @@ namespace ChessBoard.Builder
             return piece;
         }
 
+        private void FindAllSquares()
+        {
+            var squaresTemp = new List<Square>();
+
+            foreach (Transform squareTransform in squaresParent)
+            {
+                squaresTemp.Add(squareTransform.GetComponent<Square>());
+            }
+
+            Squares = squaresTemp.ToArray();
+
+            SetupSquares();
+        }
+
+        // Fill squares with coordinates
+        private void SetupSquares()
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 0; y < Height; y++)
+                {
+                    int index = y + x * Width;
+
+                    var square = Squares[index];
+                    square.X = x;
+                    square.Y = y;
+
+                    square.File = $"{(char)(x + 'a')}";
+                    square.Rank = $"{y + 1}";
+                }
+            }
+        }
+
         [Button(space: 10f)]
         public void DestroyBoardAndPieces()
         {
@@ -190,12 +257,13 @@ namespace ChessBoard.Builder
             DestroyBoard();
             _piecePairs.Clear();
             _boardInstance = null;
-            _game.ClearPieces();
+            WhitePieces.Clear();
+            BlackPieces.Clear();
         }
 
         private void DestroyPieces()
         {
-            Transform[] pieces = prefabsParent.Cast<Transform>().ToArray();
+            Transform[] pieces = piecesParent.Cast<Transform>().ToArray();
             foreach (Transform piece in pieces)
             {
                 Destroy(piece.gameObject);
