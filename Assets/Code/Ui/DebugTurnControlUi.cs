@@ -29,7 +29,7 @@ namespace Ui
             game.OnEndTurn += UpdateValues;
         }
 
-        private void UpdateValues(PieceColor discard1, CheckType discard2)
+        private void UpdateValues()
         {
             dropdown.onValueChanged.RemoveListener(game.SetTurn);
             toggle.onValueChanged.RemoveListener(game.SetAutoChange);

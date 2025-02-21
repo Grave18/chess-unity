@@ -27,10 +27,12 @@ namespace Logic
         public HashSet<Square> UnderAttackSquares { get; private set; } = new();
 
         public event Action OnStartTurn;
-        public event Action<PieceColor, CheckType> OnEndTurn;
+        public event Action OnEndTurn;
         public event Action OnRestart;
 
         private Board _board;
+
+        private PieceColor _timeOutColor = PieceColor.None;
 
         // Getters
         public CheckType CheckType => checkType;
@@ -55,7 +57,7 @@ namespace Logic
 
             CalculateEndMove();
 
-            OnEndTurn?.Invoke(currentTurnColor, checkType);
+            OnEndTurn?.Invoke();
             OnRestart?.Invoke();
         }
 
@@ -68,7 +70,7 @@ namespace Logic
             _board.Build();
             CalculateEndMove();
 
-            OnEndTurn?.Invoke(currentTurnColor, checkType);
+            OnEndTurn?.Invoke();
             OnRestart?.Invoke();
         }
 
@@ -90,7 +92,7 @@ namespace Logic
             gameState = GameState.Idle;
 
             CalculateEndMove();
-            OnEndTurn?.Invoke(currentTurnColor, checkType);
+            OnEndTurn?.Invoke();
         }
 
         public void AddPiece(Piece piece)
@@ -105,17 +107,33 @@ namespace Logic
 
         public PieceColor GetWinner()
         {
-            return currentTurnColor switch
+            if (checkType == CheckType.CheckMate)
             {
-                PieceColor.White when checkType == CheckType.CheckMate => PieceColor.Black,
-                PieceColor.Black when checkType == CheckType.CheckMate => PieceColor.White,
-                _ => PieceColor.None
-            };
+                return currentTurnColor ==  PieceColor.White ? PieceColor.Black : PieceColor.White;
+            }
+
+            if (checkType == CheckType.TimeOut)
+            {
+                return _timeOutColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
+            }
+
+            if (checkType == CheckType.Stalemate)
+            {
+                return PieceColor.None;
+            }
+
+            return PieceColor.None;
+        }
+
+        public void SetTimeOut(PieceColor pieceColor)
+        {
+            checkType = CheckType.TimeOut;
+            _timeOutColor = pieceColor;
         }
 
         public bool IsGameOver()
         {
-            return checkType is CheckType.CheckMate or CheckType.Stalemate;
+            return checkType is CheckType.CheckMate or CheckType.Stalemate or CheckType.TimeOut;
         }
 
         /// <summary>
@@ -289,7 +307,7 @@ namespace Logic
             gameState = GameState.Idle;
 
             CalculateEndMove();
-            OnEndTurn?.Invoke(currentTurnColor, checkType);
+            OnEndTurn?.Invoke();
         }
 #endif
     }

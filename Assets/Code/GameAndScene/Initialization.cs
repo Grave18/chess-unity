@@ -12,6 +12,7 @@ namespace GameAndScene
         [SerializeField] private Assets assets;
         [SerializeField] private Board board;
         [SerializeField] private Game game;
+        [SerializeField] private Clock clock;
 
         private async void Start()
         {
@@ -22,6 +23,7 @@ namespace GameAndScene
         {
             GameObject[] prefabs = await assets.InitAsync();
             board.Init(game, assets.Preset, prefabs);
+            clock.Init(game, 10);
             game.Init(board, assets.Preset.TurnColor);
         }
 

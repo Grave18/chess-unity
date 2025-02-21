@@ -25,9 +25,9 @@ namespace Ui
             game.OnEndTurn -= UpdateNotificationText;
         }
 
-        private void UpdateNotificationText(PieceColor pieceColor, CheckType checkType)
+        private void UpdateNotificationText()
         {
-            switch (checkType)
+            switch (game.CheckType)
             {
                 case CheckType.None:
                     SetPanel(text: "", isText: false, isButton: false);

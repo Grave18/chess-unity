@@ -6,6 +6,7 @@
         Check,
         DoubleCheck,
         CheckMate,
-        Stalemate
+        Stalemate,
+        TimeOut,
     }
 }
