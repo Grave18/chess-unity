@@ -5,13 +5,14 @@ namespace Logic
 {
     public class Clock : MonoBehaviour
     {
+        public bool IsPlaying { get; private set; }
+
         private TimeSpan _whiteTime;
         private TimeSpan _blackTime;
 
         private TimeSpan _initialWhiteTime;
         private TimeSpan _initialBlackTime;
 
-        private bool _isStarted;
         private Game _game;
 
         public TimeSpan WhiteTime => _whiteTime;
@@ -28,19 +29,24 @@ namespace Logic
 
         public void StartTimer()
         {
-            _isStarted = true;
+            IsPlaying = true;
             _whiteTime = _initialWhiteTime;
             _blackTime = _initialBlackTime;
         }
 
+        public void Play()
+        {
+            IsPlaying = true;
+        }
+
         public void Pause()
         {
-            _isStarted = false;
+            IsPlaying = false;
         }
 
         private void Update()
         {
-            if (!_isStarted || _game == null)
+            if (!IsPlaying || _game == null)
             {
                 return;
             }
@@ -62,7 +68,7 @@ namespace Logic
 
             if (time.TotalSeconds <= 0)
             {
-                _isStarted = false;
+                IsPlaying = false;
                 time = TimeSpan.Zero;
                 _game.SetTimeOut(pieceColor);
             }
