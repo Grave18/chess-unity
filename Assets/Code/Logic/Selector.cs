@@ -2,17 +2,14 @@ using System;
 using ChessBoard;
 using ChessBoard.Pieces;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Logic
 {
     public class Selector : MonoBehaviour
     {
         [Header("References")]
-        [FormerlySerializedAs("commandManager")]
-        [SerializeField] private CommandInvoker commandInvoker;
-        [FormerlySerializedAs("gameManager")]
         [SerializeField] private Game game;
+        [SerializeField] private CommandInvoker commandInvoker;
         [SerializeField] private Camera mainCamera;
 
         [Header("Settings")]
@@ -29,7 +26,7 @@ namespace Logic
             bool isHit = Physics.Raycast(ray, out var hit, maxDistance, layerMask);
             Transform hitTransform = hit.transform;
 
-            if (Input.GetButtonDown("Fire1") && game.GameState == GameState.Idle)
+            if (Input.GetButtonDown("Fire1") && game.State == GameState.Idle)
             {
                 Click(isHit, hitTransform);
                 OnClick?.Invoke();

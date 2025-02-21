@@ -1,14 +1,12 @@
 using Logic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Ui
 {
     public class NotificationPanel : MonoBehaviour
     {
-        [FormerlySerializedAs("gameManager")]
         [SerializeField] private Game game;
         [SerializeField] private TMP_Text notificationText;
         [SerializeField] private Button restartButton;
@@ -17,36 +15,27 @@ namespace Ui
         {
             restartButton.onClick.AddListener(game.Restart);
 
-            game.OnEndTurn += UpdateNotificationText;
+            game.OnEnd += UpdateNotificationText;
+            game.OnStart += UpdateNotificationText;
         }
 
         private void OnDisable()
         {
-            game.OnEndTurn -= UpdateNotificationText;
+            game.OnEnd -= UpdateNotificationText;
+            game.OnStart -= UpdateNotificationText;
         }
 
         private void UpdateNotificationText()
         {
             switch (game.CheckType)
             {
-                case CheckType.None:
-                    SetPanel(text: "", isText: false, isButton: false);
-                    break;
-                case CheckType.Check:
-                    SetPanel(text: "Check", isText: true, isButton: false);
-                    break;
-                case CheckType.DoubleCheck:
-                    SetPanel(text: "Double check", isText: true, isButton: false);
-                    break;
-                case CheckType.CheckMate:
-                    SetPanel(text: "Checkmate", isText: true, isButton: true);
-                    break;
-                case CheckType.Stalemate:
-                    SetPanel(text: "Stalemate", isText: true, isButton: true);
-                    break;
-                default:
-                    SetPanel(text: "", isText: false, isButton: false);
-                    break;
+                case CheckType.None:        SetPanel(text: "", isText: false, isButton: false);            break;
+                case CheckType.Check:       SetPanel(text: "Check", isText: true, isButton: false);        break;
+                case CheckType.DoubleCheck: SetPanel(text: "Double check", isText: true, isButton: false); break;
+                case CheckType.CheckMate:   SetPanel(text: "Checkmate", isText: true, isButton: true);     break;
+                case CheckType.Stalemate:   SetPanel(text: "Stalemate", isText: true, isButton: true);     break;
+                case CheckType.TimeOut:     SetPanel(text: "Time is over", isText: true, isButton: true);  break;
+                default:                    SetPanel(text: "", isText: false, isButton: false);            break;
             }
         }
 

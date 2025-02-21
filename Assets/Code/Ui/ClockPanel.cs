@@ -1,8 +1,7 @@
-﻿using System;
+﻿using System.Collections;
 using Logic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Ui
 {
@@ -14,29 +13,18 @@ namespace Ui
         [Header("Ui")]
         [SerializeField] private TMP_Text whiteText;
         [SerializeField] private TMP_Text blackText;
-        [SerializeField] private Button playPauseButton;
 
-        private void OnEnable()
+        private IEnumerator Start()
         {
-            playPauseButton.onClick.AddListener(PlayPause);
-        }
+            var wait = new WaitForSeconds(0.2f);
 
-        private void PlayPause()
-        {
-            if (clock.IsPlaying)
+            while (Application.isPlaying)
             {
-                clock.Pause();
-            }
-            else
-            {
-                clock.Play();
-            }
-        }
+                whiteText.text = clock.WhiteTime.ToString(@"mm\:ss");
+                blackText.text = clock.BlackTime.ToString(@"mm\:ss");
 
-        private void Update()
-        {
-            whiteText.text = clock.WhiteTime.ToString(@"mm\:ss");
-            blackText.text = clock.BlackTime.ToString(@"mm\:ss");
+                yield return wait;
+            }
         }
     }
 }

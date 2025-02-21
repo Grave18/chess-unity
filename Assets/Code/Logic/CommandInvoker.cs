@@ -21,12 +21,12 @@ namespace Logic
 
         private void OnEnable()
         {
-            game.OnRestart += Restart;
+            game.OnStart += Start;
         }
 
         private void OnDisable()
         {
-            game.OnRestart -= Restart;
+            game.OnStart -= Start;
         }
 
         public void MoveTo(Piece piece, Square square)
@@ -69,7 +69,7 @@ namespace Logic
         [ContextMenu("Undo")]
         public void Undo()
         {
-            if(game.GameState != GameState.Idle)
+            if(game.State != GameState.Idle)
             {
                 return;
             }
@@ -80,7 +80,7 @@ namespace Logic
         [ContextMenu("Redo")]
         public void Redo()
         {
-            if(game.GameState != GameState.Idle)
+            if(game.State != GameState.Idle)
             {
                 return;
             }
@@ -97,7 +97,7 @@ namespace Logic
             return commandBuffer.GetLastMovedPiece();
         }
 
-        private void Restart()
+        private void Start()
         {
             commandBuffer.Clear();
             seriesList.Clear();

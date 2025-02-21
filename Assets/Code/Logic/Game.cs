@@ -12,10 +12,9 @@ namespace Logic
     {
         [Header("References")]
         [SerializeField] private CommandInvoker commandInvoker;
-        [SerializeField] private Transform piecesTransform;
 
         [Header("Settings")]
-        [SerializeField] private GameState gameState = GameState.Idle;
+        [SerializeField] private GameState state = GameState.Idle;
         [SerializeField] private PieceColor currentTurnColor = PieceColor.White;
         [SerializeField] private CheckType checkType = CheckType.None;
         [SerializeField] private bool isAutoChange;
@@ -28,7 +27,11 @@ namespace Logic
 
         public event Action OnStartTurn;
         public event Action OnEndTurn;
-        public event Action OnRestart;
+        public event Action OnStart;
+        public event Action OnEnd;
+        public event Action OnPlay;
+        public event Action OnPause;
+
 
         private Board _board;
 
@@ -38,7 +41,7 @@ namespace Logic
         public CheckType CheckType => checkType;
         public PieceColor CurrentTurnColor => currentTurnColor;
         public PieceColor PreviousTurnColor => currentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
-        public GameState GameState => gameState;
+        public GameState State => state;
 
         public HashSet<Piece> WhitePieces => _board.WhitePieces;
         public HashSet<Piece> BlackPieces => _board.BlackPieces;
@@ -58,20 +61,42 @@ namespace Logic
             CalculateEndMove();
 
             OnEndTurn?.Invoke();
-            OnRestart?.Invoke();
+            OnStart?.Invoke();
         }
 
         [Button(space: 10f)]
         public void Restart()
         {
             checkType = CheckType.None;
-            gameState = GameState.Idle;
+            state = GameState.Idle;
 
             _board.Build();
             CalculateEndMove();
 
             OnEndTurn?.Invoke();
-            OnRestart?.Invoke();
+            OnStart?.Invoke();
+        }
+
+        public void Play()
+        {
+            if(state != GameState.Pause)
+            {
+                return;
+            }
+
+            state = GameState.Idle;
+            OnPlay?.Invoke();
+        }
+
+        public void Pause()
+        {
+            if(state != GameState.Idle)
+            {
+                return;
+            }
+
+            state = GameState.Pause;
+            OnPause?.Invoke();
         }
 
         /// <summary>
@@ -79,7 +104,7 @@ namespace Logic
         /// </summary>
         public void StartTurn()
         {
-            gameState = GameState.Move;
+            state = GameState.Move;
             OnStartTurn?.Invoke();
         }
 
@@ -89,10 +114,14 @@ namespace Logic
         public void EndTurn()
         {
             currentTurnColor = currentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
-            gameState = GameState.Idle;
+            state = GameState.Idle;
 
             CalculateEndMove();
             OnEndTurn?.Invoke();
+            if(IsGameOver())
+            {
+                OnEnd?.Invoke();
+            }
         }
 
         public void AddPiece(Piece piece)
@@ -129,6 +158,8 @@ namespace Logic
         {
             checkType = CheckType.TimeOut;
             _timeOutColor = pieceColor;
+
+            OnEnd?.Invoke();
         }
 
         public bool IsGameOver()
@@ -304,7 +335,7 @@ namespace Logic
             }
 
             currentTurnColor = (PieceColor)index;
-            gameState = GameState.Idle;
+            state = GameState.Idle;
 
             CalculateEndMove();
             OnEndTurn?.Invoke();

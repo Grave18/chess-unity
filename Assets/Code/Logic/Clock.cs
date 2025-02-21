@@ -7,11 +7,11 @@ namespace Logic
     {
         public bool IsPlaying { get; private set; }
 
-        private TimeSpan _whiteTime;
-        private TimeSpan _blackTime;
-
         private TimeSpan _initialWhiteTime;
         private TimeSpan _initialBlackTime;
+
+        private TimeSpan _whiteTime;
+        private TimeSpan _blackTime;
 
         private Game _game;
 
@@ -24,7 +24,10 @@ namespace Logic
             _initialWhiteTime = TimeSpan.FromMinutes(timeMinutes);
             _initialBlackTime = _initialWhiteTime;
 
-            _game.OnRestart += StartTimer;
+            _game.OnStart += StartTimer;
+            _game.OnEnd += Pause;
+            _game.OnPlay += Play;
+            _game.OnPause += Pause;
         }
 
         public void StartTimer()
@@ -76,7 +79,10 @@ namespace Logic
 
         private void OnDestroy()
         {
-            _game.OnRestart -= StartTimer;
+            _game.OnStart -= StartTimer;
+            _game.OnEnd -= Pause;
+            _game.OnPlay -= Play;
+            _game.OnPause -= Pause;
         }
     }
 }
