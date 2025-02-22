@@ -14,6 +14,12 @@ namespace Ui
         [SerializeField] private Button undo;
         [SerializeField] private Button redo;
         [SerializeField] private Button pause;
+        [SerializeField] private Image pauseImage;
+
+
+        [Header("Presets")]
+        [SerializeField] private Sprite playSprite;
+        [SerializeField] private Sprite pauseSprite;
 
         private void OnEnable()
         {
@@ -27,10 +33,12 @@ namespace Ui
             if (game.State == GameState.Idle)
             {
                 game.Pause();
+                pauseImage.sprite = playSprite;
             }
             else if(game.State == GameState.Pause)
             {
                 game.Play();
+                pauseImage.sprite = pauseSprite;
             }
         }
     }
