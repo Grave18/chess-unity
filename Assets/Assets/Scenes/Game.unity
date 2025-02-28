@@ -3530,7 +3530,7 @@ GameObject:
   - component: {fileID: 697040701}
   - component: {fileID: 697040700}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Computer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3548,6 +3548,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39b4e3a9e93d7e24db242b3256a0ed81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  game: {fileID: 1216111693}
+  commandInvoker: {fileID: 1604880651}
+  board: {fileID: 1190829613}
+  moveTimeMs: 3000
 --- !u!4 &697040701
 Transform:
   m_ObjectHideFlags: 0
@@ -5023,6 +5027,37 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1009035285}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1022664264
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1022664265}
+  m_Layer: 0
+  m_Name: ============================
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1022664265
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022664264}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1035466583
 GameObject:
   m_ObjectHideFlags: 0
@@ -7829,7 +7864,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   game: {fileID: 1216111693}
-  selector: {fileID: 2048994681}
+  playerOffline: {fileID: 2048994681}
   commonSettings:
     SquareLayer:
       serializedVersion: 2
@@ -9092,6 +9127,53 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   seriesList: {fileID: 679097909}
   seriesText: {fileID: 209268812}
+--- !u!1 &1739655007
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1739655009}
+  - component: {fileID: 1739655008}
+  m_Layer: 0
+  m_Name: Competitors
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1739655008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1739655007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 518cbc5288154732b15d1c2d724afb78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  game: {fileID: 1216111693}
+  playerWhite: {fileID: 2048994681}
+  playerBlack: {fileID: 697040700}
+--- !u!4 &1739655009
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1739655007}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1745652901
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9465,6 +9547,7 @@ MonoBehaviour:
   <Y>k__BackingField: 0
   <File>k__BackingField: 
   <Rank>k__BackingField: 
+  <Address>k__BackingField: 
   currentPiece: {fileID: 0}
 --- !u!1 &1805150892
 GameObject:
@@ -10470,7 +10553,7 @@ GameObject:
   - component: {fileID: 2048994682}
   - component: {fileID: 2048994681}
   m_Layer: 0
-  m_Name: Selector
+  m_Name: RealPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10495,6 +10578,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 192
+  _isAllowMove: 0
 --- !u!4 &2048994682
 Transform:
   m_ObjectHideFlags: 0
@@ -11635,10 +11719,13 @@ SceneRoots:
   - {fileID: 417405393}
   - {fileID: 679097910}
   - {fileID: 1544682201}
-  - {fileID: 2048994682}
   - {fileID: 714554424}
   - {fileID: 1783972075}
   - {fileID: 2079691758}
+  - {fileID: 1022664265}
+  - {fileID: 1739655009}
+  - {fileID: 697040701}
+  - {fileID: 2048994682}
   - {fileID: 1604880652}
   - {fileID: 1110215395}
   - {fileID: 853249565}
@@ -11646,4 +11733,3 @@ SceneRoots:
   - {fileID: 1216111692}
   - {fileID: 1190829612}
   - {fileID: 428172017}
-  - {fileID: 697040701}

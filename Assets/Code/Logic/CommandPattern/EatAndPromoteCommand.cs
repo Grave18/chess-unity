@@ -22,7 +22,7 @@ namespace Logic.CommandPattern
 
         public EatAndPromoteCommand(Piece piece, Piece beatenPiece, Square moveToSquare, Game game,
             Board board,
-            SeriesList seriesList)
+            SeriesList seriesList): base(piece.GetSquare(), moveToSquare)
         {
             _piece = piece;
             _beatenPiece = beatenPiece;

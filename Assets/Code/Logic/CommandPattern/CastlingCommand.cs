@@ -8,9 +8,9 @@ namespace Logic.CommandPattern
     public class CastlingCommand : Command
     {
         private readonly King _king;
-        private readonly Square _kingSquare;
+        private readonly Square _kingToSquare;
         private readonly Rook _rook;
-        private readonly Square _rookSquare;
+        private readonly Square _rookToSquare;
         private readonly Game _game;
         private readonly SeriesList _seriesList;
         private readonly NotationTurnType _notationTurnType;
@@ -18,13 +18,13 @@ namespace Logic.CommandPattern
         private Square _previousKingSquare;
         private Square _previousRookSquare;
 
-        public CastlingCommand(King king, Square kingSquare, Rook rook, Square rookSquare, Game game,
-            SeriesList seriesList, NotationTurnType notationTurnType)
+        public CastlingCommand(King king, Square kingToSquare, Rook rook, Square rookToSquare, Game game,
+            SeriesList seriesList, NotationTurnType notationTurnType) : base(king.GetSquare(), kingToSquare)
         {
             _king = king;
-            _kingSquare = kingSquare;
+            _kingToSquare = kingToSquare;
             _rook = rook;
-            _rookSquare = rookSquare;
+            _rookToSquare = rookToSquare;
             _game = game;
             _seriesList = seriesList;
             _notationTurnType = notationTurnType;
@@ -37,8 +37,8 @@ namespace Logic.CommandPattern
             _previousKingSquare = _king.GetSquare();
             _previousRookSquare = _rook.GetSquare();
 
-            await _king.MoveToAsync(_kingSquare);
-            await _rook.MoveToAsync(_rookSquare);
+            await _king.MoveToAsync(_kingToSquare);
+            await _rook.MoveToAsync(_rookToSquare);
 
             _king.IsFirstMove = false;
             _rook.IsFirstMove = false;

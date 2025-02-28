@@ -18,7 +18,8 @@ namespace Logic.CommandPattern
         private Square _previousSquare;
         private bool _previousIsFirstMove;
 
-        public EatCommand(Piece piece, Piece beatenPiece, Square moveToSquare, Game game, SeriesList seriesList, NotationTurnType notationTurnType)
+        public EatCommand(Piece piece, Piece beatenPiece, Square moveToSquare, Game game, SeriesList seriesList,
+            NotationTurnType notationTurnType) : base(piece.GetSquare(), moveToSquare)
         {
             _piece = piece;
             _beatenPiece = beatenPiece;

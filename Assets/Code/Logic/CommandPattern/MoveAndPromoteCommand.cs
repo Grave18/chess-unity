@@ -19,7 +19,7 @@ namespace Logic.CommandPattern
         private Square _previousSquare;
 
         public MoveAndPromoteCommand(Piece piece, Square moveToSquare, Game game, Board board,
-            SeriesList seriesList)
+            SeriesList seriesList) : base(piece.GetSquare(), moveToSquare)
         {
             _piece = piece;
             _moveToSquare = moveToSquare;

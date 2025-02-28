@@ -26,7 +26,8 @@ namespace ChessBoard
         // This is piece references what is on board in current game
         public HashSet<Piece> WhitePieces { get; } = new();
         public HashSet<Piece> BlackPieces { get; } = new();
-        public Square[] Squares { get; private set; }
+        public List<Square> Squares { get; } = new();
+        private Dictionary<string, Square> SquaresHash { get; } = new();
 
         private Game _game;
         private GameObject[] _prefabs;
@@ -88,8 +89,31 @@ namespace ChessBoard
             }
         }
 
+        /// <summary>
+        /// Get square by address on the boadrd
+        /// </summary>
+        /// <param name="uciSquare"> "c1", "d3" ...</param>
+        /// <returns> Square by listed address </returns>
+        public Square GetSquare(string uciSquare)
+        {
+            return SquaresHash.TryGetValue(uciSquare, out Square moveFromSquare)
+                ? moveFromSquare
+                : NullSquare;
+        }
+
         [Button(space: 10f)]
         public void Build()
+        {
+            string preset = GetParsedPreset();
+
+            DestroyBoardAndPieces();
+            SetupSquares();
+            LoadPiecesFromPreset(preset);
+            InstantiatePieces();
+            InstantiateBoard();
+        }
+
+        private string GetParsedPreset()
         {
             string preset = _boardPreset.Preset;
 
@@ -98,17 +122,33 @@ namespace ChessBoard
             if (IsPresetNotValid(preset))
             {
                 Debug.LogError("Invalid board preset");
-                return;
             }
 
-            DestroyBoardAndPieces();
-            FindAllSquares();
-            LoadPreset(preset);
-            InstantiatePieces();
-            InstantiateBoard();
+            return preset;
         }
 
-        private void LoadPreset(string preset)
+        private static string ClearNewLineCharacters(string text)
+        {
+            return text.Replace("\r", string.Empty).Replace("\n", string.Empty).Replace("\t", string.Empty);
+        }
+
+        private static bool IsPresetNotValid(string text)
+        {
+            return text.Length != Width * Height;
+        }
+
+        [Button(space: 10f)]
+        public void DestroyBoardAndPieces()
+        {
+            DestroyPieces();
+            DestroyBoard();
+            _piecePairs.Clear();
+            _boardInstance = null;
+            WhitePieces.Clear();
+            BlackPieces.Clear();
+        }
+
+        private void LoadPiecesFromPreset(string preset)
         {
             for (int x = 0, y = 0; y < Height;)
             {
@@ -148,16 +188,6 @@ namespace ChessBoard
                     y += 1;
                 }
             }
-        }
-
-        private static bool IsPresetNotValid(string text)
-        {
-            return text.Length != Width * Height;
-        }
-
-        private static string ClearNewLineCharacters(string text)
-        {
-            return text.Replace("\r", string.Empty).Replace("\n", string.Empty).Replace("\t", string.Empty);
         }
 
         private void InstantiatePieces()
@@ -218,48 +248,49 @@ namespace ChessBoard
             return piece;
         }
 
-        private void FindAllSquares()
-        {
-            var squaresTemp = new List<Square>();
-
-            foreach (Transform squareTransform in squaresParent)
-            {
-                squaresTemp.Add(squareTransform.GetComponent<Square>());
-            }
-
-            Squares = squaresTemp.ToArray();
-
-            SetupSquares();
-        }
-
-        // Fill squares with coordinates
         private void SetupSquares()
         {
+            FindAllSquares();
+            SetFilesAndRanks();
+            HashSquares();
+        }
+
+        private void FindAllSquares()
+        {
+            // Get all squares components form parent tree
+            foreach (Transform squareTransform in squaresParent)
+            {
+                Squares.Add(squareTransform.GetComponent<Square>());
+            }
+        }
+
+        private void SetFilesAndRanks()
+        {
+            // Set files and ranks
             for (int x = 0; x < Width; x++)
             {
                 for (int y = 0; y < Height; y++)
                 {
                     int index = y + x * Width;
 
-                    var square = Squares[index];
+                    Square square = Squares[index];
                     square.X = x;
                     square.Y = y;
 
                     square.File = $"{(char)(x + 'a')}";
                     square.Rank = $"{y + 1}";
+                    square.Address = $"{square.File}{square.Rank}";
                 }
             }
         }
 
-        [Button(space: 10f)]
-        public void DestroyBoardAndPieces()
+        private void HashSquares()
         {
-            DestroyPieces();
-            DestroyBoard();
-            _piecePairs.Clear();
-            _boardInstance = null;
-            WhitePieces.Clear();
-            BlackPieces.Clear();
+            // Hash files and ranks -> squares
+            foreach (Square square in Squares)
+            {
+                SquaresHash[square.Address] = square;
+            }
         }
 
         private void DestroyPieces()

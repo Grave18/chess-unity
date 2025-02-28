@@ -3,30 +3,25 @@ using ChessBoard.Pieces;
 using Logic.CommandPattern;
 using Logic.Notation;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Logic
 {
     public class CommandInvoker : MonoBehaviour
     {
-        [FormerlySerializedAs("gameManager")]
+        [Header("References")]
         [SerializeField] private Game game;
-        [FormerlySerializedAs("boardBuilder")]
         [SerializeField] private Board board;
-
         [SerializeField] private SeriesList seriesList;
-
-        [FormerlySerializedAs("_commandBuffer")]
         [SerializeField] private CommandBuffer commandBuffer;
 
         private void OnEnable()
         {
-            game.OnStart += Start;
+            game.OnStart += OnStart;
         }
 
         private void OnDisable()
         {
-            game.OnStart -= Start;
+            game.OnStart -= OnStart;
         }
 
         public void MoveTo(Piece piece, Square square)
@@ -88,6 +83,11 @@ namespace Logic
             commandBuffer.Redo();
         }
 
+        public string GetUciMoves()
+        {
+            return commandBuffer.GetUciMoves();
+        }
+
         /// <summary>
         /// Get last moved piece from last buffer entry in command buffer
         /// </summary>
@@ -97,7 +97,7 @@ namespace Logic
             return commandBuffer.GetLastMovedPiece();
         }
 
-        private void Start()
+        private void OnStart()
         {
             commandBuffer.Clear();
             seriesList.Clear();

@@ -3,30 +3,45 @@ using ChessBoard;
 using ChessBoard.Pieces;
 using UnityEngine;
 
-namespace Logic
+namespace Logic.Players
 {
-    public class Selector : MonoBehaviour
+    public class PlayerOffline : Player
     {
-        [Header("References")]
-        [SerializeField] private Game game;
-        [SerializeField] private CommandInvoker commandInvoker;
+        [Header("PlayerOffline")]
         [SerializeField] private Camera mainCamera;
 
-        [Header("Settings")]
+        [Space]
         [SerializeField] private float maxDistance;
         [SerializeField] private LayerMask layerMask;
 
         public event Action OnClick;
 
+        public bool _isAllowMove;
+
+        public override void AllowMakeMove()
+        {
+            _isAllowMove = true;
+        }
+
+        public override void DisallowMakeMove()
+        {
+            _isAllowMove = false;
+        }
+
         private void Update()
         {
+            if(!_isAllowMove)
+            {
+                return;
+            }
+
             // Cast ray from cursor
             Vector3 mousePos = Input.mousePosition;
             Ray ray = mainCamera.ScreenPointToRay(mousePos);
             bool isHit = Physics.Raycast(ray, out var hit, maxDistance, layerMask);
             Transform hitTransform = hit.transform;
 
-            if (Input.GetButtonDown("Fire1") && game.State == GameState.Idle)
+            if (Input.GetButtonDown("Fire1") && Game.State == GameState.Idle)
             {
                 Click(isHit, hitTransform);
                 OnClick?.Invoke();
@@ -47,37 +62,37 @@ namespace Logic
             }
 
             // Select if clicked on current turn piece
-            if (selectable.HasPiece() && game.IsRightTurn(selectable.GetPieceColor()))
+            if (selectable.HasPiece() && Game.IsRightTurn(selectable.GetPieceColor()))
             {
                 Select(selectable);
                 return;
             }
 
             // Exit early if no selected piece
-            if (game.Selected == null)
+            if (Game.Selected == null)
             {
                 return;
             }
 
-            Piece piece = game.Selected.GetPiece();
+            Piece piece = Game.Selected.GetPiece();
             Square moveToSquare = selectable.GetSquare();
 
             // Move
             if (piece.CanMoveTo(moveToSquare))
             {
-                commandInvoker.MoveTo(piece, moveToSquare);
+                CommandInvoker.MoveTo(piece, moveToSquare);
                 DeselectCurrent();
             }
             // Castling
             else if (piece is King king && king.CanCastlingAt(moveToSquare, out CastlingInfo castlingInfo))
             {
-                commandInvoker.Castling(king, moveToSquare, castlingInfo.Rook, castlingInfo.RookSquare, castlingInfo.NotationTurnType);
+                CommandInvoker.Castling(king, moveToSquare, castlingInfo.Rook, castlingInfo.RookSquare, castlingInfo.NotationTurnType);
                 DeselectCurrent();
             }
             // Eat
             else if (piece.CanEatAt(moveToSquare, out CaptureInfo captureInfo))
             {
-                commandInvoker.EatAt(piece, moveToSquare, captureInfo);
+                CommandInvoker.EatAt(piece, moveToSquare, captureInfo);
                 DeselectCurrent();
             }
         }
@@ -88,17 +103,17 @@ namespace Logic
 
             return !isHit
                    || !hitTransform.TryGetComponent(out selectable)
-                   || selectable.IsEqual(game.Selected);
+                   || selectable.IsEqual(Game.Selected);
         }
 
         private void Select(ISelectable selectable)
         {
-            game.Selected = selectable;
+            Game.Selected = selectable;
         }
 
         private void DeselectCurrent()
         {
-            game.Selected = null;
+            Game.Selected = null;
         }
 
         private void Hover(bool isHit, Transform hitTransform)
@@ -106,7 +121,7 @@ namespace Logic
             // Dehighlight if not hit anything
             if (!isHit)
             {
-                game.Highlighted = null;
+                Game.Highlighted = null;
 
                 return;
             }
@@ -114,9 +129,9 @@ namespace Logic
             bool tryGetSelectable = hitTransform.TryGetComponent(out ISelectable selectable);
 
             // Highlight
-            if (tryGetSelectable && !selectable.IsEqual(game.Highlighted))
+            if (tryGetSelectable && !selectable.IsEqual(Game.Highlighted))
             {
-                game.Highlighted = selectable;
+                Game.Highlighted = selectable;
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using ChessBoard.Pieces;
+﻿using System.Text;
+using ChessBoard.Pieces;
 
 namespace Logic.CommandPattern
 {
@@ -47,6 +48,32 @@ namespace Logic.CommandPattern
 
             _commands[_cursor].UndoAsync();
             _cursor -= 1;
+        }
+
+        /// <summary>
+        /// Get part of uci string
+        /// </summary>
+        /// <example>
+        /// "moves e2e4 e7e5"
+        /// </example>
+        /// <returns> Uci string </returns>
+        public string GetUciMoves()
+        {
+            var sb = new StringBuilder();
+
+            if(Length == 0)
+            {
+                return string.Empty;
+            }
+
+            sb.Append("moves ");
+            for (int i = 0; i < Length; i++)
+            {
+                sb.Append(_commands[i].UciMove);
+                sb.Append(' ');
+            }
+
+            return sb.ToString();
         }
 
         /// <summary>

@@ -1,17 +1,16 @@
 ﻿using System.Collections.Generic;
 using ChessBoard;
 using ChessBoard.Pieces;
+using Logic.Players;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Logic.Highlighting
 {
     public class Highlighter : MonoBehaviour
     {
-        [FormerlySerializedAs("gameManager")]
         [Header("References")]
         [SerializeField] private Game game;
-        [FormerlySerializedAs("raycastSelector")] [SerializeField] private Selector selector;
+        [SerializeField] private PlayerOffline playerOffline;
 
         [Header("Settings")]
         [SerializeField] private CommonPieceSettings commonSettings;
@@ -25,13 +24,13 @@ namespace Logic.Highlighting
         private void OnEnable()
         {
             game.OnEndTurn += UpdateHighlighting;
-            selector.OnClick += UpdateHighlighting;
+            playerOffline.OnClick += UpdateHighlighting;
         }
 
         private void OnDisable()
         {
             game.OnEndTurn -= UpdateHighlighting;
-            selector.OnClick -= UpdateHighlighting;
+            playerOffline.OnClick -= UpdateHighlighting;
         }
 
         // Stab method for action
