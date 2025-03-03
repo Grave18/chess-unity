@@ -1,9 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using ChessBoard;
 using ChessBoard.Pieces;
-using EditorCools;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -17,18 +18,31 @@ namespace Logic.Players
         [Header("Settings")]
         [SerializeField] private int thinkTimeMs = 3000;
 
-        private Process _process;
+        private CancellationTokenSource _cancellationTokenSource;
 
-        private void Start()
-        {
-            StartStockfish();
-        }
+        private Process _process;
 
         public override async void AllowMakeMove()
         {
             base.AllowMakeMove();
 
-            string move = await GetBestMove();
+            _cancellationTokenSource = new CancellationTokenSource();
+
+            string move;
+            try
+            {
+                move = await GetBestMove(_cancellationTokenSource.Token);
+            }
+            catch (TaskCanceledException)
+            {
+                Debug.Log("Move was canceled");
+                return;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(ex.Message);
+                return;
+            }
 
             // Extract move form string
             string moveFrom = move.Substring(9, 2);
@@ -41,25 +55,36 @@ namespace Logic.Players
             Piece movePiece = moveFromSquare.GetPiece();
             if (movePiece == null)
             {
-                Debug.Log("Piece not found");
+                Debug.LogError("Piece not found");
                 return;
             }
 
             // Move
             if (movePiece.CanMoveTo(moveToSquare))
             {
-                CommandInvoker.MoveTo(moveFromSquare.GetPiece(), moveToSquare);
+                _ = CommandInvoker.MoveTo(moveFromSquare.GetPiece(), moveToSquare);
             }
             // Castling
             else if (movePiece is King king && king.CanCastlingAt(moveToSquare, out CastlingInfo castlingInfo))
             {
-                CommandInvoker.Castling(king, moveToSquare, castlingInfo.Rook, castlingInfo.RookSquare, castlingInfo.NotationTurnType);
+                _ = CommandInvoker.Castling(king, moveToSquare, castlingInfo.Rook, castlingInfo.RookSquare, castlingInfo.NotationTurnType);
             }
             // Eat
             else if (movePiece.CanEatAt(moveToSquare, out CaptureInfo captureInfo))
             {
-                CommandInvoker.EatAt(movePiece, moveToSquare, captureInfo);
+                _ = CommandInvoker.EatAt(movePiece, moveToSquare, captureInfo);
             }
+        }
+
+        public override void DisallowMakeMove()
+        {
+            base.DisallowMakeMove();
+            _cancellationTokenSource?.Cancel();
+        }
+
+        private void Start()
+        {
+            StartStockfish();
         }
 
         private async void StartStockfish()
@@ -75,30 +100,33 @@ namespace Logic.Players
             };
 
             _process = Process.Start(startInfo);
-            await ReadAnswer("Stockfish");
             await PostCommand("ucinewgame");
         }
 
-        [Button(space: 10f)]
-        private async Task<string> GetBestMove()
+        private async Task<string> GetBestMove(CancellationToken token)
         {
             Debug.Log("Computer calculate move...");
 
             string positionCommand = $"position startpos {CommandInvoker.GetUciMoves()}";
             Debug.Log(positionCommand);
-            await PostCommand(positionCommand);
+            await PostCommand(positionCommand, token);
 
             string goCommand = $"go movetime {thinkTimeMs}";
-            await PostCommand(goCommand);
+            await PostCommand(goCommand, token);
 
-            string output = await ReadAnswer("bestmove");
+            string output = await ReadAnswer("bestmove", token);
+
+            if (token.IsCancellationRequested)
+            {
+                throw new TaskCanceledException();
+            }
 
             Debug.Log("Computer end calculate move");
 
             return output;
         }
 
-        private async Task<string> ReadAnswer(string find)
+        private async Task<string> ReadAnswer(string find, CancellationToken token)
         {
             if (_process is { HasExited: true })
             {
@@ -111,6 +139,10 @@ namespace Logic.Players
             string output = null;
             while (output == null || !output.Contains(find))
             {
+                if (token.IsCancellationRequested)
+                {
+                    await PostCommand("stop");
+                }
                 await Task.Delay(100);
                 output = await reader.ReadLineAsync();
             }
@@ -128,6 +160,16 @@ namespace Logic.Players
 
             StreamWriter writer = _process.StandardInput;
             await writer.WriteLineAsync(command);
+        }
+
+        private async Task PostCommand(string command, CancellationToken token)
+        {
+            await PostCommand(command);
+
+            if (token.IsCancellationRequested)
+            {
+                throw new TaskCanceledException();
+            }
         }
 
         private void OnDestroy()

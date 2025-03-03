@@ -111,13 +111,22 @@ namespace Logic
         /// <summary>
         /// Change color, rest state, perform calculations
         /// </summary>
-        public void EndTurn()
+        public void EndTurn(bool isPause = false)
         {
             currentTurnColor = currentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
-            state = GameState.Idle;
+            if (!isPause)
+            {
+                state = GameState.Idle;
+            }
+            else
+            {
+                state = GameState.Pause;
+                OnPause?.Invoke();
+            }
 
             CalculateEndMove();
             OnEndTurn?.Invoke();
+
             if(IsGameOver())
             {
                 OnEnd?.Invoke();

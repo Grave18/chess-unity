@@ -23,7 +23,7 @@ namespace GameAndScene
         {
             GameObject[] prefabs = await assets.InitAsync();
             board.Init(game, assets.Preset, prefabs);
-            clock.Init(game, 1);
+            clock.Init(game);
             game.Init(board, assets.Preset.TurnColor);
         }
 

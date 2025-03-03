@@ -5,6 +5,8 @@ namespace Logic
 {
     public class Clock : MonoBehaviour
     {
+        [SerializeField] private int timeMinutes = 5;
+
         public bool IsPlaying { get; private set; }
 
         private TimeSpan _initialWhiteTime;
@@ -18,7 +20,7 @@ namespace Logic
         public TimeSpan WhiteTime => _whiteTime;
         public TimeSpan BlackTime => _blackTime;
 
-        public void Init(Game game, float timeMinutes)
+        public void Init(Game game)
         {
             _game = game;
             _initialWhiteTime = TimeSpan.FromMinutes(timeMinutes);

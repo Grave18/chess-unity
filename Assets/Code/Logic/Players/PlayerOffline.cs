@@ -80,19 +80,19 @@ namespace Logic.Players
             // Move
             if (piece.CanMoveTo(moveToSquare))
             {
-                CommandInvoker.MoveTo(piece, moveToSquare);
+                _ = CommandInvoker.MoveTo(piece, moveToSquare);
                 DeselectCurrent();
             }
             // Castling
             else if (piece is King king && king.CanCastlingAt(moveToSquare, out CastlingInfo castlingInfo))
             {
-                CommandInvoker.Castling(king, moveToSquare, castlingInfo.Rook, castlingInfo.RookSquare, castlingInfo.NotationTurnType);
+                _ = CommandInvoker.Castling(king, moveToSquare, castlingInfo.Rook, castlingInfo.RookSquare, castlingInfo.NotationTurnType);
                 DeselectCurrent();
             }
             // Eat
             else if (piece.CanEatAt(moveToSquare, out CaptureInfo captureInfo))
             {
-                CommandInvoker.EatAt(piece, moveToSquare, captureInfo);
+                _ = CommandInvoker.EatAt(piece, moveToSquare, captureInfo);
                 DeselectCurrent();
             }
         }

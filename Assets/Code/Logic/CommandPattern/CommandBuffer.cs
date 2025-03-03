@@ -1,53 +1,67 @@
 ﻿using System.Text;
+using System.Threading.Tasks;
 using ChessBoard.Pieces;
 
 namespace Logic.CommandPattern
 {
-    [System.Serializable]
     public class CommandBuffer
     {
-        private const int InitialCapacity = 2;
+        private const int InitialCapacity = 32;
 
         private int _cursor = -1;
-        private int _length;
+        private int _fullLength;
         private int _capacity = InitialCapacity;
 
         private Command[] _commands = new Command[InitialCapacity];
 
-        public int Length => _length;
-        public int Capacity => _capacity;
+        /// <summary>
+        /// Length of current commands in buffer under and to the left from cursor
+        /// </summary>
+        private int CurrentLength => _cursor + 1;
 
-        public void AddAndExecute(Command command)
+        public async Task AddAndExecute(Command command)
         {
             _cursor += 1;
+
+            // Rewrite fullLength only when add new move.
+            // Rewrites moves right to cursor
+            _fullLength = CurrentLength;
+            ResizeArray();
 
             _commands[_cursor] = command;
-            _commands[_cursor].ExecuteAsync();
-            _length = _cursor + 1;
-
-            ResizeArray();
+            await _commands[_cursor].Execute();
         }
 
-        public void Redo()
+        public async Task Redo()
         {
-            if (_cursor + 1 == _length)
+            if (!CanRedo())
             {
                 return;
             }
 
             _cursor += 1;
-            _commands[_cursor].ExecuteAsync();
+            await _commands[_cursor].Execute();
         }
 
-        public void Undo()
+        public async Task Undo()
         {
-            if (_cursor == -1)
+            if (!CanUndo())
             {
                 return;
             }
 
-            _commands[_cursor].UndoAsync();
             _cursor -= 1;
+            await _commands[_cursor + 1].Undo();
+        }
+
+        public bool CanUndo()
+        {
+            return CurrentLength > 0;
+        }
+
+        public bool CanRedo()
+        {
+            return CurrentLength < _fullLength;
         }
 
         /// <summary>
@@ -61,13 +75,13 @@ namespace Logic.CommandPattern
         {
             var sb = new StringBuilder();
 
-            if(Length == 0)
+            if(CurrentLength == 0)
             {
                 return string.Empty;
             }
 
             sb.Append("moves ");
-            for (int i = 0; i < Length; i++)
+            for (int i = 0; i < CurrentLength; i++)
             {
                 sb.Append(_commands[i].UciMove);
                 sb.Append(' ');
@@ -82,7 +96,7 @@ namespace Logic.CommandPattern
         /// <returns> Last moved piece </returns>
         public Piece GetLastMovedPiece()
         {
-            return _cursor == -1
+            return CurrentLength == 0
                 ? null
                 : _commands[_cursor].GetPiece();
         }
@@ -90,16 +104,16 @@ namespace Logic.CommandPattern
         public void Clear()
         {
             _cursor = -1;
-            _length = 0;
+            _fullLength = 0;
         }
 
         private void ResizeArray()
         {
-            if (_cursor + 1 == _capacity)
+            if (CurrentLength >= _capacity)
             {
                 var temp = new Command[_capacity * 2];
 
-                for(int i = 0; i < Length; i++)
+                for(int i = 0; i < _fullLength; i++)
                 {
                     temp[i] = _commands[i];
                 }

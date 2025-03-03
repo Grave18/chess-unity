@@ -33,10 +33,8 @@ namespace Logic.CommandPattern
             _seriesList = seriesList;
         }
 
-        public override async Task ExecuteAsync()
+        public override async Task Execute()
         {
-            _game.StartTurn();
-
             // Backup
             _previousSquare = _piece.GetSquare();
             _previousTurnColor = _game.CurrentTurnColor;
@@ -65,19 +63,15 @@ namespace Logic.CommandPattern
             _piece = _promotedPiece;
             _game.AddPiece(_piece);
 
-            // End turn and add to notation
-            _game.EndTurn();
-            _seriesList.AddTurn(_backupPawn, _moveToSquare, _previousTurnColor, NotationTurnType.Capture, _game.CheckType, _promotedPiece);
+            // _seriesList.AddTurn(_backupPawn, _moveToSquare, _previousTurnColor, NotationTurnType.Capture, _game.CheckType, _promotedPiece);
         }
 
-        public override async Task UndoAsync()
+        public override async Task Undo()
         {
             if (_previousSquare == null || _beatenPiece == null)
             {
                 return;
             }
-
-            _game.StartTurn();
 
             // Remove promoted piece
             _promotedPiece.RemoveFromBoard();
@@ -90,9 +84,7 @@ namespace Logic.CommandPattern
             // Add beaten piece
             _beatenPiece.RemoveFromBeaten(_beatenPieceSquare);
 
-            // Remove from notation and end turn
-            _game.EndTurn();
-            _seriesList.RemoveTurn(_game.CurrentTurnColor);
+            // _seriesList.RemoveTurn(_game.CurrentTurnColor);
         }
 
         public override Piece GetPiece()

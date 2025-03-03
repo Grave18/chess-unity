@@ -16,30 +16,59 @@ namespace Ui
         [SerializeField] private Button pause;
         [SerializeField] private Image pauseImage;
 
-
         [Header("Presets")]
         [SerializeField] private Sprite playSprite;
         [SerializeField] private Sprite pauseSprite;
 
-        private void OnEnable()
+        private void Awake()
         {
-            undo.onClick.AddListener(commandInvoker.Undo);
-            redo.onClick.AddListener(commandInvoker.Redo);
-            pause.onClick.AddListener(PlayPause);
+            undo.onClick.AddListener(OnUndoPressed);
+            redo.onClick.AddListener(OnRedoPressed);
+            pause.onClick.AddListener(OnPlayPausePressed);
         }
 
-        private void PlayPause()
+        private void OnEnable()
+        {
+            game.OnPause += OnPause;
+            game.OnPlay += OnPlay;
+        }
+
+        private void OnDisable()
+        {
+            game.OnPause -= OnPause;
+            game.OnPlay -= OnPlay;
+        }
+
+        private void OnUndoPressed()
+        {
+            _ = commandInvoker.Undo();
+        }
+
+        private void OnRedoPressed()
+        {
+            _ = commandInvoker.Redo();
+        }
+
+        private void OnPlayPausePressed()
         {
             if (game.State == GameState.Idle)
             {
                 game.Pause();
-                pauseImage.sprite = playSprite;
             }
             else if(game.State == GameState.Pause)
             {
                 game.Play();
-                pauseImage.sprite = pauseSprite;
             }
+        }
+
+        private void OnPlay()
+        {
+            pauseImage.sprite = pauseSprite;
+        }
+
+        private void OnPause()
+        {
+            pauseImage.sprite = playSprite;
         }
     }
 }

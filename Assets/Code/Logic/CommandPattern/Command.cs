@@ -6,10 +6,10 @@ namespace Logic.CommandPattern
 {
     public abstract class Command
     {
-        public string UciMove { get; private set; }
+        public string UciMove { get; }
 
-        public abstract Task ExecuteAsync();
-        public abstract Task UndoAsync();
+        public abstract Task Execute();
+        public abstract Task Undo();
         public abstract Piece GetPiece();
 
         protected Command(Square from, Square to)
