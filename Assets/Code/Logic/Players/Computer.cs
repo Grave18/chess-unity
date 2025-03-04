@@ -12,13 +12,33 @@ namespace Logic.Players
 {
     public class Computer : Player
     {
+        private enum ComputerSkillLevel
+        {
+            Ape = 0,
+            Low = 5,
+            Medium = 10,
+            High = 20,
+        }
+
         [Header("References")]
         [SerializeField] private Board board;
 
         [Header("Settings")]
+        [SerializeField] private ComputerSkillLevel skillLevel = ComputerSkillLevel.Medium;
         [SerializeField] private int thinkTimeMs = 3000;
 
+        // Stockfish
         private Process _process;
+        private readonly ProcessStartInfo _startInfo = new()
+        {
+            FileName = "stockfish-windows-x86-64-avx2.exe",
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+            RedirectStandardInput = true,
+            RedirectStandardError = true,
+            CreateNoWindow = true,
+        };
+        private readonly TaskCompletionSource<bool> _isStockfishLoaded = new();
 
         /// <summary>
         /// Get calculations from stockfish process and make move
@@ -26,6 +46,13 @@ namespace Logic.Players
         public override async void AllowMakeMove()
         {
             base.AllowMakeMove();
+
+            bool isLoaded = await _isStockfishLoaded.Task;
+
+            if (!isLoaded)
+            {
+                return;
+            }
 
             string moveString = await GetMoveString();
 
@@ -102,25 +129,46 @@ namespace Logic.Players
             return move;
         }
 
-        private void Start()
+        private async void Start()
         {
             StartStockfish();
+            await SetupStockfish();
+            await StartNewGame();
+            DeclareReady();
         }
 
-        private async void StartStockfish()
+        private void StartStockfish()
         {
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = "stockfish-windows-x86-64-avx2.exe",
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardInput = true,
-                RedirectStandardError = true,
-                CreateNoWindow = true,
-            };
+            _process = Process.Start(_startInfo);
+        }
 
-            _process = Process.Start(startInfo);
+        private async Task SetupStockfish()
+        {
+            // Enable uci mode
+            await PostCommand("uci");
+            await ReadAnswer("uciok", Application.exitCancellationToken);
+
+            // Set Threads
+            int logicalProcessorsCount = SystemInfo.processorCount;
+            Debug.Log($"Logical processors count = {logicalProcessorsCount}");
+            await PostCommand($"setoption name Threads value {logicalProcessorsCount/2}");
+
+            // Set Skill Level
+            Debug.Log($"Skill Level = {skillLevel}");
+            await PostCommand($"setoption name Skill Level value {(int)skillLevel}");
+        }
+
+        private async Task StartNewGame()
+        {
             await PostCommand("ucinewgame");
+            await PostCommand("isready");
+            await ReadAnswer("readyok", Application.exitCancellationToken);
+        }
+
+        private void DeclareReady()
+        {
+            Debug.Log("Computer is ready");
+            _isStockfishLoaded.SetResult(true);
         }
 
         private async Task<string> CalculateMove(CancellationToken token)

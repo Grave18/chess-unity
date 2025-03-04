@@ -2217,6 +2217,55 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 373845287}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &399396191
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 399396193}
+  - component: {fileID: 399396192}
+  m_Layer: 0
+  m_Name: Computer_2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &399396192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 399396191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39b4e3a9e93d7e24db242b3256a0ed81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  game: {fileID: 1216111693}
+  commandInvoker: {fileID: 1604880651}
+  board: {fileID: 1190829613}
+  skillLevel: 10
+  thinkTimeMs: 3000
+--- !u!4 &399396193
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 399396191}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &405140677
 GameObject:
   m_ObjectHideFlags: 0
@@ -3531,7 +3580,7 @@ GameObject:
   - component: {fileID: 697040701}
   - component: {fileID: 697040700}
   m_Layer: 0
-  m_Name: Computer
+  m_Name: Computer_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3552,6 +3601,7 @@ MonoBehaviour:
   game: {fileID: 1216111693}
   commandInvoker: {fileID: 1604880651}
   board: {fileID: 1190829613}
+  skillLevel: 10
   thinkTimeMs: 3000
 --- !u!4 &697040701
 Transform:
@@ -9426,8 +9476,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   game: {fileID: 1216111693}
-  playerWhite: {fileID: 2048994681}
-  playerBlack: {fileID: 697040700}
+  playerWhite: {fileID: 697040700}
+  playerBlack: {fileID: 399396192}
 --- !u!4 &1739655009
 Transform:
   m_ObjectHideFlags: 0
@@ -12141,6 +12191,7 @@ SceneRoots:
   - {fileID: 1022664265}
   - {fileID: 1739655009}
   - {fileID: 697040701}
+  - {fileID: 399396193}
   - {fileID: 2048994682}
   - {fileID: 1604880652}
   - {fileID: 1110215395}
