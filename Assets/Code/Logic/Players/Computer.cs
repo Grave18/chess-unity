@@ -18,37 +18,29 @@ namespace Logic.Players
         [Header("Settings")]
         [SerializeField] private int thinkTimeMs = 3000;
 
-        private CancellationTokenSource _cancellationTokenSource;
-
         private Process _process;
 
+        /// <summary>
+        /// Get calculations from stockfish process and make move
+        /// </summary>
         public override async void AllowMakeMove()
         {
             base.AllowMakeMove();
 
-            _cancellationTokenSource = new CancellationTokenSource();
+            string moveString = await GetMoveString();
 
-            string move;
-            try
+            if (moveString == null)
             {
-                move = await GetBestMove(_cancellationTokenSource.Token);
-            }
-            catch (TaskCanceledException)
-            {
-                Debug.Log("Move was canceled");
-                return;
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError(ex.Message);
                 return;
             }
 
-            // Extract move form string
-            string moveFrom = move.Substring(9, 2);
-            string moveTo = move.Substring(11, 2);
-            Debug.Log($"Best Move: {moveFrom}{moveTo}");
+            var(moveFromString, moveToString) = ExtractMoveSquaresAddressesFromString(moveString);
 
+            GetSquaresAndPieceAndMakeMove(moveFromString, moveToString);
+        }
+
+        private void GetSquaresAndPieceAndMakeMove(string moveFrom, string moveTo)
+        {
             Square moveFromSquare = board.GetSquare(moveFrom);
             Square moveToSquare = board.GetSquare(moveTo);
 
@@ -76,10 +68,38 @@ namespace Logic.Players
             }
         }
 
-        public override void DisallowMakeMove()
+        private static (string, string) ExtractMoveSquaresAddressesFromString(string move)
         {
-            base.DisallowMakeMove();
-            _cancellationTokenSource?.Cancel();
+            // Extract move form string
+            string moveFrom = move.Substring(9, 2);
+            string moveTo = move.Substring(11, 2);
+            Debug.Log($"Best Move: {moveFrom}{moveTo}");
+            return (moveFrom, moveTo);
+        }
+
+        private async Task<string> GetMoveString()
+        {
+            Game.StartThink();
+
+            string move = null;
+            try
+            {
+                move = await CalculateMove(Application.exitCancellationToken);
+            }
+            catch (TaskCanceledException)
+            {
+                Debug.Log("Move was canceled");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(ex.Message);
+            }
+            finally
+            {
+                Game.EndThink();
+            }
+
+            return move;
         }
 
         private void Start()
@@ -103,7 +123,7 @@ namespace Logic.Players
             await PostCommand("ucinewgame");
         }
 
-        private async Task<string> GetBestMove(CancellationToken token)
+        private async Task<string> CalculateMove(CancellationToken token)
         {
             Debug.Log("Computer calculate move...");
 
@@ -136,15 +156,16 @@ namespace Logic.Players
 
             StreamReader reader = _process.StandardOutput;
 
-            string output = null;
-            while (output == null || !output.Contains(find))
+            string output = string.Empty;
+            while (!token.IsCancellationRequested && !output.Contains(find))
             {
-                if (token.IsCancellationRequested)
-                {
-                    await PostCommand("stop");
-                }
-                await Task.Delay(100);
+                await Task.Delay(100, token);
                 output = await reader.ReadLineAsync();
+            }
+
+            if (token.IsCancellationRequested)
+            {
+                throw new TaskCanceledException();
             }
 
             return output;
@@ -174,11 +195,6 @@ namespace Logic.Players
 
         private void OnDestroy()
         {
-            if (_process is  { HasExited: true })
-            {
-                return;
-            }
-
             _ = PostCommand("quit");
         }
     }

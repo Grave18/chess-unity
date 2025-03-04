@@ -31,6 +31,8 @@ namespace Logic
         public event Action OnEnd;
         public event Action OnPlay;
         public event Action OnPause;
+        public event Action OnStartThink;
+        public event Action OnEndThink;
 
 
         private Board _board;
@@ -131,6 +133,18 @@ namespace Logic
             {
                 OnEnd?.Invoke();
             }
+        }
+
+        public void StartThink()
+        {
+            state = GameState.Think;
+            OnStartThink?.Invoke();
+        }
+
+        public void EndThink()
+        {
+            state = GameState.Idle;
+            OnEndThink?.Invoke();
         }
 
         public void AddPiece(Piece piece)

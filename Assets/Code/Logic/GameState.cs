@@ -5,5 +5,6 @@
         Idle,
         Move,
         Pause,
+        Think
     }
 }
