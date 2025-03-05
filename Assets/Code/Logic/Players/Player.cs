@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Threading.Tasks;
+using ChessBoard.Pieces;
+using UnityEngine;
 
 namespace Logic.Players
 {
@@ -17,6 +19,16 @@ namespace Logic.Players
         }
 
         public virtual void DisallowMakeMove()
+        {
+
+        }
+
+        public virtual Task<PieceType> RequestPromotedPiece()
+        {
+            return Task.FromResult(PieceType.None);
+        }
+
+        public virtual void SelectPromotedPiece(PieceType pieceType)
         {
 
         }

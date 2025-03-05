@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using ChessBoard;
 using ChessBoard.Pieces;
 using UnityEngine;
@@ -17,6 +18,20 @@ namespace Logic.Players
         public event Action OnClick;
 
         public bool _isAllowMove;
+
+        // Selected in Ui
+        private TaskCompletionSource<PieceType> _pieceTypeCompletionSource = new();
+
+        public override async Task<PieceType> RequestPromotedPiece()
+        {
+            return await _pieceTypeCompletionSource.Task;
+        }
+
+        public override void SelectPromotedPiece(PieceType pieceType)
+        {
+            _pieceTypeCompletionSource.SetResult(pieceType);
+            _pieceTypeCompletionSource = new TaskCompletionSource<PieceType>();
+        }
 
         public override void AllowMakeMove()
         {

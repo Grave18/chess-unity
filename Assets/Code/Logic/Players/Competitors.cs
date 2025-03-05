@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Threading.Tasks;
+using ChessBoard.Pieces;
+using UnityEngine;
 
 namespace Logic.Players
 {
@@ -8,6 +10,23 @@ namespace Logic.Players
         [SerializeField] private Game game;
         [SerializeField] private Player playerWhite;
         [SerializeField] private Player playerBlack;
+
+        private Player _currentPlayer;
+
+        public async Task<PieceType> RequestPromotedPiece()
+        {
+            return await _currentPlayer.RequestPromotedPiece();
+        }
+
+        public void SelectPromotedPiece(PieceType pieceType)
+        {
+            _currentPlayer.SelectPromotedPiece(pieceType);
+        }
+
+        private void Awake()
+        {
+            _currentPlayer = playerWhite;
+        }
 
         private void OnEnable()
         {
@@ -58,11 +77,13 @@ namespace Logic.Players
 
             if (game.CurrentTurnColor == PieceColor.White)
             {
+                _currentPlayer = playerWhite;
                 playerWhite.AllowMakeMove();
                 playerBlack.DisallowMakeMove();
             }
             else if (game.CurrentTurnColor == PieceColor.Black)
             {
+                _currentPlayer = playerBlack;
                 playerBlack.AllowMakeMove();
                 playerWhite.DisallowMakeMove();
             }

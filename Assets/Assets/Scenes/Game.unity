@@ -2249,8 +2249,8 @@ MonoBehaviour:
   game: {fileID: 1216111693}
   commandInvoker: {fileID: 1604880651}
   board: {fileID: 1190829613}
-  skillLevel: 10
-  thinkTimeMs: 3000
+  skillLevel: 20
+  thinkTimeMs: 1000
 --- !u!4 &399396193
 Transform:
   m_ObjectHideFlags: 0
@@ -3601,8 +3601,8 @@ MonoBehaviour:
   game: {fileID: 1216111693}
   commandInvoker: {fileID: 1604880651}
   board: {fileID: 1190829613}
-  skillLevel: 10
-  thinkTimeMs: 3000
+  skillLevel: 20
+  thinkTimeMs: 1000
 --- !u!4 &697040701
 Transform:
   m_ObjectHideFlags: 0
@@ -6338,6 +6338,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25c1f97f73b14ccda3555a6a71ad96e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  competitors: {fileID: 1739655008}
   piecesParent: {fileID: 543450652193350432}
   squaresParent: {fileID: 1405112761}
   nullSquare: {fileID: 1785828115}

@@ -40,68 +40,30 @@ namespace Logic.Players
         };
         private readonly TaskCompletionSource<bool> _isStockfishLoaded = new();
 
+        private PieceType _promotion = PieceType.None;
+
+        public override Task<PieceType> RequestPromotedPiece()
+        {
+            return Task.FromResult(_promotion);
+        }
+
         /// <summary>
         /// Get calculations from stockfish process and make move
         /// </summary>
         public override async void AllowMakeMove()
         {
-            base.AllowMakeMove();
-
             bool isLoaded = await _isStockfishLoaded.Task;
-
-            if (!isLoaded)
-            {
-                return;
-            }
+            if (!isLoaded) return;
 
             string moveString = await GetMoveString();
+            if (moveString == null) return;
 
-            if (moveString == null)
-            {
-                return;
-            }
+            ExtractSquareAddressesAndPromotionFrom(moveString,
+                out string moveFrom, out string moveTo, out string promotion);
 
-            var(moveFromString, moveToString) = ExtractMoveSquaresAddressesFromString(moveString);
+            SetPromotionPiece(promotion);
 
-            GetSquaresAndPieceAndMakeMove(moveFromString, moveToString);
-        }
-
-        private void GetSquaresAndPieceAndMakeMove(string moveFrom, string moveTo)
-        {
-            Square moveFromSquare = board.GetSquare(moveFrom);
-            Square moveToSquare = board.GetSquare(moveTo);
-
-            Piece movePiece = moveFromSquare.GetPiece();
-            if (movePiece == null)
-            {
-                Debug.LogError("Piece not found");
-                return;
-            }
-
-            // Move
-            if (movePiece.CanMoveTo(moveToSquare))
-            {
-                _ = CommandInvoker.MoveTo(moveFromSquare.GetPiece(), moveToSquare);
-            }
-            // Castling
-            else if (movePiece is King king && king.CanCastlingAt(moveToSquare, out CastlingInfo castlingInfo))
-            {
-                _ = CommandInvoker.Castling(king, moveToSquare, castlingInfo.Rook, castlingInfo.RookSquare, castlingInfo.NotationTurnType);
-            }
-            // Eat
-            else if (movePiece.CanEatAt(moveToSquare, out CaptureInfo captureInfo))
-            {
-                _ = CommandInvoker.EatAt(movePiece, moveToSquare, captureInfo);
-            }
-        }
-
-        private static (string, string) ExtractMoveSquaresAddressesFromString(string move)
-        {
-            // Extract move form string
-            string moveFrom = move.Substring(9, 2);
-            string moveTo = move.Substring(11, 2);
-            Debug.Log($"Best Move: {moveFrom}{moveTo}");
-            return (moveFrom, moveTo);
+            GetSquaresAndPieceAndMakeMove(moveFrom, moveTo);
         }
 
         private async Task<string> GetMoveString()
@@ -127,6 +89,73 @@ namespace Logic.Players
             }
 
             return move;
+        }
+
+        private static void ExtractSquareAddressesAndPromotionFrom(string move,
+            out string moveFrom, out string moveTo, out string promotion)
+        {
+            // Extract move form string
+            moveFrom = move.Substring(9, 2);
+            moveTo = move.Substring(11, 2);
+            promotion = move.Substring(13, 1);
+
+            // Log
+            string message = $"Best Move: {moveFrom}{moveTo}";
+            if (promotion != " ")
+            {
+                message += $". Promotion to: {promotion}";
+            }
+
+            Debug.Log(message);
+        }
+
+        private void SetPromotionPiece(string promotion)
+        {
+            _promotion = promotion switch
+            {
+                "q" => PieceType.Queen,
+                "r" => PieceType.Rook,
+                "b" => PieceType.Bishop,
+                "n" => PieceType.Knight,
+                _ => PieceType.None,
+            };
+        }
+
+        private void GetSquaresAndPieceAndMakeMove(string moveFrom, string moveTo)
+        {
+            Square moveFromSquare = board.GetSquare(moveFrom);
+            Square moveToSquare = board.GetSquare(moveTo);
+
+            Piece movePiece = moveFromSquare.GetPiece();
+            if (movePiece == null)
+            {
+                Debug.LogError("Piece not found");
+                Debug.Log($"MoveFromSquare: {moveFromSquare.name}");
+                Debug.DebugBreak();
+                return;
+            }
+
+            // Move
+            if (movePiece.CanMoveTo(moveToSquare))
+            {
+                _ = CommandInvoker.MoveTo(moveFromSquare.GetPiece(), moveToSquare);
+            }
+            // Castling
+            else if (movePiece is King king && king.CanCastlingAt(moveToSquare, out CastlingInfo castlingInfo))
+            {
+                _ = CommandInvoker.Castling(king, moveToSquare, castlingInfo.Rook, castlingInfo.RookSquare, castlingInfo.NotationTurnType);
+            }
+            // Eat
+            else if (movePiece.CanEatAt(moveToSquare, out CaptureInfo captureInfo))
+            {
+                _ = CommandInvoker.EatAt(movePiece, moveToSquare, captureInfo);
+            }
+            else
+            {
+                Debug.LogError("Move not found");
+                Debug.Log($"MovePiece: {movePiece.name}, MoveFrom: {moveFromSquare.name}, MoveTo: {moveToSquare.name}");
+                Debug.DebugBreak();
+            }
         }
 
         private async void Start()
@@ -207,7 +236,7 @@ namespace Logic.Players
             string output = string.Empty;
             while (!token.IsCancellationRequested && !output.Contains(find))
             {
-                await Task.Delay(100, token);
+                await Task.Delay(25, token);
                 output = await reader.ReadLineAsync();
             }
 

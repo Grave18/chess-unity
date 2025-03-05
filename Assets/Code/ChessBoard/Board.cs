@@ -5,6 +5,7 @@ using AssetsAndResources;
 using ChessBoard.Pieces;
 using EditorCools;
 using Logic;
+using Logic.Players;
 using Ui.Promotion;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ namespace ChessBoard
         public const int Height = 8;
 
         [Header("References")]
+        [SerializeField] private Competitors competitors;
         [SerializeField] private Transform piecesParent;
         [SerializeField] private Transform squaresParent;
         [SerializeField] private Square nullSquare;
@@ -29,15 +31,13 @@ namespace ChessBoard
         public List<Square> Squares { get; } = new();
         private Dictionary<string, Square> SquaresHash { get; } = new();
 
+        // Initialized
         private Game _game;
         private GameObject[] _prefabs;
-        private readonly Dictionary<Square, GameObject> _piecePairs = new();
-
-        private GameObject _boardInstance;
         private BoardPreset _boardPreset;
 
-        // Selected in Ui
-        private TaskCompletionSource<PieceType> _pieceTypeCompletionSource = new();
+        private readonly Dictionary<Square, GameObject> _piecePairs = new();
+        private GameObject _boardInstance;
 
         public Square NullSquare => nullSquare;
 
@@ -52,7 +52,7 @@ namespace ChessBoard
         public async Task<(Piece, PieceType)> GetPieceFromSelectorAsync(PieceColor pieceColor, Square square)
         {
             promotionPanel.Show(pieceColor);
-            PieceType pieceType = await _pieceTypeCompletionSource.Task;
+            PieceType pieceType = await competitors.RequestPromotedPiece();
             promotionPanel.Hide();
 
             Piece piece = GetPiece(pieceType, pieceColor, square);
@@ -61,8 +61,7 @@ namespace ChessBoard
 
         public void Select(PieceType pieceType)
         {
-            _pieceTypeCompletionSource.SetResult(pieceType);
-            _pieceTypeCompletionSource = new TaskCompletionSource<PieceType>();
+            competitors.SelectPromotedPiece(pieceType);
         }
 
         public void AddPiece(Piece piece)
