@@ -1,28 +1,26 @@
 ﻿using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace ChessBoard.Pieces
 {
     public class Knight : Piece
     {
         [Header("Knight")]
-        [FormerlySerializedAs("Moves")]
         [SerializeField] private Vector2Int[] moves;
 
         protected override void CalculateMovesAndCapturesInternal()
         {
             foreach (Vector2Int offset in moves)
             {
-                Square square = game.GetSquareRel(pieceColor, currentSquare, offset);
+                Square square = Game.GetSquareRel(pieceColor, currentSquare, offset);
 
-                if (square == game.NullSquare)
+                if (square == Game.NullSquare)
                 {
                     continue;
                 }
 
                 if (!square.HasPiece())
                 {
-                    MoveSquares.Add(square);
+                    MoveSquares.Add(square, new MoveInfo());
                 }
                 else if (square.GetPieceColor() != pieceColor)
                 {

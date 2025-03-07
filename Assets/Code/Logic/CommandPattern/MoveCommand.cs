@@ -7,19 +7,15 @@ namespace Logic.CommandPattern
 {
     public class MoveCommand : Command
     {
-        private readonly Piece _piece;
-        private readonly Square _moveToSquare;
         private readonly Game _game;
         private readonly SeriesList _seriesList;
 
         private Square _previousSquare;
         private bool _previousIsFirstMove;
 
-        public MoveCommand(Piece piece, Square moveToSquare, Game game, SeriesList seriesList)
-            : base(piece.GetSquare(), moveToSquare)
+        public MoveCommand(Piece piece, Square moveToSquare, MoveInfo moveInfo, Game game, SeriesList seriesList)
+            : base(piece, piece.GetSquare(), moveToSquare, moveInfo.Is2SquaresPawnMove)
         {
-            _piece = piece;
-            _moveToSquare = moveToSquare;
             _game = game;
             _seriesList = seriesList;
         }
@@ -27,12 +23,12 @@ namespace Logic.CommandPattern
         public override async Task Execute()
         {
             // Backup
-            _previousSquare = _piece.GetSquare();
-            _previousIsFirstMove = _piece.IsFirstMove;
-            _piece.IsFirstMove = false;
+            _previousSquare = Piece.GetSquare();
+            _previousIsFirstMove = Piece.IsFirstMove;
+            Piece.IsFirstMove = false;
 
             // Move
-            await _piece.MoveToAsync(_moveToSquare);
+            await Piece.MoveToAsync(MoveToSquare);
 
             // _seriesList.AddTurn(_piece, _moveToSquare, _game.PreviousTurnColor, NotationTurnType.Move, _game.CheckType);
         }
@@ -45,15 +41,10 @@ namespace Logic.CommandPattern
             }
 
             // Move back
-            await _piece.MoveToAsync(_previousSquare);
-            _piece.IsFirstMove = _previousIsFirstMove;
+            await Piece.MoveToAsync(_previousSquare);
+            Piece.IsFirstMove = _previousIsFirstMove;
 
             // _seriesList.RemoveTurn(_game.CurrentTurnColor);
-        }
-
-        public override Piece GetPiece()
-        {
-            return _piece;
         }
     }
 }

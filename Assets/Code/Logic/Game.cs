@@ -4,6 +4,7 @@ using System.Linq;
 using ChessBoard;
 using ChessBoard.Pieces;
 using EditorCools;
+using Logic.CommandPattern;
 using UnityEngine;
 
 namespace Logic
@@ -36,7 +37,6 @@ namespace Logic
 
 
         private Board _board;
-
         private PieceColor _timeOutColor = PieceColor.None;
 
         // Getters
@@ -59,15 +59,9 @@ namespace Logic
         {
             _board = board;
             currentTurnColor = turnColor;
-
-            CalculateEndMove();
-
-            OnEndTurn?.Invoke();
-            OnStart?.Invoke();
         }
 
-        [Button(space: 10f)]
-        public void Restart()
+        public void StartGame()
         {
             checkType = CheckType.None;
             state = GameState.Idle;
@@ -147,16 +141,6 @@ namespace Logic
             OnEndThink?.Invoke();
         }
 
-        public void AddPiece(Piece piece)
-        {
-            _board.AddPiece(piece);
-        }
-
-        public void RemovePiece(Piece piece)
-        {
-            _board.RemovePiece(piece);
-        }
-
         public PieceColor GetWinner()
         {
             if (checkType == CheckType.CheckMate)
@@ -199,53 +183,30 @@ namespace Logic
             return commandInvoker.GetLastMovedPiece();
         }
 
+        /// <summary>
+        /// Retrieves the En Passant information for the last command if applicable
+        /// </summary>
+        /// <returns> EnPassant info </returns>
+        public EnPassantInfo GetEnPassantInfo()
+        {
+            return commandInvoker.GetEnPassantInfo();
+        }
+
         public bool IsRightTurn(PieceColor pieceColor)
         {
             return pieceColor == currentTurnColor;
         }
 
-        /// <summary>
         /// Get section relative to current piece color
-        /// </summary>
-        /// <param name="pieceColor">Color of the piece</param>
-        /// <param name="currentSquare">Current section of the piece</param>
-        /// <param name="offset">Offset from current section</param>
-        /// <returns>Section at the offset or null if out of bounds</returns>
         public Square GetSquareRel(PieceColor pieceColor, Square currentSquare, Vector2Int offset)
         {
-            int x = -1;
-            int y = -1;
-
-            if (pieceColor == PieceColor.White)
-            {
-                x = currentSquare.X + offset.x;
-                y = currentSquare.Y + offset.y;
-            }
-            else if (pieceColor == PieceColor.Black)
-            {
-                x = currentSquare.X - offset.x;
-                y = currentSquare.Y - offset.y;
-            }
-
-            // if out of board bounds
-            if (x < 0 || x >= Board.Width || y < 0 || y >= Board.Height)
-            {
-                // Return Null section (last in array)
-                return _board.NullSquare;
-            }
-
-            return _board.Squares[y + x * Board.Width];
+            return _board.GetSquareRel(pieceColor, currentSquare, offset);
         }
 
-        /// <summary>
         /// Get section relative to absolute position (white side)
-        /// </summary>
-        /// <param name="currentSquare"> Current square </param>
-        /// <param name="offset"> Offset from current square </param>
-        /// <returns> Square at the offset or NullSquare if out of bounds </returns>
         public Square GetSquareAbs(Square currentSquare, Vector2Int offset)
         {
-            return GetSquareRel(PieceColor.White, currentSquare, offset);
+            return _board.GetSquareAbs(currentSquare, offset);
         }
 
         // Calculations for all turns. Need to call every turn change
@@ -270,7 +231,8 @@ namespace Logic
             {
                 piece.CalculateMovesAndCaptures();
 
-                foreach (Square moveSquare in piece.MoveSquares)
+                var moveSquares = new List<Square>(piece.MoveSquares.Keys);
+                foreach (Square moveSquare in moveSquares)
                 {
                     underAttackSquares.Add(moveSquare);
                 }

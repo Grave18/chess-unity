@@ -26,10 +26,7 @@ namespace Logic
             _initialWhiteTime = TimeSpan.FromMinutes(timeMinutes);
             _initialBlackTime = _initialWhiteTime;
 
-            _game.OnStart += StartTimer;
-            _game.OnEnd += Pause;
-            _game.OnPlay += Play;
-            _game.OnPause += Pause;
+            SubscribeToGameEvents();
         }
 
         public void StartTimer()
@@ -77,6 +74,14 @@ namespace Logic
                 time = TimeSpan.Zero;
                 _game.SetTimeOut(pieceColor);
             }
+        }
+
+        private void SubscribeToGameEvents()
+        {
+            _game.OnStart += StartTimer;
+            _game.OnEnd += Pause;
+            _game.OnPlay += Play;
+            _game.OnPause += Pause;
         }
 
         private void OnDestroy()

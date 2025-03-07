@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using DG.Tweening;
 using Logic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 #pragma warning disable CS0252, CS0253
 
@@ -21,51 +20,34 @@ namespace ChessBoard.Pieces
         [SerializeField] private Ease animationEase = Ease.InOutCubic;
 
         [Header("Debug preview")]
-        [FormerlySerializedAs("gameManager")]
-        [SerializeField] protected Game game;
         [SerializeField] protected Square currentSquare;
+        [field:SerializeField] public bool IsFirstMove { get; set; }
 
-        public bool IsFirstMove { get; set; } = true;
-
-        // All kind of squares
-
-        public HashSet<Square> MoveSquares { get; } = new();
+        public Dictionary<Square, MoveInfo> MoveSquares { get; } = new();
         public Dictionary<Square, CaptureInfo> CaptureSquares { get; } = new();
         public HashSet<Square> DefendSquares { get; } = new();
         public HashSet<Square> CannotMoveSquares { get; } = new();
 
-        public void Init(Game game)
+        // Initialize
+        protected Game Game { get; private set; }
+        private Board _board;
+
+        public void Init(Game game, Board board)
         {
-            this.game = game;
+            Game = game;
+            _board = board;
 
             SetPositionAndSquare();
         }
 
-        public bool CanMoveTo(Square square)
+        public bool CanMoveTo(Square square, out MoveInfo moveInfo)
         {
-            return MoveSquares.Contains(square);
+            return MoveSquares.TryGetValue(square, out moveInfo);
         }
 
         public bool CanEatAt(Square square, out CaptureInfo captureInfo)
         {
-            captureInfo = default;
-
             return CaptureSquares.TryGetValue(square, out captureInfo);
-        }
-
-        public void AddToBoard()
-        {
-            game.AddPiece(this);
-            gameObject.SetActive(true);
-        }
-
-        /// <summary>
-        /// Remove from game manager and destroy
-        /// </summary>
-        public void RemoveFromBoard()
-        {
-            game.RemovePiece(this);
-            gameObject.SetActive(false);
         }
 
         public void MoveToBeaten()
@@ -73,7 +55,7 @@ namespace ChessBoard.Pieces
             transform.position = new Vector3(-1.5f, 0f, 0f);
             currentSquare.SetPiece(null);
             currentSquare = null;
-            game.RemovePiece(this);
+            _board.RemovePiece(this);
         }
 
         public void RemoveFromBeaten(Square square)
@@ -81,7 +63,7 @@ namespace ChessBoard.Pieces
             transform.position = square.transform.position;
             square.SetPiece(this);
             currentSquare = square;
-            game.AddPiece(this);
+            _board.AddPiece(this);
         }
 
         public async Task MoveToAsync(Square square)
@@ -110,14 +92,14 @@ namespace ChessBoard.Pieces
         public virtual void CalculateConstrains()
         {
             // Only calculate pins
-            if (game.CheckType == CheckType.None)
+            if (Game.CheckType == CheckType.None)
             {
-                if (!game.AttackLines.Contains(currentSquare, isCheck: false))
+                if (!Game.AttackLines.Contains(currentSquare, isCheck: false))
                 {
                     return;
                 }
 
-                if (!game.AttackLines.TryGetAttackLine(this, out AttackLine attackLine))
+                if (!Game.AttackLines.TryGetAttackLine(this, out AttackLine attackLine))
                 {
                     return;
                 }
@@ -125,9 +107,9 @@ namespace ChessBoard.Pieces
                 CalculatePin(attackLine);
             }
             // Can move king, capture attacker or block attack line
-            else if (game.CheckType == CheckType.Check)
+            else if (Game.CheckType == CheckType.Check)
             {
-                if (game.AttackLines.TryGetAttackLine(this, out AttackLine attackLine)
+                if (Game.AttackLines.TryGetAttackLine(this, out AttackLine attackLine)
                     && !attackLine.IsCheck)
                 {
                     DisableMovesAndCaptures();
@@ -138,7 +120,7 @@ namespace ChessBoard.Pieces
                 }
             }
             // Only king can move out of attack or capture threatening piece
-            else if (game.CheckType == CheckType.DoubleCheck)
+            else if (Game.CheckType == CheckType.DoubleCheck)
             {
                 DisableMovesAndCaptures();
             }
@@ -146,8 +128,9 @@ namespace ChessBoard.Pieces
 
         private void DisableMovesAndCaptures()
         {
+            var tempMoveSquares = new List<Square>(MoveSquares.Keys);
             // Update move
-            foreach (Square moveSquare in MoveSquares)
+            foreach (Square moveSquare in tempMoveSquares)
             {
                 CannotMoveSquares.Add(moveSquare);
             }
@@ -159,11 +142,11 @@ namespace ChessBoard.Pieces
         private void UpdateMovesAndCaptures()
         {
             // Update move
-            var tempMoveSquares = new List<Square>(MoveSquares);
+            var tempMoveSquares = new List<Square>(MoveSquares.Keys);
 
             foreach (Square moveSquare in tempMoveSquares)
             {
-                if (!game.AttackLines.Contains(moveSquare, isCheck: true))
+                if (!Game.AttackLines.Contains(moveSquare, isCheck: true))
                 {
                     MoveSquares.Remove(moveSquare);
                     CannotMoveSquares.Add(moveSquare);
@@ -176,7 +159,7 @@ namespace ChessBoard.Pieces
             foreach (Square captureSquare in tempCaptureSquares)
             {
                 Piece capturePiece = captureSquare.GetPiece();
-                if (!game.AttackLines.ContainsAttacker(capturePiece, isCheck: true))
+                if (!Game.AttackLines.ContainsAttacker(capturePiece, isCheck: true))
                 {
                     CaptureSquares.Remove(captureSquare);
                 }
@@ -185,7 +168,7 @@ namespace ChessBoard.Pieces
 
         private void CalculatePin(AttackLine attackLine)
         {
-            var tempMoveSquares = new List<Square>(MoveSquares);
+            var tempMoveSquares = new List<Square>(MoveSquares.Keys);
 
             foreach (Square moveSquare in tempMoveSquares)
             {
@@ -256,6 +239,7 @@ namespace ChessBoard.Pieces
             return true;
         }
 
+        // Todo: remove
         private void SetPositionAndSquare()
         {
             if (!Physics.Raycast(transform.position + Vector3.up, Vector3.down, out var hitInfo, 2f,
@@ -274,7 +258,7 @@ namespace ChessBoard.Pieces
         [ContextMenu("Get Section And Align")]
         private void GetSectionAndAlign()
         {
-            Init(FindObjectOfType<Game>());
+            Init(FindObjectOfType<Game>(), FindObjectOfType<Board>());
         }
 
 #endif

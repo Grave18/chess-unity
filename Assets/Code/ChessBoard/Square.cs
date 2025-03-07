@@ -23,6 +23,7 @@ namespace ChessBoard
         /// </summary>
         [field:SerializeField] public string Address { get; set; }
 
+        [Header("Debug")]
         [SerializeField] private Piece currentPiece;
 
         private MeshRenderer _renderer;

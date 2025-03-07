@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a1bcdec3d2da74446843c7a1d5112fda, type: 3}
-  m_Name: BoardFull
+  m_Name: Temp
   m_EditorClassIdentifier: 
-  preset: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+  preset: 1nbqkbnr/rppp1ppp/4p3/p7/P7/R5P1/1PPPPP1P/1NBQKBNR w Kk - 0 1

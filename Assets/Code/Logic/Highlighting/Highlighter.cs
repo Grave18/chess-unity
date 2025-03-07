@@ -109,7 +109,7 @@ namespace Logic.Highlighting
 
         private void HighlightSquares(Piece piece)
         {
-            foreach (Square square in piece.MoveSquares)
+            foreach ((Square square, _) in piece.MoveSquares)
             {
                 if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
                 {

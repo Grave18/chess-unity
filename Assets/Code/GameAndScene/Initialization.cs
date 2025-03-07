@@ -12,19 +12,25 @@ namespace GameAndScene
         [SerializeField] private Assets assets;
         [SerializeField] private Board board;
         [SerializeField] private Game game;
+        [SerializeField] private CommandInvoker commandInvoker;
         [SerializeField] private Clock clock;
 
         private async void Start()
         {
-            await SetupAsync();
+            await Setup();
         }
 
-        private async Task SetupAsync()
+        private async Task Setup()
         {
-            GameObject[] prefabs = await assets.InitAsync();
-            board.Init(game, assets.Preset, prefabs);
+            GameObject[] prefabs = await assets.LoadPrefabs();
+            ParsedPreset parsedPreset = assets.GetParsedPreset();
+            PieceColor turnColor = Assets.GetTurnColorFromPreset(parsedPreset);
+
+            game.Init(board, turnColor);
+            board.Init(game, commandInvoker, parsedPreset, prefabs, turnColor);
             clock.Init(game);
-            game.Init(board, assets.Preset.TurnColor);
+
+            game.StartGame();
         }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -33,7 +39,7 @@ namespace GameAndScene
         {
             if (Input.GetKeyDown(KeyCode.L))
             {
-                _ = SetupAsync();
+                _ = Setup();
             }
             else if (Input.GetKeyDown(KeyCode.U))
             {

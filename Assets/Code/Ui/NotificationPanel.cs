@@ -13,7 +13,7 @@ namespace Ui
 
         private void OnEnable()
         {
-            restartButton.onClick.AddListener(game.Restart);
+            restartButton.onClick.AddListener(game.StartGame);
 
             game.OnEnd += UpdateNotificationText;
             game.OnStart += UpdateNotificationText;

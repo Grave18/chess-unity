@@ -9,6 +9,10 @@ using Logic.Players;
 using Ui.Promotion;
 using UnityEngine;
 
+#if UNITY_EDITOR
+    using UnityEditor;
+#endif
+
 namespace ChessBoard
 {
     public class Board : MonoBehaviour
@@ -25,30 +29,35 @@ namespace ChessBoard
         [Header("Ui")]
         [SerializeField] private PromotionPanel promotionPanel;
 
-        // This is piece references what is on board in current game
+        /// This is white piece references what is on board in current game
         public HashSet<Piece> WhitePieces { get; } = new();
+        /// This is black piece references what is on board in current game
         public HashSet<Piece> BlackPieces { get; } = new();
         public List<Square> Squares { get; } = new();
         private Dictionary<string, Square> SquaresHash { get; } = new();
 
         // Initialized
         private Game _game;
+        private CommandInvoker _commandInvoker;
         private GameObject[] _prefabs;
-        private BoardPreset _boardPreset;
+        private ParsedPreset _boardPreset;
+        private PieceColor _turnColor;
 
-        private readonly Dictionary<Square, GameObject> _piecePairs = new();
         private GameObject _boardInstance;
 
         public Square NullSquare => nullSquare;
 
-        public void Init(Game game, BoardPreset boardPreset, GameObject[] prefabs)
+        public void Init(Game game, CommandInvoker commandInvoker, ParsedPreset boardPreset, GameObject[] prefabs,
+            PieceColor turnColor)
         {
             _game = game;
+            _commandInvoker = commandInvoker;
             _prefabs = prefabs;
             _boardPreset = boardPreset;
-            Build();
+            _turnColor = turnColor;
         }
 
+        /// Gets a piece from the promotion selector if player is human. Or from Ai if player is computer
         public async Task<(Piece, PieceType)> GetPieceFromSelectorAsync(PieceColor pieceColor, Square square)
         {
             promotionPanel.Show(pieceColor);
@@ -59,11 +68,13 @@ namespace ChessBoard
             return (piece, pieceType);
         }
 
+        /// Select after some amount of time, for use by real player
         public void Select(PieceType pieceType)
         {
             competitors.SelectPromotedPiece(pieceType);
         }
 
+        /// Add piece to the board. Add it to the list of the corresponding color.
         public void AddPiece(Piece piece)
         {
             if (piece.GetPieceColor() == PieceColor.White)
@@ -76,6 +87,7 @@ namespace ChessBoard
             }
         }
 
+        /// Remove piece from the board. Remove it from the list of the corresponding color.
         public void RemovePiece(Piece piece)
         {
             if (piece.GetPieceColor() == PieceColor.White)
@@ -88,11 +100,7 @@ namespace ChessBoard
             }
         }
 
-        /// <summary>
-        /// Get square by address on the boadrd
-        /// </summary>
-        /// <param name="uciSquare"> "c1", "d3" ...</param>
-        /// <returns> Square by listed address </returns>
+        /// Get square by address on the board. example: "c1", "d3" ...
         public Square GetSquare(string uciSquare)
         {
             return SquaresHash.TryGetValue(uciSquare, out Square moveFromSquare)
@@ -100,158 +108,62 @@ namespace ChessBoard
                 : NullSquare;
         }
 
-        [Button(space: 10f)]
-        public void Build()
+        /// Get square by coordinates on the board. x: (0-7) left to right. y: (0-7) bottom to top
+        public Square GetSquare(int x, int y)
         {
-            string preset = GetParsedPreset();
-
-            DestroyBoardAndPieces();
-            SetupSquares();
-            LoadPiecesFromPreset(preset);
-            InstantiatePieces();
-            InstantiateBoard();
+            int invertedY = Height - y - 1;
+            return Squares[x + invertedY * Width];
         }
 
-        private string GetParsedPreset()
-        {
-            string preset = _boardPreset.Preset;
-
-            preset = ClearNewLineCharacters(preset);
-
-            if (IsPresetNotValid(preset))
-            {
-                Debug.LogError("Invalid board preset");
-            }
-
-            return preset;
-        }
-
-        private static string ClearNewLineCharacters(string text)
-        {
-            return text.Replace("\r", string.Empty).Replace("\n", string.Empty).Replace("\t", string.Empty);
-        }
-
-        private static bool IsPresetNotValid(string text)
-        {
-            return text.Length != Width * Height;
-        }
-
-        [Button(space: 10f)]
         public void DestroyBoardAndPieces()
         {
             DestroyPieces();
             DestroyBoard();
-            _piecePairs.Clear();
             _boardInstance = null;
             WhitePieces.Clear();
             BlackPieces.Clear();
         }
 
-        private void LoadPiecesFromPreset(string preset)
+        /// Get section relative to current piece color
+        public Square GetSquareRel(PieceColor pieceColor, Square currentSquare, Vector2Int offset)
         {
-            for (int x = 0, y = 0; y < Height;)
+            int x = -1;
+            int y = -1;
+
+            if (pieceColor == PieceColor.White)
             {
-                int indexOfSymbol = x + y * Width;
-                // Must invert y (Height - 1 - y) also x and y are swapped
-                int indexOfSquare = Height - 1 - y + x * Width;
-
-                Square square = Squares[indexOfSquare];
-                switch (preset[indexOfSymbol])
-                {
-                    // Set prefabs for each square
-                    case '*':
-                    case ' ':
-                        break;
-                    case 'b': _piecePairs[square] = _prefabs[0];  break; // B_Bishop
-                    case 'k': _piecePairs[square] = _prefabs[1];  break; // B_King
-                    case 'n': _piecePairs[square] = _prefabs[2];  break; // B_Knight
-                    case 'p': _piecePairs[square] = _prefabs[3];  break; // B_Pawn
-                    case 'q': _piecePairs[square] = _prefabs[4];  break; // B_Queen
-                    case 'r': _piecePairs[square] = _prefabs[5];  break; // B_Rook
-                    case 'B': _piecePairs[square] = _prefabs[6];  break; // W_Bishop
-                    case 'K': _piecePairs[square] = _prefabs[7];  break; // W_King
-                    case 'N': _piecePairs[square] = _prefabs[8];  break; // W_Knight
-                    case 'P': _piecePairs[square] = _prefabs[9];  break; // W_Pawn
-                    case 'Q': _piecePairs[square] = _prefabs[10]; break; // W_Queen
-                    case 'R': _piecePairs[square] = _prefabs[11]; break; // W_Rook
-                    default:
-                        Debug.LogError($"{preset[indexOfSymbol]} is not a valid character");
-                        break;
-                }
-
-                x += 1;
-
-                if (x == Width)
-                {
-                    x = 0;
-                    y += 1;
-                }
+                x = currentSquare.X + offset.x;
+                y = currentSquare.Y + offset.y;
             }
-        }
-
-        private void InstantiatePieces()
-        {
-            foreach (var (square, piece) in _piecePairs)
+            else if (pieceColor == PieceColor.Black)
             {
-                Piece pieceInstance = InstantiatePiece(piece, square);
-                AddPiece(pieceInstance);
-            }
-        }
-
-        private Piece InstantiatePiece(GameObject piecePrefab, Square square)
-        {
-            if (piecePrefab == null)
-            {
-                return null;
+                x = currentSquare.X - offset.x;
+                y = currentSquare.Y - offset.y;
             }
 
-            GameObject pieceInstance = Instantiate(piecePrefab, square.transform.position, piecePrefab.transform.rotation, piecesParent);
-            var piece = pieceInstance.GetComponent<Piece>();
+            // if out of board bounds
+            if (x < 0 || x >= Board.Width || y < 0 || y >= Board.Height)
+            {
+                return NullSquare;
+            }
 
-            piece.Init(_game);
-
-            return piece;
+            return GetSquare(x, y);
         }
 
-        private void InstantiateBoard()
+        /// Get section relative to absolute position (white side)
+        public Square GetSquareAbs(Square currentSquare, Vector2Int offset)
         {
-            _boardInstance = Instantiate(_prefabs[12], transform);
+            return GetSquareRel(PieceColor.White, currentSquare, offset);
         }
 
-        private Piece GetPiece(PieceType pieceType, PieceColor pieceColor, Square square)
+        public void Build()
         {
-            GameObject piecePrefab
-                = pieceColor == PieceColor.White
-                    ? pieceType switch
-                    {
-                        // White
-                        PieceType.Queen => _prefabs[10],
-                        PieceType.Rook => _prefabs[11],
-                        PieceType.Bishop => _prefabs[6],
-                        PieceType.Knight => _prefabs[8],
-                        PieceType.Pawn => _prefabs[9],
-                        _ => null,
-                    }
-                    : pieceType switch
-                    {
-                        // Black
-                        PieceType.Queen => _prefabs[4],
-                        PieceType.Rook => _prefabs[5],
-                        PieceType.Bishop => _prefabs[0],
-                        PieceType.Knight => _prefabs[2],
-                        PieceType.Pawn => _prefabs[3],
-                        _ => null,
-                    };
-
-            Piece piece = InstantiatePiece(piecePrefab, square);
-            return piece;
-        }
-
-        private void SetupSquares()
-        {
+            DestroyBoardAndPieces();
             FindAllSquares();
-            SetFilesAndRanks();
             HashSquares();
+            LoadPiecesFromPreset();
+            SetupEnPassant();
+            InstantiateBoard();
         }
 
         private void FindAllSquares()
@@ -263,26 +175,6 @@ namespace ChessBoard
             }
         }
 
-        private void SetFilesAndRanks()
-        {
-            // Set files and ranks
-            for (int x = 0; x < Width; x++)
-            {
-                for (int y = 0; y < Height; y++)
-                {
-                    int index = y + x * Width;
-
-                    Square square = Squares[index];
-                    square.X = x;
-                    square.Y = y;
-
-                    square.File = $"{(char)(x + 'a')}";
-                    square.Rank = $"{y + 1}";
-                    square.Address = $"{square.File}{square.Rank}";
-                }
-            }
-        }
-
         private void HashSquares()
         {
             // Hash files and ranks -> squares
@@ -290,6 +182,201 @@ namespace ChessBoard
             {
                 SquaresHash[square.Address] = square;
             }
+        }
+
+        private void LoadPiecesFromPreset()
+        {
+            int x = 0;
+            foreach (char ch in _boardPreset.PiecesPreset)
+            {
+                Square square = Squares[x];
+                Piece piece;
+                switch (ch)
+                {
+                    case '/':
+                        continue;
+                    case > '0' and <= '8':
+                    {
+                        int squaresToSkip = ch - '0';
+                        x += squaresToSkip;
+                        continue;
+                    }
+                    // White
+                    case 'B':
+                        piece = GetPiece(PieceType.Bishop, PieceColor.White, square);
+                        break;
+                    case 'K':
+                        piece = GetPiece(PieceType.King, PieceColor.White, square);
+                        CheckWhiteKingFirstMove(piece);
+                        break;
+                    case 'N':
+                        piece = GetPiece(PieceType.Knight, PieceColor.White, square);
+                        break;
+                    case 'P':
+                        piece = GetPiece(PieceType.Pawn, PieceColor.White, square);
+                        CheckWhitePawnFirstMove(square, piece);
+                        break;
+                    case 'Q':
+                        piece = GetPiece(PieceType.Queen, PieceColor.White, square);
+                        break;
+                    case 'R':
+                        piece = GetPiece(PieceType.Rook, PieceColor.White, square);
+                        CheckWhiteRookFirstMove(square, piece);
+                        break;
+                    // Black
+                    case 'b':
+                        piece = GetPiece(PieceType.Bishop, PieceColor.Black, square);
+                        break;
+                    case 'k':
+                        piece = GetPiece(PieceType.King, PieceColor.Black, square);
+                        CheckBlackKingFirstMove(piece);
+                        break;
+                    case 'n':
+                        piece = GetPiece(PieceType.Knight, PieceColor.Black, square);
+                        break;
+                    case 'p':
+                        piece = GetPiece(PieceType.Pawn, PieceColor.Black, square);
+                        CheckBlackPawnFirstMove(square, piece);
+                        break;
+                    case 'q':
+                        piece = GetPiece(PieceType.Queen, PieceColor.Black, square);
+                        break;
+                    case 'r':
+                        piece = GetPiece(PieceType.Rook, PieceColor.Black, square);
+                        CheckBlackRookFirstMove(square, piece);
+                        break;
+                    default:
+                        Debug.LogError($"{ch} is not a valid character");
+                        return;
+                }
+
+                AddPiece(piece);
+                x += 1;
+            }
+        }
+
+        private void SetupEnPassant()
+        {
+            if (_boardPreset.EnPassant != "-")
+            {
+                Square epSquare = GetSquare(_boardPreset.EnPassant);
+                // The (0, 1) to (0, -1) swapped because we find square for previous turn
+                Square pawnToSquare = GetSquareRel(_turnColor, epSquare, new Vector2Int(0, -1));
+                Piece pawn = pawnToSquare.GetPiece();
+                _commandInvoker.SetEnPassantInfo(pawn, pawnToSquare);
+            }
+        }
+
+        private static void CheckWhitePawnFirstMove(Square square, Piece piece)
+        {
+            if (square.Rank == "2")
+            {
+                piece.IsFirstMove = true;
+            }
+        }
+
+        private static void CheckBlackPawnFirstMove(Square square, Piece piece)
+        {
+            if (square.Rank == "7")
+            {
+                piece.IsFirstMove = true;
+            }
+        }
+
+        private void CheckBlackRookFirstMove(Square square, Piece piece)
+        {
+            if (_boardPreset.Castling.Contains("k") && square.Address == "h8"
+                || _boardPreset.Castling.Contains("q") && square.Address == "a8")
+            {
+                piece.IsFirstMove = true;
+            }
+        }
+
+        private void CheckWhiteRookFirstMove(Square square, Piece piece)
+        {
+            if (_boardPreset.Castling.Contains("K") && square.Address == "h1"
+                || _boardPreset.Castling.Contains("Q") && square.Address == "a1")
+            {
+                piece.IsFirstMove = true;
+            }
+        }
+
+        private void CheckBlackKingFirstMove(Piece piece)
+        {
+            if (_boardPreset.Castling.Contains("k")
+                || _boardPreset.Castling.Contains("q"))
+            {
+                piece.IsFirstMove = true;
+            }
+        }
+
+        private void CheckWhiteKingFirstMove(Piece piece)
+        {
+            if (_boardPreset.Castling.Contains("K")
+                || _boardPreset.Castling.Contains("Q"))
+            {
+                piece.IsFirstMove = true;
+            }
+        }
+
+        private void InstantiateBoard()
+        {
+            _boardInstance = Instantiate(_prefabs[12], transform);
+        }
+
+        private Piece GetPiece(PieceType pieceType, PieceColor pieceColor, Square square)
+        {
+            GameObject piecePrefab = GetPrefabOfPiece(pieceType, pieceColor);
+            Piece pieceInstance = InstantiatePiece(piecePrefab, square);
+
+            return pieceInstance;
+        }
+
+        private GameObject GetPrefabOfPiece(PieceType pieceType, PieceColor pieceColor)
+        {
+            GameObject piecePrefab = pieceColor switch
+            {
+                PieceColor.White => pieceType switch
+                {
+                    // White
+                    PieceType.Bishop => _prefabs[6],
+                    PieceType.King => _prefabs[7],
+                    PieceType.Knight => _prefabs[8],
+                    PieceType.Pawn => _prefabs[9],
+                    PieceType.Queen => _prefabs[10],
+                    PieceType.Rook => _prefabs[11],
+                    _ => null,
+                },
+                PieceColor.Black => pieceType switch
+                {
+                    // Black
+                    PieceType.Bishop => _prefabs[0],
+                    PieceType.King => _prefabs[1],
+                    PieceType.Knight => _prefabs[2],
+                    PieceType.Pawn => _prefabs[3],
+                    PieceType.Queen => _prefabs[4],
+                    PieceType.Rook => _prefabs[5],
+                    _ => null,
+                },
+                _ => null,
+            };
+            return piecePrefab;
+        }
+
+        private Piece InstantiatePiece(GameObject piecePrefab, Square square)
+        {
+            if (piecePrefab == null)
+            {
+                return null;
+            }
+
+            GameObject pieceInstance = Instantiate(piecePrefab, square.transform.position,
+                piecePrefab.transform.rotation, piecesParent);
+            var piece = pieceInstance.GetComponent<Piece>();
+
+            piece.Init(_game, this);
+
+            return piece;
         }
 
         private void DestroyPieces()
@@ -310,5 +397,79 @@ namespace ChessBoard
 
             Destroy(_boardInstance.gameObject);
         }
+
+#if UNITY_EDITOR
+
+        [Button(space: 10)]
+        private void SetupSquaresInEditor()
+        {
+            FindAllSquaresInEditor();
+            SetFilesAndRanks();
+        }
+
+        private void FindAllSquaresInEditor()
+        {
+            var undoObjects = new List<Object>();
+            foreach (Transform squareTransform in squaresParent)
+            {
+                var square = squareTransform.GetComponent<Square>();
+                Squares.Add(square);
+                undoObjects.Add(square);
+            }
+
+            // Undo
+            Undo.RecordObjects(undoObjects.ToArray(), "SetupSquaresInEditor");
+            foreach (Object obj in undoObjects)
+            {
+                PrefabUtility.RecordPrefabInstancePropertyModifications(obj);
+            }
+        }
+
+        private void SetFilesAndRanks()
+        {
+            // Set files and ranks
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    int index = x + y * Width;
+
+                    Square square = Squares[index];
+                    square.X = x;
+                    square.Y = 7 - y;
+
+                    square.File = $"{(char)(x + 'a')}";
+                    square.Rank = $"{square.Y + 1}";
+                    square.Address = $"{square.File}{square.Rank}";
+                }
+            }
+        }
+
+        // [Button(space: 10f)]
+        private void ReformSquares()
+        {
+            var tr = squaresParent.Cast<Transform>().ToArray();
+            int siblingInd = 0;
+            int offset = 8;
+            for (int currentInd = offset - 1; siblingInd < tr.Length;)
+            {
+                squaresParent.GetChild(currentInd).SetSiblingIndex(siblingInd);
+                siblingInd += 1;
+
+                if (currentInd == tr.Length - 1)
+                {
+                    offset -= 1;
+                    currentInd = siblingInd + offset - 1;
+                }
+                else
+                {
+                    currentInd += offset;
+                }
+            }
+
+            // SetFilesAndRanks();
+        }
+
+#endif
     }
 }

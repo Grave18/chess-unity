@@ -136,9 +136,9 @@ namespace Logic.Players
             }
 
             // Move
-            if (movePiece.CanMoveTo(moveToSquare))
+            if (movePiece.CanMoveTo(moveToSquare, out MoveInfo moveInfo))
             {
-                _ = CommandInvoker.MoveTo(moveFromSquare.GetPiece(), moveToSquare);
+                _ = CommandInvoker.MoveTo(moveFromSquare.GetPiece(), moveToSquare, moveInfo);
             }
             // Castling
             else if (movePiece is King king && king.CanCastlingAt(moveToSquare, out CastlingInfo castlingInfo))

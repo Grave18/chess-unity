@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
-using ChessBoard.Pieces;
 
 namespace Logic.CommandPattern
 {
@@ -14,33 +13,45 @@ namespace Logic.CommandPattern
 
         private Command[] _commands = new Command[InitialCapacity];
 
-        /// <summary>
+        /// Command what contains info about en passant
+        public Command FirstCommand { private get; set; }
+
         /// Length of current commands in buffer under and to the left from cursor
-        /// </summary>
         private int CurrentLength => _cursor + 1;
+
+        public Command LastCommand => _cursor >= 0 && _cursor < _commands.Length ? _commands[_cursor] : FirstCommand;
 
         public async Task AddAndExecute(Command command)
         {
-            _cursor += 1;
+            Add(command);
+            await Execute();
+        }
 
-            // Rewrite fullLength only when add new move.
-            // Rewrites moves right to cursor
+        public void Add(Command command)
+        {
+            _cursor += 1;
             _fullLength = CurrentLength;
+
             ResizeArray();
 
             _commands[_cursor] = command;
-            await _commands[_cursor].Execute();
         }
 
-        public async Task Redo()
+        public async Task Execute()
+        {
+            await LastCommand.Execute();
+        }
+
+        public async Task<Command> Redo()
         {
             if (!CanRedo())
             {
-                return;
+                return null;
             }
 
             _cursor += 1;
             await _commands[_cursor].Execute();
+            return _commands[_cursor];
         }
 
         public async Task Undo()
@@ -56,7 +67,7 @@ namespace Logic.CommandPattern
 
         public bool CanUndo()
         {
-            return CurrentLength > 0;
+            return CurrentLength > 0 && LastCommand.IsUndoable;
         }
 
         public bool CanRedo()
@@ -64,13 +75,7 @@ namespace Logic.CommandPattern
             return CurrentLength < _fullLength;
         }
 
-        /// <summary>
-        /// Get part of uci string
-        /// </summary>
-        /// <example>
-        /// "moves e2e4 e7e5"
-        /// </example>
-        /// <returns> Uci string </returns>
+        /// Get part of uci string, example: moves e2e4 e7e5
         public string GetUciMoves()
         {
             var sb = new StringBuilder();
@@ -90,21 +95,16 @@ namespace Logic.CommandPattern
             return sb.ToString();
         }
 
-        /// <summary>
-        /// Returns the last moved piece from last buffer entry
-        /// </summary>
-        /// <returns> Last moved piece </returns>
-        public Piece GetLastMovedPiece()
+        public void Reset()
         {
-            return CurrentLength == 0
-                ? null
-                : _commands[_cursor].GetPiece();
+            _cursor = -1;
+            _fullLength = 0;
         }
 
         public void Clear()
         {
-            _cursor = -1;
-            _fullLength = 0;
+            FirstCommand = null;
+            Reset();
         }
 
         private void ResizeArray()

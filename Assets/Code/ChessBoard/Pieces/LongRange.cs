@@ -21,10 +21,10 @@ namespace ChessBoard.Pieces
                 bool isFindingKing = false;
                 while (true)
                 {
-                    Square square = game.GetSquareRel(pieceColor, currentSquare, offset);
+                    Square square = Game.GetSquareRel(pieceColor, currentSquare, offset);
                     offset += direction;
 
-                    if (square == game.NullSquare)
+                    if (square == Game.NullSquare)
                     {
                         break;
                     }
@@ -71,7 +71,7 @@ namespace ChessBoard.Pieces
                     else
                     {
                         possibleAttackLine.Add(square);
-                        MoveSquares.Add(square);
+                        MoveSquares.Add(square, new MoveInfo());
                     }
                 }
             }

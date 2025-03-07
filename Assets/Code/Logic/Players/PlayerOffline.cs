@@ -93,9 +93,9 @@ namespace Logic.Players
             Square moveToSquare = selectable.GetSquare();
 
             // Move
-            if (piece.CanMoveTo(moveToSquare))
+            if (piece.CanMoveTo(moveToSquare, out MoveInfo moveInfo))
             {
-                _ = CommandInvoker.MoveTo(piece, moveToSquare);
+                _ = CommandInvoker.MoveTo(piece, moveToSquare, moveInfo);
                 DeselectCurrent();
             }
             // Castling

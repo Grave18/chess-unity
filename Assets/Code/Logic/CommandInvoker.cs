@@ -11,17 +11,14 @@ namespace Logic
     {
         [Header("References")]
         [SerializeField] private Game game;
+
         [SerializeField] private Board board;
         [SerializeField] private SeriesList seriesList;
 
         private readonly CommandBuffer _commandBuffer = new();
 
-        /// <summary>
-        /// Move piece to square
-        /// </summary>
-        /// <param name="piece"> Piece being moved </param>
-        /// <param name="square"> Square where move piece is going </param>
-        public async Task MoveTo(Piece piece, Square square)
+        /// Move piece to square or move and promote
+        public async Task MoveTo(Piece piece, Square square, MoveInfo moveInfo)
         {
             game.StartTurn();
 
@@ -33,18 +30,13 @@ namespace Logic
             // Normal move
             else
             {
-                await _commandBuffer.AddAndExecute(new MoveCommand(piece, square, game, seriesList));
+                await _commandBuffer.AddAndExecute(new MoveCommand(piece, square, moveInfo, game, seriesList));
             }
 
             game.EndTurn();
         }
 
-        /// <summary>
         /// Eat or eat and promote
-        /// </summary>
-        /// <param name="piece"> Piece being moved </param>
-        /// <param name="moveToSquare"> Square where move piece is going </param>
-        /// <param name="captureInfo"> Info with piece that is being eaten and notation type </param>
         public async Task EatAt(Piece piece, Square moveToSquare, CaptureInfo captureInfo)
         {
             game.StartTurn();
@@ -52,36 +44,31 @@ namespace Logic
             // Promotion capture
             if (piece is Pawn && moveToSquare.Rank is "8" or "1")
             {
-                await _commandBuffer.AddAndExecute(new EatAndPromoteCommand(piece, captureInfo.BeatenPiece, moveToSquare, game, board, seriesList));
+                await _commandBuffer.AddAndExecute(new EatAndPromoteCommand(piece, captureInfo.BeatenPiece,
+                    moveToSquare, game, board, seriesList));
             }
             // Capture
             else
             {
-                await _commandBuffer.AddAndExecute(new EatCommand(piece, captureInfo.BeatenPiece, moveToSquare, game, seriesList, captureInfo.NotationTurnType));
+                await _commandBuffer.AddAndExecute(new EatCommand(piece, captureInfo.BeatenPiece, moveToSquare, game,
+                    seriesList, captureInfo.NotationTurnType));
             }
 
             game.EndTurn();
         }
 
-
-        /// <summary>
-        /// Execute castling
-        /// </summary>
-        /// <param name="piece"> Piece being moved </param>
-        /// <param name="kingSquare"> Square where king is going </param>
-        /// <param name="rook"> Rook being moved </param>
-        /// <param name="rookSquare"> Square where rook is going </param>
-        /// <param name="notationTurnType"> Castling left or right notation</param>
-        public async Task Castling(King piece, Square kingSquare, Rook rook, Square rookSquare, NotationTurnType notationTurnType)
+        public async Task Castling(King piece, Square kingSquare, Rook rook, Square rookSquare,
+            NotationTurnType notationTurnType)
         {
             game.StartTurn();
-            await _commandBuffer.AddAndExecute(new CastlingCommand(piece, kingSquare, rook, rookSquare, game, seriesList, notationTurnType));
+            await _commandBuffer.AddAndExecute(new CastlingCommand(piece, kingSquare, rook, rookSquare, game,
+                seriesList, notationTurnType));
             game.EndTurn();
         }
 
         public async Task Undo()
         {
-            if(IsRightState() && _commandBuffer.CanUndo())
+            if (IsStatePauseOrIdle() && _commandBuffer.CanUndo())
             {
                 game.StartTurn();
                 await _commandBuffer.Undo();
@@ -91,10 +78,10 @@ namespace Logic
 
         public async Task Redo()
         {
-            if(IsRightState() && _commandBuffer.CanRedo())
+            if (IsStatePauseOrIdle() && _commandBuffer.CanRedo())
             {
                 game.StartTurn();
-                await _commandBuffer.Redo();
+                _ = await _commandBuffer.Redo();
                 game.EndTurn(isPause: true);
             }
         }
@@ -104,16 +91,37 @@ namespace Logic
             return _commandBuffer.GetUciMoves();
         }
 
-        /// <summary>
         /// Get last moved piece from last buffer entry in command buffer
-        /// </summary>
-        /// <returns> Last moved piece </returns>
         public Piece GetLastMovedPiece()
         {
-            return _commandBuffer.GetLastMovedPiece();
+            return _commandBuffer.LastCommand.Piece;
         }
 
-        private bool IsRightState()
+        /// Retrieves the En Passant information for the last command if applicable
+        public EnPassantInfo GetEnPassantInfo()
+        {
+            Command command = _commandBuffer.LastCommand;
+            if (command is { Is2SquaresPawnMove: true })
+            {
+                return new EnPassantInfo
+                {
+                    Piece = command.Piece,
+                    Square = game.GetSquareRel(command.Piece.GetPieceColor(), command.MoveToSquare,
+                        new Vector2Int(0, -1)),
+                };
+            }
+
+            return null;
+        }
+
+        /// Set stub command what contains all info for en passant
+        public void SetEnPassantInfo(Piece pawn, Square toSquare)
+        {
+            var firstCommand = new FirstCommand(pawn, toSquare);
+            _commandBuffer.FirstCommand = firstCommand;
+        }
+
+        private bool IsStatePauseOrIdle()
         {
             return game.State is GameState.Pause or GameState.Idle;
         }
@@ -130,7 +138,7 @@ namespace Logic
 
         private void OnStart()
         {
-            _commandBuffer.Clear();
+            _commandBuffer.Reset();
             seriesList.Clear();
         }
     }
