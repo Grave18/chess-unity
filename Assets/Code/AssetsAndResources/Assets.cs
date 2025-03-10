@@ -17,7 +17,7 @@ namespace AssetsAndResources
         private GameObject[] _prefabs;
         private AsyncOperationHandle<IList<GameObject>> _asyncOperationHandle;
 
-        public BoardPreset Preset => boardPreset;
+        public BoardPreset BoardPreset => boardPreset;
 
         public async Task<GameObject[]> LoadPrefabs()
         {
@@ -47,15 +47,12 @@ namespace AssetsAndResources
 
         public static PieceColor GetTurnColorFromPreset(ParsedPreset parsedPreset)
         {
-            var turnColor = PieceColor.None;
-            if (parsedPreset.TurnColor == "w")
+            PieceColor turnColor = parsedPreset.TurnColor switch
             {
-                turnColor = PieceColor.White;
-            }
-            else if(parsedPreset.TurnColor == "b")
-            {
-                turnColor = PieceColor.Black;
-            }
+                "w" => PieceColor.White,
+                "b" => PieceColor.Black,
+                _ => PieceColor.None
+            };
 
             return turnColor;
         }

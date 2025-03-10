@@ -14,6 +14,7 @@ namespace GameAndScene
         [SerializeField] private Game game;
         [SerializeField] private CommandInvoker commandInvoker;
         [SerializeField] private Clock clock;
+        [SerializeField] private UciString uciString;
 
         private async void Start()
         {
@@ -29,6 +30,7 @@ namespace GameAndScene
             game.Init(board, turnColor);
             board.Init(game, commandInvoker, parsedPreset, prefabs, turnColor);
             clock.Init(game);
+            uciString.Init(game, board, commandInvoker, assets);
 
             game.StartGame();
         }
