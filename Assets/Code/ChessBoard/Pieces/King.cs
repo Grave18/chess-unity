@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using AlgebraicNotation;
+using ChessBoard.Info;
 using Logic;
-using Logic.Notation;
 using UnityEngine;
 
 namespace ChessBoard.Pieces

@@ -1,4 +1,4 @@
-﻿namespace Logic.Notation
+﻿namespace AlgebraicNotation
 {
     [System.Serializable]
     public class Series

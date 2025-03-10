@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using ChessBoard.Info;
+using UnityEngine;
 
 namespace ChessBoard.Pieces
 {

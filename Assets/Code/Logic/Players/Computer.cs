@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ChessBoard;
+using ChessBoard.Info;
 using ChessBoard.Pieces;
 using UnityEngine;
 using Debug = UnityEngine.Debug;

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Logic.Highlighting
+namespace Highlighting
 {
     public class SquareHighlighter : MonoBehaviour
     {

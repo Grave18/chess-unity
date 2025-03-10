@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
+using AlgebraicNotation;
 using ChessBoard;
+using ChessBoard.Info;
 using ChessBoard.Pieces;
 using Logic.CommandPattern;
-using Logic.Notation;
 using UnityEngine;
 
 namespace Logic

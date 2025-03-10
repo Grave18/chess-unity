@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using ChessBoard.Info;
 using ChessBoard.Pieces;
 using UnityEngine;
 

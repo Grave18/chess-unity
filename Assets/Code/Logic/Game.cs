@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ChessBoard;
+using ChessBoard.Info;
 using ChessBoard.Pieces;
 using EditorCools;
 using Logic.CommandPattern;

@@ -1,5 +1,6 @@
-﻿using Logic.CommandPattern;
-using Logic.Notation;
+﻿using AlgebraicNotation;
+using ChessBoard.Info;
+using Logic.CommandPattern;
 using UnityEngine;
 
 namespace ChessBoard.Pieces

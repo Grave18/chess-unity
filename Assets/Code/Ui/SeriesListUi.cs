@@ -1,5 +1,5 @@
-﻿using Logic;
-using Logic.Notation;
+﻿using AlgebraicNotation;
+using Logic;
 using TMPro;
 using UnityEngine;
 

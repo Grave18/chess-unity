@@ -1,4 +1,4 @@
-﻿namespace ChessBoard.Pieces
+﻿namespace ChessBoard.Info
 {
 #pragma warning disable CS0252, CS0253
     public class MoveInfo

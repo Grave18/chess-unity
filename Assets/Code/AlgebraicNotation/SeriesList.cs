@@ -3,10 +3,11 @@ using System.Linq;
 using System.Text;
 using ChessBoard;
 using ChessBoard.Pieces;
+using Logic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Logic.Notation
+namespace AlgebraicNotation
 {
     public class SeriesList : MonoBehaviour
     {

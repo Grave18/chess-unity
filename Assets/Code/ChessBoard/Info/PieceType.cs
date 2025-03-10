@@ -1,4 +1,4 @@
-﻿namespace ChessBoard.Pieces
+﻿namespace ChessBoard.Info
 {
     public enum PieceType
     {

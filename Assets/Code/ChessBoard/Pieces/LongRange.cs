@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ChessBoard.Info;
 using UnityEngine;
 
 namespace ChessBoard.Pieces

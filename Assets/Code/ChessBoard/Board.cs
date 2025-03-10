@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AssetsAndResources;
+using ChessBoard.Info;
 using ChessBoard.Pieces;
 using EditorCools;
 using Logic;
@@ -374,7 +375,7 @@ namespace ChessBoard
                 piecePrefab.transform.rotation, piecesParent);
             var piece = pieceInstance.GetComponent<Piece>();
 
-            piece.Init(_game, this);
+            piece.Init(_game, this, square);
 
             return piece;
         }

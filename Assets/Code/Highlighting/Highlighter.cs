@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using ChessBoard;
+using ChessBoard.Info;
 using ChessBoard.Pieces;
+using Logic;
 using Logic.Players;
 using UnityEngine;
 
-namespace Logic.Highlighting
+namespace Highlighting
 {
     public class Highlighter : MonoBehaviour
     {

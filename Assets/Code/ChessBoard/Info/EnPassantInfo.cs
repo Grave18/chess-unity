@@ -1,7 +1,6 @@
-﻿using ChessBoard;
-using ChessBoard.Pieces;
+﻿using ChessBoard.Pieces;
 
-namespace Logic.CommandPattern
+namespace ChessBoard.Info
 {
     public class EnPassantInfo
     {

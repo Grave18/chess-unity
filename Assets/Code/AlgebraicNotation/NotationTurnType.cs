@@ -1,4 +1,4 @@
-﻿namespace Logic.Notation
+﻿namespace AlgebraicNotation
 {
     public enum NotationTurnType
     {

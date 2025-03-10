@@ -1,4 +1,4 @@
-﻿namespace Logic.Highlighting
+﻿namespace Highlighting
 {
     public enum SquareShape
     {

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ChessBoard.Info;
 using DG.Tweening;
 using Logic;
 using UnityEngine;
@@ -32,12 +33,13 @@ namespace ChessBoard.Pieces
         protected Game Game { get; private set; }
         private Board _board;
 
-        public void Init(Game game, Board board)
+        public void Init(Game game, Board board, Square square)
         {
             Game = game;
             _board = board;
 
-            SetPositionAndSquare();
+            currentSquare = square;
+            currentSquare.SetPiece(this);
         }
 
         public bool CanMoveTo(Square square, out MoveInfo moveInfo)
@@ -238,29 +240,5 @@ namespace ChessBoard.Pieces
         {
             return true;
         }
-
-        // Todo: remove
-        private void SetPositionAndSquare()
-        {
-            if (!Physics.Raycast(transform.position + Vector3.up, Vector3.down, out var hitInfo, 2f,
-                    squareLayer))
-            {
-                return;
-            }
-
-            transform.position = hitInfo.transform.position;
-            currentSquare = hitInfo.collider.GetComponent<Square>();
-            currentSquare.SetPiece(this);
-        }
-
-#if UNITY_EDITOR
-
-        [ContextMenu("Get Section And Align")]
-        private void GetSectionAndAlign()
-        {
-            Init(FindObjectOfType<Game>(), FindObjectOfType<Board>());
-        }
-
-#endif
     }
 }

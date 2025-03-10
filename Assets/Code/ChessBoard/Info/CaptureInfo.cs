@@ -1,6 +1,7 @@
-﻿using Logic.Notation;
+﻿using AlgebraicNotation;
+using ChessBoard.Pieces;
 
-namespace ChessBoard.Pieces
+namespace ChessBoard.Info
 {
     public struct CaptureInfo
     {

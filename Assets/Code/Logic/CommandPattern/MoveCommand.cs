@@ -1,7 +1,8 @@
 ﻿using System.Threading.Tasks;
+using AlgebraicNotation;
 using ChessBoard;
+using ChessBoard.Info;
 using ChessBoard.Pieces;
-using Logic.Notation;
 
 namespace Logic.CommandPattern
 {
