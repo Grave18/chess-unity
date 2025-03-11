@@ -47,27 +47,42 @@ namespace GameAndScene.Initialization
 
         private void InitPlayers()
         {
-            string json = PlayerPrefs.GetString(GameSettings.Key, string.Empty);
-            var gameSettings = JsonUtility.FromJson<GameSettings>(json);
+            GameSettings gameSettings = LoadGameSettings();
 
             if (gameSettings != null)
             {
-                Player playerWhite = GetPlayer(gameSettings.PlayerWhite);
-                Player playerBlack = GetPlayer(gameSettings.PlayerBlack);
-
-                competitors.Init(game, playerWhite, playerBlack);
-
-                playerWhite.Start();
-                playerBlack.Start();
+                ConfigurePlayers(gameSettings);
+            }
+            else
+            {
+                Debug.LogError("GameSettings is null");
             }
         }
 
-        private Player GetPlayer(PlayerType playerType)
+        private static GameSettings LoadGameSettings()
         {
-            return playerType switch
+            string json = PlayerPrefs.GetString(GameSettings.Key, string.Empty);
+            var gameSettings = JsonUtility.FromJson<GameSettings>(json);
+            return gameSettings;
+        }
+
+        private void ConfigurePlayers(GameSettings gameSettings)
+        {
+            Player playerWhite = GetPlayer(gameSettings.Player1Settings);
+            Player playerBlack = GetPlayer(gameSettings.Player2Settings);
+
+            competitors.Init(game, playerWhite, playerBlack);
+
+            playerWhite.Start();
+            playerBlack.Start();
+        }
+
+        private Player GetPlayer(PlayerSettings playerSettings)
+        {
+            return playerSettings.PlayerType switch
             {
-                PlayerType.Computer => new Computer(game, commandInvoker, board, Computer.ComputerSkillLevel.Medium, 1000),
-                PlayerType.Offline => new PlayerOffline(game, commandInvoker, mainCamera, highlighter, layerMask),
+                PlayerType.Computer => new Computer(game, commandInvoker, board, playerSettings.ComputerSkillLevel, playerSettings.ComputerThinkTimeMs),
+                PlayerType.Offline  => new PlayerOffline(game, commandInvoker, mainCamera, highlighter, layerMask),
                 _ => null,
             };
         }
