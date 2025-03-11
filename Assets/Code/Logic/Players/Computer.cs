@@ -13,7 +13,7 @@ namespace Logic.Players
 {
     public class Computer : Player
     {
-        private enum ComputerSkillLevel
+        public enum ComputerSkillLevel
         {
             Ape = 0,
             Low = 5,
@@ -21,12 +21,9 @@ namespace Logic.Players
             High = 20,
         }
 
-        [Header("References")]
-        [SerializeField] private Board board;
-
-        [Header("Settings")]
-        [SerializeField] private ComputerSkillLevel skillLevel = ComputerSkillLevel.Medium;
-        [SerializeField] private int thinkTimeMs = 3000;
+        private readonly Board _board;
+        private readonly ComputerSkillLevel _skillLevel;
+        private readonly int _thinkTimeMs;
 
         // Stockfish
         private Process _process;
@@ -42,6 +39,23 @@ namespace Logic.Players
         private readonly TaskCompletionSource<bool> _isStockfishLoaded = new();
 
         private PieceType _promotion = PieceType.None;
+
+        public Computer(Game game, CommandInvoker commandInvoker, Board board, ComputerSkillLevel computerSkillLevel,
+            int thinkTimeMs)
+        :base(game, commandInvoker)
+        {
+            _board = board;
+            _skillLevel = computerSkillLevel;
+            _thinkTimeMs = thinkTimeMs;
+        }
+
+        public override async void Start()
+        {
+            StartStockfish();
+            await SetupStockfish();
+            await StartNewGame();
+            DeclareReady();
+        }
 
         public override Task<PieceType> RequestPromotedPiece()
         {
@@ -124,8 +138,8 @@ namespace Logic.Players
 
         private void GetSquaresAndPieceAndMakeMove(string moveFrom, string moveTo)
         {
-            Square moveFromSquare = board.GetSquare(moveFrom);
-            Square moveToSquare = board.GetSquare(moveTo);
+            Square moveFromSquare = _board.GetSquare(moveFrom);
+            Square moveToSquare = _board.GetSquare(moveTo);
 
             Piece movePiece = moveFromSquare.GetPiece();
             if (movePiece == null)
@@ -159,14 +173,6 @@ namespace Logic.Players
             }
         }
 
-        private async void Start()
-        {
-            StartStockfish();
-            await SetupStockfish();
-            await StartNewGame();
-            DeclareReady();
-        }
-
         private void StartStockfish()
         {
             _process = Process.Start(_startInfo);
@@ -184,8 +190,8 @@ namespace Logic.Players
             await PostCommand($"setoption name Threads value {logicalProcessorsCount/2}");
 
             // Set Skill Level
-            Debug.Log($"Skill Level = {skillLevel}");
-            await PostCommand($"setoption name Skill Level value {(int)skillLevel}");
+            Debug.Log($"Skill Level = {_skillLevel}");
+            await PostCommand($"setoption name Skill Level value {(int)_skillLevel}");
         }
 
         private async Task StartNewGame()
@@ -209,7 +215,7 @@ namespace Logic.Players
             Debug.Log(positionCommand);
             await PostCommand(positionCommand, token);
 
-            string goCommand = $"go movetime {thinkTimeMs}";
+            string goCommand = $"go movetime {_thinkTimeMs}";
             await PostCommand(goCommand, token);
 
             string output = await ReadAnswer("bestmove", token);

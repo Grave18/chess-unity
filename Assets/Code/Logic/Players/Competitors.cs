@@ -1,18 +1,25 @@
 ﻿using System.Threading.Tasks;
 using ChessBoard.Info;
-using ChessBoard.Pieces;
 using UnityEngine;
 
 namespace Logic.Players
 {
     public class Competitors : MonoBehaviour
     {
-        [Header("References")]
-        [SerializeField] private Game game;
-        [SerializeField] private Player playerWhite;
-        [SerializeField] private Player playerBlack;
-
+        private Game _game;
+        private Player _playerWhite;
+        private Player _playerBlack;
         private Player _currentPlayer;
+
+        public void Init(Game game, Player playerWhite, Player playerBlack)
+        {
+            _game = game;
+            _playerWhite = playerWhite;
+            _playerBlack = playerBlack;
+            _currentPlayer = _playerWhite;
+
+            SubscribeToEvents();
+        }
 
         public async Task<PieceType> RequestPromotedPiece()
         {
@@ -24,46 +31,27 @@ namespace Logic.Players
             _currentPlayer.SelectPromotedPiece(pieceType);
         }
 
-        private void Awake()
-        {
-            _currentPlayer = playerWhite;
-        }
-
-        private void OnEnable()
-        {
-            game.OnPlay += OnPlay;
-            game.OnPause += OnPause;
-            game.OnEndTurn += OnEndTurn;
-        }
-
-        private void OnDisable()
-        {
-            game.OnPlay -= OnPlay;
-            game.OnPause -= OnPause;
-            game.OnEndTurn -= OnEndTurn;
-        }
-
         private void OnPlay()
         {
-            if (game.CurrentTurnColor == PieceColor.White)
+            if (_game.CurrentTurnColor == PieceColor.White)
             {
-                playerWhite.AllowMakeMove();
+                _playerWhite.AllowMakeMove();
             }
-            else if (game.CurrentTurnColor == PieceColor.Black)
+            else if (_game.CurrentTurnColor == PieceColor.Black)
             {
-                playerBlack.AllowMakeMove();
+                _playerBlack.AllowMakeMove();
             }
         }
 
         private void OnPause()
         {
-            if (game.CurrentTurnColor == PieceColor.White)
+            if (_game.CurrentTurnColor == PieceColor.White)
             {
-                playerBlack.DisallowMakeMove();
+                _playerBlack.DisallowMakeMove();
             }
-            else if (game.CurrentTurnColor == PieceColor.Black)
+            else if (_game.CurrentTurnColor == PieceColor.Black)
             {
-                playerWhite.DisallowMakeMove();
+                _playerWhite.DisallowMakeMove();
             }
         }
 
@@ -71,23 +59,37 @@ namespace Logic.Players
         {
             // Prevent calculations after redo to computer turn
             // Real player not allow to start move if paused
-            if (game.State != GameState.Idle)
+            if (_game.State != GameState.Idle)
             {
                 return;
             }
 
-            if (game.CurrentTurnColor == PieceColor.White)
+            if (_game.CurrentTurnColor == PieceColor.White)
             {
-                _currentPlayer = playerWhite;
-                playerWhite.AllowMakeMove();
-                playerBlack.DisallowMakeMove();
+                _currentPlayer = _playerWhite;
+                _playerWhite.AllowMakeMove();
+                _playerBlack.DisallowMakeMove();
             }
-            else if (game.CurrentTurnColor == PieceColor.Black)
+            else if (_game.CurrentTurnColor == PieceColor.Black)
             {
-                _currentPlayer = playerBlack;
-                playerBlack.AllowMakeMove();
-                playerWhite.DisallowMakeMove();
+                _currentPlayer = _playerBlack;
+                _playerBlack.AllowMakeMove();
+                _playerWhite.DisallowMakeMove();
             }
+        }
+
+        private void SubscribeToEvents()
+        {
+            _game.OnPlay += OnPlay;
+            _game.OnPause += OnPause;
+            _game.OnEndTurn += OnEndTurn;
+        }
+
+        private void OnDestroy()
+        {
+            _game.OnPlay -= OnPlay;
+            _game.OnPause -= OnPause;
+            _game.OnEndTurn -= OnEndTurn;
         }
     }
 }

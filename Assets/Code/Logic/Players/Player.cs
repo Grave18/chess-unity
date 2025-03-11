@@ -1,18 +1,23 @@
 ﻿using System.Threading.Tasks;
 using ChessBoard.Info;
-using ChessBoard.Pieces;
-using UnityEngine;
 
 namespace Logic.Players
 {
-    public class Player : MonoBehaviour
+    public abstract class Player
     {
-        [Header("Player")]
-        [SerializeField] private Game game;
-        [SerializeField] private CommandInvoker commandInvoker;
+        protected Game Game { get; private set; }
+        protected CommandInvoker CommandInvoker { get; private set; }
 
-        protected Game Game => game;
-        protected CommandInvoker CommandInvoker => commandInvoker;
+        protected Player(Game game, CommandInvoker commandInvoker)
+        {
+            Game = game;
+            CommandInvoker = commandInvoker;
+        }
+
+        public virtual void Start()
+        {
+
+        }
 
         public virtual void AllowMakeMove()
         {

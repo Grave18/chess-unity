@@ -1,27 +1,38 @@
-using System;
+using System.Collections;
 using System.Threading.Tasks;
 using ChessBoard;
 using ChessBoard.Info;
 using ChessBoard.Pieces;
+using Highlighting;
 using UnityEngine;
 
 namespace Logic.Players
 {
     public class PlayerOffline : Player
     {
-        [Header("PlayerOffline")]
-        [SerializeField] private Camera mainCamera;
+        private readonly Camera _mainCamera;
+        private readonly Highlighter _highlighter;
+        private readonly LayerMask _layerMask;
 
-        [Space]
-        [SerializeField] private float maxDistance;
-        [SerializeField] private LayerMask layerMask;
-
-        public event Action OnClick;
-
-        public bool _isAllowMove;
+        private const float MaxDistance = 100;
+        private bool _isAllowMove;
 
         // Selected in Ui
         private TaskCompletionSource<PieceType> _pieceTypeCompletionSource = new();
+
+        public PlayerOffline(Game game, CommandInvoker commandInvoker, Camera mainCamera, Highlighter highlighter,
+            LayerMask layerMask)
+            :base(game, commandInvoker)
+        {
+            _highlighter = highlighter;
+            _mainCamera = mainCamera;
+            _layerMask = layerMask;
+        }
+
+        public override void Start()
+        {
+            Game.StartCoroutine(Update());
+        }
 
         public override async Task<PieceType> RequestPromotedPiece()
         {
@@ -44,27 +55,32 @@ namespace Logic.Players
             _isAllowMove = false;
         }
 
-        private void Update()
+        private IEnumerator Update()
         {
-            if(!_isAllowMove)
+            while(Application.isPlaying)
             {
-                return;
-            }
+                if(!_isAllowMove)
+                {
+                    yield return null;
+                }
 
-            // Cast ray from cursor
-            Vector3 mousePos = Input.mousePosition;
-            Ray ray = mainCamera.ScreenPointToRay(mousePos);
-            bool isHit = Physics.Raycast(ray, out var hit, maxDistance, layerMask);
-            Transform hitTransform = hit.transform;
+                // Cast ray from cursor
+                Vector3 mousePos = Input.mousePosition;
+                Ray ray = _mainCamera.ScreenPointToRay(mousePos);
+                bool isHit = Physics.Raycast(ray, out var hit, MaxDistance, _layerMask);
+                Transform hitTransform = hit.transform;
 
-            if (Input.GetButtonDown("Fire1") && Game.State == GameState.Idle)
-            {
-                Click(isHit, hitTransform);
-                OnClick?.Invoke();
-            }
-            else
-            {
-                Hover(isHit, hitTransform);
+                if (Input.GetButtonDown("Fire1") && Game.State == GameState.Idle)
+                {
+                    Click(isHit, hitTransform);
+                    _highlighter.UpdateHighlighting();
+                }
+                else
+                {
+                    Hover(isHit, hitTransform);
+                }
+
+                yield return null;
             }
         }
 
