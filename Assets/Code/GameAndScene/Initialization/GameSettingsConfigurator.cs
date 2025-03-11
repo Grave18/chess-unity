@@ -1,7 +1,7 @@
 ﻿using EditorCools;
 using UnityEngine;
 
-namespace GameAndScene
+namespace GameAndScene.Initialization
 {
     public class GameSettingsConfigurator : MonoBehaviour
     {

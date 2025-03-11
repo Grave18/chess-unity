@@ -1,4 +1,4 @@
-﻿namespace GameAndScene
+﻿namespace GameAndScene.Initialization
 {
     public enum PlayerType
     {

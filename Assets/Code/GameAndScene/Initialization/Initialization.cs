@@ -6,7 +6,7 @@ using Logic;
 using Logic.Players;
 using UnityEngine;
 
-namespace GameAndScene
+namespace GameAndScene.Initialization
 {
     public class Initialization : MonoBehaviour
     {

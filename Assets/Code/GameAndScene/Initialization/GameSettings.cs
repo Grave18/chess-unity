@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace GameAndScene
+namespace GameAndScene.Initialization
 {
     [System.Serializable]
     public class GameSettings
