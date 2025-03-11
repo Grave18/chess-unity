@@ -15,7 +15,7 @@ namespace Logic.CommandPattern
         private bool _previousIsFirstMove;
 
         public MoveCommand(Piece piece, Square moveToSquare, MoveInfo moveInfo, Game game, SeriesList seriesList)
-            : base(piece, piece.GetSquare(), moveToSquare, moveInfo.Is2SquaresPawnMove)
+            : base(piece, piece.GetSquare(), moveToSquare, moveInfo.EnPassantSquare)
         {
             _game = game;
             _seriesList = seriesList;

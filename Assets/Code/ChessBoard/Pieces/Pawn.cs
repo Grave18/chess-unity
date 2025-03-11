@@ -1,6 +1,5 @@
 ﻿using AlgebraicNotation;
 using ChessBoard.Info;
-using Logic.CommandPattern;
 using UnityEngine;
 
 namespace ChessBoard.Pieces
@@ -26,8 +25,10 @@ namespace ChessBoard.Pieces
                     break;
                 }
 
-                bool is2SquaresMove = offset.y == 2;
-                MoveSquares.Add(square, new MoveInfo(is2SquaresMove));
+                Square epSquare = offset.y == 2
+                    ? Game.GetSquareRel(pieceColor, currentSquare, new Vector2Int(0, 1))
+                    : null;
+                MoveSquares.Add(square, new MoveInfo(epSquare));
             }
 
             // Calculate Captures and defends

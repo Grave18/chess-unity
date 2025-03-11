@@ -10,16 +10,16 @@ namespace Logic.CommandPattern
         public Square MoveToSquare { get;}
         public string UciMove { get; protected set; }
         public bool IsUndoable { get;}
-        public bool Is2SquaresPawnMove { get; }
+        public Square EnPassantSquare { get; }
 
         public abstract Task Execute();
         public abstract Task Undo();
 
-        protected Command(Piece piece, Square from, Square to, bool is2SquaresPawnMove = false, bool isUndoable = true)
+        protected Command(Piece piece, Square from, Square to, Square enPassantSquare = null, bool isUndoable = true)
         {
             Piece = piece;
             MoveToSquare = to;
-            Is2SquaresPawnMove = is2SquaresPawnMove;
+            EnPassantSquare = enPassantSquare;
             IsUndoable = isUndoable;
 
             if (from != null && to != null)

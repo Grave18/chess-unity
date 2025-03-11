@@ -1,13 +1,13 @@
 ﻿using System.Threading.Tasks;
-using ChessBoard;
-using ChessBoard.Pieces;
+using ChessBoard.Info;
 
 namespace Logic.CommandPattern
 {
     /// Not real move. Just contains info about en passant
     public class FirstCommand : Command
     {
-        public FirstCommand(Piece pawn, Square toSquare) : base(pawn, from: null, toSquare, is2SquaresPawnMove: true, isUndoable: false)
+        public FirstCommand(EnPassantInfo enPassantInfo)
+            : base(enPassantInfo.Piece, from: null, to: null, enPassantInfo.Square, isUndoable: false)
         {
             // Empty because it's not real move
             UciMove = string.Empty;

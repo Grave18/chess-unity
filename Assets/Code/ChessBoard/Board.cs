@@ -264,7 +264,9 @@ namespace ChessBoard
                 // The (0, 1) to (0, -1) swapped because we find square for previous turn
                 Square pawnToSquare = GetSquareRel(_turnColor, epSquare, new Vector2Int(0, -1));
                 Piece pawn = pawnToSquare.GetPiece();
-                _commandInvoker.SetEnPassantInfo(pawn, pawnToSquare);
+                var enPassantInfo = new EnPassantInfo(pawn, epSquare);
+
+                _commandInvoker.SetEnPassantInfo(enPassantInfo);
             }
         }
 

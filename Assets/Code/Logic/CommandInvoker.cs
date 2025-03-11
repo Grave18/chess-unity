@@ -102,23 +102,18 @@ namespace Logic
         public EnPassantInfo GetEnPassantInfo()
         {
             Command command = _commandBuffer.LastCommand;
-            if (command is { Is2SquaresPawnMove: true })
+            if (command != null && command.EnPassantSquare != null)
             {
-                return new EnPassantInfo
-                {
-                    Piece = command.Piece,
-                    Square = game.GetSquareRel(command.Piece.GetPieceColor(), command.MoveToSquare,
-                        new Vector2Int(0, -1)),
-                };
+                return new EnPassantInfo(command.Piece, command.EnPassantSquare);
             }
 
             return null;
         }
 
         /// Set stub command what contains all info for en passant
-        public void SetEnPassantInfo(Piece pawn, Square toSquare)
+        public void SetEnPassantInfo(EnPassantInfo enPassantInfo)
         {
-            var firstCommand = new FirstCommand(pawn, toSquare);
+            var firstCommand = new FirstCommand(enPassantInfo);
             _commandBuffer.FirstCommand = firstCommand;
         }
 

@@ -4,7 +4,13 @@ namespace ChessBoard.Info
 {
     public class EnPassantInfo
     {
-        public Square Square { get; set; }
-        public Piece Piece { get; set; }
+        public Square Square { get;}
+        public Piece Piece { get; }
+
+        public EnPassantInfo(Piece piece, Square square)
+        {
+            Piece = piece;
+            Square = square;
+        }
     }
 }
