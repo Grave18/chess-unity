@@ -3081,7 +3081,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d113a29cac54de8bf71da9e0398460a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeMinutes: 5
+  timeMinutes: 10
 --- !u!4 &432417439 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8046962630147883797, guid: f39d1981e8c3c244fb4129f1387a5c3d,
@@ -10970,7 +10970,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f495c8e5734746ea8a363a9bcbfdccf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardPreset: {fileID: 11400000, guid: 4fd33a96fd69e564e82d8b28fe470161, type: 2}
+  boardPreset: {fileID: 11400000, guid: af4ece0b25c664542a2ac0399e11b0d5, type: 2}
   assetLabel:
     m_LabelString: ChessDay4
 --- !u!4 &1663133264
@@ -12240,12 +12240,12 @@ MonoBehaviour:
   gameSettings:
     <Player1Settings>k__BackingField:
       <Name>k__BackingField: Player1
-      <PlayerType>k__BackingField: 1
+      <PlayerType>k__BackingField: 0
       <ComputerSkillLevel>k__BackingField: 10
       <ComputerThinkTimeMs>k__BackingField: 1000
     <Player2Settings>k__BackingField:
       <Name>k__BackingField: Player2
-      <PlayerType>k__BackingField: 1
+      <PlayerType>k__BackingField: 0
       <ComputerSkillLevel>k__BackingField: 10
       <ComputerThinkTimeMs>k__BackingField: 1000
     <Fen>k__BackingField: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0

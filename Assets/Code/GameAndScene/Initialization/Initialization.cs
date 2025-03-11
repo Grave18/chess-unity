@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Ai;
 using AssetsAndResources;
 using ChessBoard;
 using Highlighting;
@@ -8,27 +9,30 @@ using UnityEngine;
 
 namespace GameAndScene.Initialization
 {
-    public class Initialization : MonoBehaviour
+    public sealed class Initialization : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] private Assets assets;
-        [SerializeField] private Board board;
         [SerializeField] private Game game;
+        [SerializeField] private Board board;
         [SerializeField] private CommandInvoker commandInvoker;
         [SerializeField] private Clock clock;
         [SerializeField] private UciString uciString;
         [SerializeField] private Competitors competitors;
         [SerializeField] private Highlighter highlighter;
-
         [SerializeField] private Camera mainCamera;
         [SerializeField] private LayerMask layerMask;
 
+        private Stockfish _stockfish;
+        private GameSettings _gameSettings;
+
         private async void Start()
         {
-            await Setup();
+            await Initialize();
+            game.StartGame();
         }
 
-        private async Task Setup()
+        private async Task Initialize()
         {
             GameObject[] prefabs = await assets.LoadPrefabs();
             ParsedPreset parsedPreset = assets.GetParsedPreset();
@@ -41,17 +45,16 @@ namespace GameAndScene.Initialization
             highlighter.Init(game);
 
             InitPlayers();
-
-            game.StartGame();
         }
 
         private void InitPlayers()
         {
-            GameSettings gameSettings = LoadGameSettings();
+            bool isGameSettingsLoaded = LoadGameSettings();
 
-            if (gameSettings != null)
+            if (isGameSettingsLoaded)
             {
-                ConfigurePlayers(gameSettings);
+                ConfigureAiIfNeeded();
+                ConfigurePlayers();
             }
             else
             {
@@ -59,17 +62,28 @@ namespace GameAndScene.Initialization
             }
         }
 
-        private static GameSettings LoadGameSettings()
+        private bool LoadGameSettings()
         {
             string json = PlayerPrefs.GetString(GameSettings.Key, string.Empty);
-            var gameSettings = JsonUtility.FromJson<GameSettings>(json);
-            return gameSettings;
+            _gameSettings = JsonUtility.FromJson<GameSettings>(json);
+
+            return _gameSettings != null;
         }
 
-        private void ConfigurePlayers(GameSettings gameSettings)
+        private void ConfigureAiIfNeeded()
         {
-            Player playerWhite = GetPlayer(gameSettings.Player1Settings);
-            Player playerBlack = GetPlayer(gameSettings.Player2Settings);
+            if (_gameSettings.Player1Settings.PlayerType == PlayerType.Computer
+                || _gameSettings.Player2Settings.PlayerType == PlayerType.Computer)
+            {
+                _stockfish = new Stockfish(board, game, commandInvoker);
+                _stockfish?.Start();
+            }
+        }
+
+        private void ConfigurePlayers()
+        {
+            Player playerWhite = GetPlayer(_gameSettings.Player1Settings);
+            Player playerBlack = GetPlayer(_gameSettings.Player2Settings);
 
             competitors.Init(game, playerWhite, playerBlack);
 
@@ -81,10 +95,15 @@ namespace GameAndScene.Initialization
         {
             return playerSettings.PlayerType switch
             {
-                PlayerType.Computer => new Computer(game, commandInvoker, board, playerSettings.ComputerSkillLevel, playerSettings.ComputerThinkTimeMs),
-                PlayerType.Offline  => new PlayerOffline(game, commandInvoker, mainCamera, highlighter, layerMask),
+                PlayerType.Computer => new Computer(game, commandInvoker, playerSettings, _stockfish),
+                PlayerType.Offline  => new PlayerOffline(game, commandInvoker, mainCamera, highlighter, layerMask, playerSettings),
                 _ => null,
             };
+        }
+
+        private void OnDestroy()
+        {
+            _stockfish.Dispose();
         }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -93,7 +112,7 @@ namespace GameAndScene.Initialization
         {
             if (Input.GetKeyDown(KeyCode.L))
             {
-                _ = Setup();
+                _ = Initialize();
             }
             else if (Input.GetKeyDown(KeyCode.U))
             {

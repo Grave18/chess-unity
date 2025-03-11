@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ChessBoard;
 using ChessBoard.Info;
 using ChessBoard.Pieces;
+using GameAndScene.Initialization;
 using Highlighting;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ namespace Logic.Players
         private TaskCompletionSource<PieceType> _pieceTypeCompletionSource = new();
 
         public PlayerOffline(Game game, CommandInvoker commandInvoker, Camera mainCamera, Highlighter highlighter,
-            LayerMask layerMask)
+            LayerMask layerMask, PlayerSettings playerSettings)
             :base(game, commandInvoker)
         {
             _highlighter = highlighter;

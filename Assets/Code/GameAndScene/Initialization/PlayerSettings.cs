@@ -1,4 +1,4 @@
-﻿using Logic.Players;
+﻿using Ai;
 using UnityEngine;
 
 namespace GameAndScene.Initialization
@@ -13,7 +13,7 @@ namespace GameAndScene.Initialization
         public PlayerType PlayerType { get; set; } = PlayerType.Offline;
 
         [field: SerializeField]
-        public Computer.ComputerSkillLevel ComputerSkillLevel { get; set; } = Computer.ComputerSkillLevel.Medium;
+        public ComputerSkillLevel ComputerSkillLevel { get; set; } = ComputerSkillLevel.Medium;
 
         [field: SerializeField]
         public int ComputerThinkTimeMs { get; set; } = 1000;
