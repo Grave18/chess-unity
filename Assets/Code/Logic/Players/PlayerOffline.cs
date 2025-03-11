@@ -67,12 +67,19 @@ namespace Logic.Players
                 // Cast ray from cursor
                 Vector3 mousePos = Input.mousePosition;
                 Ray ray = _mainCamera.ScreenPointToRay(mousePos);
-                bool isHit = Physics.Raycast(ray, out var hit, MaxDistance, _layerMask);
+                bool isHit = Physics.Raycast(ray, out RaycastHit hit, MaxDistance, _layerMask);
                 Transform hitTransform = hit.transform;
 
                 if (Input.GetButtonDown("Fire1") && Game.State == GameState.Idle)
                 {
-                    Click(isHit, hitTransform);
+                    ISelectable selectable = null;
+
+                    if (hitTransform != null)
+                    {
+                        hitTransform.TryGetComponent(out selectable);
+                    }
+
+                    Click(selectable);
                     _highlighter.UpdateHighlighting();
                 }
                 else
@@ -84,10 +91,10 @@ namespace Logic.Players
             }
         }
 
-        private void Click(bool isHit, Transform hitTransform)
+        private void Click(ISelectable selectable)
         {
-            // Deselect if not hit anything or clicked on already selected
-            if (IsHitNothingOrAlreadySelected(isHit, hitTransform, out ISelectable selectable))
+            // Deselect if not hit anything
+            if (selectable == null)
             {
                 DeselectCurrent();
                 return;
@@ -113,29 +120,19 @@ namespace Logic.Players
             if (piece.CanMoveTo(moveToSquare, out MoveInfo moveInfo))
             {
                 _ = CommandInvoker.MoveTo(piece, moveToSquare, moveInfo);
-                DeselectCurrent();
             }
             // Castling
             else if (piece is King king && king.CanCastlingAt(moveToSquare, out CastlingInfo castlingInfo))
             {
                 _ = CommandInvoker.Castling(king, moveToSquare, castlingInfo.Rook, castlingInfo.RookSquare, castlingInfo.NotationTurnType);
-                DeselectCurrent();
             }
             // Eat
             else if (piece.CanEatAt(moveToSquare, out CaptureInfo captureInfo))
             {
                 _ = CommandInvoker.EatAt(piece, moveToSquare, captureInfo);
-                DeselectCurrent();
             }
-        }
 
-        private bool IsHitNothingOrAlreadySelected(bool isHit, Transform hitTransform, out ISelectable selectable)
-        {
-            selectable = null;
-
-            return !isHit
-                   || !hitTransform.TryGetComponent(out selectable)
-                   || selectable.IsEqual(Game.Selected);
+            DeselectCurrent();
         }
 
         private void Select(ISelectable selectable)
