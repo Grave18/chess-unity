@@ -231,19 +231,38 @@ namespace Logic
             foreach (Piece piece in pieces)
             {
                 piece.CalculateMovesAndCaptures();
+                FillUnderAttackSquaresForPiece(piece, underAttackSquares);
+            }
 
+            return underAttackSquares;
+        }
+
+        private static void FillUnderAttackSquaresForPiece(Piece piece, HashSet<Square> underAttackSquares)
+        {
+            // Pawn under attack
+            if (piece is Pawn pawn)
+            {
+                var attackSquares = new List<Square>(pawn.UnderAttackSquares);
+                foreach (Square underAttackSquare in attackSquares)
+                {
+                    underAttackSquares.Add(underAttackSquare);
+                }
+            }
+            // Other pieces under attack
+            else
+            {
                 var moveSquares = new List<Square>(piece.MoveSquares.Keys);
                 foreach (Square moveSquare in moveSquares)
                 {
                     underAttackSquares.Add(moveSquare);
                 }
-                foreach (Square defendSquare in piece.DefendSquares)
-                {
-                    underAttackSquares.Add(defendSquare);
-                }
             }
 
-            return underAttackSquares;
+            // All pieces defends
+            foreach (Square defendSquare in piece.DefendSquares)
+            {
+                underAttackSquares.Add(defendSquare);
+            }
         }
 
         private CheckType CalculateCheck(HashSet<Piece> pieces)

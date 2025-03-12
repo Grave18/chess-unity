@@ -1,4 +1,5 @@
-﻿using AlgebraicNotation;
+﻿using System.Collections.Generic;
+using AlgebraicNotation;
 using ChessBoard.Info;
 using UnityEngine;
 
@@ -11,8 +12,13 @@ namespace ChessBoard.Pieces
         [SerializeField] private Vector2Int[] moves;
         [SerializeField] private Vector2Int[] eat;
 
+        /// Needed because move and under attack squares is different for Pawn
+        public List<Square> UnderAttackSquares { get; } = new();
+
         protected override void CalculateMovesAndCapturesInternal()
         {
+            UnderAttackSquares.Clear();
+
             Vector2Int[] currentMoves = IsFirstMove ? movesFirstMove : moves;
 
             // Calculate moves
@@ -42,6 +48,7 @@ namespace ChessBoard.Pieces
                 }
                 else
                 {
+                    UnderAttackSquares.Add(square);
                     CalculateEnPassantCapture(square);
                 }
             }
