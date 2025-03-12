@@ -13,5 +13,14 @@ namespace GameAndScene.Initialization
             string json = JsonUtility.ToJson(gameSettings, prettyPrint: true);
             PlayerPrefs.SetString(GameSettings.Key, json);
         }
+
+#if UNITY_EDITOR
+
+        private void OnValidate()
+        {
+            Save();
+        }
+
+#endif
     }
 }

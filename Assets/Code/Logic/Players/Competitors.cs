@@ -21,6 +21,18 @@ namespace Logic.Players
             SubscribeToEvents();
         }
 
+        public void ChangePlayers(Player playerWhite, Player playerBlack)
+        {
+            _playerWhite.Stop();
+            _playerWhite.Stop();
+            _playerWhite = playerWhite;
+            _playerBlack = playerBlack;
+            _playerWhite.Start();
+            _playerWhite.Start();
+
+            OnEndTurn();
+        }
+
         public async Task<PieceType> RequestPromotedPiece()
         {
             return await _currentPlayer.RequestPromotedPiece();

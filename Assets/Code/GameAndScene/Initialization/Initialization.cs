@@ -2,6 +2,7 @@
 using Ai;
 using AssetsAndResources;
 using ChessBoard;
+using EditorCools;
 using Highlighting;
 using Logic;
 using Logic.Players;
@@ -23,8 +24,8 @@ namespace GameAndScene.Initialization
         [SerializeField] private Camera mainCamera;
         [SerializeField] private LayerMask layerMask;
 
+        [SerializeField] private GameSettings gameSettings;
         private Stockfish _stockfish;
-        private GameSettings _gameSettings;
 
         private async void Start()
         {
@@ -65,25 +66,31 @@ namespace GameAndScene.Initialization
         private bool LoadGameSettings()
         {
             string json = PlayerPrefs.GetString(GameSettings.Key, string.Empty);
-            _gameSettings = JsonUtility.FromJson<GameSettings>(json);
+            gameSettings = JsonUtility.FromJson<GameSettings>(json);
 
-            return _gameSettings != null;
+            return gameSettings != null;
         }
 
         private void ConfigureAiIfNeeded()
         {
-            if (_gameSettings.Player1Settings.PlayerType == PlayerType.Computer
-                || _gameSettings.Player2Settings.PlayerType == PlayerType.Computer)
+            if (IsNeedToConfigureAi())
             {
                 _stockfish = new Stockfish(board, game, commandInvoker);
                 _stockfish?.Start();
             }
         }
 
+        private bool IsNeedToConfigureAi()
+        {
+            return _stockfish == null
+                   && (gameSettings.Player1Settings.PlayerType == PlayerType.Computer
+                       || gameSettings.Player2Settings.PlayerType == PlayerType.Computer);
+        }
+
         private void ConfigurePlayers()
         {
-            Player playerWhite = GetPlayer(_gameSettings.Player1Settings);
-            Player playerBlack = GetPlayer(_gameSettings.Player2Settings);
+            Player playerWhite = GetPlayer(gameSettings.Player1Settings);
+            Player playerBlack = GetPlayer(gameSettings.Player2Settings);
 
             competitors.Init(game, playerWhite, playerBlack);
 
@@ -103,10 +110,21 @@ namespace GameAndScene.Initialization
 
         private void OnDestroy()
         {
-            _stockfish.Dispose();
+            _stockfish?.Dispose();
         }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+
+        [Button(space: 10)]
+        private void UpdatePlayers()
+        {
+            ConfigureAiIfNeeded();
+
+            Player playerWhite = GetPlayer(gameSettings.Player1Settings);
+            Player playerBlack = GetPlayer(gameSettings.Player2Settings);
+
+            competitors.ChangePlayers(playerWhite, playerBlack);
+        }
 
         private void Update()
         {

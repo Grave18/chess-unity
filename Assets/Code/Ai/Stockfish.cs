@@ -42,7 +42,7 @@ namespace Ai
 
         public void Dispose()
         {
-            _process.Dispose();
+            _process?.Dispose();
         }
 
         public async Task Start()

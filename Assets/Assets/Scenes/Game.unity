@@ -5503,8 +5503,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   assets: {fileID: 1663133263}
-  board: {fileID: 1190829613}
   game: {fileID: 1216111693}
+  board: {fileID: 1190829613}
   commandInvoker: {fileID: 1604880651}
   clock: {fileID: 428172018}
   uciString: {fileID: 1300988198}
@@ -5514,6 +5514,19 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 192
+  gameSettings:
+    <Player1Settings>k__BackingField:
+      <Name>k__BackingField: Player
+      <PlayerType>k__BackingField: 1
+      <ComputerSkillLevel>k__BackingField: 10
+      <ComputerThinkTimeMs>k__BackingField: 1000
+    <Player2Settings>k__BackingField:
+      <Name>k__BackingField: Player
+      <PlayerType>k__BackingField: 1
+      <ComputerSkillLevel>k__BackingField: 10
+      <ComputerThinkTimeMs>k__BackingField: 1000
+    <Fen>k__BackingField: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0
+      1
 --- !u!4 &853249565
 Transform:
   m_ObjectHideFlags: 0
@@ -10970,7 +10983,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f495c8e5734746ea8a363a9bcbfdccf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardPreset: {fileID: 11400000, guid: af4ece0b25c664542a2ac0399e11b0d5, type: 2}
+  boardPreset: {fileID: 11400000, guid: 8e73e899adff49b49baa21c9b40df8ab, type: 2}
   assetLabel:
     m_LabelString: ChessDay4
 --- !u!4 &1663133264
@@ -12240,12 +12253,12 @@ MonoBehaviour:
   gameSettings:
     <Player1Settings>k__BackingField:
       <Name>k__BackingField: Player1
-      <PlayerType>k__BackingField: 0
+      <PlayerType>k__BackingField: 1
       <ComputerSkillLevel>k__BackingField: 10
       <ComputerThinkTimeMs>k__BackingField: 1000
     <Player2Settings>k__BackingField:
       <Name>k__BackingField: Player2
-      <PlayerType>k__BackingField: 0
+      <PlayerType>k__BackingField: 1
       <ComputerSkillLevel>k__BackingField: 10
       <ComputerThinkTimeMs>k__BackingField: 1000
     <Fen>k__BackingField: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0
@@ -13631,6 +13644,7 @@ SceneRoots:
   - {fileID: 1783972075}
   - {fileID: 2079691758}
   - {fileID: 1824123378}
+  - {fileID: 1866814439}
   - {fileID: 1110215395}
   - {fileID: 853249565}
   - {fileID: 1663133264}
@@ -13639,6 +13653,5 @@ SceneRoots:
   - {fileID: 1604880652}
   - {fileID: 428172017}
   - {fileID: 1300988199}
-  - {fileID: 1866814439}
   - {fileID: 1739655009}
   - {fileID: 1544682201}

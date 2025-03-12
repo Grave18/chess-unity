@@ -19,6 +19,11 @@ namespace Logic.Players
 
         }
 
+        public virtual void Stop()
+        {
+
+        }
+
         public virtual void AllowMakeMove()
         {
 

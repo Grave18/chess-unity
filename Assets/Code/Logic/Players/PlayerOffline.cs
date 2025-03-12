@@ -30,9 +30,17 @@ namespace Logic.Players
             _layerMask = layerMask;
         }
 
+        private IEnumerator _coroutine;
+
         public override void Start()
         {
-            Game.StartCoroutine(Update());
+            _coroutine = Update();
+            Game.StartCoroutine(_coroutine);
+        }
+
+        public override void Stop()
+        {
+            Game.StopCoroutine(_coroutine);
         }
 
         public override async Task<PieceType> RequestPromotedPiece()
