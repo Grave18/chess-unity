@@ -9,8 +9,7 @@ namespace Logic.CommandPattern
         public FirstCommand(EnPassantInfo enPassantInfo)
             : base(enPassantInfo.Piece, from: null, to: null, enPassantInfo.Square, isUndoable: false)
         {
-            // Empty because it's not real move
-            UciMove = string.Empty;
+
         }
 
         public override Task Execute()

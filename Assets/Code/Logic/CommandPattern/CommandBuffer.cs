@@ -88,7 +88,7 @@ namespace Logic.CommandPattern
             sb.Append("moves ");
             for (int i = 0; i < CurrentLength; i++)
             {
-                sb.Append(_commands[i].UciMove);
+                sb.Append(_commands[i].GetUciMove());
                 sb.Append(' ');
             }
 

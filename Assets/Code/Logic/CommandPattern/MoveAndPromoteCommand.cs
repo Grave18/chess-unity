@@ -8,7 +8,6 @@ namespace Logic.CommandPattern
     public class MoveAndPromoteCommand : Command
     {
         private Piece _backupPawn;
-        private Piece _promotedPiece;
         private readonly Game _game;
         private readonly Board _board;
         private readonly SeriesList _seriesList;
@@ -34,14 +33,14 @@ namespace Logic.CommandPattern
             await Piece.MoveToAsync(MoveToSquare);
 
             // Get promoted piece
-            if(_promotedPiece == null)
+            if(PromotedPiece == null)
             {
-                (_promotedPiece, _) = await _board.GetPieceFromSelectorAsync(Piece.GetPieceColor(), MoveToSquare);
+                (PromotedPiece, _) = await _board.GetPieceFromSelectorAsync(Piece.GetPieceColor(), MoveToSquare);
             }
             else
             {
-               _board.AddPiece(_promotedPiece);
-               _promotedPiece.gameObject.SetActive(true);
+               _board.AddPiece(PromotedPiece);
+               PromotedPiece.gameObject.SetActive(true);
             }
 
             // Backup and hide pawn
@@ -50,7 +49,7 @@ namespace Logic.CommandPattern
             _backupPawn.gameObject.SetActive(false);
 
             // Substitute pawn to promoted piece
-            Piece = _promotedPiece;
+            Piece = PromotedPiece;
             _board.AddPiece(Piece);
 
             // _seriesList.AddTurn(_backupPawn, _moveToSquare, _previousTurnColor, NotationTurnType.Move, _game.CheckType, _promotedPiece);
@@ -64,8 +63,8 @@ namespace Logic.CommandPattern
             }
 
             // Remove promoted piece
-            _board.RemovePiece(_promotedPiece);
-            _promotedPiece.gameObject.SetActive(false);
+            _board.RemovePiece(PromotedPiece);
+            PromotedPiece.gameObject.SetActive(false);
 
             // Add pawn and go back
             _board.AddPiece(_backupPawn);
