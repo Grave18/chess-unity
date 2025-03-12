@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace AssetsAndResources
 {
@@ -6,8 +7,9 @@ namespace AssetsAndResources
     public class BoardPreset : ScriptableObject
     {
         [TextArea(8, 8)]
-        [SerializeField] private string preset;
+        [FormerlySerializedAs("preset")]
+        [SerializeField] private string fen;
 
-        public string Preset => preset;
+        public string Fen => fen;
     }
 }

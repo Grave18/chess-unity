@@ -18,6 +18,7 @@ namespace Ai
         private readonly Board _board;
         private readonly Game _game;
         private readonly CommandInvoker _commandInvoker;
+        private readonly string _fen;
 
         private PlayerSettings _playerSettings;
 
@@ -34,11 +35,12 @@ namespace Ai
         };
         private readonly TaskCompletionSource<bool> _isStockfishLoaded = new();
 
-        public Stockfish(Board board, Game game, CommandInvoker commandInvoker)
+        public Stockfish(Board board, Game game, CommandInvoker commandInvoker, string fen)
         {
             _board = board;
             _game = game;
             _commandInvoker = commandInvoker;
+            _fen = fen;
         }
 
         public void Dispose()
@@ -57,7 +59,7 @@ namespace Ai
                 state = "<color=magenta>Stockfish state:</color>\n" + state;
                 Debug.Log(state);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Debug.Log("ShowState aborted");
             }
@@ -260,16 +262,15 @@ namespace Ai
 
         private async Task<string> CalculateMove(CancellationToken token)
         {
-            Debug.Log(string.Empty);
-            Debug.Log($"<color=green>{_playerSettings.Name}(Computer) calculating move...</color>");
+            Debug.Log(">");
+            Debug.Log($"<color=green>{_playerSettings.Name}(Computer {_playerSettings.ComputerSkillLevel}) calculating move...</color>");
 
             // Set start position
-            string positionCommand = $"position startpos {_commandInvoker.GetUciMoves()}";
+            string positionCommand = $"position fen {_fen} {_commandInvoker.GetUciMoves()}";
             Debug.Log(positionCommand);
             await PostCommand(positionCommand, token);
 
             // Set skill Level
-            Debug.Log($"Skill Level = {_playerSettings.ComputerSkillLevel}");
             await PostCommand($"setoption name Skill Level value {(int)_playerSettings.ComputerSkillLevel}", token);
 
             // Set command with time

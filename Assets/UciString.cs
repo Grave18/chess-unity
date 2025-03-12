@@ -29,8 +29,8 @@ public class UciString : MonoBehaviour
     {
         string uci = Get();
 
-        Debug.Log(uci);
-        Debug.Log($". Is identical with preset: {uci == _assets.BoardPreset.Preset}");
+        Debug.Log($"<color=gray>{uci}</color>");
+        Debug.Log($"Is identical with preset: {uci == _assets.BoardPreset.Fen}");
     }
 
     public string Get()

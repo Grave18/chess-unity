@@ -75,7 +75,7 @@ namespace GameAndScene.Initialization
         {
             if (IsNeedToConfigureAi())
             {
-                _stockfish = new Stockfish(board, game, commandInvoker);
+                _stockfish = new Stockfish(board, game, commandInvoker, assets.BoardPreset.Fen);
                 _stockfish?.Start();
             }
         }

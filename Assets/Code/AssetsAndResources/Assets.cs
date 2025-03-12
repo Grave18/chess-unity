@@ -30,7 +30,7 @@ namespace AssetsAndResources
 
         public ParsedPreset GetParsedPreset()
         {
-            string[] splitPreset = boardPreset.Preset.Split(' ');
+            string[] splitPreset = boardPreset.Fen.Split(' ');
 
             var parsedPreset = new ParsedPreset
             {
