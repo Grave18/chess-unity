@@ -126,6 +126,12 @@ namespace GameAndScene.Initialization
             competitors.ChangePlayers(playerWhite, playerBlack);
         }
 
+        [Button(space: 10)]
+        private void ShowStockfishState()
+        {
+            _ = _stockfish?.ShowState();
+        }
+
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.L))

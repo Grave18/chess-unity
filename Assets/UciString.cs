@@ -28,7 +28,9 @@ public class UciString : MonoBehaviour
     public void ShowUci()
     {
         string uci = Get();
-        Debug.Log(uci + $". Is identical with preset: {uci == _assets.BoardPreset.Preset}");
+
+        Debug.Log(uci);
+        Debug.Log($". Is identical with preset: {uci == _assets.BoardPreset.Preset}");
     }
 
     public string Get()

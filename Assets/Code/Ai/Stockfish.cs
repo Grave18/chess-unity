@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ChessBoard;
@@ -43,6 +44,23 @@ namespace Ai
         public void Dispose()
         {
             _process?.Dispose();
+        }
+
+        public async Task ShowState()
+        {
+            CancellationToken exitCancellationToken = Application.exitCancellationToken;
+
+            try
+            {
+                await PostCommand("d", exitCancellationToken);
+                string state = await ReadAnswer("Checkers:", exitCancellationToken);
+                state = "<color=magenta>Stockfish state:</color>\n" + state;
+                Debug.Log(state);
+            }
+            catch (Exception e)
+            {
+                Debug.Log("ShowState aborted");
+            }
         }
 
         public async Task Start()
@@ -99,7 +117,12 @@ namespace Ai
             // Extract move form string
             moveFrom = move.Substring(9, 2);
             moveTo = move.Substring(11, 2);
-            promotion = move.Substring(13, 1);
+
+            promotion = " ";
+            if(move.Length >= 14)
+            {
+                promotion = move.Substring(13, 1);
+            }
 
             // Log
             string message = $"Best Move: <color=cyan>{moveFrom}{moveTo}</color>";
@@ -138,7 +161,7 @@ namespace Ai
         {
             // Enable uci mode
             await PostCommand("uci");
-            await ReadAnswer("uciok", Application.exitCancellationToken);
+            await FindAnswer("uciok", Application.exitCancellationToken);
 
             // Set Threads
             int logicalProcessorsCount = SystemInfo.processorCount;
@@ -150,7 +173,7 @@ namespace Ai
         {
             await PostCommand("ucinewgame");
             await PostCommand("isready");
-            await ReadAnswer("readyok", Application.exitCancellationToken);
+            await FindAnswer("readyok", Application.exitCancellationToken);
         }
 
         private void DeclareReady()
@@ -159,7 +182,8 @@ namespace Ai
             _isStockfishLoaded.SetResult(true);
         }
 
-        private async Task<string> ReadAnswer(string find, CancellationToken token)
+        /// Find string what contains find
+        private async Task<string> FindAnswer(string find, CancellationToken token)
         {
             if (_process is { HasExited: true })
             {
@@ -182,6 +206,34 @@ namespace Ai
             }
 
             return output;
+        }
+
+        /// Read all output
+        private async Task<string> ReadAnswer(string find, CancellationToken token)
+        {
+            if (_process is { HasExited: true })
+            {
+                Debug.Log("Can not read. Process is null or exited");
+                return null;
+            }
+
+            StreamReader reader = _process.StandardOutput;
+
+            string output = string.Empty;
+            StringBuilder sb = new();
+            while (!token.IsCancellationRequested && !output.Contains(find))
+            {
+                await Task.Delay(25, token);
+                output = await reader.ReadLineAsync();
+                sb.AppendLine(output);
+            }
+
+            if (token.IsCancellationRequested)
+            {
+                throw new TaskCanceledException();
+            }
+
+            return sb.ToString();
         }
 
         private async Task PostCommand(string command)
@@ -225,7 +277,7 @@ namespace Ai
             await PostCommand(goCommand, token);
 
             // Get answer
-            string output = await ReadAnswer("bestmove", token);
+            string output = await FindAnswer("bestmove", token);
 
             if (token.IsCancellationRequested)
             {
