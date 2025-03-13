@@ -33,7 +33,7 @@ namespace Ai
             RedirectStandardError = true,
             CreateNoWindow = true,
         };
-        private readonly TaskCompletionSource<bool> _isStockfishLoaded = new();
+        private readonly TaskCompletionSource<bool> _isAiLoaded = new();
 
         public Stockfish(Board board, Game game, CommandInvoker commandInvoker, string fen)
         {
@@ -50,19 +50,29 @@ namespace Ai
 
         public async Task ShowState()
         {
-            CancellationToken exitCancellationToken = Application.exitCancellationToken;
-
             try
             {
-                await PostCommand("d", exitCancellationToken);
-                string state = await ReadAnswer("Checkers:", exitCancellationToken);
-                state = "<color=magenta>Stockfish state:</color>\n" + state;
-                Debug.Log(state);
+                string state = await GetState();
+                LogState(state);
             }
             catch (Exception)
             {
                 Debug.Log("ShowState aborted");
             }
+        }
+
+        private async Task<string> GetState()
+        {
+            CancellationToken exitCancellationToken = Application.exitCancellationToken;
+            await PostCommand("d", exitCancellationToken);
+            string state = await ReadAnswer("Checkers:", exitCancellationToken);
+            return state;
+        }
+
+        private static void LogState(string state)
+        {
+            state = "<color=magenta>Stockfish state:</color>\n" + state;
+            Debug.Log(state);
         }
 
         public async Task Start()
@@ -71,87 +81,6 @@ namespace Ai
             await SetupStockfish();
             await StartNewGame();
             DeclareReady();
-        }
-
-        public async Task<AiCalculationsResult> GetAiResult(PlayerSettings playerSettings)
-        {
-            _playerSettings = playerSettings;
-
-            bool isLoaded = await _isStockfishLoaded.Task;
-            if (!isLoaded) return null;
-
-            string moveString = await GetMoveString();
-            if (moveString == null) return null;
-
-            ExtractSquareAddressesAndPromotionFrom(moveString, out string moveFrom, out string moveTo, out string promotion);
-
-            return GetAICalculationsResult(moveFrom, moveTo, promotion);
-        }
-
-        private async Task<string> GetMoveString()
-        {
-            _game.StartThink();
-
-            string move = null;
-            try
-            {
-                move = await CalculateMove(Application.exitCancellationToken);
-            }
-            catch (TaskCanceledException)
-            {
-                Debug.Log("Move was canceled");
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError(ex.Message);
-            }
-            finally
-            {
-                _game.EndThink();
-            }
-
-            return move;
-        }
-
-        private static void ExtractSquareAddressesAndPromotionFrom(string move,
-            out string moveFrom, out string moveTo, out string promotion)
-        {
-            // Extract move form string
-            moveFrom = move.Substring(9, 2);
-            moveTo = move.Substring(11, 2);
-
-            promotion = " ";
-            if(move.Length >= 14)
-            {
-                promotion = move.Substring(13, 1);
-            }
-
-            // Log
-            string message = $"Best Move: <color=cyan>{moveFrom}{moveTo}</color>";
-            if (promotion != " ")
-            {
-                message += $". Promotion to: {promotion}";
-            }
-
-            Debug.Log(message);
-        }
-
-        private AiCalculationsResult GetAICalculationsResult(string moveFrom, string moveTo, string promotion)
-        {
-            Square moveFromSquare = _board.GetSquare(moveFrom);
-            Square moveToSquare = _board.GetSquare(moveTo);
-
-            PieceType promotionType = promotion switch
-            {
-                "q" => PieceType.Queen,
-                "r" => PieceType.Rook,
-                "b" => PieceType.Bishop,
-                "n" => PieceType.Knight,
-                _ => PieceType.None,
-            };
-
-            var aiCalculationsResult = new AiCalculationsResult(moveFromSquare, moveToSquare, promotionType);
-            return aiCalculationsResult;
         }
 
         private void StartStockfish()
@@ -181,7 +110,149 @@ namespace Ai
         private void DeclareReady()
         {
             Debug.Log("Computer is ready");
-            _isStockfishLoaded.SetResult(true);
+            _isAiLoaded.SetResult(true);
+        }
+
+        public async Task<AiCalculationsResult> GetAiResult(PlayerSettings playerSettings)
+        {
+            _playerSettings = playerSettings;
+
+            if (await IsAiFailedToLoad())
+            {
+                Debug.LogError("Ai failed to load");
+                return null;
+            }
+
+            string moveString = await GetMoveString();
+            if (moveString == null) return null;
+
+            if (IsNoMoreMoves(moveString))
+            {
+                LogNoMoreMoves(moveString);
+                return null;
+            }
+
+            ExtractSquareAddressesAndPromotionFrom(moveString, out string moveFrom, out string moveTo, out string promotion);
+
+            return GetAICalculationsResult(moveFrom, moveTo, promotion);
+        }
+
+        private async Task<bool> IsAiFailedToLoad()
+        {
+            return !await _isAiLoaded.Task;
+        }
+
+        private static bool IsNoMoreMoves(string moveString)
+        {
+            return moveString.Contains("(none)");
+        }
+
+        private static void LogNoMoreMoves(string moveString)
+        {
+            string message = "<color=cyan>No more moves</color>";
+            message += $"\n<color=gray>{moveString}</color>";
+            Debug.Log(message);
+        }
+
+        private async Task<string> GetMoveString()
+        {
+            _game.StartThink();
+
+            string move = null;
+            try
+            {
+                move = await CalculateMove(Application.exitCancellationToken);
+            }
+            catch (TaskCanceledException)
+            {
+                Debug.Log("Move was canceled");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(ex.Message);
+            }
+            finally
+            {
+                _game.EndThink();
+            }
+
+            return move;
+        }
+
+        private async Task<string> CalculateMove(CancellationToken token)
+        {
+            string name = $"{_playerSettings.Name}(Computer {_playerSettings.ComputerSkillLevel})";
+
+            Debug.Log("\u21bb"); // ↻
+            Debug.Log($"<color=green>{name} calculating move...</color>");
+
+            // Set start position
+            string positionCommand = $"position fen {_fen} {_commandInvoker.GetUciMoves()}";
+            Debug.Log(positionCommand);
+            await PostCommand(positionCommand, token);
+
+            // Set skill Level
+            await PostCommand($"setoption name Skill Level value {(int)_playerSettings.ComputerSkillLevel}", token);
+
+            // Set command with time
+            string goCommand = $"go movetime {_playerSettings.ComputerThinkTimeMs}";
+            await PostCommand(goCommand, token);
+
+            // Get answer
+            string output = await FindAnswer("bestmove", token);
+
+            if (token.IsCancellationRequested)
+            {
+                throw new TaskCanceledException();
+            }
+
+            Debug.Log($"<color=green>{name} end calculate move</color>");
+
+            return output;
+        }
+
+        private static void ExtractSquareAddressesAndPromotionFrom(string move,
+            out string moveFrom, out string moveTo, out string promotion)
+        {
+            // Extract move form string
+            moveFrom = move.Substring(9, 2);
+            moveTo = move.Substring(11, 2);
+
+            promotion = " ";
+            if(move.Length >= 14)
+            {
+                promotion = move.Substring(13, 1);
+            }
+
+            LogMove(move, moveFrom, moveTo, promotion);
+        }
+
+        private static void LogMove(string move, string moveFrom, string moveTo, string promotion)
+        {
+            // Log
+            string message = $"Best Move: <color=cyan>{moveFrom}{moveTo}</color>";
+            message += promotion == " " ? string.Empty : $". Promotion to: {promotion}";
+            message += $"\n<color=gray>{move}</color>";
+
+            Debug.Log(message);
+        }
+
+        private AiCalculationsResult GetAICalculationsResult(string moveFrom, string moveTo, string promotion)
+        {
+            Square moveFromSquare = _board.GetSquare(moveFrom);
+            Square moveToSquare = _board.GetSquare(moveTo);
+
+            PieceType promotionType = promotion switch
+            {
+                "q" => PieceType.Queen,
+                "r" => PieceType.Rook,
+                "b" => PieceType.Bishop,
+                "n" => PieceType.Knight,
+                _ => PieceType.None,
+            };
+
+            var aiCalculationsResult = new AiCalculationsResult(moveFromSquare, moveToSquare, promotionType);
+            return aiCalculationsResult;
         }
 
         /// Find string what contains find
@@ -258,36 +329,6 @@ namespace Ai
             {
                 throw new TaskCanceledException();
             }
-        }
-
-        private async Task<string> CalculateMove(CancellationToken token)
-        {
-            Debug.Log(">");
-            Debug.Log($"<color=green>{_playerSettings.Name}(Computer {_playerSettings.ComputerSkillLevel}) calculating move...</color>");
-
-            // Set start position
-            string positionCommand = $"position fen {_fen} {_commandInvoker.GetUciMoves()}";
-            Debug.Log(positionCommand);
-            await PostCommand(positionCommand, token);
-
-            // Set skill Level
-            await PostCommand($"setoption name Skill Level value {(int)_playerSettings.ComputerSkillLevel}", token);
-
-            // Set command with time
-            string goCommand = $"go movetime {_playerSettings.ComputerThinkTimeMs}";
-            await PostCommand(goCommand, token);
-
-            // Get answer
-            string output = await FindAnswer("bestmove", token);
-
-            if (token.IsCancellationRequested)
-            {
-                throw new TaskCanceledException();
-            }
-
-            Debug.Log($"<color=green>{_playerSettings.Name}(Computer) end calculate move</color>");
-
-            return output;
         }
     }
 }
