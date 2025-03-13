@@ -9,8 +9,8 @@ namespace ChessBoard.Pieces
         [Header("Long Range")]
         [SerializeField] private Vector2Int[] moveVectors;
 
+        /// Line from long range piece to opposite king
         public HashSet<Square> AttackLineSquares { get; private set; } = new();
-        public Piece PinnedPiece { get; private set; }
 
         private int _pinnedPieceCount;
 
@@ -18,8 +18,6 @@ namespace ChessBoard.Pieces
 
         protected override void CalculateMovesAndCapturesInternal()
         {
-            PinnedPiece = null;
-            _pinnedPieceCount = 0;
             AttackLineSquares.Clear();
 
             foreach (Vector2Int direction in moveVectors)
@@ -32,6 +30,7 @@ namespace ChessBoard.Pieces
         {
             Vector2Int offset = direction;
             HashSet<Square> possibleAttackLine = new();
+            _pinnedPieceCount = 0;
             while (Application.isPlaying)
             {
                 Square square = Game.GetSquareRel(pieceColor, currentSquare, offset);
@@ -53,7 +52,8 @@ namespace ChessBoard.Pieces
                             break;
                         }
 
-                        AddPinnedPiece(square);
+                        // Found pinned piece
+                        AddPinnedPieceCount();
                         if (IfFoundMoreThanOnePinnedPiece()) break;
 
                         possibleAttackLine.Add(square);
@@ -70,7 +70,10 @@ namespace ChessBoard.Pieces
                 else
                 {
                     possibleAttackLine.Add(square);
-                    MoveSquares.Add(square, new MoveInfo());
+                    if(IsNeededToAddMove())
+                    {
+                        MoveSquares.Add(square, new MoveInfo());
+                    }
                 }
             }
         }
@@ -82,21 +85,19 @@ namespace ChessBoard.Pieces
                 CaptureSquares.Add(square, new CaptureInfo(square.GetPiece()));
         }
 
-        private void AddPinnedPiece(Square square)
+        private void AddPinnedPieceCount()
         {
-            PinnedPiece = square.GetPiece();
             _pinnedPieceCount += 1;
         }
 
         private bool IfFoundMoreThanOnePinnedPiece()
         {
-            if(_pinnedPieceCount > 1)
-            {
-                PinnedPiece = null;
-                return true;
-            }
+            return _pinnedPieceCount > 1;
+        }
 
-            return false;
+        private bool IsNeededToAddMove()
+        {
+            return _pinnedPieceCount == 0;
         }
     }
 }
