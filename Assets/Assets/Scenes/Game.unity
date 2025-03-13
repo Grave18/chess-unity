@@ -10983,7 +10983,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f495c8e5734746ea8a363a9bcbfdccf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardPreset: {fileID: 11400000, guid: ad80107acf54d2b4aae9aca5311d037b, type: 2}
+  boardPreset: {fileID: 11400000, guid: 542c54b07d674fa4c8a64ab9c22d774b, type: 2}
   assetLabel:
     m_LabelString: ChessDay4
 --- !u!4 &1663133264
@@ -12253,12 +12253,12 @@ MonoBehaviour:
   gameSettings:
     <Player1Settings>k__BackingField:
       <Name>k__BackingField: Player1
-      <PlayerType>k__BackingField: 0
+      <PlayerType>k__BackingField: 1
       <ComputerSkillLevel>k__BackingField: 10
       <ComputerThinkTimeMs>k__BackingField: 1000
     <Player2Settings>k__BackingField:
       <Name>k__BackingField: Player2
-      <PlayerType>k__BackingField: 0
+      <PlayerType>k__BackingField: 1
       <ComputerSkillLevel>k__BackingField: 10
       <ComputerThinkTimeMs>k__BackingField: 1000
     <Fen>k__BackingField: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0

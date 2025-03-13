@@ -53,7 +53,7 @@ namespace Logic
             _attackLines.Add(attackLine);
         }
 
-        public object CountCheck()
+        public object GetCheckCount()
         {
             return _attackLines.Count(attackLine => attackLine.IsCheck);
         }

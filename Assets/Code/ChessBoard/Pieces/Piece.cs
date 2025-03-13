@@ -88,9 +88,7 @@ namespace ChessBoard.Pieces
             await moveTween.AsyncWaitForCompletion();
         }
 
-        /// <summary>
         /// Calculate all constrains after captures and moves are calculated
-        /// </summary>
         public virtual void CalculateConstrains()
         {
             // Only calculate pins

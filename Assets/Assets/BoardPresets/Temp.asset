@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a1bcdec3d2da74446843c7a1d5112fda, type: 3}
-  m_Name: EpWhite
+  m_Name: Temp
   m_EditorClassIdentifier: 
-  preset: r1bqkbnr/pp1ppppp/n7/1Pp5/8/8/P1PPPPPP/RNBQKBNR w KQkq c6 0 1
+  fen: r2qkb1r/pp1b1p2/2n2np1/1Bp1p2p/P2pP2P/2P2PN1/1P1PN1P1/R1BQK2R b KQkq - 0 1

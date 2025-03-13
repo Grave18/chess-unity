@@ -8,74 +8,95 @@ namespace ChessBoard.Pieces
     {
         [Header("Long Range")]
         [SerializeField] private Vector2Int[] moveVectors;
-        private HashSet<Square> attackLineSquares = new();
 
-        public HashSet<Square> AttackLineSquares => attackLineSquares;
-        public bool HasAttackLine => attackLineSquares.Count > 0;
+        public HashSet<Square> AttackLineSquares { get; private set; } = new();
+        public Piece PinnedPiece { get; private set; }
+
+        private int _pinnedPieceCount;
+
+        public bool HasAttackLine => AttackLineSquares.Count > 0;
 
         protected override void CalculateMovesAndCapturesInternal()
         {
+            PinnedPiece = null;
+            _pinnedPieceCount = 0;
+            AttackLineSquares.Clear();
+
             foreach (Vector2Int direction in moveVectors)
             {
-                Vector2Int offset = direction;
-                HashSet<Square> possibleAttackLine = new();
-                bool isFindingKing = false;
-                while (true)
+                ProcessAttackLine(direction);
+            }
+        }
+
+        private void ProcessAttackLine(Vector2Int direction)
+        {
+            Vector2Int offset = direction;
+            HashSet<Square> possibleAttackLine = new();
+            while (Application.isPlaying)
+            {
+                Square square = Game.GetSquareRel(pieceColor, currentSquare, offset);
+                offset += direction;
+
+                if (square == Game.NullSquare)
                 {
-                    Square square = Game.GetSquareRel(pieceColor, currentSquare, offset);
-                    offset += direction;
+                    break;
+                }
 
-                    if (square == Game.NullSquare)
+                if (square.HasPiece())
+                {
+                    if (square.GetPieceColor() != pieceColor)
                     {
-                        break;
-                    }
-
-                    if (isFindingKing)
-                    {
-                        if (square.HasPiece())
+                        // Found attack line directly to king
+                        if (square.GetPiece() is King)
                         {
-                            if (square.GetPiece() is King king && king.GetPieceColor() != pieceColor)
-                            {
-                                attackLineSquares = possibleAttackLine;
-                            }
-
+                            AddAttackLineAndCaptureKingIfNeeded(possibleAttackLine, square);
                             break;
                         }
+
+                        AddPinnedPiece(square);
+                        if (IfFoundMoreThanOnePinnedPiece()) break;
 
                         possibleAttackLine.Add(square);
-                        continue;
+                        CaptureSquares.Add(square, new CaptureInfo(square.GetPiece()));
                     }
-
-                    if (square.HasPiece())
-                    {
-                        if (square.GetPieceColor() != pieceColor)
-                        {
-                            possibleAttackLine.Add(square);
-                            CaptureSquares.Add(square, new CaptureInfo(square.GetPiece()));
-
-                            // Find attack line to king
-                            if (square.GetPiece() is King)
-                            {
-                                attackLineSquares = possibleAttackLine;
-                                break;
-                            }
-
-                            isFindingKing = true;
-                        }
-                        else
-                        {
-                            // If same color
-                            DefendSquares.Add(square);
-                            break;
-                        }
-                    }
+                    // Found piece of same color
                     else
                     {
-                        possibleAttackLine.Add(square);
-                        MoveSquares.Add(square, new MoveInfo());
+                        DefendSquares.Add(square);
+                        break;
                     }
                 }
+                // Found empty square
+                else
+                {
+                    possibleAttackLine.Add(square);
+                    MoveSquares.Add(square, new MoveInfo());
+                }
             }
+        }
+
+        private void AddAttackLineAndCaptureKingIfNeeded(HashSet<Square> possibleAttackLine, Square square)
+        {
+            AttackLineSquares = possibleAttackLine;
+            if(_pinnedPieceCount == 0)
+                CaptureSquares.Add(square, new CaptureInfo(square.GetPiece()));
+        }
+
+        private void AddPinnedPiece(Square square)
+        {
+            PinnedPiece = square.GetPiece();
+            _pinnedPieceCount += 1;
+        }
+
+        private bool IfFoundMoreThanOnePinnedPiece()
+        {
+            if(_pinnedPieceCount > 1)
+            {
+                PinnedPiece = null;
+                return true;
+            }
+
+            return false;
         }
     }
 }

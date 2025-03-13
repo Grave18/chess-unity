@@ -210,7 +210,7 @@ namespace Logic
             return _board.GetSquareAbs(currentSquare, offset);
         }
 
-        // Calculations for all turns. Need to call every turn change
+        /// Calculations for all turns
         private void CalculateEndMove()
         {
             UnderAttackSquares = GetUnderAttackSquares(PrevTurnPieces);
@@ -268,26 +268,28 @@ namespace Logic
         private CheckType CalculateCheck(HashSet<Piece> pieces)
         {
             AttackLines.Clear();
+
             foreach (Piece piece in pieces)
             {
                 // Fill under attack line
+                bool isCheck = IsPieceMakeCheck(piece);
                 if (piece is LongRange longRange)
                 {
                     if (!longRange.HasAttackLine) continue;
 
-                    var attackLine = new AttackLine(piece, IsPieceMakeCheck(piece), longRange.AttackLineSquares);
+                    var attackLine = new AttackLine(piece, isCheck, longRange.AttackLineSquares);
                     AttackLines.Add(attackLine);
                 }
                 else
                 {
-                    if (!IsPieceMakeCheck(piece)) continue;
+                    if (!isCheck) continue;
 
                     var attackLine = new AttackLine(piece, true);
                     AttackLines.Add(attackLine);
                 }
             }
 
-            return AttackLines.CountCheck() switch
+            return AttackLines.GetCheckCount() switch
             {
                 0 => CheckType.None,
                 1 => CheckType.Check,
