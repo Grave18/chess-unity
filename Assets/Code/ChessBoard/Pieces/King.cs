@@ -18,7 +18,8 @@ namespace ChessBoard.Pieces
             var moveSquaresTemp = new List<Square>(MoveSquares.Keys);
             foreach (Square square in moveSquaresTemp)
             {
-                if (Game.UnderAttackSquares.Contains(square))
+                if (Game.UnderAttackSquares.Contains(square)
+                    || Game.AttackLines.ContainsBehindKingSquare(square))
                 {
                     MoveSquares.Remove(square);
                     CannotMoveSquares.Add(square);

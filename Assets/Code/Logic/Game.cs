@@ -239,7 +239,7 @@ namespace Logic
 
         private static void FillUnderAttackSquaresForPiece(Piece piece, HashSet<Square> underAttackSquares)
         {
-            // Pawn under attack
+            // Pawn's under attack
             if (piece is Pawn pawn)
             {
                 var attackSquares = new List<Square>(pawn.UnderAttackSquares);
@@ -248,7 +248,7 @@ namespace Logic
                     underAttackSquares.Add(underAttackSquare);
                 }
             }
-            // Other pieces under attack
+            // Other piece's under attack
             else
             {
                 var moveSquares = new List<Square>(piece.MoveSquares.Keys);
@@ -277,7 +277,7 @@ namespace Logic
                 {
                     if (!longRange.HasAttackLine) continue;
 
-                    var attackLine = new AttackLine(piece, isCheck, longRange.AttackLineSquares);
+                    var attackLine = new AttackLine(piece, isCheck, longRange.AttackLineSquares, longRange.SquareBehindKing);
                     AttackLines.Add(attackLine);
                 }
                 else

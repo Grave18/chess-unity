@@ -10983,7 +10983,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f495c8e5734746ea8a363a9bcbfdccf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardPreset: {fileID: 11400000, guid: 542c54b07d674fa4c8a64ab9c22d774b, type: 2}
+  boardPreset: {fileID: 11400000, guid: 6ee8099f9551c7d4ab7a33b7b6b2a2bf, type: 2}
   assetLabel:
     m_LabelString: ChessDay4
 --- !u!4 &1663133264

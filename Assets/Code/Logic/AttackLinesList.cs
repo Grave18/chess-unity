@@ -11,12 +11,14 @@ namespace Logic
         public Piece Attacker { get; }
         public HashSet<Square> Line  { get; }
         public bool IsCheck { get; }
+        public Square SquareBehindKing { get; }
 
-        public AttackLine(Piece attacker, bool isCheck, HashSet<Square> line = null)
+        public AttackLine(Piece attacker, bool isCheck, HashSet<Square> line = null, Square squareBehindKing = null)
         {
             Attacker = attacker;
             IsCheck = isCheck;
             Line = line ?? new HashSet<Square>();
+            SquareBehindKing = squareBehindKing;
         }
 
         public bool Contains(Square moveSquare)
@@ -41,6 +43,11 @@ namespace Logic
             return isCheck
                 ? _attackLines.Any(attackLine => attackLine.Attacker == piece && attackLine.IsCheck)
                 : _attackLines.Any(attackLine => attackLine.Attacker == piece);
+        }
+
+        public bool ContainsBehindKingSquare(Square square)
+        {
+            return _attackLines.Any(attackLine => attackLine.SquareBehindKing == square && attackLine.IsCheck);
         }
 
         public void Clear()

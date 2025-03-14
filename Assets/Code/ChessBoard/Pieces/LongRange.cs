@@ -11,14 +11,17 @@ namespace ChessBoard.Pieces
 
         /// Line from long range piece to opposite king
         public HashSet<Square> AttackLineSquares { get; private set; } = new();
+        // Square on attack line but behind king piece
+        public Square SquareBehindKing { get; private set; }
 
         private int _pinnedPieceCount;
 
-        public bool HasAttackLine => AttackLineSquares.Count > 0;
+        public bool HasAttackLine => AttackLineSquares != null;
 
         protected override void CalculateMovesAndCapturesInternal()
         {
-            AttackLineSquares.Clear();
+            AttackLineSquares = null;
+            SquareBehindKing = null;
 
             foreach (Vector2Int direction in moveVectors)
             {
@@ -48,12 +51,17 @@ namespace ChessBoard.Pieces
                         // Found attack line directly to king
                         if (square.GetPiece() is King)
                         {
-                            AddAttackLineAndCaptureKingIfNeeded(possibleAttackLine, square);
+                            AttackLineSquares = possibleAttackLine;
+                            if (IsNoPinnedPiece())
+                            {
+                                CaptureSquares.Add(square, new CaptureInfo(square.GetPiece()));
+                                SquareBehindKing = Game.GetSquareRel(pieceColor, square, direction);
+                            }
                             break;
                         }
 
                         // Found pinned piece
-                        AddPinnedPieceCount();
+                        IncreasePinnedPieceCount();
                         if (IfFoundMoreThanOnePinnedPiece()) break;
 
                         possibleAttackLine.Add(square);
@@ -70,7 +78,7 @@ namespace ChessBoard.Pieces
                 else
                 {
                     possibleAttackLine.Add(square);
-                    if(IsNeededToAddMove())
+                    if(IsNoPinnedPiece())
                     {
                         MoveSquares.Add(square, new MoveInfo());
                     }
@@ -78,14 +86,7 @@ namespace ChessBoard.Pieces
             }
         }
 
-        private void AddAttackLineAndCaptureKingIfNeeded(HashSet<Square> possibleAttackLine, Square square)
-        {
-            AttackLineSquares = possibleAttackLine;
-            if(_pinnedPieceCount == 0)
-                CaptureSquares.Add(square, new CaptureInfo(square.GetPiece()));
-        }
-
-        private void AddPinnedPieceCount()
+        private void IncreasePinnedPieceCount()
         {
             _pinnedPieceCount += 1;
         }
@@ -95,7 +96,7 @@ namespace ChessBoard.Pieces
             return _pinnedPieceCount > 1;
         }
 
-        private bool IsNeededToAddMove()
+        private bool IsNoPinnedPiece()
         {
             return _pinnedPieceCount == 0;
         }
