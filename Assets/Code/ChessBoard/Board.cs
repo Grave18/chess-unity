@@ -26,6 +26,8 @@ namespace ChessBoard
         [SerializeField] private Transform piecesParent;
         [SerializeField] private Transform squaresParent;
         [SerializeField] private Square nullSquare;
+        [SerializeField] private BeatenPiecesPlace beatenPiecesWhite;
+        [SerializeField] private BeatenPiecesPlace beatenPiecesBlack;
 
         [Header("Ui")]
         [SerializeField] private PromotionPanel promotionPanel;
@@ -377,7 +379,14 @@ namespace ChessBoard
                 piecePrefab.transform.rotation, piecesParent);
             var piece = pieceInstance.GetComponent<Piece>();
 
-            piece.Init(_game, this, square);
+            BeatenPiecesPlace beatenPiecesPlace = piece.GetPieceColor() switch
+            {
+                PieceColor.White => beatenPiecesWhite,
+                PieceColor.Black => beatenPiecesBlack,
+                _ => null,
+            };
+
+            piece.Init(_game, this, square, beatenPiecesPlace);
 
             return piece;
         }

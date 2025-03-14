@@ -32,11 +32,13 @@ namespace ChessBoard.Pieces
         // Initialize
         protected Game Game { get; private set; }
         private Board _board;
+        private BeatenPiecesPlace _beatenPiecesPlace;
 
-        public void Init(Game game, Board board, Square square)
+        public void Init(Game game, Board board, Square square, BeatenPiecesPlace beatenPiecesPlace)
         {
             Game = game;
             _board = board;
+            _beatenPiecesPlace = beatenPiecesPlace;
 
             currentSquare = square;
             currentSquare.SetPiece(this);
@@ -54,7 +56,7 @@ namespace ChessBoard.Pieces
 
         public void MoveToBeaten()
         {
-            transform.position = new Vector3(-1.5f, 0f, 0f);
+            _beatenPiecesPlace.Add(this);
             currentSquare.SetPiece(null);
             currentSquare = null;
             _board.RemovePiece(this);
@@ -62,7 +64,7 @@ namespace ChessBoard.Pieces
 
         public void RemoveFromBeaten(Square square)
         {
-            transform.position = square.transform.position;
+            _beatenPiecesPlace.Remove(this, square.transform.position);
             square.SetPiece(this);
             currentSquare = square;
             _board.AddPiece(this);
