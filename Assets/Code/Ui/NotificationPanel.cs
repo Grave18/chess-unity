@@ -11,20 +11,6 @@ namespace Ui
         [SerializeField] private TMP_Text notificationText;
         [SerializeField] private Button restartButton;
 
-        private void OnEnable()
-        {
-            restartButton.onClick.AddListener(game.StartGame);
-
-            game.OnEnd += UpdateNotificationText;
-            game.OnStart += UpdateNotificationText;
-        }
-
-        private void OnDisable()
-        {
-            game.OnEnd -= UpdateNotificationText;
-            game.OnStart -= UpdateNotificationText;
-        }
-
         private void UpdateNotificationText()
         {
             switch (game.CheckType)
@@ -44,6 +30,22 @@ namespace Ui
             notificationText.gameObject.SetActive(isText);
             restartButton.gameObject.SetActive(isButton);
             notificationText.text = text;
+        }
+
+        private void OnEnable()
+        {
+            restartButton.onClick.AddListener(game.StartGame);
+
+            game.OnEndTurn += UpdateNotificationText;
+            game.OnStart += UpdateNotificationText;
+            game.OnEnd += UpdateNotificationText;
+        }
+
+        private void OnDisable()
+        {
+            game.OnEndTurn -= UpdateNotificationText;
+            game.OnStart -= UpdateNotificationText;
+            game.OnEnd -= UpdateNotificationText;
         }
     }
 }
