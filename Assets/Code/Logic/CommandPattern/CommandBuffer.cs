@@ -17,7 +17,7 @@ namespace Logic.CommandPattern
         public Command FirstCommand { private get; set; }
 
         /// Length of current commands in buffer under and to the left from cursor
-        private int CurrentLength => _cursor + 1;
+        public int CurrentLength => _cursor + 1;
 
         public Command LastCommand => _cursor >= 0 && _cursor < _commands.Length ? _commands[_cursor] : FirstCommand;
 

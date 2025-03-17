@@ -10,29 +10,21 @@ namespace Logic.CommandPattern
         private Piece _backupPawn;
         private readonly Piece _beatenPiece;
         private readonly Square _beatenPieceSquare;
-        private readonly Game _game;
         private readonly Board _board;
-        private readonly SeriesList _seriesList;
-
-        private PieceColor _previousTurnColor;
         private Square _previousSquare;
 
-        public EatAndPromoteCommand(Piece piece, Piece beatenPiece, Square moveToSquare, Game game,
-            Board board,
-            SeriesList seriesList): base(piece, piece.GetSquare(), moveToSquare)
+        public EatAndPromoteCommand(Piece piece, Piece beatenPiece, Square moveToSquare,
+            Board board): base(piece, piece.GetSquare(), moveToSquare, NotationTurnType.Capture)
         {
             _beatenPiece = beatenPiece;
             _beatenPieceSquare = _beatenPiece.GetSquare();
-            _game = game;
             _board = board;
-            _seriesList = seriesList;
         }
 
         public override async Task Execute()
         {
             // Backup
             _previousSquare = Piece.GetSquare();
-            _previousTurnColor = _game.CurrentTurnColor;
 
             // Remove beaten piece
             _beatenPiece.MoveToBeaten();
@@ -59,8 +51,6 @@ namespace Logic.CommandPattern
             // Substitute pawn to promoted piece
             Piece = PromotedPiece;
             _board.AddPiece(Piece);
-
-            // _seriesList.AddTurn(_backupPawn, _moveToSquare, _previousTurnColor, NotationTurnType.Capture, _game.CheckType, _promotedPiece);
         }
 
         public override async Task Undo()
@@ -82,8 +72,6 @@ namespace Logic.CommandPattern
 
             // Add beaten piece
             _beatenPiece.RemoveFromBeaten(_beatenPieceSquare);
-
-            // _seriesList.RemoveTurn(_game.CurrentTurnColor);
         }
     }
 }

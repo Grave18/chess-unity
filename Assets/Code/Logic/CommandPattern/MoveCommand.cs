@@ -8,17 +8,13 @@ namespace Logic.CommandPattern
 {
     public class MoveCommand : Command
     {
-        private readonly Game _game;
-        private readonly SeriesList _seriesList;
-
         private Square _previousSquare;
         private bool _previousIsFirstMove;
 
-        public MoveCommand(Piece piece, Square moveToSquare, MoveInfo moveInfo, Game game, SeriesList seriesList)
-            : base(piece, piece.GetSquare(), moveToSquare, moveInfo.EnPassantSquare)
+        public MoveCommand(Piece piece, Square moveToSquare, MoveInfo moveInfo)
+            : base(piece, piece.GetSquare(), moveToSquare, NotationTurnType.Move, moveInfo.EnPassantSquare)
         {
-            _game = game;
-            _seriesList = seriesList;
+
         }
 
         public override async Task Execute()
@@ -30,8 +26,6 @@ namespace Logic.CommandPattern
 
             // Move
             await Piece.MoveToAsync(MoveToSquare);
-
-            // _seriesList.AddTurn(_piece, _moveToSquare, _game.PreviousTurnColor, NotationTurnType.Move, _game.CheckType);
         }
 
         public override async Task Undo()

@@ -26,18 +26,18 @@ namespace Logic
             // Promotion
             if (piece is Pawn && square.Rank is "8" or "1")
             {
-                await _commandBuffer.AddAndExecute(new MoveAndPromoteCommand(piece, square, game, board, seriesList));
+                await _commandBuffer.AddAndExecute(new MoveAndPromoteCommand(piece, square, board));
             }
             // Normal move
             else
             {
-                await _commandBuffer.AddAndExecute(new MoveCommand(piece, square, moveInfo, game, seriesList));
+                await _commandBuffer.AddAndExecute(new MoveCommand(piece, square, moveInfo));
             }
 
             game.EndTurn();
         }
 
-        /// Eat or eat and promote
+        /// Capture or eat and promote
         public async Task EatAt(Piece piece, Square moveToSquare, CaptureInfo captureInfo)
         {
             game.StartTurn();
@@ -46,13 +46,12 @@ namespace Logic
             if (piece is Pawn && moveToSquare.Rank is "8" or "1")
             {
                 await _commandBuffer.AddAndExecute(new EatAndPromoteCommand(piece, captureInfo.BeatenPiece,
-                    moveToSquare, game, board, seriesList));
+                    moveToSquare, board));
             }
             // Capture
             else
             {
-                await _commandBuffer.AddAndExecute(new EatCommand(piece, captureInfo.BeatenPiece, moveToSquare, game,
-                    seriesList, captureInfo.NotationTurnType));
+                await _commandBuffer.AddAndExecute(new EatCommand(piece, captureInfo.BeatenPiece, moveToSquare, captureInfo.NotationTurnType));
             }
 
             game.EndTurn();
@@ -62,8 +61,7 @@ namespace Logic
             NotationTurnType notationTurnType)
         {
             game.StartTurn();
-            await _commandBuffer.AddAndExecute(new CastlingCommand(piece, kingSquare, rook, rookSquare, game,
-                seriesList, notationTurnType));
+            await _commandBuffer.AddAndExecute(new CastlingCommand(piece, kingSquare, rook, rookSquare, notationTurnType));
             game.EndTurn();
         }
 
@@ -72,8 +70,11 @@ namespace Logic
             if (IsStatePauseOrIdle() && _commandBuffer.CanUndo())
             {
                 game.StartTurn();
+
                 await _commandBuffer.Undo();
-                game.EndTurn(isPause: true);
+
+                game.EndTurn();
+                game.Pause();
             }
         }
 
@@ -82,20 +83,34 @@ namespace Logic
             if (IsStatePauseOrIdle() && _commandBuffer.CanRedo())
             {
                 game.StartTurn();
+
                 _ = await _commandBuffer.Redo();
-                game.EndTurn(isPause: true);
+
+                game.EndTurn();
+                game.Pause();
             }
         }
 
+        private bool IsStatePauseOrIdle()
+        {
+            return game.State is GameState.Pause or GameState.Idle;
+        }
+
+        /// Get part of uci string, example: moves e2e4 e7e5
         public string GetUciMoves()
         {
             return _commandBuffer.GetUciMoves();
         }
 
         /// Get last moved piece from last buffer entry in command buffer
-        public Piece GetLastMovedPiece()
+        public Command GetLastCommand()
         {
-            return _commandBuffer.LastCommand.Piece;
+            return _commandBuffer.LastCommand;
+        }
+
+        public int GetCommandsCount()
+        {
+            return _commandBuffer.CurrentLength;
         }
 
         /// Retrieves the En Passant information for the last command if applicable
@@ -115,11 +130,6 @@ namespace Logic
         {
             var firstCommand = new FirstCommand(enPassantInfo);
             _commandBuffer.FirstCommand = firstCommand;
-        }
-
-        private bool IsStatePauseOrIdle()
-        {
-            return game.State is GameState.Pause or GameState.Idle;
         }
 
         private void OnEnable()

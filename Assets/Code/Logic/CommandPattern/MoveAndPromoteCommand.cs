@@ -8,26 +8,20 @@ namespace Logic.CommandPattern
     public class MoveAndPromoteCommand : Command
     {
         private Piece _backupPawn;
-        private readonly Game _game;
         private readonly Board _board;
-        private readonly SeriesList _seriesList;
 
-        private PieceColor _previousTurnColor;
         private Square _previousSquare;
 
-        public MoveAndPromoteCommand(Piece piece, Square moveToSquare, Game game, Board board,
-            SeriesList seriesList) : base(piece, piece.GetSquare(), moveToSquare)
+        public MoveAndPromoteCommand(Piece piece, Square moveToSquare, Board board)
+            : base(piece, piece.GetSquare(), moveToSquare, NotationTurnType.Move)
         {
-            _game = game;
             _board = board;
-            _seriesList = seriesList;
         }
 
         public override async Task Execute()
         {
             // Backup
             _previousSquare = Piece.GetSquare();
-            _previousTurnColor = _game.CurrentTurnColor;
 
             // Move selected piece
             await Piece.MoveToAsync(MoveToSquare);
@@ -51,8 +45,6 @@ namespace Logic.CommandPattern
             // Substitute pawn to promoted piece
             Piece = PromotedPiece;
             _board.AddPiece(Piece);
-
-            // _seriesList.AddTurn(_backupPawn, _moveToSquare, _previousTurnColor, NotationTurnType.Move, _game.CheckType, _promotedPiece);
         }
 
         public override async Task Undo()
@@ -71,8 +63,6 @@ namespace Logic.CommandPattern
             _backupPawn.gameObject.SetActive(true);
             Piece = _backupPawn;
             await Piece.MoveToAsync(_previousSquare);
-
-            // _seriesList.RemoveTurn(_previousTurnColor);
         }
     }
 }

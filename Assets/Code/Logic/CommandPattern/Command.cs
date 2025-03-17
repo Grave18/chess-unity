@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using AlgebraicNotation;
 using ChessBoard;
 using ChessBoard.Pieces;
 
@@ -12,15 +13,17 @@ namespace Logic.CommandPattern
         public bool IsUndoable { get; }
         public Piece PromotedPiece { get; protected set; }
         public Square EnPassantSquare { get; }
+        public NotationTurnType NotationTurnType { get; }
 
         public abstract Task Execute();
         public abstract Task Undo();
 
-        protected Command(Piece piece, Square from, Square to, Square enPassantSquare = null, bool isUndoable = true)
+        protected Command(Piece piece, Square from, Square to, NotationTurnType notationTurnType, Square enPassantSquare = null, bool isUndoable = true)
         {
             Piece = piece;
             MoveFromSquare = from;
             MoveToSquare = to;
+            NotationTurnType = notationTurnType;
             EnPassantSquare = enPassantSquare;
             IsUndoable = isUndoable;
         }

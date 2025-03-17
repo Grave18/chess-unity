@@ -96,30 +96,16 @@ namespace Logic
             OnPause?.Invoke();
         }
 
-        /// <summary>
-        /// Set state as move
-        /// </summary>
         public void StartTurn()
         {
             state = GameState.Move;
             OnStartTurn?.Invoke();
         }
 
-        /// <summary>
-        /// Change color, rest state, perform calculations
-        /// </summary>
-        public void EndTurn(bool isPause = false)
+        public void EndTurn()
         {
             currentTurnColor = currentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
-            if (!isPause)
-            {
-                state = GameState.Idle;
-            }
-            else
-            {
-                state = GameState.Pause;
-                OnPause?.Invoke();
-            }
+            state = GameState.Idle;
 
             CalculateEndMove();
             OnEndTurn?.Invoke();
@@ -175,19 +161,7 @@ namespace Logic
             return checkType is CheckType.CheckMate or CheckType.Stalemate or CheckType.TimeOut;
         }
 
-        /// <summary>
-        /// Get last moved piece from command buffer
-        /// </summary>
-        /// <returns> Last moved piece </returns>
-        public Piece GetLastMovedPiece()
-        {
-            return commandInvoker.GetLastMovedPiece();
-        }
-
-        /// <summary>
         /// Retrieves the En Passant information for the last command if applicable
-        /// </summary>
-        /// <returns> EnPassant info </returns>
         public EnPassantInfo GetEnPassantInfo()
         {
             return commandInvoker.GetEnPassantInfo();

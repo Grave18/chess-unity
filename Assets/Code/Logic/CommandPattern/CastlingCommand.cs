@@ -9,21 +9,16 @@ namespace Logic.CommandPattern
     {
         private readonly Rook _rook;
         private readonly Square _rookToSquare;
-        private readonly Game _game;
-        private readonly SeriesList _seriesList;
         private readonly NotationTurnType _notationTurnType;
 
         private Square _previousKingSquare;
         private Square _previousRookSquare;
 
-        public CastlingCommand(King piece, Square kingToSquare, Rook rook, Square rookToSquare, Game game,
-            SeriesList seriesList, NotationTurnType notationTurnType) : base(piece,piece.GetSquare(), kingToSquare)
+        public CastlingCommand(King piece, Square kingToSquare, Rook rook, Square rookToSquare, NotationTurnType notationTurnType)
+            : base(piece,piece.GetSquare(), kingToSquare, notationTurnType)
         {
             _rook = rook;
             _rookToSquare = rookToSquare;
-            _game = game;
-            _seriesList = seriesList;
-            _notationTurnType = notationTurnType;
         }
 
         public override async Task Execute()
@@ -36,8 +31,6 @@ namespace Logic.CommandPattern
 
             Piece.IsFirstMove = false;
             _rook.IsFirstMove = false;
-
-            // _seriesList.AddTurn(null, null, _game.PreviousTurnColor, _notationTurnType, _game.CheckType);
         }
 
         public override async Task Undo()
@@ -52,8 +45,6 @@ namespace Logic.CommandPattern
 
             _rook.IsFirstMove = true;
             Piece.IsFirstMove = true;
-
-            // _seriesList.RemoveTurn(_game.CurrentTurnColor);
         }
     }
 }

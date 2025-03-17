@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using AlgebraicNotation;
 using ChessBoard.Info;
 
 namespace Logic.CommandPattern
@@ -7,7 +8,7 @@ namespace Logic.CommandPattern
     public class FirstCommand : Command
     {
         public FirstCommand(EnPassantInfo enPassantInfo)
-            : base(enPassantInfo.Piece, from: null, to: null, enPassantInfo.Square, isUndoable: false)
+            : base(enPassantInfo.Piece, from: null, to: null, NotationTurnType.None, enPassantInfo.Square, isUndoable: false)
         {
 
         }

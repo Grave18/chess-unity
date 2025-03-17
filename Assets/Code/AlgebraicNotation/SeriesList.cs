@@ -4,21 +4,44 @@ using System.Text;
 using ChessBoard;
 using ChessBoard.Pieces;
 using Logic;
+using Logic.CommandPattern;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace AlgebraicNotation
 {
     public class SeriesList : MonoBehaviour
     {
-        [FormerlySerializedAs("gameManager")]
         [SerializeField] private Game game;
         [SerializeField] private List<Series> serieses;
+        [SerializeField] private CommandInvoker commandInvoker;
 
         private Series _currentSeries;
+        private int _commandCount;
 
-        public void AddTurn(Piece piece, Square square, PieceColor turn, NotationTurnType notationTurnType,
-            CheckType checkType, Piece promotedPiece = null)
+        private void OnEndTurn()
+        {
+            Command lastCommand = commandInvoker.GetLastCommand();
+
+            if (_commandCount < commandInvoker.GetCommandsCount())
+            {
+                if(IsNotValidTurn(lastCommand)) return;
+                AddRecord(lastCommand.Piece, lastCommand.MoveFromSquare, lastCommand.MoveToSquare, lastCommand.NotationTurnType, lastCommand.PromotedPiece);
+            }
+            else
+            {
+                RemoveRecord(IsNotValidTurn(lastCommand) ? PieceColor.Black : lastCommand.Piece.GetPieceColor());
+            }
+
+            _commandCount = commandInvoker.GetCommandsCount();
+        }
+
+        private static bool IsNotValidTurn(Command c)
+        {
+            return c is not { IsUndoable: true };
+        }
+
+        /// Add new record to algebraic notation
+        private void AddRecord(Piece piece, Square fromSquare, Square toSquare, NotationTurnType notationTurnType, Piece promotedPiece)
         {
             // Add new series
             if (_currentSeries == null)
@@ -33,12 +56,14 @@ namespace AlgebraicNotation
             if(notationTurnType == NotationTurnType.CastlingShort)
             {
                 turnString.Append("0-0");
+                AddRecordToSeries(piece.GetPieceColor(), turnString);
                 return;
             }
 
             if (notationTurnType == NotationTurnType.CastlingLong)
             {
                 turnString.Append("0-0-0");
+                AddRecordToSeries(piece.GetPieceColor(), turnString);
                 return;
             }
 
@@ -54,7 +79,7 @@ namespace AlgebraicNotation
                 case Pawn:
                     if (isCaptureOrEnPassant)
                     {
-                        turnString.Append(piece.GetSquare().File);
+                        turnString.Append(fromSquare.File);
                     }
                     break;
             }
@@ -66,12 +91,12 @@ namespace AlgebraicNotation
             }
 
             // Square name
-            turnString.Append(square.AlgebraicName);
+            turnString.Append(toSquare.Address);
 
             // Is En Passant
             if (notationTurnType == NotationTurnType.EnPassant)
             {
-                turnString.Append(" <i>e.p.</i>"); // italic
+                turnString.Append(" e.p.");
             }
             // Is promotion
             else if (promotedPiece != null)
@@ -86,25 +111,40 @@ namespace AlgebraicNotation
             }
 
             // Is check
-            switch (checkType)
+            switch (game.CheckType)
             {
                 case CheckType.Check:       turnString.Append("+");  break;
                 case CheckType.DoubleCheck: turnString.Append("++"); break;
                 case CheckType.CheckMate:   turnString.Append("#");  break;
             }
 
-            AddTurn(turn, turnString);
+            AddRecordToSeries(piece.GetPieceColor(), turnString);
         }
 
-        public void RemoveTurn(PieceColor turn)
+        private void AddRecordToSeries(PieceColor turn, StringBuilder turnString)
         {
             if (turn == PieceColor.White)
+            {
+                _currentSeries.WhiteMove = turnString.ToString();
+                Debug.Log(_currentSeries);
+            }
+            else if (turn == PieceColor.Black)
+            {
+                _currentSeries.BlackMove = turnString.ToString();
+                Debug.Log(_currentSeries);
+                _currentSeries = null;
+            }
+        }
+
+        public void RemoveRecord(PieceColor turnColor)
+        {
+            if (turnColor == PieceColor.Black)
             {
                 if(serieses.Count == 0) return;
                 serieses.Remove(serieses.Last());
                 _currentSeries = null;
             }
-            else if (turn == PieceColor.Black)
+            else if (turnColor == PieceColor.White)
             {
                 if(serieses.Count == 0) return;
                 serieses.Last().BlackMove = string.Empty;
@@ -116,9 +156,12 @@ namespace AlgebraicNotation
         {
             var stringBuilder = new StringBuilder();
 
-            foreach (Series series in serieses)
+            for (int i = 0; i < serieses.Count; i++)
             {
-                stringBuilder.AppendLine(series.ToString());
+                string value = serieses[i].ToString();
+                if (i == serieses.Count - 1) value =$"<u>{value}</u>";
+
+                stringBuilder.AppendLine(value);
             }
 
             if (game.IsGameOver())
@@ -141,19 +184,14 @@ namespace AlgebraicNotation
             serieses.Clear();
         }
 
-        private void AddTurn(PieceColor turn, StringBuilder turnString)
+        private void OnEnable()
         {
-            if (turn == PieceColor.White)
-            {
-                _currentSeries.WhiteMove = turnString.ToString();
-                Debug.Log(_currentSeries);
-            }
-            else if (turn == PieceColor.Black)
-            {
-                _currentSeries.BlackMove = turnString.ToString();
-                Debug.Log(_currentSeries);
-                _currentSeries = null;
-            }
+            game.OnEndTurn += OnEndTurn;
+        }
+
+        private void OnDisable()
+        {
+            game.OnEndTurn -= OnEndTurn;
         }
     }
 }

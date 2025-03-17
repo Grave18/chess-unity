@@ -3,13 +3,14 @@
     [System.Serializable]
     public class Series
     {
-        public int Count;
-        public string WhiteMove;
-        public string BlackMove;
+        public int Count { get; set; }
+        public string WhiteMove { get; set; }
+        public string BlackMove { get; set; }
 
         public override string ToString()
         {
-            return $"{Count}. {WhiteMove} {BlackMove}";
+            string series = $"{Count}.<pos=15%>{WhiteMove}</pos><pos=60%>{BlackMove}</pos>";
+            return series;
         }
     }
 }
