@@ -65,7 +65,7 @@ namespace Ai
         {
             CancellationToken exitCancellationToken = Application.exitCancellationToken;
             await PostCommand("d", exitCancellationToken);
-            string state = await ReadAnswer("Checkers:", exitCancellationToken);
+            string state = await ReadAllOutput("Checkers:", exitCancellationToken);
             return state;
         }
 
@@ -113,7 +113,7 @@ namespace Ai
             _isAiLoaded.SetResult(true);
         }
 
-        public async Task<AiCalculationsResult> GetAiResult(PlayerSettings playerSettings)
+        public async Task<AiCalculationsResult> GetAiResult(PlayerSettings playerSettings, CancellationToken token)
         {
             _playerSettings = playerSettings;
 
@@ -123,7 +123,7 @@ namespace Ai
                 return null;
             }
 
-            string moveString = await GetMoveString();
+            string moveString = await GetMoveString(token);
             if (moveString == null) return null;
 
             if (IsNoMoreMoves(moveString))
@@ -154,22 +154,24 @@ namespace Ai
             Debug.Log(message);
         }
 
-        private async Task<string> GetMoveString()
+        private async Task<string> GetMoveString(CancellationToken token)
         {
             _game.StartThink();
 
             string move = null;
             try
             {
-                move = await CalculateMove(Application.exitCancellationToken);
+                move = await CalculateMove(token);
             }
             catch (TaskCanceledException)
             {
                 Debug.Log("Move was canceled");
+                return null;
             }
             catch (Exception ex)
             {
                 Debug.LogError(ex.Message);
+                return null;
             }
             finally
             {
@@ -255,7 +257,7 @@ namespace Ai
             return aiCalculationsResult;
         }
 
-        /// Find string what contains find
+        /// Find line what contains find
         private async Task<string> FindAnswer(string find, CancellationToken token)
         {
             if (_process is { HasExited: true })
@@ -267,14 +269,22 @@ namespace Ai
             StreamReader reader = _process.StandardOutput;
 
             string output = string.Empty;
-            while (!token.IsCancellationRequested && !output.Contains(find))
+            while (!output.Contains(find))
             {
                 await Task.Delay(25, token);
+                if (token.IsCancellationRequested) break;
                 output = await reader.ReadLineAsync();
             }
 
             if (token.IsCancellationRequested)
             {
+                await PostCommand("stop");
+                while (!output.Contains(find))
+                {
+                    await Task.Delay(10, token);
+                    output = await reader.ReadLineAsync();
+                }
+
                 throw new TaskCanceledException();
             }
 
@@ -282,7 +292,7 @@ namespace Ai
         }
 
         /// Read all output
-        private async Task<string> ReadAnswer(string find, CancellationToken token)
+        private async Task<string> ReadAllOutput(string find, CancellationToken token)
         {
             if (_process is { HasExited: true })
             {
@@ -303,6 +313,14 @@ namespace Ai
 
             if (token.IsCancellationRequested)
             {
+                await PostCommand("stop");
+                while (!output.Contains(find))
+                {
+                    await Task.Delay(25, token);
+                    output = await reader.ReadLineAsync();
+                    sb.AppendLine(output);
+                }
+
                 throw new TaskCanceledException();
             }
 

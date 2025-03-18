@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Ai;
 using ChessBoard;
 using ChessBoard.Info;
@@ -30,11 +32,35 @@ namespace Logic.Players
         /// Get calculations from stockfish process and make move
         public override async void AllowMakeMove()
         {
-            AiCalculationsResult aiCalculationsResult = await _stockfish.GetAiResult(_playerSettings);
+            // Prevent momentary calculations after undo or redo
+            int delay = Game.MoveType is MoveType.Undo or MoveType.Redo ? 3000 : 100;
+
+            try
+            {
+                await Task.Delay(delay, _moveCts.Token);
+            }
+            catch (TaskCanceledException)
+            {
+                Debug.Log("Awaiting was cancelled");
+                return;
+            }
+            catch (Exception ex)
+            {
+                Debug.Log(ex.Message);
+            }
+
+            AiCalculationsResult aiCalculationsResult = await _stockfish.GetAiResult(_playerSettings, _moveCts.Token);
             if (aiCalculationsResult == null) return;
 
             SetPromotionPiece(aiCalculationsResult.Promotion);
             MakeMove(aiCalculationsResult.MoveFrom, aiCalculationsResult.MoveTo);
+        }
+
+        private CancellationTokenSource _moveCts = new ();
+        public override void DisallowMakeMove()
+        {
+            _moveCts?.Cancel();
+            _moveCts = new CancellationTokenSource();
         }
 
         private void SetPromotionPiece(PieceType promotion)
@@ -48,7 +74,7 @@ namespace Logic.Players
             if (movePiece == null)
             {
                 Debug.LogError("Piece not found");
-                Debug.Log($"MoveFromSquare: {moveFromSquare.name}");
+                Debug.Log($"MoveFromSquare: {moveFromSquare?.name}");
                 Debug.DebugBreak();
                 return;
             }

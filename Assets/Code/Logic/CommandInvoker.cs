@@ -67,33 +67,31 @@ namespace Logic
 
         public async Task Undo()
         {
-            if (IsStatePauseOrIdle() && _commandBuffer.CanUndo())
+            if (IsStatePauseIdleThink() && _commandBuffer.CanUndo())
             {
-                game.StartTurn();
+                game.StartTurn(MoveType.Undo);
 
                 await _commandBuffer.Undo();
 
                 game.EndTurn();
-                game.Pause();
             }
         }
 
         public async Task Redo()
         {
-            if (IsStatePauseOrIdle() && _commandBuffer.CanRedo())
+            if (IsStatePauseIdleThink() && _commandBuffer.CanRedo())
             {
-                game.StartTurn();
+                game.StartTurn(MoveType.Redo);
 
                 _ = await _commandBuffer.Redo();
 
                 game.EndTurn();
-                game.Pause();
             }
         }
 
-        private bool IsStatePauseOrIdle()
+        private bool IsStatePauseIdleThink()
         {
-            return game.State is GameState.Pause or GameState.Idle;
+            return game.State is GameState.Pause or GameState.Idle or GameState.Think;
         }
 
         /// Get part of uci string, example: moves e2e4 e7e5

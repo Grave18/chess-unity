@@ -51,11 +51,11 @@ namespace Ui
 
         private void OnPlayPausePressed()
         {
-            if (game.State == GameState.Idle)
+            if (pauseImage.sprite == pauseSprite)
             {
                 game.Pause();
             }
-            else if(game.State == GameState.Pause)
+            else if(pauseImage.sprite == playSprite)
             {
                 game.Play();
             }

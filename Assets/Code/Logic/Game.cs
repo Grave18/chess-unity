@@ -1,11 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ChessBoard;
 using ChessBoard.Info;
 using ChessBoard.Pieces;
-using EditorCools;
-using Logic.CommandPattern;
 using UnityEngine;
 
 namespace Logic
@@ -20,6 +19,8 @@ namespace Logic
         [SerializeField] private PieceColor currentTurnColor = PieceColor.White;
         [SerializeField] private CheckType checkType = CheckType.None;
         [SerializeField] private bool isAutoChange;
+
+        public MoveType MoveType { get; private set; } = MoveType.None;
 
         public ISelectable Selected { get; set; }
         public ISelectable Highlighted { get; set; }
@@ -46,6 +47,7 @@ namespace Logic
         public PieceColor PreviousTurnColor => currentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
         public GameState State => state;
 
+
         public HashSet<Piece> WhitePieces => _board.WhitePieces;
         public HashSet<Piece> BlackPieces => _board.BlackPieces;
         public IEnumerable<Square> Squares => _board.Squares;
@@ -64,6 +66,7 @@ namespace Logic
 
         public void StartGame()
         {
+            MoveType = MoveType.None;
             checkType = CheckType.None;
             state = GameState.Idle;
 
@@ -87,21 +90,38 @@ namespace Logic
 
         public void Pause()
         {
-            if(state != GameState.Idle)
+            if(state == GameState.Pause)
             {
                 return;
             }
 
+            // if(state == GameState.Move)
+            // {
+            //     StartCoroutine(DelayedPause());
+            //     return;
+            // }
+
+            PauseInternal();
+        }
+
+        private IEnumerator DelayedPause()
+        {
+            yield return new WaitUntil(() => state == GameState.Idle);
+            PauseInternal();
+        }
+
+        private void PauseInternal()
+        {
             state = GameState.Pause;
             OnPause?.Invoke();
         }
 
-        public void StartTurn()
+        public void StartTurn(MoveType moveType = MoveType.Move)
         {
+            MoveType = moveType;
             state = GameState.Move;
             OnStartTurn?.Invoke();
         }
-
         public void EndTurn()
         {
             currentTurnColor = currentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
@@ -322,5 +342,13 @@ namespace Logic
             OnEndTurn?.Invoke();
         }
 #endif
+    }
+
+    public enum MoveType
+    {
+        None,
+        Move,
+        Undo,
+        Redo,
     }
 }

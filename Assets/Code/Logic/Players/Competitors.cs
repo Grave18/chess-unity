@@ -24,11 +24,11 @@ namespace Logic.Players
         public void ChangePlayers(Player playerWhite, Player playerBlack)
         {
             _playerWhite.Stop();
-            _playerWhite.Stop();
+            _playerBlack.Stop();
             _playerWhite = playerWhite;
             _playerBlack = playerBlack;
             _playerWhite.Start();
-            _playerWhite.Start();
+            _playerBlack.Start();
 
             OnEndTurn();
         }
