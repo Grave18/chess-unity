@@ -1,12 +1,12 @@
 using UnityEngine;
 
-namespace Utils
+namespace Tools
 {
     public class DebugGizmo : MonoBehaviour
     {
-        [SerializeField] private Color color = Color.red;
-
 #if UNITY_EDITOR
+
+        [SerializeField] private Color color = Color.red;
 
         private void OnDrawGizmos()
         {

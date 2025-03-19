@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ChessBoard.Info;
@@ -70,6 +71,7 @@ namespace ChessBoard.Pieces
             _board.AddPiece(this);
         }
 
+        // Todo: remove this
         public async Task MoveToAsync(Square square)
         {
             Vector3 position = square.transform.position;
@@ -88,6 +90,18 @@ namespace ChessBoard.Pieces
             currentSquare.SetPiece(this);
 
             await moveTween.AsyncWaitForCompletion();
+        }
+
+        public void MoveTo(Vector3 newPosition)
+        {
+            transform.position = newPosition;
+        }
+
+        public void ResetSquare(Square square)
+        {
+            currentSquare.SetPiece(null);
+            currentSquare = square;
+            currentSquare.SetPiece(this);
         }
 
         /// Calculate all constrains after captures and moves are calculated

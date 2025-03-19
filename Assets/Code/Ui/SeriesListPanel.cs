@@ -17,12 +17,12 @@ namespace Ui
 
         private void OnEnable()
         {
-            game.OnEndTurn += UpdateText;
+            // game.OnEndTurn += UpdateText;
         }
 
         private void OnDisable()
         {
-            game.OnEndTurn -= UpdateText;
+            // game.OnEndTurn -= UpdateText;
         }
 
         private void UpdateText()

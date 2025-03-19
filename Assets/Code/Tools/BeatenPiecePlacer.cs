@@ -1,9 +1,11 @@
 using UnityEngine;
 
-namespace Utils
+namespace Tools
 {
     public class BeatenPiecePlacer : MonoBehaviour
     {
+#if UNITY_EDITOR
+
         [SerializeField] private Transform parent;
 
         [Space]
@@ -12,7 +14,6 @@ namespace Utils
         [SerializeField] private float spacingX = 0.09f;
         [SerializeField] private float spacingY = 0.09f;
 
-#if UNITY_EDITOR
 
         private void OnValidate()
         {

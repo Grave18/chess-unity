@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Logic
 {
+    // Todo: update to new system
     public class Clock : MonoBehaviour
     {
         [SerializeField] private int timeMinutes = 5;
@@ -78,18 +79,18 @@ namespace Logic
 
         private void SubscribeToGameEvents()
         {
-            _game.OnStart += StartTimer;
-            _game.OnEnd += Pause;
-            _game.OnPlay += Play;
-            _game.OnPause += Pause;
+            // _game.OnStart += StartTimer;
+            // _game.OnEnd += Pause;
+            // _game.OnPlay += Play;
+            // _game.OnPause += Pause;
         }
 
         private void OnDestroy()
         {
-            _game.OnStart -= StartTimer;
-            _game.OnEnd -= Pause;
-            _game.OnPlay -= Play;
-            _game.OnPause -= Pause;
+            // _game.OnStart -= StartTimer;
+            // _game.OnEnd -= Pause;
+            // _game.OnPlay -= Play;
+            // _game.OnPause -= Pause;
         }
     }
 }

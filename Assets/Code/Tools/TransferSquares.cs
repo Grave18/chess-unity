@@ -1,13 +1,17 @@
-﻿#if UNITY_EDITOR
-
+﻿
 using ChessBoard;
-using UnityEditor;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Tools
 {
     public class TransferSquares : MonoBehaviour
     {
+#if UNITY_EDITOR
+
         [SerializeField] private Transform oldSquaresParent;
         [SerializeField] private Transform newSquaresParent;
         [SerializeField] private GameObject newSquarePrefab;
@@ -32,7 +36,7 @@ namespace Tools
                 newSquare.Rank = oldSquare.Rank;
             }
         }
-    }
-}
 
 #endif
+    }
+}

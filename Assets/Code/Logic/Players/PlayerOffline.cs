@@ -16,14 +16,13 @@ namespace Logic.Players
         private readonly LayerMask _layerMask;
 
         private const float MaxDistance = 100;
-        private bool _isAllowMove;
 
         // Selected in Ui
         private TaskCompletionSource<PieceType> _pieceTypeCompletionSource = new();
 
         public PlayerOffline(Game game, CommandInvoker commandInvoker, Camera mainCamera, Highlighter highlighter,
             LayerMask layerMask, PlayerSettings playerSettings)
-            :base(game, commandInvoker)
+            : base(game, commandInvoker)
         {
             _highlighter = highlighter;
             _mainCamera = mainCamera;
@@ -31,17 +30,6 @@ namespace Logic.Players
         }
 
         private IEnumerator _coroutine;
-
-        public override void Start()
-        {
-            _coroutine = Update();
-            Game.StartCoroutine(_coroutine);
-        }
-
-        public override void Stop()
-        {
-            Game.StopCoroutine(_coroutine);
-        }
 
         public override async Task<PieceType> RequestPromotedPiece()
         {
@@ -56,47 +44,31 @@ namespace Logic.Players
 
         public override void AllowMakeMove()
         {
-            _isAllowMove = true;
         }
 
         public override void DisallowMakeMove()
         {
-            _isAllowMove = false;
         }
 
-        private IEnumerator Update()
+        public override void Update()
         {
-            while(Application.isPlaying)
+            // Cast ray from cursor
+            Vector3 mousePos = Input.mousePosition;
+            Ray ray = _mainCamera.ScreenPointToRay(mousePos);
+            bool isHit = Physics.Raycast(ray, out RaycastHit hit, MaxDistance, _layerMask);
+            Transform hitTransform = hit.transform;
+
+            if (Input.GetButtonDown("Fire1"))
             {
-                if(!_isAllowMove)
+                ISelectable selectable = null;
+
+                if (hitTransform != null)
                 {
-                    yield return null;
+                    hitTransform.TryGetComponent(out selectable);
                 }
 
-                // Cast ray from cursor
-                Vector3 mousePos = Input.mousePosition;
-                Ray ray = _mainCamera.ScreenPointToRay(mousePos);
-                bool isHit = Physics.Raycast(ray, out RaycastHit hit, MaxDistance, _layerMask);
-                Transform hitTransform = hit.transform;
-
-                if (Input.GetButtonDown("Fire1") && Game.State == GameState.Idle)
-                {
-                    ISelectable selectable = null;
-
-                    if (hitTransform != null)
-                    {
-                        hitTransform.TryGetComponent(out selectable);
-                    }
-
-                    Click(selectable);
-                    _highlighter.UpdateHighlighting();
-                }
-                else
-                {
-                    Hover(isHit, hitTransform);
-                }
-
-                yield return null;
+                Click(selectable);
+                _highlighter.UpdateHighlighting();
             }
         }
 
@@ -105,14 +77,14 @@ namespace Logic.Players
             // Deselect if not hit anything
             if (selectable == null)
             {
-                DeselectCurrent();
+                Game.Deselect();
                 return;
             }
 
             // Select if clicked on current turn piece
-            if (selectable.HasPiece() && Game.IsRightTurn(selectable.GetPieceColor()))
+            if (Game.CanSelect(selectable))
             {
-                Select(selectable);
+                Game.Select(selectable);
                 return;
             }
 
@@ -122,55 +94,27 @@ namespace Logic.Players
                 return;
             }
 
+            string uci = GetUci(selectable);
+            Game.Move(uci);
+            Game.Deselect();
+        }
+
+        /// Get Uci string of move. example: "b1a1q", "e2e4"
+        private string GetUci(ISelectable selectable)
+        {
             Piece piece = Game.Selected.GetPiece();
-            Square moveToSquare = selectable.GetSquare();
+            Square fromSquare = Game.Selected.GetSquare();
+            Square toSquare = selectable.GetSquare();
 
-            // Move
-            if (piece.CanMoveTo(moveToSquare, out MoveInfo moveInfo))
+            string uci = $"{fromSquare?.Address}{toSquare?.Address}";
+
+            if (piece is Pawn && toSquare?.Rank is "1" or "8")
             {
-                _ = CommandInvoker.MoveTo(piece, moveToSquare, moveInfo);
-            }
-            // Castling
-            else if (piece is King king && king.CanCastlingAt(moveToSquare, out CastlingInfo castlingInfo))
-            {
-                _ = CommandInvoker.Castling(king, moveToSquare, castlingInfo.Rook, castlingInfo.RookSquare, castlingInfo.NotationTurnType);
-            }
-            // Eat
-            else if (piece.CanEatAt(moveToSquare, out CaptureInfo captureInfo))
-            {
-                _ = CommandInvoker.EatAt(piece, moveToSquare, captureInfo);
+                // TODO: Add promotion selection. Maybe default option is queen
+                uci += "q";
             }
 
-            DeselectCurrent();
-        }
-
-        private void Select(ISelectable selectable)
-        {
-            Game.Selected = selectable;
-        }
-
-        private void DeselectCurrent()
-        {
-            Game.Selected = null;
-        }
-
-        private void Hover(bool isHit, Transform hitTransform)
-        {
-            // Dehighlight if not hit anything
-            if (!isHit)
-            {
-                Game.Highlighted = null;
-
-                return;
-            }
-
-            bool tryGetSelectable = hitTransform.TryGetComponent(out ISelectable selectable);
-
-            // Highlight
-            if (tryGetSelectable && !selectable.IsEqual(Game.Highlighted))
-            {
-                Game.Highlighted = selectable;
-            }
+            return uci;
         }
     }
 }

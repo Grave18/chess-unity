@@ -14,12 +14,7 @@ namespace Logic.Players
             CommandInvoker = commandInvoker;
         }
 
-        public virtual void Start()
-        {
-
-        }
-
-        public virtual void Stop()
+        public virtual void Update()
         {
 
         }

@@ -29,14 +29,14 @@ namespace Ui
 
         private void OnEnable()
         {
-            game.OnPause += OnPause;
-            game.OnPlay += OnPlay;
+            // game.OnPause += OnPause;
+            // game.OnPlay += OnPlay;
         }
 
         private void OnDisable()
         {
-            game.OnPause -= OnPause;
-            game.OnPlay -= OnPlay;
+            // game.OnPause -= OnPause;
+            // game.OnPlay -= OnPlay;
         }
 
         private void OnUndoPressed()

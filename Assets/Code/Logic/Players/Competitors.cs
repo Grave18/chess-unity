@@ -20,15 +20,15 @@ namespace Logic.Players
 
             SubscribeToEvents();
         }
+        public void UpdatePlayer()
+        {
+            _currentPlayer.Update();
+        }
 
         public void ChangePlayers(Player playerWhite, Player playerBlack)
         {
-            _playerWhite.Stop();
-            _playerBlack.Stop();
             _playerWhite = playerWhite;
             _playerBlack = playerBlack;
-            _playerWhite.Start();
-            _playerBlack.Start();
 
             OnEndTurn();
         }
@@ -45,37 +45,16 @@ namespace Logic.Players
 
         private void OnPlay()
         {
-            if (_game.CurrentTurnColor == PieceColor.White)
-            {
-                _playerWhite.AllowMakeMove();
-            }
-            else if (_game.CurrentTurnColor == PieceColor.Black)
-            {
-                _playerBlack.AllowMakeMove();
-            }
+            _currentPlayer.AllowMakeMove();
         }
 
         private void OnPause()
         {
-            if (_game.CurrentTurnColor == PieceColor.White)
-            {
-                _playerBlack.DisallowMakeMove();
-            }
-            else if (_game.CurrentTurnColor == PieceColor.Black)
-            {
-                _playerWhite.DisallowMakeMove();
-            }
+            _currentPlayer.DisallowMakeMove();
         }
 
         private void OnEndTurn()
         {
-            // Prevent calculations after redo to computer turn
-            // Real player not allow to start move if paused
-            if (_game.State != GameState.Idle)
-            {
-                return;
-            }
-
             if (_game.CurrentTurnColor == PieceColor.White)
             {
                 _currentPlayer = _playerWhite;
@@ -92,16 +71,16 @@ namespace Logic.Players
 
         private void SubscribeToEvents()
         {
-            _game.OnPlay += OnPlay;
-            _game.OnPause += OnPause;
-            _game.OnEndTurn += OnEndTurn;
+            // _game.OnPlay += OnPlay;
+            // _game.OnPause += OnPause;
+            // _game.OnEndTurn += OnEndTurn;
         }
 
         private void OnDestroy()
         {
-            _game.OnPlay -= OnPlay;
-            _game.OnPause -= OnPause;
-            _game.OnEndTurn -= OnEndTurn;
+            // _game.OnPlay -= OnPlay;
+            // _game.OnPause -= OnPause;
+            // _game.OnEndTurn -= OnEndTurn;
         }
     }
 }

@@ -186,12 +186,12 @@ namespace AlgebraicNotation
 
         private void OnEnable()
         {
-            game.OnEndTurn += OnEndTurn;
+            // game.OnEndTurn += OnEndTurn;
         }
 
         private void OnDisable()
         {
-            game.OnEndTurn -= OnEndTurn;
+            // game.OnEndTurn -= OnEndTurn;
         }
     }
 }

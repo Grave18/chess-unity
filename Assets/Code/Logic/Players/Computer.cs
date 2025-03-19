@@ -33,7 +33,7 @@ namespace Logic.Players
         public override async void AllowMakeMove()
         {
             // Prevent momentary calculations after undo or redo
-            int delay = Game.MoveType is MoveType.Undo or MoveType.Redo ? 3000 : 100;
+            int delay = Game.MoveType is MoveTypeLegacy.Undo or MoveTypeLegacy.Redo ? 3000 : 100;
 
             try
             {

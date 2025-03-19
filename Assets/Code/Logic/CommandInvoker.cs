@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace Logic
 {
+    // TODO: Remove this
     public class CommandInvoker : MonoBehaviour
     {
         [Header("References")]
@@ -69,7 +70,7 @@ namespace Logic
         {
             if (IsStatePauseIdleThink() && _commandBuffer.CanUndo())
             {
-                game.StartTurn(MoveType.Undo);
+                game.StartTurn(MoveTypeLegacy.Undo);
 
                 await _commandBuffer.Undo();
 
@@ -81,7 +82,7 @@ namespace Logic
         {
             if (IsStatePauseIdleThink() && _commandBuffer.CanRedo())
             {
-                game.StartTurn(MoveType.Redo);
+                game.StartTurn(MoveTypeLegacy.Redo);
 
                 _ = await _commandBuffer.Redo();
 
@@ -91,7 +92,8 @@ namespace Logic
 
         private bool IsStatePauseIdleThink()
         {
-            return game.State is GameState.Pause or GameState.Idle or GameState.Think;
+            // return game.State is GameState.Pause or GameState.Idle or GameState.Think;
+            return false;
         }
 
         /// Get part of uci string, example: moves e2e4 e7e5
@@ -132,12 +134,12 @@ namespace Logic
 
         private void OnEnable()
         {
-            game.OnStart += OnStart;
+            // game.OnStart += OnStart;
         }
 
         private void OnDisable()
         {
-            game.OnStart -= OnStart;
+            // game.OnStart -= OnStart;
         }
 
         private void OnStart()

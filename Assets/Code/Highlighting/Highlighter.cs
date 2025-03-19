@@ -23,12 +23,12 @@ namespace Highlighting
         public void Init(Game game)
         {
             _game = game;
-            _game.OnEndTurn += UpdateHighlighting;
+            // _game.OnEndTurn += UpdateHighlighting;
         }
 
         private void OnDestroy()
         {
-            _game.OnEndTurn -= UpdateHighlighting;
+            // _game.OnEndTurn -= UpdateHighlighting;
         }
 
         public void UpdateHighlighting()

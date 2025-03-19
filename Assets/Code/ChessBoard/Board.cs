@@ -329,12 +329,29 @@ namespace ChessBoard
             _boardInstance = Instantiate(_prefabs[12], transform);
         }
 
-        private Piece GetPiece(PieceType pieceType, PieceColor pieceColor, Square square)
+        public Piece GetPiece(PieceType pieceType, PieceColor pieceColor, Square square)
         {
             GameObject piecePrefab = GetPrefabOfPiece(pieceType, pieceColor);
             Piece pieceInstance = InstantiatePiece(piecePrefab, square);
 
             return pieceInstance;
+        }
+
+        public Piece GetPiece(string piece, PieceColor pieceColor, string to)
+        {
+            Square toSquare = GetSquare(to);
+            PieceType pieceType = piece switch
+            {
+                "q" => PieceType.Queen,
+                "r" => PieceType.Rook,
+                "b" => PieceType.Bishop,
+                "n" => PieceType.Knight,
+                "p" => PieceType.Pawn,
+                "k" => PieceType.King,
+                _ => PieceType.None,
+            };
+
+            return GetPiece(pieceType, pieceColor, toSquare);
         }
 
         private GameObject GetPrefabOfPiece(PieceType pieceType, PieceColor pieceColor)

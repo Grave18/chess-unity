@@ -7,6 +7,7 @@ using Highlighting;
 using Logic;
 using Logic.Players;
 using UnityEngine;
+using Utils;
 
 namespace GameAndScene.Initialization
 {
@@ -93,9 +94,6 @@ namespace GameAndScene.Initialization
             Player playerBlack = GetPlayer(gameSettings.Player2Settings);
 
             competitors.Init(game, playerWhite, playerBlack);
-
-            playerWhite.Start();
-            playerBlack.Start();
         }
 
         private Player GetPlayer(PlayerSettings playerSettings)

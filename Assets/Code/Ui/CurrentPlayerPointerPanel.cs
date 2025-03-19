@@ -12,7 +12,7 @@ namespace Ui
 
         private void OnEnable()
         {
-            game.OnEndTurn += OnEndTurn;
+            // game.OnEndTurn += OnEndTurn;
         }
 
         private void OnEndTurn()

@@ -1,10 +1,9 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using ChessBoard;
 using ChessBoard.Info;
 using ChessBoard.Pieces;
+using Logic.Players;
+using Logic.Players.GameStates;
 using UnityEngine;
 
 namespace Logic
@@ -13,154 +12,133 @@ namespace Logic
     {
         [Header("References")]
         [SerializeField] private CommandInvoker commandInvoker;
+        [field:SerializeField] public Competitors Competitors { get; set; }
+        public Board Board { get; private set; }
 
-        [Header("Settings")]
-        [SerializeField] private GameState state = GameState.Idle;
-        [SerializeField] private PieceColor currentTurnColor = PieceColor.White;
-        [SerializeField] private CheckType checkType = CheckType.None;
-        [SerializeField] private bool isAutoChange;
-
-        public MoveType MoveType { get; private set; } = MoveType.None;
+        [field: Header("Debug")]
+        [field: SerializeField] public PieceColor CurrentTurnColor { get; set; } = PieceColor.White;
+        [field: SerializeField] public CheckType CheckType { get; set; } = CheckType.None;
+        [field: SerializeField] public MoveTypeLegacy MoveType { get; set; } = MoveTypeLegacy.None;
 
         public ISelectable Selected { get; set; }
-        public ISelectable Highlighted { get; set; }
 
         public AttackLinesList AttackLines { get; } = new();
-        public HashSet<Square> UnderAttackSquares { get; private set; } = new();
+        public HashSet<Square> UnderAttackSquares { get; set; } = new();
 
-        public event Action OnStartTurn;
-        public event Action OnEndTurn;
-        public event Action OnStart;
-        public event Action OnEnd;
-        public event Action OnPlay;
-        public event Action OnPause;
-        public event Action OnStartThink;
-        public event Action OnEndThink;
+        // public event Action OnEndTurn;
+        // public event Action OnStart;
+        // public event Action OnEnd;
+        // public event Action OnPlay;
+        // public event Action OnPause;
 
-
-        private Board _board;
+        private GameState _state;
         private PieceColor _timeOutColor = PieceColor.None;
 
         // Getters
-        public CheckType CheckType => checkType;
-        public PieceColor CurrentTurnColor => currentTurnColor;
-        public PieceColor PreviousTurnColor => currentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
-        public GameState State => state;
+        public HashSet<Piece> WhitePieces => Board.WhitePieces;
+        public HashSet<Piece> BlackPieces => Board.BlackPieces;
+        public IEnumerable<Square> Squares => Board.Squares;
+        public Square NullSquare => Board.NullSquare;
 
-
-        public HashSet<Piece> WhitePieces => _board.WhitePieces;
-        public HashSet<Piece> BlackPieces => _board.BlackPieces;
-        public IEnumerable<Square> Squares => _board.Squares;
-        public Square NullSquare => _board.NullSquare;
-
-        public bool IsAutoChange => isAutoChange;
-
-        private HashSet<Piece> CurrentTurnPieces => currentTurnColor == PieceColor.White ? _board.WhitePieces : _board.BlackPieces;
-        private HashSet<Piece> PrevTurnPieces => currentTurnColor == PieceColor.Black ? _board.WhitePieces : _board.BlackPieces;
+        public HashSet<Piece> CurrentTurnPieces => CurrentTurnColor == PieceColor.White ? Board.WhitePieces : Board.BlackPieces;
+        public HashSet<Piece> PrevTurnPieces => CurrentTurnColor == PieceColor.Black ? Board.WhitePieces : Board.BlackPieces;
 
         public void Init(Board board, PieceColor turnColor)
         {
-            _board = board;
-            currentTurnColor = turnColor;
+            Board = board;
+            CurrentTurnColor = turnColor;
         }
 
         public void StartGame()
         {
-            MoveType = MoveType.None;
-            checkType = CheckType.None;
-            state = GameState.Idle;
+            MoveType = MoveTypeLegacy.None;
+            CheckType = CheckType.None;
+            Board.Build();
+            SetState(new Idle(this));
+        }
 
-            _board.Build();
-            CalculateEndMove();
+        public void SetState(GameState state)
+        {
+            _state?.Exit();
+            _state = state;
+            _state?.Enter();
+        }
 
-            OnEndTurn?.Invoke();
-            OnStart?.Invoke();
+        private void Update()
+        {
+            _state?.Update();
+        }
+
+        public void Move(string uci)
+        {
+            _state?.Move(uci);
+        }
+
+        public void Undo()
+        {
+            _state?.Undo();
+        }
+
+        public void Redo()
+        {
+            _state?.Redo();
         }
 
         public void Play()
         {
-            if(state != GameState.Pause)
-            {
-                return;
-            }
-
-            state = GameState.Idle;
-            OnPlay?.Invoke();
+            _state?.Play();
         }
 
         public void Pause()
         {
-            if(state == GameState.Pause)
-            {
-                return;
-            }
-
-            // if(state == GameState.Move)
-            // {
-            //     StartCoroutine(DelayedPause());
-            //     return;
-            // }
-
-            PauseInternal();
+            _state?.Pause();
         }
 
-        private IEnumerator DelayedPause()
+        public void StartTurn(MoveTypeLegacy moveType = MoveTypeLegacy.Move)
         {
-            yield return new WaitUntil(() => state == GameState.Idle);
-            PauseInternal();
-        }
-
-        private void PauseInternal()
-        {
-            state = GameState.Pause;
-            OnPause?.Invoke();
-        }
-
-        public void StartTurn(MoveType moveType = MoveType.Move)
-        {
-            MoveType = moveType;
-            state = GameState.Move;
-            OnStartTurn?.Invoke();
+            // MoveType = moveType;
+            // _state = GameState.Move;
+            // OnStartTurn?.Invoke();
         }
         public void EndTurn()
         {
-            currentTurnColor = currentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
-            state = GameState.Idle;
-
-            CalculateEndMove();
-            OnEndTurn?.Invoke();
-
-            if(IsGameOver())
-            {
-                OnEnd?.Invoke();
-            }
+            // currentTurnColor = currentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
+            // _state = GameState.Idle;
+            //
+            // CalculateEndMove();
+            // OnEndTurn?.Invoke();
+            //
+            // if(IsGameOver())
+            // {
+            //     OnEnd?.Invoke();
+            // }
         }
 
         public void StartThink()
         {
-            state = GameState.Think;
-            OnStartThink?.Invoke();
+            // _state = GameState.Think;
+            // OnStartThink?.Invoke();
         }
 
         public void EndThink()
         {
-            state = GameState.Idle;
-            OnEndThink?.Invoke();
+            // _state = GameState.Idle;
+            // OnEndThink?.Invoke();
         }
 
         public PieceColor GetWinner()
         {
-            if (checkType == CheckType.CheckMate)
+            if (CheckType == CheckType.CheckMate)
             {
-                return currentTurnColor ==  PieceColor.White ? PieceColor.Black : PieceColor.White;
+                return CurrentTurnColor ==  PieceColor.White ? PieceColor.Black : PieceColor.White;
             }
 
-            if (checkType == CheckType.TimeOut)
+            if (CheckType == CheckType.TimeOut)
             {
                 return _timeOutColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
             }
 
-            if (checkType == CheckType.Stalemate)
+            if (CheckType == CheckType.Stalemate)
             {
                 return PieceColor.None;
             }
@@ -170,181 +148,57 @@ namespace Logic
 
         public void SetTimeOut(PieceColor pieceColor)
         {
-            checkType = CheckType.TimeOut;
+            CheckType = CheckType.TimeOut;
             _timeOutColor = pieceColor;
-
-            OnEnd?.Invoke();
         }
 
         public bool IsGameOver()
         {
-            return checkType is CheckType.CheckMate or CheckType.Stalemate or CheckType.TimeOut;
+            return CheckType is CheckType.CheckMate or CheckType.Stalemate or CheckType.TimeOut;
         }
 
         /// Retrieves the En Passant information for the last command if applicable
         public EnPassantInfo GetEnPassantInfo()
         {
+            // Todo: move to state?
             return commandInvoker.GetEnPassantInfo();
-        }
-
-        public bool IsRightTurn(PieceColor pieceColor)
-        {
-            return pieceColor == currentTurnColor;
         }
 
         /// Get section relative to current piece color
         public Square GetSquareRel(PieceColor pieceColor, Square currentSquare, Vector2Int offset)
         {
-            return _board.GetSquareRel(pieceColor, currentSquare, offset);
+            return Board.GetSquareRel(pieceColor, currentSquare, offset);
         }
 
         /// Get section relative to absolute position (white side)
         public Square GetSquareAbs(Square currentSquare, Vector2Int offset)
         {
-            return _board.GetSquareAbs(currentSquare, offset);
+            return Board.GetSquareAbs(currentSquare, offset);
         }
 
-        /// Calculations for all turns
-        private void CalculateEndMove()
+        public string GetStateName()
         {
-            UnderAttackSquares = GetUnderAttackSquares(PrevTurnPieces);
-            checkType = CalculateCheck(PrevTurnPieces);
-
-            foreach (Piece piece in CurrentTurnPieces)
-            {
-                piece.CalculateMovesAndCaptures();
-                piece.CalculateConstrains();
-            }
-
-            CalculateCheckMateOrStalemate(CurrentTurnPieces);
+            return _state?.Name;
         }
 
-        private static HashSet<Square> GetUnderAttackSquares(HashSet<Piece> pieces)
+        public bool CanSelect(ISelectable selectable)
         {
-            var underAttackSquares = new HashSet<Square>();
-            foreach (Piece piece in pieces)
-            {
-                piece.CalculateMovesAndCaptures();
-                FillUnderAttackSquaresForPiece(piece, underAttackSquares);
-            }
-
-            return underAttackSquares;
+            return selectable.HasPiece() && selectable.GetPieceColor() == CurrentTurnColor;
         }
 
-        private static void FillUnderAttackSquaresForPiece(Piece piece, HashSet<Square> underAttackSquares)
+        public void Select(ISelectable selectable)
         {
-            // Pawn's under attack
-            if (piece is Pawn pawn)
-            {
-                var attackSquares = new List<Square>(pawn.UnderAttackSquares);
-                foreach (Square underAttackSquare in attackSquares)
-                {
-                    underAttackSquares.Add(underAttackSquare);
-                }
-            }
-            // Other piece's under attack
-            else
-            {
-                var moveSquares = new List<Square>(piece.MoveSquares.Keys);
-                foreach (Square moveSquare in moveSquares)
-                {
-                    underAttackSquares.Add(moveSquare);
-                }
-            }
-
-            // All pieces defends
-            foreach (Square defendSquare in piece.DefendSquares)
-            {
-                underAttackSquares.Add(defendSquare);
-            }
+            Selected = selectable;
         }
 
-        private CheckType CalculateCheck(HashSet<Piece> pieces)
+        /// Deselect currently selected piece
+        public void Deselect()
         {
-            AttackLines.Clear();
-
-            foreach (Piece piece in pieces)
-            {
-                // Fill under attack line
-                bool isCheck = IsPieceMakeCheck(piece);
-                if (piece is LongRange longRange)
-                {
-                    if (!longRange.HasAttackLine) continue;
-
-                    var attackLine = new AttackLine(piece, isCheck, longRange.AttackLineSquares, longRange.SquareBehindKing);
-                    AttackLines.Add(attackLine);
-                }
-                else
-                {
-                    if (!isCheck) continue;
-
-                    var attackLine = new AttackLine(piece, true);
-                    AttackLines.Add(attackLine);
-                }
-            }
-
-            return AttackLines.GetCheckCount() switch
-            {
-                0 => CheckType.None,
-                1 => CheckType.Check,
-                _ => CheckType.DoubleCheck
-            };
-
-            bool IsPieceMakeCheck(Piece piece)
-            {
-                foreach ((Square square, _) in piece.CaptureSquares)
-                {
-                    if (square.HasPiece() && square.GetPiece() is King king &&
-                        king.GetPieceColor() != piece.GetPieceColor())
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
+            Selected = null;
         }
-
-        private void CalculateCheckMateOrStalemate(HashSet<Piece> currentTurnPieces)
-        {
-            // If all pieces have no moves
-            if (currentTurnPieces.Any(piece => piece.MoveSquares.Count  > 0
-                || piece.CaptureSquares.Count > 0))
-            {
-                return;
-            }
-
-            checkType = checkType switch
-                {
-                    CheckType.None => CheckType.Stalemate,
-                    CheckType.Check or CheckType.DoubleCheck => CheckType.CheckMate,
-                    _ => checkType
-                };
-        }
-
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-        public void SetAutoChange(bool value)
-        {
-            isAutoChange = value;
-        }
-
-        public void SetTurn(int index)
-        {
-            if (index < 0 || index > 1)
-            {
-                return;
-            }
-
-            currentTurnColor = (PieceColor)index;
-            state = GameState.Idle;
-
-            CalculateEndMove();
-            OnEndTurn?.Invoke();
-        }
-#endif
     }
 
-    public enum MoveType
+    public enum MoveTypeLegacy
     {
         None,
         Move,
