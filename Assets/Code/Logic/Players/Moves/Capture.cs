@@ -1,35 +1,22 @@
 ﻿using ChessBoard;
 using ChessBoard.Pieces;
-using UnityEngine;
-using Utils.Mathematics;
 
 namespace Logic.Players.Moves
 {
     public class Capture : Turn
     {
-        private readonly Piece _movedPiece;
         private readonly Piece _beatenPiece;
-        private readonly Square _fromSquare;
-        private readonly Square _toSquare;
-        private readonly bool _isFirstMove;
+        private readonly Turn _simpleMove;
 
         public Capture(Piece movedPiece, Square fromSquare, Square toSquare, Piece beatenPiece, bool isFirstMove)
         {
-            _movedPiece = movedPiece;
             _beatenPiece = beatenPiece;
-            _fromSquare = fromSquare;
-            _toSquare = toSquare;
-            _isFirstMove = isFirstMove;
+            _simpleMove = new SimpleMove(movedPiece, fromSquare,toSquare, isFirstMove);
         }
 
         public override void Progress(float t)
         {
-            Vector3 from = _fromSquare.transform.position;
-            Vector3 to = _toSquare.transform.position;
-            Vector3 pos = Vector3.Lerp(from, to, Easing.InOutCubic(t));
-
-            Piece movedPiece = _movedPiece.GetPiece();
-            movedPiece.MoveTo(pos);
+            _simpleMove.Progress(t);
         }
 
         public override void End()
@@ -38,25 +25,17 @@ namespace Logic.Players.Moves
 
             _beatenPiece.RemoveFromBoard();
             BeatenPieces.Instance.Add(_beatenPiece, beatenPieceSquare);
-            _movedPiece.SetNewSquare(_toSquare);
 
-            if (_isFirstMove)
-            {
-                _movedPiece.IsFirstMove = false;
-            }
+            _simpleMove.End();
         }
 
         public override void EndUndo()
         {
             (Piece beatenPiece, Square beatenPieceSquare) = BeatenPieces.Instance.Remove();
 
-            _movedPiece.SetNewSquare(_fromSquare);
+            // Order matters
+            _simpleMove.EndUndo();
             beatenPiece.AddToBoard(beatenPieceSquare);
-
-            if (_isFirstMove)
-            {
-                _movedPiece.IsFirstMove = true;
-            }
         }
     }
 }
