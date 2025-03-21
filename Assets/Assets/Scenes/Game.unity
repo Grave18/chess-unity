@@ -9534,8 +9534,6 @@ MonoBehaviour:
   piecesParent: {fileID: 543450652193350432}
   squaresParent: {fileID: 1081509498}
   nullSquare: {fileID: 1785828115}
-  beatenPiecesWhite: {fileID: 0}
-  beatenPiecesBlack: {fileID: 0}
   promotionPanel: {fileID: 835316401}
 --- !u!4 &1194414646 stripped
 Transform:
@@ -12641,7 +12639,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f495c8e5734746ea8a363a9bcbfdccf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardPreset: {fileID: 11400000, guid: af4ece0b25c664542a2ac0399e11b0d5, type: 2}
+  boardPreset: {fileID: 11400000, guid: be17809c00d47c4478684728efcb96b0, type: 2}
   assetLabel:
     m_LabelString: ChessDay4
 --- !u!4 &1663133264

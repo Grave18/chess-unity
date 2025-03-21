@@ -25,7 +25,6 @@ namespace Logic.Players.GameStates
 
     public struct ParsedUci
     {
-        public Piece Piece;
         public Square FromSquare;
         public Square ToSquare;
         public Piece PromotedPiece;

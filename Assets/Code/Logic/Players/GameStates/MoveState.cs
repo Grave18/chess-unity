@@ -1,5 +1,4 @@
-﻿using AlgebraicNotation;
-using ChessBoard;
+﻿using ChessBoard;
 using ChessBoard.Info;
 using ChessBoard.Pieces;
 using Logic.MovesBuffer;
@@ -49,7 +48,6 @@ namespace Logic.Players.GameStates
 
             Square fromSquare = Game.Board.GetSquare(from);
             Square toSquare = Game.Board.GetSquare(to);
-            Piece piece = fromSquare.GetPiece();
             Piece promotedPiece = null;
 
             if (uci.Length == 5)
@@ -60,7 +58,6 @@ namespace Logic.Players.GameStates
 
             var parsedUci = new ParsedUci
             {
-                Piece = piece,
                 FromSquare = fromSquare,
                 ToSquare = toSquare,
                 PromotedPiece = promotedPiece,
@@ -71,12 +68,12 @@ namespace Logic.Players.GameStates
 
         private bool Validate(ParsedUci parsedUci)
         {
-            Piece piece = parsedUci.Piece;
+            Piece piece = parsedUci.FromSquare.GetPiece();
 
             _moveData = new MoveData
             {
                 Uci = _uci,
-                IsFirstMove = parsedUci.Piece.IsFirstMove
+                IsFirstMove = piece.IsFirstMove
             };
 
             // Move
@@ -84,7 +81,7 @@ namespace Logic.Players.GameStates
             {
                 _moveData.MoveType = MoveType.Move;
                 _moveData.EpSquareAddress = moveInfo.EnPassantSquare?.Address ?? "-";
-                turn = new SimpleMove(parsedUci, _moveData);
+                turn = new SimpleMove(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
                 return true;
             }
 
@@ -93,7 +90,7 @@ namespace Logic.Players.GameStates
             {
                 _moveData.MoveType = captureInfo.MoveType;
                 _moveData.BeatenPiece = captureInfo.BeatenPiece;
-                turn = new Capture(parsedUci, _moveData);
+                turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece, _moveData.IsFirstMove);
                 return true;
             }
 
@@ -102,7 +99,7 @@ namespace Logic.Players.GameStates
             {
                 _moveData.MoveType = castlingInfo.MoveType;
                 _moveData.CastlingInfo = castlingInfo;
-                turn = new Castling(parsedUci, _moveData);
+                turn = new Castling(_moveData.CastlingInfo, _moveData.IsFirstMove);
                 return true;
             }
 

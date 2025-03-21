@@ -5,9 +5,12 @@ namespace ChessBoard.Info
 {
     public struct CastlingInfo
     {
+        public Piece King;
+        public Square KingFromSquare;
+        public Square KingToSquare;
         public Rook Rook;
-        public Square CastlingSquare;
-        public Square RookSquare;
+        public Square RookFromSquare;
+        public Square RookToSquare;
         public bool IsBlocked;
         public MoveType MoveType;
     }

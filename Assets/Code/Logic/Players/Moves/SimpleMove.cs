@@ -1,5 +1,5 @@
-﻿using Logic.MovesBuffer;
-using Logic.Players.GameStates;
+﻿using ChessBoard;
+using ChessBoard.Pieces;
 using UnityEngine;
 using Utils.Mathematics;
 
@@ -7,36 +7,45 @@ namespace Logic.Players.Moves
 {
     public class SimpleMove : Turn
     {
-        public SimpleMove(ParsedUci parsedUci, MoveData moveData) : base(parsedUci, moveData)
+        private readonly Piece _movedPiece;
+        private readonly Square _fromSquare;
+        private readonly Square _toSquare;
+        private readonly bool _isFirstMove;
+
+        public SimpleMove(Piece movedPiece, Square fromSquare, Square toSquare, bool isFirstMove)
         {
+            _movedPiece = movedPiece;
+            _fromSquare = fromSquare;
+            _toSquare = toSquare;
+            _isFirstMove = isFirstMove;
         }
 
         public override void Progress(float t)
         {
-            Vector3 from = ParsedUci.FromSquare.transform.position;
-            Vector3 to = ParsedUci.ToSquare.transform.position;
+            Vector3 from = _fromSquare.transform.position;
+            Vector3 to = _toSquare.transform.position;
             Vector3 pos = Vector3.Lerp(from, to, Easing.InOutCubic(t));
 
-            ParsedUci.Piece.MoveTo(pos);
+            _movedPiece.MoveTo(pos);
         }
 
         public override void End()
         {
-            ParsedUci.Piece.SetNewSquare(ParsedUci.ToSquare);
+            _movedPiece.SetNewSquare(_toSquare);
 
-            if (MoveData.IsFirstMove)
+            if (_isFirstMove)
             {
-                ParsedUci.Piece.IsFirstMove = false;
+                _movedPiece.IsFirstMove = false;
             }
         }
 
         public override void EndUndo()
         {
-            ParsedUci.Piece.SetNewSquare(ParsedUci.FromSquare);
+            _movedPiece.SetNewSquare(_fromSquare);
 
-            if (MoveData.IsFirstMove)
+            if (_isFirstMove)
             {
-                ParsedUci.Piece.IsFirstMove = true;
+                _movedPiece.IsFirstMove = true;
             }
         }
     }

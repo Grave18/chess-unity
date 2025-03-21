@@ -88,7 +88,7 @@ namespace ChessBoard.Pieces
 
             foreach (CastlingInfo ci in CastlingSquares)
             {
-                if (ci.CastlingSquare.IsEqual(square))
+                if (ci.KingToSquare.IsEqual(square))
                 {
                     castlingInfo = ci;
                     return true;
@@ -112,9 +112,12 @@ namespace ChessBoard.Pieces
             bool isRook = squareWithShortRook.HasPiece() && squareWithShortRook.GetPiece() is Rook { IsFirstMove: true };
 
             // Set castling info
+            castlingInfo.King = this;
             castlingInfo.Rook = isRook ? squareWithShortRook.GetPiece() as Rook : null;
-            castlingInfo.CastlingSquare = square;
-            castlingInfo.RookSquare = squarePlus1;
+            castlingInfo.KingFromSquare = GetSquare();
+            castlingInfo.KingToSquare = square;
+            castlingInfo.RookFromSquare = castlingInfo.Rook?.GetSquare();
+            castlingInfo.RookToSquare = squarePlus1;
             castlingInfo.MoveType = MoveType.CastlingShort;
             castlingInfo.IsBlocked = castlingInfo.Rook != null
                                      && IsFirstMove
@@ -139,9 +142,12 @@ namespace ChessBoard.Pieces
             bool isRook = squareWithLongRook.HasPiece() && squareWithLongRook.GetPiece() is Rook { IsFirstMove: true };
 
             // Set castling info
+            castlingInfo.King = this;
             castlingInfo.Rook = isRook ? squareWithLongRook.GetPiece() as Rook : null;
-            castlingInfo.CastlingSquare = square;
-            castlingInfo.RookSquare = squareMinus1;
+            castlingInfo.KingFromSquare = GetSquare();
+            castlingInfo.KingToSquare = square;
+            castlingInfo.RookFromSquare = castlingInfo.Rook?.GetSquare();
+            castlingInfo.RookToSquare = squareMinus1;
             castlingInfo.MoveType = MoveType.CastlingLong;
             castlingInfo.IsBlocked = castlingInfo.Rook != null
                                      && IsFirstMove

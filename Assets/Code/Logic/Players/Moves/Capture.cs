@@ -1,8 +1,5 @@
 ﻿using ChessBoard;
-using ChessBoard.Info;
 using ChessBoard.Pieces;
-using Logic.MovesBuffer;
-using Logic.Players.GameStates;
 using UnityEngine;
 using Utils.Mathematics;
 
@@ -10,48 +7,55 @@ namespace Logic.Players.Moves
 {
     public class Capture : Turn
     {
-        private CaptureInfo _captureInfo;
-        public Capture(ParsedUci parsedUci, MoveData moveData) : base(parsedUci, moveData)
+        private readonly Piece _movedPiece;
+        private readonly Piece _beatenPiece;
+        private readonly Square _fromSquare;
+        private readonly Square _toSquare;
+        private readonly bool _isFirstMove;
+
+        public Capture(Piece movedPiece, Square fromSquare, Square toSquare, Piece beatenPiece, bool isFirstMove)
         {
+            _movedPiece = movedPiece;
+            _beatenPiece = beatenPiece;
+            _fromSquare = fromSquare;
+            _toSquare = toSquare;
+            _isFirstMove = isFirstMove;
         }
 
         public override void Progress(float t)
         {
-            Vector3 from = ParsedUci.FromSquare.transform.position;
-            Vector3 to = ParsedUci.ToSquare.transform.position;
+            Vector3 from = _fromSquare.transform.position;
+            Vector3 to = _toSquare.transform.position;
             Vector3 pos = Vector3.Lerp(from, to, Easing.InOutCubic(t));
 
-            Piece movedPiece = ParsedUci.Piece.GetPiece();
+            Piece movedPiece = _movedPiece.GetPiece();
             movedPiece.MoveTo(pos);
         }
 
         public override void End()
         {
-            Piece movedPiece = ParsedUci.FromSquare.GetPiece();
-            Piece beatenPiece = MoveData.BeatenPiece;
-            Square beatenPieceSquare = beatenPiece.GetSquare();
+            Square beatenPieceSquare = _beatenPiece.GetSquare();
 
-            beatenPiece.RemoveFromBoard();
-            BeatenPieces.Instance.Add(beatenPiece, beatenPieceSquare);
-            movedPiece.SetNewSquare(ParsedUci.ToSquare);
+            _beatenPiece.RemoveFromBoard();
+            BeatenPieces.Instance.Add(_beatenPiece, beatenPieceSquare);
+            _movedPiece.SetNewSquare(_toSquare);
 
-            if (MoveData.IsFirstMove)
+            if (_isFirstMove)
             {
-                movedPiece.IsFirstMove = false;
+                _movedPiece.IsFirstMove = false;
             }
         }
 
         public override void EndUndo()
         {
-            Piece movedPiece = ParsedUci.ToSquare.GetPiece();
             (Piece beatenPiece, Square beatenPieceSquare) = BeatenPieces.Instance.Remove();
 
-            movedPiece.SetNewSquare(ParsedUci.FromSquare);
+            _movedPiece.SetNewSquare(_fromSquare);
             beatenPiece.AddToBoard(beatenPieceSquare);
 
-            if (MoveData.IsFirstMove)
+            if (_isFirstMove)
             {
-                movedPiece.IsFirstMove = true;
+                _movedPiece.IsFirstMove = true;
             }
         }
     }

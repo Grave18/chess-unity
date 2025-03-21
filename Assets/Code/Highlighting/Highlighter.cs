@@ -119,7 +119,7 @@ namespace Highlighting
             {
                 foreach (CastlingInfo castlingInfo in king.CastlingSquares)
                 {
-                    if (castlingInfo.CastlingSquare.TryGetComponent(out SquareHighlighter squareHighlighter))
+                    if (castlingInfo.KingToSquare.TryGetComponent(out SquareHighlighter squareHighlighter))
                     {
                         squareHighlighter.Show(SquareShape.Dot, commonSettings.CastlingColor);
                     }

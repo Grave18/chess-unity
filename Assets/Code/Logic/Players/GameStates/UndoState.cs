@@ -24,7 +24,7 @@ namespace Logic.Players.GameStates
 
         public override void Enter()
         {
-            ParsedUci parsedUci = GetParsedUciUndo(_moveData.Uci);
+            ParsedUci parsedUci = GetParsedUci(_moveData.Uci);
             bool isValid = ValidateUndo(parsedUci);
 
             if (isValid)
@@ -37,7 +37,7 @@ namespace Logic.Players.GameStates
             }
         }
 
-        private ParsedUci GetParsedUciUndo(string uci)
+        private ParsedUci GetParsedUci(string uci)
         {
             // Extract move form string
             string from = uci.Substring(0, 2);
@@ -45,7 +45,6 @@ namespace Logic.Players.GameStates
 
             Square fromSquare = Game.Board.GetSquare(from);
             Square toSquare = Game.Board.GetSquare(to);
-            Piece piece = toSquare.GetPiece();
             Piece promotedPiece = null;
 
             if (uci.Length == 5)
@@ -56,7 +55,6 @@ namespace Logic.Players.GameStates
 
             var parsedUci = new ParsedUci
             {
-                Piece = piece,
                 FromSquare = fromSquare,
                 ToSquare = toSquare,
                 PromotedPiece = promotedPiece,
@@ -67,21 +65,23 @@ namespace Logic.Players.GameStates
 
         private bool ValidateUndo(ParsedUci parsedUci)
         {
+            Piece movedPiece = parsedUci.ToSquare.GetPiece();
+
             if (_moveData.MoveType == MoveType.Move)
             {
-                turn = new SimpleMove(parsedUci, _moveData);
+                turn = new SimpleMove(movedPiece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
                 return true;
             }
 
             if (_moveData.MoveType is MoveType.Capture or MoveType.EnPassant)
             {
-                turn = new Capture(parsedUci, _moveData);
+                turn = new Capture(movedPiece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece, _moveData.IsFirstMove);
                 return true;
             }
 
             if (_moveData.MoveType is MoveType.CastlingShort or MoveType.CastlingLong)
             {
-                turn = new Castling(parsedUci, _moveData);
+                turn = new Castling(_moveData.CastlingInfo, _moveData.IsFirstMove);
                 return true;
             }
 
