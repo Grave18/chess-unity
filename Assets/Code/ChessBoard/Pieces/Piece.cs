@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ChessBoard.Info;
@@ -32,14 +31,12 @@ namespace ChessBoard.Pieces
 
         // Initialize
         protected Game Game { get; private set; }
-        private Board _board;
-        private BeatenPiecesPlace _beatenPiecesPlace;
+        protected Board Board { get; private set; }
 
-        public void Init(Game game, Board board, Square square, BeatenPiecesPlace beatenPiecesPlace)
+        public void Init(Game game, Board board, Square square)
         {
             Game = game;
-            _board = board;
-            _beatenPiecesPlace = beatenPiecesPlace;
+            Board = board;
 
             currentSquare = square;
             currentSquare.SetPiece(this);
@@ -50,25 +47,32 @@ namespace ChessBoard.Pieces
             return MoveSquares.TryGetValue(square, out moveInfo);
         }
 
-        public bool CanEatAt(Square square, out CaptureInfo captureInfo)
+        public bool CanCaptureAt(Square square, out CaptureInfo captureInfo)
         {
             return CaptureSquares.TryGetValue(square, out captureInfo);
         }
 
-        public void MoveToBeaten()
+        // Todo: refactor square set
+        public void RemoveFromBoard()
         {
-            _beatenPiecesPlace.Add(this);
             currentSquare.SetPiece(null);
             currentSquare = null;
-            _board.RemovePiece(this);
+            Board.RemovePiece(this);
         }
 
-        public void RemoveFromBeaten(Square square)
+        public void AddToBoard(Square square)
         {
-            _beatenPiecesPlace.Remove(this, square.transform.position);
             square.SetPiece(this);
             currentSquare = square;
-            _board.AddPiece(this);
+            Board.AddPiece(this);
+            transform.position = square.transform.position;
+        }
+
+        public void SetNewSquare(Square square)
+        {
+            currentSquare.SetPiece(null);
+            currentSquare = square;
+            currentSquare.SetPiece(this);
         }
 
         // Todo: remove this
@@ -95,13 +99,6 @@ namespace ChessBoard.Pieces
         public void MoveTo(Vector3 newPosition)
         {
             transform.position = newPosition;
-        }
-
-        public void ResetSquare(Square square)
-        {
-            currentSquare.SetPiece(null);
-            currentSquare = square;
-            currentSquare.SetPiece(this);
         }
 
         /// Calculate all constrains after captures and moves are calculated

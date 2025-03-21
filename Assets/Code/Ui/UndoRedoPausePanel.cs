@@ -7,7 +7,6 @@ namespace Ui
     public class UndoRedoPausePanel : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private CommandInvoker commandInvoker;
         [SerializeField] private Game game;
 
         [Header("UI")]
@@ -27,26 +26,14 @@ namespace Ui
             pause.onClick.AddListener(OnPlayPausePressed);
         }
 
-        private void OnEnable()
-        {
-            // game.OnPause += OnPause;
-            // game.OnPlay += OnPlay;
-        }
-
-        private void OnDisable()
-        {
-            // game.OnPause -= OnPause;
-            // game.OnPlay -= OnPlay;
-        }
-
         private void OnUndoPressed()
         {
-            _ = commandInvoker.Undo();
+            game.Undo();
         }
 
         private void OnRedoPressed()
         {
-            _ = commandInvoker.Redo();
+            game.Redo();
         }
 
         private void OnPlayPausePressed()

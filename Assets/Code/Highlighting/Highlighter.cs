@@ -78,9 +78,7 @@ namespace Highlighting
             }
 
             // King
-            HashSet<Piece> pieces = _game.CurrentTurnColor == PieceColor.White ? _game.WhitePieces : _game.BlackPieces;
-
-            foreach (Piece assumeKing in pieces)
+            foreach (Piece assumeKing in _game.CurrentTurnPieces)
             {
                 if (assumeKing is not King)
                 {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using AlgebraicNotation;
 using ChessBoard.Info;
 using Logic;
+using Logic.MovesBuffer;
 using UnityEngine;
 
 namespace ChessBoard.Pieces
@@ -115,7 +115,7 @@ namespace ChessBoard.Pieces
             castlingInfo.Rook = isRook ? squareWithShortRook.GetPiece() as Rook : null;
             castlingInfo.CastlingSquare = square;
             castlingInfo.RookSquare = squarePlus1;
-            castlingInfo.NotationTurnType = NotationTurnType.CastlingShort;
+            castlingInfo.MoveType = MoveType.CastlingShort;
             castlingInfo.IsBlocked = castlingInfo.Rook != null
                                      && IsFirstMove
                                      && (isSquaresUnderAttack || Game.CheckType is CheckType.Check or CheckType.DoubleCheck);
@@ -142,7 +142,7 @@ namespace ChessBoard.Pieces
             castlingInfo.Rook = isRook ? squareWithLongRook.GetPiece() as Rook : null;
             castlingInfo.CastlingSquare = square;
             castlingInfo.RookSquare = squareMinus1;
-            castlingInfo.NotationTurnType = NotationTurnType.CastlingLong;
+            castlingInfo.MoveType = MoveType.CastlingLong;
             castlingInfo.IsBlocked = castlingInfo.Rook != null
                                      && IsFirstMove
                                      && (isSquaresUnderAttack || Game.CheckType is CheckType.Check or CheckType.DoubleCheck);

@@ -87,10 +87,10 @@ namespace Logic.Players
             // Castling
             else if (movePiece is King king && king.CanCastlingAt(moveToSquare, out CastlingInfo castlingInfo))
             {
-                _ = CommandInvoker.Castling(king, moveToSquare, castlingInfo.Rook, castlingInfo.RookSquare, castlingInfo.NotationTurnType);
+                _ = CommandInvoker.Castling(king, moveToSquare, castlingInfo.Rook, castlingInfo.RookSquare, castlingInfo.MoveType);
             }
             // Eat
-            else if (movePiece.CanEatAt(moveToSquare, out CaptureInfo captureInfo))
+            else if (movePiece.CanCaptureAt(moveToSquare, out CaptureInfo captureInfo))
             {
                 _ = CommandInvoker.EatAt(movePiece, moveToSquare, captureInfo);
             }

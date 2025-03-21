@@ -4,6 +4,7 @@ using ChessBoard;
 using ChessBoard.Info;
 using ChessBoard.Pieces;
 using Logic.CommandPattern;
+using Logic.MovesBuffer;
 using UnityEngine;
 
 namespace Logic
@@ -52,17 +53,17 @@ namespace Logic
             // Capture
             else
             {
-                await _commandBuffer.AddAndExecute(new EatCommand(piece, captureInfo.BeatenPiece, moveToSquare, captureInfo.NotationTurnType));
+                await _commandBuffer.AddAndExecute(new EatCommand(piece, captureInfo.BeatenPiece, moveToSquare, captureInfo.MoveType));
             }
 
             game.EndTurn();
         }
 
         public async Task Castling(King piece, Square kingSquare, Rook rook, Square rookSquare,
-            NotationTurnType notationTurnType)
+            MoveType moveType)
         {
             game.StartTurn();
-            await _commandBuffer.AddAndExecute(new CastlingCommand(piece, kingSquare, rook, rookSquare, notationTurnType));
+            await _commandBuffer.AddAndExecute(new CastlingCommand(piece, kingSquare, rook, rookSquare, moveType));
             game.EndTurn();
         }
 

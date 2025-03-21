@@ -142,14 +142,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fb0837d668245a69708ce03e7b0cd34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pieceColor: 1
+  pieceColor: 2
   squareLayer:
     serializedVersion: 2
     m_Bits: 128
   animationSpeed: 1
   animationEase: 10
-  game: {fileID: 0}
   currentSquare: {fileID: 0}
+  <IsFirstMove>k__BackingField: 0
   moveVectors:
   - {x: 1, y: 1}
   - {x: 1, y: -1}

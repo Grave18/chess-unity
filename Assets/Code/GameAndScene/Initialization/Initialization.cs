@@ -5,6 +5,7 @@ using ChessBoard;
 using EditorCools;
 using Highlighting;
 using Logic;
+using Logic.MovesBuffer;
 using Logic.Players;
 using UnityEngine;
 using Utils;
@@ -39,11 +40,12 @@ namespace GameAndScene.Initialization
             GameObject[] prefabs = await assets.LoadPrefabs();
             ParsedPreset parsedPreset = assets.GetParsedPreset();
             PieceColor turnColor = Assets.GetTurnColorFromPreset(parsedPreset);
+            var commandBuffer = new Buffer();
 
-            game.Init(board, turnColor);
-            board.Init(game, commandInvoker, parsedPreset, prefabs, turnColor);
+            game.Init(board, commandBuffer, turnColor);
+            board.Init(game, commandBuffer, parsedPreset, prefabs, turnColor);
             clock.Init(game);
-            uciString.Init(game, board, commandInvoker, assets);
+            uciString.Init(game, board, assets);
             highlighter.Init(game);
 
             InitPlayers();

@@ -6,6 +6,7 @@ using ChessBoard.Info;
 using ChessBoard.Pieces;
 using EditorCools;
 using Logic;
+using Logic.MovesBuffer;
 using Logic.Players;
 using Ui.Promotion;
 using UnityEngine;
@@ -26,8 +27,6 @@ namespace ChessBoard
         [SerializeField] private Transform piecesParent;
         [SerializeField] private Transform squaresParent;
         [SerializeField] private Square nullSquare;
-        [SerializeField] private BeatenPiecesPlace beatenPiecesWhite;
-        [SerializeField] private BeatenPiecesPlace beatenPiecesBlack;
 
         [Header("Ui")]
         [SerializeField] private PromotionPanel promotionPanel;
@@ -41,7 +40,7 @@ namespace ChessBoard
 
         // Initialized
         private Game _game;
-        private CommandInvoker _commandInvoker;
+        private Buffer _commandBuffer;
         private GameObject[] _prefabs;
         private ParsedPreset _boardPreset;
         private PieceColor _turnColor;
@@ -50,11 +49,11 @@ namespace ChessBoard
 
         public Square NullSquare => nullSquare;
 
-        public void Init(Game game, CommandInvoker commandInvoker, ParsedPreset boardPreset, GameObject[] prefabs,
+        public void Init(Game game, Buffer commandBuffer, ParsedPreset boardPreset, GameObject[] prefabs,
             PieceColor turnColor)
         {
             _game = game;
-            _commandInvoker = commandInvoker;
+            _commandBuffer = commandBuffer;
             _prefabs = prefabs;
             _boardPreset = boardPreset;
             _turnColor = turnColor;
@@ -104,9 +103,9 @@ namespace ChessBoard
         }
 
         /// Get square by address on the board. example: "c1", "d3" ...
-        public Square GetSquare(string uciSquare)
+        public Square GetSquare(string squareAddress)
         {
-            return SquaresHash.TryGetValue(uciSquare, out Square moveFromSquare)
+            return SquaresHash.TryGetValue(squareAddress, out Square moveFromSquare)
                 ? moveFromSquare
                 : NullSquare;
         }
@@ -115,7 +114,11 @@ namespace ChessBoard
         public Square GetSquare(int x, int y)
         {
             int invertedY = Height - y - 1;
-            return Squares[x + invertedY * Width];
+            int index = x + invertedY * Width;
+
+            return index >= 0 && index < Squares.Count
+                ? Squares[index]
+                : NullSquare;
         }
 
         public void DestroyBoardAndPieces()
@@ -165,7 +168,6 @@ namespace ChessBoard
             FindAllSquares();
             HashSquares();
             LoadPiecesFromPreset();
-            SetupEnPassant();
             InstantiateBoard();
         }
 
@@ -258,18 +260,26 @@ namespace ChessBoard
             }
         }
 
-        private void SetupEnPassant()
+        public EnPassantInfo GetEnPassantInfo()
         {
-            if (_boardPreset.EnPassant != "-")
+            string epSquareAddress = _commandBuffer.GetEpSquareAddress();
+            if (epSquareAddress == "-")
             {
-                Square epSquare = GetSquare(_boardPreset.EnPassant);
-                // The (0, 1) to (0, -1) swapped because we find square for previous turn
-                Square pawnToSquare = GetSquareRel(_turnColor, epSquare, new Vector2Int(0, -1));
-                Piece pawn = pawnToSquare.GetPiece();
-                var enPassantInfo = new EnPassantInfo(pawn, epSquare);
-
-                _commandInvoker.SetEnPassantInfo(enPassantInfo);
+                epSquareAddress = _boardPreset.EnPassant;
             }
+
+            Square epSquare = GetSquare(epSquareAddress);
+
+            if (epSquare == NullSquare)
+            {
+                return null;
+            }
+
+            // The (0, 1) to (0, -1) swapped because we find square for previous turn
+            Square pawnToSquare = GetSquareRel(_turnColor, epSquare, new Vector2Int(0, -1));
+            Piece pawn = pawnToSquare.GetPiece();
+
+            return new EnPassantInfo(pawn, epSquare);
         }
 
         private static void CheckWhitePawnFirstMove(Square square, Piece piece)
@@ -396,14 +406,7 @@ namespace ChessBoard
                 piecePrefab.transform.rotation, piecesParent);
             var piece = pieceInstance.GetComponent<Piece>();
 
-            BeatenPiecesPlace beatenPiecesPlace = piece.GetPieceColor() switch
-            {
-                PieceColor.White => beatenPiecesWhite,
-                PieceColor.Black => beatenPiecesBlack,
-                _ => null,
-            };
-
-            piece.Init(_game, this, square, beatenPiecesPlace);
+            piece.Init(_game, this, square);
 
             return piece;
         }

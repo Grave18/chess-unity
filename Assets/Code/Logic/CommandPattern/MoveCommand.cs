@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
-using AlgebraicNotation;
 using ChessBoard;
 using ChessBoard.Info;
 using ChessBoard.Pieces;
+using Logic.MovesBuffer;
 
 namespace Logic.CommandPattern
 {
@@ -12,7 +12,7 @@ namespace Logic.CommandPattern
         private bool _previousIsFirstMove;
 
         public MoveCommand(Piece piece, Square moveToSquare, MoveInfo moveInfo)
-            : base(piece, piece.GetSquare(), moveToSquare, NotationTurnType.Move, moveInfo.EnPassantSquare)
+            : base(piece, piece.GetSquare(), moveToSquare, MoveType.Move, moveInfo.EnPassantSquare)
         {
 
         }

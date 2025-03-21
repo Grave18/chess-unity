@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using AlgebraicNotation;
 using ChessBoard;
 using ChessBoard.Pieces;
+using Logic.MovesBuffer;
 
 namespace Logic.CommandPattern
 {
@@ -13,8 +13,8 @@ namespace Logic.CommandPattern
         private Square _previousSquare;
         private bool _previousIsFirstMove;
 
-        public EatCommand(Piece piece, Piece beatenPiece, Square moveToSquare, NotationTurnType notationTurnType)
-            : base(piece,piece.GetSquare(), moveToSquare, notationTurnType)
+        public EatCommand(Piece piece, Piece beatenPiece, Square moveToSquare, MoveType moveType)
+            : base(piece,piece.GetSquare(), moveToSquare, moveType)
         {
             _beatenPiece = beatenPiece;
             _beatenPieceSquare = _beatenPiece.GetSquare();
@@ -28,7 +28,7 @@ namespace Logic.CommandPattern
             Piece.IsFirstMove = false;
 
             // Move to beaten
-            _beatenPiece.MoveToBeaten();
+            _beatenPiece.RemoveFromBoard();
 
             // Move selected piece
             await Piece.MoveToAsync(MoveToSquare);
@@ -46,7 +46,7 @@ namespace Logic.CommandPattern
             Piece.IsFirstMove = _previousIsFirstMove;
 
             // Add beaten piece to board
-            _beatenPiece.RemoveFromBeaten(_beatenPieceSquare);
+            _beatenPiece.AddToBoard(_beatenPieceSquare);
         }
     }
 }

@@ -5,6 +5,7 @@ using ChessBoard;
 using ChessBoard.Pieces;
 using Logic;
 using Logic.CommandPattern;
+using Logic.MovesBuffer;
 using UnityEngine;
 
 namespace AlgebraicNotation
@@ -25,7 +26,7 @@ namespace AlgebraicNotation
             if (_commandCount < commandInvoker.GetCommandsCount())
             {
                 if(IsNotValidTurn(lastCommand)) return;
-                AddRecord(lastCommand.Piece, lastCommand.MoveFromSquare, lastCommand.MoveToSquare, lastCommand.NotationTurnType, lastCommand.PromotedPiece);
+                AddRecord(lastCommand.Piece, lastCommand.MoveFromSquare, lastCommand.MoveToSquare, lastCommand.MoveType, lastCommand.PromotedPiece);
             }
             else
             {
@@ -41,7 +42,7 @@ namespace AlgebraicNotation
         }
 
         /// Add new record to algebraic notation
-        private void AddRecord(Piece piece, Square fromSquare, Square toSquare, NotationTurnType notationTurnType, Piece promotedPiece)
+        private void AddRecord(Piece piece, Square fromSquare, Square toSquare, MoveType moveType, Piece promotedPiece)
         {
             // Add new series
             if (_currentSeries == null)
@@ -53,14 +54,14 @@ namespace AlgebraicNotation
             var turnString = new StringBuilder();
 
             // Castling
-            if(notationTurnType == NotationTurnType.CastlingShort)
+            if(moveType == MoveType.CastlingShort)
             {
                 turnString.Append("0-0");
                 AddRecordToSeries(piece.GetPieceColor(), turnString);
                 return;
             }
 
-            if (notationTurnType == NotationTurnType.CastlingLong)
+            if (moveType == MoveType.CastlingLong)
             {
                 turnString.Append("0-0-0");
                 AddRecordToSeries(piece.GetPieceColor(), turnString);
@@ -68,7 +69,7 @@ namespace AlgebraicNotation
             }
 
             // Piece name
-            bool isCaptureOrEnPassant = notationTurnType is NotationTurnType.Capture or NotationTurnType.EnPassant;
+            bool isCaptureOrEnPassant = moveType is MoveType.Capture or MoveType.EnPassant;
             switch (piece)
             {
                 case King:   turnString.Append("K"); break;
@@ -94,7 +95,7 @@ namespace AlgebraicNotation
             turnString.Append(toSquare.Address);
 
             // Is En Passant
-            if (notationTurnType == NotationTurnType.EnPassant)
+            if (moveType == MoveType.EnPassant)
             {
                 turnString.Append(" e.p.");
             }

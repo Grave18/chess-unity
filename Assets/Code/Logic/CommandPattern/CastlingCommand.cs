@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using AlgebraicNotation;
 using ChessBoard;
 using ChessBoard.Pieces;
+using Logic.MovesBuffer;
 
 namespace Logic.CommandPattern
 {
@@ -9,13 +9,13 @@ namespace Logic.CommandPattern
     {
         private readonly Rook _rook;
         private readonly Square _rookToSquare;
-        private readonly NotationTurnType _notationTurnType;
+        private readonly MoveType moveType;
 
         private Square _previousKingSquare;
         private Square _previousRookSquare;
 
-        public CastlingCommand(King piece, Square kingToSquare, Rook rook, Square rookToSquare, NotationTurnType notationTurnType)
-            : base(piece,piece.GetSquare(), kingToSquare, notationTurnType)
+        public CastlingCommand(King piece, Square kingToSquare, Rook rook, Square rookToSquare, MoveType moveType)
+            : base(piece,piece.GetSquare(), kingToSquare, moveType)
         {
             _rook = rook;
             _rookToSquare = rookToSquare;

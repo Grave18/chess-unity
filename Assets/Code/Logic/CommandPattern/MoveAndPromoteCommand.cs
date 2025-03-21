@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using AlgebraicNotation;
 using ChessBoard;
 using ChessBoard.Pieces;
+using Logic.MovesBuffer;
 
 namespace Logic.CommandPattern
 {
@@ -13,7 +13,7 @@ namespace Logic.CommandPattern
         private Square _previousSquare;
 
         public MoveAndPromoteCommand(Piece piece, Square moveToSquare, Board board)
-            : base(piece, piece.GetSquare(), moveToSquare, NotationTurnType.Move)
+            : base(piece, piece.GetSquare(), moveToSquare, MoveType.Move)
         {
             _board = board;
         }

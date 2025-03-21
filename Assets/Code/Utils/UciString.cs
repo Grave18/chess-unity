@@ -13,16 +13,14 @@ namespace Utils
     {
         private Game _game;
         private Board _board;
-        private CommandInvoker _commandInvoker;
         private Assets _assets;
 
         private readonly StringBuilder _uciStringBuilder = new();
 
-        public void Init(Game game, Board board, CommandInvoker commandInvoker, Assets assets)
+        public void Init(Game game, Board board, Assets assets)
         {
             _game = game;
             _board = board;
-            _commandInvoker = commandInvoker;
             _assets = assets;
         }
 
@@ -157,7 +155,7 @@ namespace Utils
 
         private void AppendEnPassantSquare()
         {
-            EnPassantInfo enPassantInfo = _commandInvoker.GetEnPassantInfo();
+            EnPassantInfo enPassantInfo = _board.GetEnPassantInfo();
             string enPassant = enPassantInfo != null
                 ? $" {enPassantInfo.Square.Address}"
                 : " -";

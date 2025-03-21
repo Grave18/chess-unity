@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using AlgebraicNotation;
 using ChessBoard.Info;
+using Logic.MovesBuffer;
 using UnityEngine;
 
 namespace ChessBoard.Pieces
@@ -68,10 +68,10 @@ namespace ChessBoard.Pieces
 
         private void CalculateEnPassantCapture(Square square)
         {
-            EnPassantInfo enPassantInfo = Game.GetEnPassantInfo();
+            EnPassantInfo enPassantInfo = Board.GetEnPassantInfo();
             if(enPassantInfo != null && square == enPassantInfo.Square)
             {
-                CaptureSquares.Add(square, new CaptureInfo(enPassantInfo.Piece, NotationTurnType.EnPassant));
+                CaptureSquares.Add(square, new CaptureInfo(enPassantInfo.Piece, MoveType.EnPassant));
             }
         }
     }

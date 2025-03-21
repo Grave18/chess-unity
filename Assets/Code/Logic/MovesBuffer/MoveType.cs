@@ -1,6 +1,6 @@
-﻿namespace AlgebraicNotation
+﻿namespace Logic.MovesBuffer
 {
-    public enum NotationTurnType
+    public enum MoveType
     {
         None,
         Move,
@@ -8,5 +8,7 @@
         EnPassant,
         CastlingShort,
         CastlingLong,
+        PromotionMove,
+        PromotionCapture,
     }
 }

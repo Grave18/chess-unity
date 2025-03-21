@@ -1,17 +1,17 @@
-﻿using AlgebraicNotation;
-using ChessBoard.Pieces;
+﻿using ChessBoard.Pieces;
+using Logic.MovesBuffer;
 
 namespace ChessBoard.Info
 {
-    public struct CaptureInfo
+    public class CaptureInfo
     {
         public readonly Piece BeatenPiece;
-        public readonly NotationTurnType NotationTurnType;
+        public readonly MoveType MoveType;
 
-        public CaptureInfo(Piece beatenPiece, NotationTurnType notationTurnType = NotationTurnType.Capture)
+        public CaptureInfo(Piece beatenPiece, MoveType moveType = MoveType.Capture)
         {
             BeatenPiece = beatenPiece;
-            NotationTurnType = notationTurnType;
+            MoveType = moveType;
         }
     }
 }

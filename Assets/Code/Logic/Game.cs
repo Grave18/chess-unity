@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using ChessBoard;
-using ChessBoard.Info;
 using ChessBoard.Pieces;
+using Logic.MovesBuffer;
 using Logic.Players;
 using Logic.Players.GameStates;
 using UnityEngine;
@@ -10,17 +10,18 @@ namespace Logic
 {
     public class Game : MonoBehaviour
     {
-        [Header("References")]
-        [SerializeField] private CommandInvoker commandInvoker;
+        [field: Header("References")]
         [field:SerializeField] public Competitors Competitors { get; set; }
+
         public Board Board { get; private set; }
+        public Buffer CommandBuffer { get; private set; }
 
         [field: Header("Debug")]
-        [field: SerializeField] public PieceColor CurrentTurnColor { get; set; } = PieceColor.White;
+        [field: SerializeField] public PieceColor CurrentTurnColor { get; private set; } = PieceColor.White;
         [field: SerializeField] public CheckType CheckType { get; set; } = CheckType.None;
         [field: SerializeField] public MoveTypeLegacy MoveType { get; set; } = MoveTypeLegacy.None;
 
-        public ISelectable Selected { get; set; }
+        public ISelectable Selected { get; private set; }
 
         public AttackLinesList AttackLines { get; } = new();
         public HashSet<Square> UnderAttackSquares { get; set; } = new();
@@ -37,15 +38,15 @@ namespace Logic
         // Getters
         public HashSet<Piece> WhitePieces => Board.WhitePieces;
         public HashSet<Piece> BlackPieces => Board.BlackPieces;
+        public HashSet<Piece> CurrentTurnPieces => CurrentTurnColor == PieceColor.White ? Board.WhitePieces : Board.BlackPieces;
+        public HashSet<Piece> PrevTurnPieces => CurrentTurnColor == PieceColor.Black ? Board.WhitePieces : Board.BlackPieces;
         public IEnumerable<Square> Squares => Board.Squares;
         public Square NullSquare => Board.NullSquare;
 
-        public HashSet<Piece> CurrentTurnPieces => CurrentTurnColor == PieceColor.White ? Board.WhitePieces : Board.BlackPieces;
-        public HashSet<Piece> PrevTurnPieces => CurrentTurnColor == PieceColor.Black ? Board.WhitePieces : Board.BlackPieces;
-
-        public void Init(Board board, PieceColor turnColor)
+        public void Init(Board board, Buffer commandBuffer,PieceColor turnColor)
         {
             Board = board;
+            CommandBuffer = commandBuffer;
             CurrentTurnColor = turnColor;
         }
 
@@ -54,7 +55,7 @@ namespace Logic
             MoveType = MoveTypeLegacy.None;
             CheckType = CheckType.None;
             Board.Build();
-            SetState(new Idle(this));
+            SetState(new IdleState(this));
         }
 
         public void SetState(GameState state)
@@ -62,6 +63,11 @@ namespace Logic
             _state?.Exit();
             _state = state;
             _state?.Enter();
+        }
+
+        public void ChangeTurn()
+        {
+            CurrentTurnColor = CurrentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
         }
 
         private void Update()
@@ -155,13 +161,6 @@ namespace Logic
         public bool IsGameOver()
         {
             return CheckType is CheckType.CheckMate or CheckType.Stalemate or CheckType.TimeOut;
-        }
-
-        /// Retrieves the En Passant information for the last command if applicable
-        public EnPassantInfo GetEnPassantInfo()
-        {
-            // Todo: move to state?
-            return commandInvoker.GetEnPassantInfo();
         }
 
         /// Get section relative to current piece color

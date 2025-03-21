@@ -1,5 +1,5 @@
-﻿using AlgebraicNotation;
-using ChessBoard.Pieces;
+﻿using ChessBoard.Pieces;
+using Logic.MovesBuffer;
 
 namespace ChessBoard.Info
 {
@@ -9,6 +9,6 @@ namespace ChessBoard.Info
         public Square CastlingSquare;
         public Square RookSquare;
         public bool IsBlocked;
-        public NotationTurnType NotationTurnType;
+        public MoveType MoveType;
     }
 }
