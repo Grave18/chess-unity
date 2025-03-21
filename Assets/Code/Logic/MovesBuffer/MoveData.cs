@@ -1,4 +1,5 @@
 ﻿using ChessBoard.Info;
+using ChessBoard.Pieces;
 
 namespace Logic.MovesBuffer
 {
@@ -7,7 +8,8 @@ namespace Logic.MovesBuffer
         public string Uci;
         public MoveType MoveType;
         public bool IsFirstMove;
-        public string EpSquareAddress = "-";
+        public Piece BeatenPiece;
         public CastlingInfo CastlingInfo;
+        public string EpSquareAddress = "-";
     }
 }

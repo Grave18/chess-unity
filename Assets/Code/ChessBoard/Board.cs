@@ -267,6 +267,7 @@ namespace ChessBoard
             {
                 epSquareAddress = _boardPreset.EnPassant;
             }
+            epSquareAddress ??= "-";
 
             Square epSquare = GetSquare(epSquareAddress);
 

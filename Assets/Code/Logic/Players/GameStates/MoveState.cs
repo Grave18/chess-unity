@@ -83,7 +83,7 @@ namespace Logic.Players.GameStates
             if (piece.CanMoveTo(parsedUci.ToSquare, out MoveInfo moveInfo))
             {
                 _moveData.MoveType = MoveType.Move;
-                _moveData.EpSquareAddress = moveInfo.EnPassantSquare.Address;
+                _moveData.EpSquareAddress = moveInfo.EnPassantSquare?.Address ?? "-";
                 turn = new SimpleMove(parsedUci, _moveData);
                 return true;
             }
@@ -92,6 +92,7 @@ namespace Logic.Players.GameStates
             if (piece.CanCaptureAt(parsedUci.ToSquare, out CaptureInfo captureInfo))
             {
                 _moveData.MoveType = captureInfo.MoveType;
+                _moveData.BeatenPiece = captureInfo.BeatenPiece;
                 turn = new Capture(parsedUci, _moveData);
                 return true;
             }

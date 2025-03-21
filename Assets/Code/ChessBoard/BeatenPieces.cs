@@ -13,7 +13,7 @@ namespace ChessBoard
         private int _whiteIndex;
         private int _blackIndex;
 
-        private readonly Stack<Piece> _beatenPieces = new();
+        private readonly Stack<(Piece, Square)> _beatenPieces = new();
 
         public static BeatenPieces Instance { get; private set; }
 
@@ -22,7 +22,7 @@ namespace ChessBoard
             Instance = this;
         }
 
-        public void Add(Piece piece)
+        public void Add(Piece piece, Square pieceSquare)
         {
             switch (piece.GetPieceColor())
             {
@@ -38,33 +38,32 @@ namespace ChessBoard
                     break;
             }
 
-            _beatenPieces.Push(piece);
+            _beatenPieces.Push((piece, pieceSquare));
         }
 
-        public Piece Remove()
+        public (Piece, Square) Remove()
         {
-            Piece lastPiece;
+            (Piece,Square) lastPiece;
 
             if (_beatenPieces.Count > 0)
             {
                 lastPiece = _beatenPieces.Pop();
-                switch (lastPiece.GetPieceColor())
+                switch (lastPiece.Item1.GetPieceColor())
                 {
                     case PieceColor.White:
-                        if(_whiteIndex <= 0) return null;
+                        if(_whiteIndex <= 0) return (null, null);
                         _whiteIndex -= 1;
                         break;
                     case PieceColor.Black:
-                        if(_blackIndex <= 0) return null;
+                        if(_blackIndex <= 0) return (null, null);
                         _blackIndex -= 1;
                         break;
                 }
             }
             else
             {
-                return null;
+                return (null, null);
             }
-
 
             return lastPiece;
         }

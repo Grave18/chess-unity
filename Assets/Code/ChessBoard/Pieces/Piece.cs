@@ -52,27 +52,24 @@ namespace ChessBoard.Pieces
             return CaptureSquares.TryGetValue(square, out captureInfo);
         }
 
-        // Todo: refactor square set
         public void RemoveFromBoard()
         {
-            currentSquare.SetPiece(null);
-            currentSquare = null;
+            SetNewSquare(null);
             Board.RemovePiece(this);
         }
 
         public void AddToBoard(Square square)
         {
-            square.SetPiece(this);
-            currentSquare = square;
-            Board.AddPiece(this);
+            SetNewSquare(square);
             transform.position = square.transform.position;
+            Board.AddPiece(this);
         }
 
         public void SetNewSquare(Square square)
         {
-            currentSquare.SetPiece(null);
+            currentSquare?.SetPiece(null);
             currentSquare = square;
-            currentSquare.SetPiece(this);
+            currentSquare?.SetPiece(this);
         }
 
         // Todo: remove this
