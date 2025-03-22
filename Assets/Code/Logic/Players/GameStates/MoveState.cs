@@ -101,9 +101,22 @@ namespace Logic.Players.GameStates
             // Capture
             if (piece.CanCaptureAt(parsedUci.ToSquare, out CaptureInfo captureInfo))
             {
-                _moveData.MoveType = captureInfo.MoveType;
                 _moveData.BeatenPiece = captureInfo.BeatenPiece;
-                turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece, _moveData.IsFirstMove);
+                if (parsedUci.PromotedPieceType == PieceType.None)
+                {
+                    _moveData.MoveType = captureInfo.MoveType;
+                    turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece, _moveData.IsFirstMove);
+                }
+                else
+                {
+                    _moveData.MoveType = MoveType.CapturePromotion;
+                    _moveData.HiddenPawn = piece;
+                    Piece promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
+                        parsedUci.ToSquare);
+                    turn = new CapturePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece,
+                        _moveData.BeatenPiece);
+                }
+
                 return true;
             }
 

@@ -89,6 +89,14 @@ namespace Logic.Players.GameStates
                 return true;
             }
 
+            if (_moveData.MoveType is MoveType.CapturePromotion)
+            {
+                Piece promotedPiece = parsedUci.ToSquare.GetPiece();
+                turn = new CapturePromotion(promotedPiece, parsedUci.FromSquare, parsedUci.ToSquare,
+                    _moveData.HiddenPawn, _moveData.BeatenPiece);
+                return true;
+            }
+
             if (_moveData.MoveType is MoveType.CastlingShort or MoveType.CastlingLong)
             {
                 turn = new Castling(_moveData.CastlingInfo, _moveData.IsFirstMove);

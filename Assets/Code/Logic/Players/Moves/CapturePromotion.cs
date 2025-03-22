@@ -3,31 +3,31 @@ using ChessBoard.Pieces;
 
 namespace Logic.Players.Moves
 {
-    internal class MovePromotion : Turn
+    public class CapturePromotion : Turn
     {
-        private readonly SimpleMove _simpleMove;
+        private readonly Capture _capture;
         private readonly Promotion _promotion;
 
-        public MovePromotion(Piece piece, Square fromSquare, Square toSquare, Piece otherPiece)
+        public CapturePromotion(Piece piece, Square fromSquare, Square toSquare, Piece otherPiece, Piece beatenPiece)
         {
-            _simpleMove = new SimpleMove(piece, fromSquare, toSquare, isFirstMove: false);
+            _capture = new Capture(piece, fromSquare, toSquare, beatenPiece, isFirstMove: false);
             _promotion = new Promotion(piece, fromSquare, toSquare, otherPiece);
         }
 
         public override void Progress(float t)
         {
-            _simpleMove.Progress(t);
+            _capture.Progress(t);
         }
 
         public override void End()
         {
-            _simpleMove.End();
+            _capture.End();
             _promotion.End();
         }
 
         public override void EndUndo()
         {
-            _simpleMove.EndUndo();
+            _capture.EndUndo();
             _promotion.EndUndo();
         }
     }
