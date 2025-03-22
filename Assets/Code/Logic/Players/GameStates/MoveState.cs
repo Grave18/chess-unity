@@ -48,19 +48,19 @@ namespace Logic.Players.GameStates
 
             Square fromSquare = Game.Board.GetSquare(from);
             Square toSquare = Game.Board.GetSquare(to);
-            Piece promotedPiece = null;
+            var promotedPieceType = PieceType.None;
 
             if (uci.Length == 5)
             {
                 string promotion = uci.Substring(4, 1);
-                promotedPiece = Game.Board.GetPiece(promotion, Game.CurrentTurnColor, to);
+                promotedPieceType = Board.GetPieceType(promotion);
             }
 
             var parsedUci = new ParsedUci
             {
                 FromSquare = fromSquare,
                 ToSquare = toSquare,
-                PromotedPiece = promotedPiece,
+                PromotedPieceType = promotedPieceType,
             };
 
             return parsedUci;
@@ -73,15 +73,28 @@ namespace Logic.Players.GameStates
             _moveData = new MoveData
             {
                 Uci = _uci,
-                IsFirstMove = piece.IsFirstMove
+                IsFirstMove = piece.IsFirstMove,
             };
 
             // Move
             if (piece.CanMoveTo(parsedUci.ToSquare, out MoveInfo moveInfo))
             {
-                _moveData.MoveType = MoveType.Move;
                 _moveData.EpSquareAddress = moveInfo.EnPassantSquare?.Address ?? "-";
-                turn = new SimpleMove(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
+
+                if (parsedUci.PromotedPieceType == PieceType.None)
+                {
+                    _moveData.MoveType = MoveType.Move;
+                    turn = new SimpleMove(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
+                }
+                else
+                {
+                    _moveData.MoveType = MoveType.MovePromotion;
+                    _moveData.HiddenPawn = piece;
+                    Piece promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
+                        parsedUci.ToSquare);
+                    turn = new MovePromotion(_moveData.HiddenPawn, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece);
+                }
+
                 return true;
             }
 

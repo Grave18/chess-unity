@@ -62,6 +62,7 @@ namespace ChessBoard.Pieces
         {
             SetNewSquare(square);
             transform.position = square.transform.position;
+            gameObject.SetActive(true);
             Board.AddPiece(this);
         }
 

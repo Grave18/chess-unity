@@ -8,7 +8,7 @@
         EnPassant,
         CastlingShort,
         CastlingLong,
-        PromotionMove,
-        PromotionCapture,
+        MovePromotion,
+        CapturePromotion,
     }
 }

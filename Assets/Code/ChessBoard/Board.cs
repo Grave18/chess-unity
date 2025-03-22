@@ -66,7 +66,7 @@ namespace ChessBoard
             PieceType pieceType = await competitors.RequestPromotedPiece();
             promotionPanel.Hide();
 
-            Piece piece = GetPiece(pieceType, pieceColor, square);
+            Piece piece = CreatePiece(pieceType, pieceColor, square);
             return (piece, pieceType);
         }
 
@@ -208,46 +208,46 @@ namespace ChessBoard
                     }
                     // White
                     case 'B':
-                        piece = GetPiece(PieceType.Bishop, PieceColor.White, square);
+                        piece = CreatePiece(PieceType.Bishop, PieceColor.White, square);
                         break;
                     case 'K':
-                        piece = GetPiece(PieceType.King, PieceColor.White, square);
+                        piece = CreatePiece(PieceType.King, PieceColor.White, square);
                         CheckWhiteKingFirstMove(piece);
                         break;
                     case 'N':
-                        piece = GetPiece(PieceType.Knight, PieceColor.White, square);
+                        piece = CreatePiece(PieceType.Knight, PieceColor.White, square);
                         break;
                     case 'P':
-                        piece = GetPiece(PieceType.Pawn, PieceColor.White, square);
+                        piece = CreatePiece(PieceType.Pawn, PieceColor.White, square);
                         CheckWhitePawnFirstMove(square, piece);
                         break;
                     case 'Q':
-                        piece = GetPiece(PieceType.Queen, PieceColor.White, square);
+                        piece = CreatePiece(PieceType.Queen, PieceColor.White, square);
                         break;
                     case 'R':
-                        piece = GetPiece(PieceType.Rook, PieceColor.White, square);
+                        piece = CreatePiece(PieceType.Rook, PieceColor.White, square);
                         CheckWhiteRookFirstMove(square, piece);
                         break;
                     // Black
                     case 'b':
-                        piece = GetPiece(PieceType.Bishop, PieceColor.Black, square);
+                        piece = CreatePiece(PieceType.Bishop, PieceColor.Black, square);
                         break;
                     case 'k':
-                        piece = GetPiece(PieceType.King, PieceColor.Black, square);
+                        piece = CreatePiece(PieceType.King, PieceColor.Black, square);
                         CheckBlackKingFirstMove(piece);
                         break;
                     case 'n':
-                        piece = GetPiece(PieceType.Knight, PieceColor.Black, square);
+                        piece = CreatePiece(PieceType.Knight, PieceColor.Black, square);
                         break;
                     case 'p':
-                        piece = GetPiece(PieceType.Pawn, PieceColor.Black, square);
+                        piece = CreatePiece(PieceType.Pawn, PieceColor.Black, square);
                         CheckBlackPawnFirstMove(square, piece);
                         break;
                     case 'q':
-                        piece = GetPiece(PieceType.Queen, PieceColor.Black, square);
+                        piece = CreatePiece(PieceType.Queen, PieceColor.Black, square);
                         break;
                     case 'r':
-                        piece = GetPiece(PieceType.Rook, PieceColor.Black, square);
+                        piece = CreatePiece(PieceType.Rook, PieceColor.Black, square);
                         CheckBlackRookFirstMove(square, piece);
                         break;
                     default:
@@ -255,6 +255,7 @@ namespace ChessBoard
                         return;
                 }
 
+                piece.gameObject.SetActive(true);
                 AddPiece(piece);
                 x += 1;
             }
@@ -340,17 +341,22 @@ namespace ChessBoard
             _boardInstance = Instantiate(_prefabs[12], transform);
         }
 
-        public Piece GetPiece(PieceType pieceType, PieceColor pieceColor, Square square)
+        public Piece GetOrCreatePiece(string piece, PieceColor pieceColor, string address)
         {
-            GameObject piecePrefab = GetPrefabOfPiece(pieceType, pieceColor);
-            Piece pieceInstance = InstantiatePiece(piecePrefab, square);
+            Square square = GetSquare(address);
+            if (square.HasPiece())
+            {
+                return square.GetPiece();
+            }
 
-            return pieceInstance;
+            PieceType pieceType = GetPieceType(piece);
+
+            return CreatePiece(pieceType, pieceColor, square);
         }
 
-        public Piece GetPiece(string piece, PieceColor pieceColor, string to)
+        // Get piece type from letter. Example: q, r, b, n
+        public static PieceType GetPieceType(string piece)
         {
-            Square toSquare = GetSquare(to);
             PieceType pieceType = piece switch
             {
                 "q" => PieceType.Queen,
@@ -361,8 +367,15 @@ namespace ChessBoard
                 "k" => PieceType.King,
                 _ => PieceType.None,
             };
+            return pieceType;
+        }
 
-            return GetPiece(pieceType, pieceColor, toSquare);
+        public Piece CreatePiece(PieceType pieceType, PieceColor pieceColor, Square square)
+        {
+            GameObject piecePrefab = GetPrefabOfPiece(pieceType, pieceColor);
+            Piece pieceInstance = InstantiatePiece(piecePrefab, square);
+
+            return pieceInstance;
         }
 
         private GameObject GetPrefabOfPiece(PieceType pieceType, PieceColor pieceColor)
@@ -406,6 +419,7 @@ namespace ChessBoard
             GameObject pieceInstance = Instantiate(piecePrefab, square.transform.position,
                 piecePrefab.transform.rotation, piecesParent);
             var piece = pieceInstance.GetComponent<Piece>();
+            pieceInstance.SetActive(false);
 
             piece.Init(_game, this, square);
 

@@ -1,4 +1,5 @@
 ﻿using ChessBoard;
+using ChessBoard.Info;
 using ChessBoard.Pieces;
 using Logic.MovesBuffer;
 using Logic.Players.Moves;
@@ -45,19 +46,19 @@ namespace Logic.Players.GameStates
 
             Square fromSquare = Game.Board.GetSquare(from);
             Square toSquare = Game.Board.GetSquare(to);
-            Piece promotedPiece = null;
+            var promotedPieceType = PieceType.None;
 
             if (uci.Length == 5)
             {
                 string promotion = uci.Substring(4, 1);
-                promotedPiece = Game.Board.GetPiece(promotion, Game.CurrentTurnColor, to);
+                promotedPieceType = Board.GetPieceType(promotion);
             }
 
             var parsedUci = new ParsedUci
             {
                 FromSquare = fromSquare,
                 ToSquare = toSquare,
-                PromotedPiece = promotedPiece,
+                PromotedPieceType = promotedPieceType,
             };
 
             return parsedUci;
@@ -65,17 +66,26 @@ namespace Logic.Players.GameStates
 
         private bool ValidateUndo(ParsedUci parsedUci)
         {
-            Piece movedPiece = parsedUci.ToSquare.GetPiece();
+            Piece piece = parsedUci.ToSquare.GetPiece();
 
             if (_moveData.MoveType == MoveType.Move)
             {
-                turn = new SimpleMove(movedPiece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
+                turn = new SimpleMove(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
+                return true;
+            }
+
+            if (_moveData.MoveType == MoveType.MovePromotion)
+            {
+                // Piece and Promoted piece swapped
+                Piece promotedPiece = parsedUci.ToSquare.GetPiece();
+                turn = new MovePromotion(promotedPiece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.HiddenPawn);
                 return true;
             }
 
             if (_moveData.MoveType is MoveType.Capture or MoveType.EnPassant)
             {
-                turn = new Capture(movedPiece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece, _moveData.IsFirstMove);
+                turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
+                    _moveData.IsFirstMove);
                 return true;
             }
 

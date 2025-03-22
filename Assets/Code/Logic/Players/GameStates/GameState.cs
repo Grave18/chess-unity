@@ -1,7 +1,4 @@
-﻿using ChessBoard;
-using ChessBoard.Pieces;
-
-namespace Logic.Players.GameStates
+﻿namespace Logic.Players.GameStates
 {
     public abstract class GameState
     {
@@ -21,12 +18,5 @@ namespace Logic.Players.GameStates
         public abstract void Play();
         public abstract void Pause();
         public abstract void Update();
-    }
-
-    public struct ParsedUci
-    {
-        public Square FromSquare;
-        public Square ToSquare;
-        public Piece PromotedPiece;
     }
 }
