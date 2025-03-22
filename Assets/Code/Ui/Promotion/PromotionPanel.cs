@@ -4,6 +4,7 @@ using ChessBoard;
 using ChessBoard.Info;
 using Logic;
 using UnityEngine;
+using Utils.Mathematics;
 
 namespace Ui.Promotion
 {
@@ -12,6 +13,10 @@ namespace Ui.Promotion
         [Header("References")]
         [SerializeField] private GameObject whiteRoot;
         [SerializeField] private GameObject blackRoot;
+        [SerializeField] private CanvasGroup canvasGroup;
+
+        [Header("Settings")]
+        [SerializeField] private float appearTimeSec = 0.2f;
 
         private PieceType _promotedPieceType;
 
@@ -49,12 +54,40 @@ namespace Ui.Promotion
             {
                 blackRoot.SetActive(true);
             }
+
+            StartCoroutine(ShowContinue());
+            return;
+
+            IEnumerator ShowContinue()
+            {
+                float t = 0;
+                while (t < 1)
+                {
+                    t += Time.deltaTime/appearTimeSec;
+                    canvasGroup.alpha = Easing.OutCubic(t);
+                    yield return null;
+                }
+            }
         }
 
         private void Hide()
         {
-            whiteRoot.SetActive(false);
-            blackRoot.SetActive(false);
+            StartCoroutine(HideContinue());
+            return;
+
+            IEnumerator HideContinue()
+            {
+                float t = 1;
+                while (t > 0)
+                {
+                    t -= Time.deltaTime / appearTimeSec;
+                    canvasGroup.alpha = Easing.InCubic(t);
+                    yield return null;
+                }
+
+                whiteRoot.SetActive(false);
+                blackRoot.SetActive(false);
+            }
         }
     }
 }
