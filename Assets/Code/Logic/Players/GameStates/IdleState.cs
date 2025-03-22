@@ -8,6 +8,8 @@ namespace Logic.Players.GameStates
 {
     public class IdleState : GameState
     {
+        private bool _isRunning;
+
         public IdleState(Game game) : base(game)
         {
         }
@@ -17,6 +19,7 @@ namespace Logic.Players.GameStates
         public override void Enter()
         {
             CalculateEndMove();
+            _isRunning = true;
         }
 
         public override void Exit()
@@ -47,16 +50,21 @@ namespace Logic.Players.GameStates
 
         public override void Play()
         {
-
+            _isRunning = true;
         }
 
         public override void Pause()
         {
-
+            _isRunning = false;
         }
 
         public override void Update()
         {
+            if (!_isRunning)
+            {
+                return;
+            }
+
             Game.Competitors.UpdatePlayer();
         }
 

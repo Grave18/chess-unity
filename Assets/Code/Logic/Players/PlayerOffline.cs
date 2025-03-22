@@ -92,10 +92,12 @@ namespace Logic.Players
                     return;
                 }
 
+                Game.Pause();
                 _promotionPanel.RequestPromotedPiece(Game.CurrentTurnColor, pieceLetter =>
                 {
                     uci += pieceLetter;
                     Move(uci);
+                    Game.Play();
                 });
             }
             else
