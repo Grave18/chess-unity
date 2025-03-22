@@ -1,16 +1,12 @@
-﻿using ChessBoard;
-using ChessBoard.Info;
-using ChessBoard.Pieces;
+﻿using ChessBoard.Info;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Ui.Promotion
 {
     public class ConcreteColorPromotion : MonoBehaviour
     {
-        [FormerlySerializedAs("boardBuilder")]
-        [SerializeField] private Board board;
+        [SerializeField] private PromotionPanel promotionPanel;
 
         [Space]
         [SerializeField] private Button queenButton;
@@ -26,17 +22,9 @@ namespace Ui.Promotion
             knightButton.onClick.AddListener(SelectKnight);
         }
 
-        private void OnDisable()
-        {
-            queenButton.onClick.RemoveListener(SelectQueen);
-            rookButton.onClick.RemoveListener(SelectRook);
-            bishopButton.onClick.RemoveListener(SelectBishop);
-            knightButton.onClick.RemoveListener(SelectKnight);
-        }
-
-        private void SelectQueen() => board.Select(PieceType.Queen);
-        private void SelectRook() => board.Select(PieceType.Rook);
-        private void SelectBishop() => board.Select(PieceType.Bishop);
-        private void SelectKnight() => board.Select(PieceType.Knight);
+        private void SelectQueen() => promotionPanel.Select(PieceType.Queen);
+        private void SelectRook() => promotionPanel.Select(PieceType.Rook);
+        private void SelectBishop() => promotionPanel.Select(PieceType.Bishop);
+        private void SelectKnight() => promotionPanel.Select(PieceType.Knight);
     }
 }

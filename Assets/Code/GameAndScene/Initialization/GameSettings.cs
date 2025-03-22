@@ -6,15 +6,13 @@ namespace GameAndScene.Initialization
     public class GameSettings
     {
         public const string Key = "GameSettings";
+        public PlayerSettings Player1Settings;
+        public PlayerSettings Player2Settings;
 
-        [field: SerializeField]
-        public PlayerSettings Player1Settings { get; set; }
+        [Space]
+        public string Fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-        [field: SerializeField]
-        public PlayerSettings Player2Settings { get; set; }
-
-        [field: Space]
-        [field: SerializeField]
-        public string Fen { get; set; } = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+        [Space]
+        public bool IsAutoPromoteToQueen;
     }
 }

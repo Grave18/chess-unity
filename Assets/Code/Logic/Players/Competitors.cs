@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using ChessBoard.Info;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Logic.Players
 {
@@ -31,16 +29,6 @@ namespace Logic.Players
             _playerBlack = playerBlack;
 
             OnEndTurn();
-        }
-
-        public async Task<PieceType> RequestPromotedPiece()
-        {
-            return await _currentPlayer.RequestPromotedPiece();
-        }
-
-        public void SelectPromotedPiece(PieceType pieceType)
-        {
-            _currentPlayer.SelectPromotedPiece(pieceType);
         }
 
         private void OnPlay()

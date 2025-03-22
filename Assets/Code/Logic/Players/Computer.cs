@@ -16,19 +16,12 @@ namespace Logic.Players
         private readonly Buffer _commandBuffer;
         private readonly PlayerSettings _playerSettings;
 
-        private PieceType _promotion = PieceType.None;
-
         public Computer(Game game, Buffer commandBuffer, PlayerSettings playerSettings, Stockfish stockfish)
         :base(game)
         {
             _commandBuffer = commandBuffer;
             _playerSettings = playerSettings;
             _stockfish = stockfish;
-        }
-
-        public override Task<PieceType> RequestPromotedPiece()
-        {
-            return Task.FromResult(_promotion);
         }
 
         /// Get calculations from stockfish process and make move
@@ -54,7 +47,6 @@ namespace Logic.Players
             AiCalculationsResult aiCalculationsResult = await _stockfish.GetAiResult(_playerSettings, _moveCts.Token);
             if (aiCalculationsResult == null) return;
 
-            SetPromotionPiece(aiCalculationsResult.Promotion);
             MakeMove(aiCalculationsResult.MoveFrom, aiCalculationsResult.MoveTo);
         }
 
@@ -63,11 +55,6 @@ namespace Logic.Players
         {
             _moveCts?.Cancel();
             _moveCts = new CancellationTokenSource();
-        }
-
-        private void SetPromotionPiece(PieceType promotion)
-        {
-            _promotion = promotion;
         }
 
         private void MakeMove(Square moveFromSquare, Square moveToSquare)

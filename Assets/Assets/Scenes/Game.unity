@@ -1595,7 +1595,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000015258789, y: 0}
+  m_AnchoredPosition: {x: -0.000015258789, y: -0.00012207031}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &209268812
@@ -2121,7 +2121,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 177198597}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4847,6 +4847,107 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1612556085}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &573038616
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 573038621}
+  - component: {fileID: 573038620}
+  - component: {fileID: 573038619}
+  - component: {fileID: 573038618}
+  m_Layer: 5
+  m_Name: PromotionCanvas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &573038618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 573038616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &573038619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 573038616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 0
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
+--- !u!223 &573038620
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 573038616}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 0
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
+--- !u!224 &573038621
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 573038616}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0}
 --- !u!1001 &575685262
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5223,7 +5324,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   game: {fileID: 1216111693}
   serieses: []
-  commandInvoker: {fileID: 1604880651}
 --- !u!4 &679097910
 Transform:
   m_ObjectHideFlags: 0
@@ -6782,7 +6882,6 @@ MonoBehaviour:
   assets: {fileID: 1663133263}
   game: {fileID: 1216111693}
   board: {fileID: 1190829613}
-  commandInvoker: {fileID: 1604880651}
   clock: {fileID: 428172018}
   uciString: {fileID: 1300988198}
   competitors: {fileID: 1739655008}
@@ -6791,19 +6890,20 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 192
+  promotionPanel: {fileID: 835316401}
   gameSettings:
-    <Player1Settings>k__BackingField:
+    Player1Settings:
       <Name>k__BackingField: Player
       <PlayerType>k__BackingField: 1
       <ComputerSkillLevel>k__BackingField: 10
       <ComputerThinkTimeMs>k__BackingField: 1000
-    <Player2Settings>k__BackingField:
+    Player2Settings:
       <Name>k__BackingField: Player
       <PlayerType>k__BackingField: 1
       <ComputerSkillLevel>k__BackingField: 10
       <ComputerThinkTimeMs>k__BackingField: 1000
-    <Fen>k__BackingField: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0
-      1
+    Fen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+    IsAutoPromoteToQueen: 0
 --- !u!4 &853249565
 Transform:
   m_ObjectHideFlags: 0
@@ -11845,53 +11945,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 344495186}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1604880650
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1604880652}
-  - component: {fileID: 1604880651}
-  m_Layer: 0
-  m_Name: CommandIvoker
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1604880651
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1604880650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3f30deb420240198722892e1d10a90b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  game: {fileID: 1216111693}
-  board: {fileID: 1190829613}
-  seriesList: {fileID: 679097909}
---- !u!4 &1604880652
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1604880650}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1606495196
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13139,7 +13192,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 949107595}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.5326349
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -13926,18 +13979,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameSettings:
-    <Player1Settings>k__BackingField:
-      <Name>k__BackingField: Player1
+    Player1Settings:
+      <Name>k__BackingField: Player
       <PlayerType>k__BackingField: 1
-      <ComputerSkillLevel>k__BackingField: 20
+      <ComputerSkillLevel>k__BackingField: 10
       <ComputerThinkTimeMs>k__BackingField: 1000
-    <Player2Settings>k__BackingField:
-      <Name>k__BackingField: Player2
+    Player2Settings:
+      <Name>k__BackingField: Player
       <PlayerType>k__BackingField: 1
-      <ComputerSkillLevel>k__BackingField: 20
+      <ComputerSkillLevel>k__BackingField: 10
       <ComputerThinkTimeMs>k__BackingField: 1000
-    <Fen>k__BackingField: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0
-      1
+    Fen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+    IsAutoPromoteToQueen: 0
 --- !u!4 &1866814439
 Transform:
   m_ObjectHideFlags: 0
@@ -14407,6 +14460,11 @@ PrefabInstance:
       propertyPath: boardBuilder
       value: 
       objectReference: {fileID: 1190829613}
+    - target: {fileID: 1483307450539450618, guid: 85dd54f7d06f42d4a9c533c4c08f0d63,
+        type: 3}
+      propertyPath: promotionPanel
+      value: 
+      objectReference: {fileID: 835316401}
     - target: {fileID: 1628887532551011736, guid: 85dd54f7d06f42d4a9c533c4c08f0d63,
         type: 3}
       propertyPath: m_Pivot.x
@@ -15251,6 +15309,11 @@ PrefabInstance:
       propertyPath: boardBuilder
       value: 
       objectReference: {fileID: 1190829613}
+    - target: {fileID: 560529966490393222, guid: f5b13d6451b118846adee0889e82fdd8,
+        type: 3}
+      propertyPath: promotionPanel
+      value: 
+      objectReference: {fileID: 835316401}
     - target: {fileID: 1578979635728638862, guid: f5b13d6451b118846adee0889e82fdd8,
         type: 3}
       propertyPath: m_Name
@@ -15275,10 +15338,10 @@ SceneRoots:
   - {fileID: 1663133264}
   - {fileID: 1216111692}
   - {fileID: 1190829612}
-  - {fileID: 1604880652}
   - {fileID: 679097910}
   - {fileID: 428172017}
   - {fileID: 1300988199}
   - {fileID: 1739655009}
   - {fileID: 1544682201}
   - {fileID: 1829786683}
+  - {fileID: 573038621}

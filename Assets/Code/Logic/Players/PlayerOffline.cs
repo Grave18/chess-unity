@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Threading.Tasks;
 using ChessBoard;
-using ChessBoard.Info;
 using ChessBoard.Pieces;
-using GameAndScene.Initialization;
 using Highlighting;
+using Ui.Promotion;
 using UnityEngine;
 
 namespace Logic.Players
@@ -12,42 +9,22 @@ namespace Logic.Players
     public class PlayerOffline : Player
     {
         private readonly Camera _mainCamera;
+        private readonly PromotionPanel _promotionPanel;
         private readonly Highlighter _highlighter;
         private readonly LayerMask _layerMask;
+        private readonly bool _isAutoPromoteToQueen;
 
         private const float MaxDistance = 100;
 
-        // Selected in Ui
-        private TaskCompletionSource<PieceType> _pieceTypeCompletionSource = new();
-
         public PlayerOffline(Game game, Camera mainCamera, Highlighter highlighter, LayerMask layerMask,
-            PlayerSettings playerSettings)
+            bool isAutoPromoteToQueen, PromotionPanel promotionPanel)
             : base(game)
         {
             _highlighter = highlighter;
             _mainCamera = mainCamera;
             _layerMask = layerMask;
-        }
-
-        private IEnumerator _coroutine;
-
-        public override async Task<PieceType> RequestPromotedPiece()
-        {
-            return await _pieceTypeCompletionSource.Task;
-        }
-
-        public override void SelectPromotedPiece(PieceType pieceType)
-        {
-            _pieceTypeCompletionSource.SetResult(pieceType);
-            _pieceTypeCompletionSource = new TaskCompletionSource<PieceType>();
-        }
-
-        public override void AllowMakeMove()
-        {
-        }
-
-        public override void DisallowMakeMove()
-        {
+            _isAutoPromoteToQueen = isAutoPromoteToQueen;
+            _promotionPanel = promotionPanel;
         }
 
         public override void Update()
@@ -94,13 +71,11 @@ namespace Logic.Players
                 return;
             }
 
-            string uci = GetUci(selectable);
-            Game.Move(uci);
-            Game.Deselect();
+            ConstructUci(selectable);
         }
 
-        /// Get Uci string of move. example: "b1a1q", "e2e4"
-        private string GetUci(ISelectable selectable)
+        /// Construct Uci string of move. example: "b1a1q", "e2e4"
+        private void ConstructUci(ISelectable selectable)
         {
             Piece piece = Game.Selected.GetPiece();
             Square fromSquare = Game.Selected.GetSquare();
@@ -110,10 +85,29 @@ namespace Logic.Players
 
             if (CanPromote(piece, toSquare))
             {
-                uci += "q";
-            }
+                if (_isAutoPromoteToQueen)
+                {
+                    uci += "q";
+                    Move(uci);
+                    return;
+                }
 
-            return uci;
+                _promotionPanel.RequestPromotedPiece(Game.CurrentTurnColor, pieceLetter =>
+                {
+                    uci += pieceLetter;
+                    Move(uci);
+                });
+            }
+            else
+            {
+                Move(uci);
+            }
+        }
+
+        private void Move(string uci)
+        {
+            Game.Move(uci);
+            Game.Deselect();
         }
 
         private static bool CanPromote(Piece piece, Square toSquare)

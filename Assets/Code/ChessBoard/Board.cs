@@ -59,23 +59,6 @@ namespace ChessBoard
             _turnColor = turnColor;
         }
 
-        /// Gets a piece from the promotion selector if player is human. Or from Ai if player is computer
-        public async Task<(Piece, PieceType)> GetPieceFromSelectorAsync(PieceColor pieceColor, Square square)
-        {
-            promotionPanel.Show(pieceColor);
-            PieceType pieceType = await competitors.RequestPromotedPiece();
-            promotionPanel.Hide();
-
-            Piece piece = CreatePiece(pieceType, pieceColor, square);
-            return (piece, pieceType);
-        }
-
-        /// Select after some amount of time, for use by real player
-        public void Select(PieceType pieceType)
-        {
-            competitors.SelectPromotedPiece(pieceType);
-        }
-
         /// Add piece to the board. Add it to the list of the corresponding color.
         public void AddPiece(Piece piece)
         {
@@ -355,9 +338,9 @@ namespace ChessBoard
         }
 
         // Get piece type from letter. Example: q, r, b, n
-        public static PieceType GetPieceType(string piece)
+        public static PieceType GetPieceType(string pieceLetter)
         {
-            PieceType pieceType = piece switch
+            PieceType pieceType = pieceLetter switch
             {
                 "q" => PieceType.Queen,
                 "r" => PieceType.Rook,
@@ -368,6 +351,21 @@ namespace ChessBoard
                 _ => PieceType.None,
             };
             return pieceType;
+        }
+
+        public static string GetPieceLetter(PieceType piece)
+        {
+            string pieceLetter = piece switch
+            {
+                PieceType.Queen => "q",
+                PieceType.Rook => "r",
+                PieceType.Bishop => "b",
+                PieceType.Knight => "n",
+                PieceType.Pawn => "p",
+                PieceType.King => "k",
+                _ => string.Empty,
+            };
+            return pieceLetter;
         }
 
         public Piece CreatePiece(PieceType pieceType, PieceColor pieceColor, Square square)

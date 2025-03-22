@@ -7,6 +7,7 @@ using Highlighting;
 using Logic;
 using Logic.MovesBuffer;
 using Logic.Players;
+using Ui.Promotion;
 using UnityEngine;
 using Utils;
 
@@ -24,6 +25,7 @@ namespace GameAndScene.Initialization
         [SerializeField] private Highlighter highlighter;
         [SerializeField] private Camera mainCamera;
         [SerializeField] private LayerMask layerMask;
+        [SerializeField] private PromotionPanel promotionPanel;
 
         [Header("Settings")]
         [SerializeField] private GameSettings gameSettings;
@@ -104,7 +106,7 @@ namespace GameAndScene.Initialization
             return playerSettings.PlayerType switch
             {
                 PlayerType.Computer => new Computer(game, _commandBuffer, playerSettings, _stockfish),
-                PlayerType.Offline  => new PlayerOffline(game, mainCamera, highlighter, layerMask, playerSettings),
+                PlayerType.Offline  => new PlayerOffline(game, mainCamera, highlighter, layerMask, gameSettings.IsAutoPromoteToQueen, promotionPanel),
                 _ => null,
             };
         }
