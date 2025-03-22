@@ -65,7 +65,7 @@ namespace Logic.MovesBuffer
             return address;
         }
 
-        public string GetAllUci()
+        public string GetAllUciDebug()
         {
             var sb = new StringBuilder();
             foreach (MoveData entry in _buffer)

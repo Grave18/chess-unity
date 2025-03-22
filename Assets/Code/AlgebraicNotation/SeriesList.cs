@@ -4,7 +4,6 @@ using System.Text;
 using ChessBoard;
 using ChessBoard.Pieces;
 using Logic;
-using Logic.CommandPattern;
 using Logic.MovesBuffer;
 using UnityEngine;
 
@@ -14,31 +13,26 @@ namespace AlgebraicNotation
     {
         [SerializeField] private Game game;
         [SerializeField] private List<Series> serieses;
-        [SerializeField] private CommandInvoker commandInvoker;
 
         private Series _currentSeries;
         private int _commandCount;
 
         private void OnEndTurn()
         {
-            Command lastCommand = commandInvoker.GetLastCommand();
-
-            if (_commandCount < commandInvoker.GetCommandsCount())
-            {
-                if(IsNotValidTurn(lastCommand)) return;
-                AddRecord(lastCommand.Piece, lastCommand.MoveFromSquare, lastCommand.MoveToSquare, lastCommand.MoveType, lastCommand.PromotedPiece);
-            }
-            else
-            {
-                RemoveRecord(IsNotValidTurn(lastCommand) ? PieceColor.Black : lastCommand.Piece.GetPieceColor());
-            }
-
-            _commandCount = commandInvoker.GetCommandsCount();
-        }
-
-        private static bool IsNotValidTurn(Command c)
-        {
-            return c is not { IsUndoable: true };
+            // Todo: add code for run notation
+            // Command lastCommand = commandInvoker.GetLastCommand();
+            //
+            // if (_commandCount < commandInvoker.GetCommandsCount())
+            // {
+            //     if(IsNotValidTurn(lastCommand)) return;
+            //     AddRecord(lastCommand.Piece, lastCommand.MoveFromSquare, lastCommand.MoveToSquare, lastCommand.MoveType, lastCommand.PromotedPiece);
+            // }
+            // else
+            // {
+            //     RemoveRecord(IsNotValidTurn(lastCommand) ? PieceColor.Black : lastCommand.Piece.GetPieceColor());
+            // }
+            //
+            // _commandCount = commandInvoker.GetCommandsCount();
         }
 
         /// Add new record to algebraic notation

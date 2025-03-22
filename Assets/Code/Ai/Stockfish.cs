@@ -9,6 +9,7 @@ using ChessBoard.Info;
 using GameAndScene.Initialization;
 using Logic;
 using UnityEngine;
+using Buffer = Logic.MovesBuffer.Buffer;
 using Debug = UnityEngine.Debug;
 
 namespace Ai
@@ -17,7 +18,6 @@ namespace Ai
     {
         private readonly Board _board;
         private readonly Game _game;
-        private readonly CommandInvoker _commandInvoker;
         private readonly string _fen;
 
         private PlayerSettings _playerSettings;
@@ -34,12 +34,12 @@ namespace Ai
             CreateNoWindow = true,
         };
         private readonly TaskCompletionSource<bool> _isAiLoaded = new();
+        // private Buffer _buffer;
 
-        public Stockfish(Board board, Game game, CommandInvoker commandInvoker, string fen)
+        public Stockfish(Board board, Game game, Buffer commandBuffer, string fen)
         {
             _board = board;
             _game = game;
-            _commandInvoker = commandInvoker;
             _fen = fen;
         }
 
@@ -189,7 +189,8 @@ namespace Ai
             Debug.Log($"<color=green>{name} calculating move...</color>");
 
             // Set start position
-            string positionCommand = $"position fen {_fen} {_commandInvoker.GetUciMoves()}";
+            // Todo: get uci from command buffer _buffer.GetUciMoves()
+            string positionCommand = $"position fen {_fen} here";
             Debug.Log(positionCommand);
             await PostCommand(positionCommand, token);
 

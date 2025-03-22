@@ -17,6 +17,6 @@ public class BufferDebugPanel : MonoBehaviour
             return;
         }
 
-        uciText.text = buffer.GetAllUci();
+        uciText.text = buffer.GetAllUciDebug();
     }
 }

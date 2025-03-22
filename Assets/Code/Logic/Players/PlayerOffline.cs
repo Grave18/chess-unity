@@ -20,9 +20,9 @@ namespace Logic.Players
         // Selected in Ui
         private TaskCompletionSource<PieceType> _pieceTypeCompletionSource = new();
 
-        public PlayerOffline(Game game, CommandInvoker commandInvoker, Camera mainCamera, Highlighter highlighter,
-            LayerMask layerMask, PlayerSettings playerSettings)
-            : base(game, commandInvoker)
+        public PlayerOffline(Game game, Camera mainCamera, Highlighter highlighter, LayerMask layerMask,
+            PlayerSettings playerSettings)
+            : base(game)
         {
             _highlighter = highlighter;
             _mainCamera = mainCamera;

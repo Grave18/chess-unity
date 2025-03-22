@@ -6,12 +6,10 @@ namespace Logic.Players
     public abstract class Player
     {
         protected Game Game { get; private set; }
-        protected CommandInvoker CommandInvoker { get; private set; }
 
-        protected Player(Game game, CommandInvoker commandInvoker)
+        protected Player(Game game)
         {
             Game = game;
-            CommandInvoker = commandInvoker;
         }
 
         public virtual void Update()

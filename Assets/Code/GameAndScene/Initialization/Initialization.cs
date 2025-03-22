@@ -18,7 +18,6 @@ namespace GameAndScene.Initialization
         [SerializeField] private Assets assets;
         [SerializeField] private Game game;
         [SerializeField] private Board board;
-        [SerializeField] private CommandInvoker commandInvoker;
         [SerializeField] private Clock clock;
         [SerializeField] private UciString uciString;
         [SerializeField] private Competitors competitors;
@@ -26,8 +25,11 @@ namespace GameAndScene.Initialization
         [SerializeField] private Camera mainCamera;
         [SerializeField] private LayerMask layerMask;
 
+        [Header("Settings")]
         [SerializeField] private GameSettings gameSettings;
+
         private Stockfish _stockfish;
+        private readonly Buffer _commandBuffer = new();
 
         private async void Start()
         {
@@ -40,10 +42,9 @@ namespace GameAndScene.Initialization
             GameObject[] prefabs = await assets.LoadPrefabs();
             ParsedPreset parsedPreset = assets.GetParsedPreset();
             PieceColor turnColor = Assets.GetTurnColorFromPreset(parsedPreset);
-            var commandBuffer = new Buffer();
 
-            game.Init(board, commandBuffer, turnColor);
-            board.Init(game, commandBuffer, parsedPreset, prefabs, turnColor);
+            game.Init(board, _commandBuffer, turnColor);
+            board.Init(game, _commandBuffer, parsedPreset, prefabs, turnColor);
             clock.Init(game);
             uciString.Init(game, board, assets);
             highlighter.Init(game);
@@ -78,8 +79,8 @@ namespace GameAndScene.Initialization
         {
             if (IsNeedToConfigureAi())
             {
-                _stockfish = new Stockfish(board, game, commandInvoker, assets.BoardPreset.Fen);
-                _stockfish?.Start();
+                _stockfish = new Stockfish(board, game, _commandBuffer, assets.BoardPreset.Fen);
+                _ = _stockfish.Start();
             }
         }
 
@@ -102,8 +103,8 @@ namespace GameAndScene.Initialization
         {
             return playerSettings.PlayerType switch
             {
-                PlayerType.Computer => new Computer(game, commandInvoker, playerSettings, _stockfish),
-                PlayerType.Offline  => new PlayerOffline(game, commandInvoker, mainCamera, highlighter, layerMask, playerSettings),
+                PlayerType.Computer => new Computer(game, _commandBuffer, playerSettings, _stockfish),
+                PlayerType.Offline  => new PlayerOffline(game, mainCamera, highlighter, layerMask, playerSettings),
                 _ => null,
             };
         }

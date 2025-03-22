@@ -1,11 +1,11 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Ai;
 using ChessBoard;
 using ChessBoard.Info;
 using ChessBoard.Pieces;
 using GameAndScene.Initialization;
+using Logic.MovesBuffer;
 using Debug = UnityEngine.Debug;
 
 namespace Logic.Players
@@ -13,13 +13,15 @@ namespace Logic.Players
     public class Computer : Player
     {
         private readonly Stockfish _stockfish;
+        private readonly Buffer _commandBuffer;
         private readonly PlayerSettings _playerSettings;
 
         private PieceType _promotion = PieceType.None;
 
-        public Computer(Game game, CommandInvoker commandInvoker, PlayerSettings playerSettings, Stockfish stockfish)
-        :base(game, commandInvoker)
+        public Computer(Game game, Buffer commandBuffer, PlayerSettings playerSettings, Stockfish stockfish)
+        :base(game)
         {
+            _commandBuffer = commandBuffer;
             _playerSettings = playerSettings;
             _stockfish = stockfish;
         }
@@ -44,7 +46,7 @@ namespace Logic.Players
                 Debug.Log("Awaiting was cancelled");
                 return;
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 Debug.Log(ex.Message);
             }
@@ -79,27 +81,28 @@ namespace Logic.Players
                 return;
             }
 
+            // Todo: make moves from computer
             // Move
-            if (movePiece.CanMoveTo(moveToSquare, out MoveInfo moveInfo))
-            {
-                _ = CommandInvoker.MoveTo(moveFromSquare.GetPiece(), moveToSquare, moveInfo);
-            }
-            // Castling
-            else if (movePiece is King king && king.CanCastlingAt(moveToSquare, out CastlingInfo castlingInfo))
-            {
-                _ = CommandInvoker.Castling(king, moveToSquare, castlingInfo.Rook, castlingInfo.RookToSquare, castlingInfo.MoveType);
-            }
-            // Eat
-            else if (movePiece.CanCaptureAt(moveToSquare, out CaptureInfo captureInfo))
-            {
-                _ = CommandInvoker.EatAt(movePiece, moveToSquare, captureInfo);
-            }
-            else
-            {
-                Debug.LogError("Move not found");
-                Debug.Log($"MovePiece: {movePiece.name}, MoveFrom: {moveFromSquare.name}, MoveTo: {moveToSquare.name}");
-                Debug.DebugBreak();
-            }
+            // if (movePiece.CanMoveTo(moveToSquare, out MoveInfo moveInfo))
+            // {
+            //     _ = CommandInvoker.MoveTo(moveFromSquare.GetPiece(), moveToSquare, moveInfo);
+            // }
+            // // Castling
+            // else if (movePiece is King king && king.CanCastlingAt(moveToSquare, out CastlingInfo castlingInfo))
+            // {
+            //     _ = CommandInvoker.Castling(king, moveToSquare, castlingInfo.Rook, castlingInfo.RookToSquare, castlingInfo.MoveType);
+            // }
+            // // Eat
+            // else if (movePiece.CanCaptureAt(moveToSquare, out CaptureInfo captureInfo))
+            // {
+            //     _ = CommandInvoker.EatAt(movePiece, moveToSquare, captureInfo);
+            // }
+            // else
+            // {
+            //     Debug.LogError("Move not found");
+            //     Debug.Log($"MovePiece: {movePiece.name}, MoveFrom: {moveFromSquare.name}, MoveTo: {moveToSquare.name}");
+            //     Debug.DebugBreak();
+            // }
         }
     }
 }
