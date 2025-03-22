@@ -108,13 +108,19 @@ namespace Logic.Players
 
             string uci = $"{fromSquare?.Address}{toSquare?.Address}";
 
-            if (piece is Pawn && toSquare?.Rank is "1" or "8")
+            if (CanPromote(piece, toSquare))
             {
-                // TODO: Add promotion selection. Maybe default option is queen
                 uci += "q";
             }
 
             return uci;
+        }
+
+        private static bool CanPromote(Piece piece, Square toSquare)
+        {
+            return piece is Pawn
+                   && toSquare?.Rank is "1" or "8"
+                   && (piece.CanMoveTo(toSquare, out _) || piece.CanCaptureAt(toSquare, out _));
         }
     }
 }
