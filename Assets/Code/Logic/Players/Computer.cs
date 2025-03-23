@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Ai;
 using ChessBoard;
-using ChessBoard.Info;
 using ChessBoard.Pieces;
 using GameAndScene.Initialization;
 using Logic.MovesBuffer;
@@ -27,8 +26,10 @@ namespace Logic.Players
         /// Get calculations from stockfish process and make move
         public override async void AllowMakeMove()
         {
+            // Todo: reimplement delay of Ai
             // Prevent momentary calculations after undo or redo
-            int delay = Game.MoveType is MoveTypeLegacy.Undo or MoveTypeLegacy.Redo ? 3000 : 100;
+            // int delay = Game.MoveType is MoveTypeLegacy.Undo or MoveTypeLegacy.Redo ? 3000 : 100;
+            int delay = 100;
 
             try
             {

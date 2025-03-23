@@ -156,8 +156,6 @@ namespace Ai
 
         private async Task<string> GetMoveString(CancellationToken token)
         {
-            _game.StartThink();
-
             string move = null;
             try
             {
@@ -172,10 +170,6 @@ namespace Ai
             {
                 Debug.LogError(ex.Message);
                 return null;
-            }
-            finally
-            {
-                _game.EndThink();
             }
 
             return move;

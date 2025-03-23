@@ -5,6 +5,7 @@ using Logic.MovesBuffer;
 using Logic.Players;
 using Logic.Players.GameStates;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Logic
 {
@@ -19,20 +20,24 @@ namespace Logic
         [field: Header("Debug")]
         [field: SerializeField] public PieceColor CurrentTurnColor { get; private set; } = PieceColor.White;
         [field: SerializeField] public CheckType CheckType { get; set; } = CheckType.None;
-        [field: SerializeField] public MoveTypeLegacy MoveType { get; set; } = MoveTypeLegacy.None;
 
         public ISelectable Selected { get; private set; }
 
         public AttackLinesList AttackLines { get; } = new();
         public HashSet<Square> UnderAttackSquares { get; set; } = new();
 
-        // public event Action OnEndTurn;
+        // public event UnityAction<int, int, int, int> a;
         // public event Action OnStart;
         // public event Action OnEnd;
-        // public event Action OnPlay;
-        // public event Action OnPause;
+        // public event Action OnEndTurn;
+        public event UnityAction OnPlay;
+        public event UnityAction OnPause;
+
+        public void FirePlay() => OnPlay?.Invoke();
+        public void FirePause() => OnPause?.Invoke();
 
         private GameState _state;
+        private GameState _previousState;
         private PieceColor _timeOutColor = PieceColor.None;
 
         // Getters
@@ -52,7 +57,6 @@ namespace Logic
 
         public void StartGame()
         {
-            MoveType = MoveTypeLegacy.None;
             CheckType = CheckType.None;
             Board.Build();
             SetState(new IdleState(this));
@@ -60,9 +64,23 @@ namespace Logic
 
         public void SetState(GameState state)
         {
+            _previousState = _state;
             _state?.Exit();
             _state = state;
             _state?.Enter();
+        }
+
+        public void SetPreviousState()
+        {
+            if (_previousState != null)
+            {
+                SetState(_previousState);
+                _previousState = null;
+            }
+            else
+            {
+                Debug.Log("No previous Game State found");
+            }
         }
 
         public void ChangeTurn()
@@ -100,12 +118,6 @@ namespace Logic
             _state?.Pause();
         }
 
-        public void StartTurn(MoveTypeLegacy moveType = MoveTypeLegacy.Move)
-        {
-            // MoveType = moveType;
-            // _state = GameState.Move;
-            // OnStartTurn?.Invoke();
-        }
         public void EndTurn()
         {
             // currentTurnColor = currentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
@@ -118,18 +130,6 @@ namespace Logic
             // {
             //     OnEnd?.Invoke();
             // }
-        }
-
-        public void StartThink()
-        {
-            // _state = GameState.Think;
-            // OnStartThink?.Invoke();
-        }
-
-        public void EndThink()
-        {
-            // _state = GameState.Idle;
-            // OnEndThink?.Invoke();
         }
 
         public PieceColor GetWinner()
@@ -195,13 +195,5 @@ namespace Logic
         {
             Selected = null;
         }
-    }
-
-    public enum MoveTypeLegacy
-    {
-        None,
-        Move,
-        Undo,
-        Redo,
     }
 }

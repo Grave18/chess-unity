@@ -9,26 +9,25 @@ namespace Logic.Players.GameStates
 {
     public class MoveState : GameState
     {
+        private const float MoveTime = 0.3f;
         private readonly string _uci;
-        private readonly bool _isRedo;
 
         private bool _isRunning;
-        private Turn turn;
+        private Turn _turn;
         private MoveData _moveData;
-        private float _t;
+        private float _t = 0;
 
-        public MoveState(Game game, string uci, bool isRedo = false) : base(game)
+        public MoveState(Game game, string uci) : base(game)
         {
             _uci = uci;
-            _isRedo = isRedo;
         }
 
-        public override string Name => _isRedo ? "Redo" : "Move";
+        public override string Name => "Move";
 
         public override void Enter()
         {
             ParsedUci parsedUci = GetParsedUci(_uci);
-            bool isValid = Validate(parsedUci);
+            bool isValid = ValidateMove(parsedUci);
 
             if (isValid)
             {
@@ -66,7 +65,7 @@ namespace Logic.Players.GameStates
             return parsedUci;
         }
 
-        private bool Validate(ParsedUci parsedUci)
+        private bool ValidateMove(ParsedUci parsedUci)
         {
             Piece piece = parsedUci.FromSquare.GetPiece();
 
@@ -84,7 +83,7 @@ namespace Logic.Players.GameStates
                 if (parsedUci.PromotedPieceType == PieceType.None)
                 {
                     _moveData.MoveType = MoveType.Move;
-                    turn = new SimpleMove(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
+                    _turn = new SimpleMove(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
                 }
                 else
                 {
@@ -92,7 +91,8 @@ namespace Logic.Players.GameStates
                     _moveData.HiddenPawn = piece;
                     Piece promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                         parsedUci.ToSquare);
-                    turn = new MovePromotion(_moveData.HiddenPawn, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece);
+                    _turn = new MovePromotion(_moveData.HiddenPawn, parsedUci.FromSquare, parsedUci.ToSquare,
+                        promotedPiece);
                 }
 
                 return true;
@@ -105,7 +105,8 @@ namespace Logic.Players.GameStates
                 if (parsedUci.PromotedPieceType == PieceType.None)
                 {
                     _moveData.MoveType = captureInfo.MoveType;
-                    turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece, _moveData.IsFirstMove);
+                    _turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
+                        _moveData.IsFirstMove);
                 }
                 else
                 {
@@ -113,7 +114,7 @@ namespace Logic.Players.GameStates
                     _moveData.HiddenPawn = piece;
                     Piece promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                         parsedUci.ToSquare);
-                    turn = new CapturePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece,
+                    _turn = new CapturePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece,
                         _moveData.BeatenPiece);
                 }
 
@@ -125,7 +126,7 @@ namespace Logic.Players.GameStates
             {
                 _moveData.MoveType = castlingInfo.MoveType;
                 _moveData.CastlingInfo = castlingInfo;
-                turn = new Castling(_moveData.CastlingInfo, _moveData.IsFirstMove);
+                _turn = new Castling(_moveData.CastlingInfo, _moveData.IsFirstMove);
                 return true;
             }
 
@@ -139,33 +140,38 @@ namespace Logic.Players.GameStates
 
         private void Abort()
         {
-            // Todo: maybe use stack of states
             Debug.Log("Invalid move");
             Game.SetState(new IdleState(Game));
         }
 
         public override void Exit()
         {
+            // Empty
         }
 
         public override void Move(string uci)
         {
+            // Empty
         }
 
         public override void Undo()
         {
+            // Not Undo
         }
 
         public override void Redo()
         {
+            // Not Redo
         }
 
         public override void Play()
         {
+            // It is not paused
         }
 
         public override void Pause()
         {
+            // Maybe implement pause from Move
         }
 
         public override void Update()
@@ -175,7 +181,7 @@ namespace Logic.Players.GameStates
                 return;
             }
 
-            if (_t < 1)
+            if (IsProgressMove())
             {
                 ProgressMove();
             }
@@ -185,33 +191,23 @@ namespace Logic.Players.GameStates
             }
         }
 
+        private bool IsProgressMove()
+        {
+            return _t < 1;
+        }
+
         private void ProgressMove()
         {
-            if (_isRedo)
-            {
-                _t += Time.deltaTime / 0.1f;
-            }
-            else
-            {
-                _t += Time.deltaTime / 0.3f;
-            }
+            _t += Time.deltaTime / MoveTime;
 
-            turn.Progress(_t);
+            _turn.Progress(_t);
         }
 
         private void EndMove()
         {
-            turn.End();
+            _turn.End();
 
-            if (_isRedo)
-            {
-                Game.CommandBuffer.Redo();
-            }
-            else
-            {
-                Game.CommandBuffer.Add(_moveData);
-            }
-
+            Game.CommandBuffer.Add(_moveData);
             Game.ChangeTurn();
             Game.SetState(new IdleState(Game));
         }

@@ -95,9 +95,9 @@ namespace Logic.Players
                 Game.Pause();
                 _promotionPanel.RequestPromotedPiece(Game.CurrentTurnColor, pieceLetter =>
                 {
+                    Game.Play();
                     uci += pieceLetter;
                     Move(uci);
-                    Game.Play();
                 });
             }
             else

@@ -9778,7 +9778,6 @@ MonoBehaviour:
   <Competitors>k__BackingField: {fileID: 1739655008}
   <CurrentTurnColor>k__BackingField: 0
   <CheckType>k__BackingField: 0
-  <MoveType>k__BackingField: 0
 --- !u!1 &1227854461
 GameObject:
   m_ObjectHideFlags: 0

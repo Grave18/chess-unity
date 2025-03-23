@@ -7,26 +7,26 @@ using UnityEngine;
 
 namespace Logic.Players.GameStates
 {
-    public class UndoState : GameState
+    public class RedoState : GameState
     {
         private readonly MoveData _moveData;
         private bool _isRunning;
         private Turn _turn;
 
-        private float _t = 1;
+        private float _t = 0;
         private const float TimeSec = 0.1f;
 
-        public UndoState(Game game, MoveData moveData) : base(game)
+        public RedoState(Game game, MoveData moveData) : base(game)
         {
             _moveData = moveData;
         }
 
-        public override string Name => "Undo";
+        public override string Name => "Redo";
 
         public override void Enter()
         {
             ParsedUci parsedUci = GetParsedUci(_moveData.Uci);
-            bool isValid = ValidateUndo(parsedUci);
+            bool isValid = ValidateRedo(parsedUci);
 
             if (isValid)
             {
@@ -64,9 +64,9 @@ namespace Logic.Players.GameStates
             return parsedUci;
         }
 
-        private bool ValidateUndo(ParsedUci parsedUci)
+        private bool ValidateRedo(ParsedUci parsedUci)
         {
-            Piece piece = parsedUci.ToSquare.GetPiece();
+            Piece piece = parsedUci.FromSquare.GetPiece();
 
             if (_moveData.MoveType == MoveType.Move)
             {
@@ -76,14 +76,23 @@ namespace Logic.Players.GameStates
 
             if (_moveData.MoveType == MoveType.MovePromotion)
             {
-                // Piece and Promoted piece swapped
-                Piece promotedPiece = parsedUci.ToSquare.GetPiece();
-                _turn = new MovePromotion(promotedPiece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.HiddenPawn);
+                Piece promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
+                    parsedUci.ToSquare);
+                _turn = new MovePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece);
                 return true;
             }
 
-            if (_moveData.MoveType is MoveType.Capture or MoveType.EnPassant)
+            if (_moveData.MoveType is MoveType.Capture)
             {
+                _moveData.BeatenPiece = parsedUci.ToSquare.GetPiece();
+                _turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
+                    _moveData.IsFirstMove);
+                return true;
+            }
+
+            if (_moveData.MoveType is MoveType.EnPassant)
+            {
+                // No need to update _moveData.BeatenPiece because it cannot be promoted piece
                 _turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
                     _moveData.IsFirstMove);
                 return true;
@@ -91,10 +100,12 @@ namespace Logic.Players.GameStates
 
             if (_moveData.MoveType is MoveType.CapturePromotion)
             {
-                Piece promotedPiece = parsedUci.ToSquare.GetPiece();
-                // Piece and Promoted piece swapped
-                _turn = new CapturePromotion(promotedPiece, parsedUci.FromSquare, parsedUci.ToSquare,
-                    _moveData.HiddenPawn, _moveData.BeatenPiece);
+                // Order matters. Must grab captured piece first
+                _moveData.BeatenPiece = parsedUci.ToSquare.GetPiece();
+                Piece promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
+                    parsedUci.ToSquare);
+                _turn = new CapturePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare,
+                    promotedPiece, _moveData.BeatenPiece);
                 return true;
             }
 
@@ -114,7 +125,7 @@ namespace Logic.Players.GameStates
 
         private void Abort()
         {
-            Debug.LogError("Invalid Undo");
+            Debug.LogError("Invalid Redo");
             Game.SetPreviousState();
         }
 
@@ -125,22 +136,22 @@ namespace Logic.Players.GameStates
 
         public override void Move(string uci)
         {
-            // No need
+            // Can't move
         }
 
         public override void Undo()
         {
-            // Already Undo
+            // No need
         }
 
         public override void Redo()
         {
-            // No need
+            // Already Redo
         }
 
         public override void Play()
         {
-            // Not paused
+            // Not Paused
         }
 
         public override void Pause()
@@ -167,21 +178,21 @@ namespace Logic.Players.GameStates
 
         private bool IsProgressMove()
         {
-            return _t > 0;
+            return _t < 1;
         }
 
         private void ProgressMove()
         {
-            _t -= Time.deltaTime / TimeSec;
+            _t += Time.deltaTime / TimeSec;
 
             _turn.Progress(_t);
         }
 
         private void EndMove()
         {
-            _turn.EndUndo();
+            _turn.End();
 
-            Game.CommandBuffer.Undo();
+            Game.CommandBuffer.Redo();
             Game.ChangeTurn();
             Game.SetPreviousState();
         }

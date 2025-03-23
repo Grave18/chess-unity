@@ -45,9 +45,9 @@ namespace Logic.MovesBuffer
             _head = _head?.Previous;
         }
 
-        public bool CanRedo(out string uci)
+        public bool CanRedo(out MoveData moveData)
         {
-            uci = _head?.Next?.Value.Uci ?? _buffer.First?.Value.Uci;
+            moveData = _head?.Next?.Value ?? _buffer.First?.Value;
             return _head is { Next: not null } || (_head is null && _buffer.First is not null);
         }
 

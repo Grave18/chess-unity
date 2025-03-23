@@ -18,58 +18,11 @@ namespace Logic.Players.GameStates
 
         public override void Enter()
         {
-            CalculateEndMove();
+            CalculateCurrentTurn();
             _isRunning = true;
         }
 
-        public override void Exit()
-        {
-
-        }
-
-        public override void Move(string uci)
-        {
-            Game.SetState(new MoveState(Game, uci));
-        }
-
-        public override void Undo()
-        {
-            if (Game.CommandBuffer.CanUndo(out MoveData moveData))
-            {
-                Game.SetState(new UndoState(Game, moveData));
-            }
-        }
-
-        public override void Redo()
-        {
-            if (Game.CommandBuffer.CanRedo(out string uci))
-            {
-                Game.SetState(new MoveState(Game, uci, isRedo: true));
-            }
-        }
-
-        public override void Play()
-        {
-            _isRunning = true;
-        }
-
-        public override void Pause()
-        {
-            _isRunning = false;
-        }
-
-        public override void Update()
-        {
-            if (!_isRunning)
-            {
-                return;
-            }
-
-            Game.Competitors.UpdatePlayer();
-        }
-
-        /// Calculations for all turns
-        private void CalculateEndMove()
+        private void CalculateCurrentTurn()
         {
             Game.UnderAttackSquares = GetUnderAttackSquares(Game.PrevTurnPieces);
             Game.CheckType = CalculateCheck(Game.PrevTurnPieces);
@@ -184,6 +137,52 @@ namespace Logic.Players.GameStates
                 CheckType.Check or CheckType.DoubleCheck => CheckType.CheckMate,
                 _ => Game.CheckType,
             };
+        }
+
+        public override void Exit()
+        {
+            // Empty
+        }
+
+        public override void Move(string uci)
+        {
+            Game.SetState(new MoveState(Game, uci));
+        }
+
+        public override void Undo()
+        {
+            if (Game.CommandBuffer.CanUndo(out MoveData moveData))
+            {
+                Game.SetState(new UndoState(Game, moveData));
+            }
+        }
+
+        public override void Redo()
+        {
+            if (Game.CommandBuffer.CanRedo(out MoveData moveData))
+            {
+                Game.SetState(new RedoState(Game, moveData));
+            }
+        }
+
+        public override void Play()
+        {
+            // Already playing
+        }
+
+        public override void Pause()
+        {
+            Game.SetState(new PauseState(Game));
+        }
+
+        public override void Update()
+        {
+            if (!_isRunning)
+            {
+                return;
+            }
+
+            Game.Competitors.UpdatePlayer();
         }
     }
 }
