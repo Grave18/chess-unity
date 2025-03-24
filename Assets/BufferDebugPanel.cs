@@ -11,12 +11,12 @@ public class BufferDebugPanel : MonoBehaviour
 
     private void Update()
     {
-        Buffer buffer = game.CommandBuffer;
-        if(buffer == null)
+        UciBuffer uciBuffer = game.UciBuffer;
+        if(uciBuffer == null)
         {
             return;
         }
 
-        uciText.text = buffer.GetAllUciDebug();
+        uciText.text = uciBuffer.GetAllUciDebug();
     }
 }

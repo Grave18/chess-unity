@@ -26,7 +26,7 @@ namespace Logic.Players.GameStates
 
         public override void Undo()
         {
-            if (Game.CommandBuffer.CanUndo(out MoveData moveData))
+            if (Game.UciBuffer.CanUndo(out MoveData moveData))
             {
                 Game.SetState(new UndoState(Game, moveData));
             }
@@ -34,7 +34,7 @@ namespace Logic.Players.GameStates
 
         public override void Redo()
         {
-            if (Game.CommandBuffer.CanRedo(out MoveData moveData))
+            if (Game.UciBuffer.CanRedo(out MoveData moveData))
             {
                 Game.SetState(new RedoState(Game, moveData));
             }

@@ -181,7 +181,7 @@ namespace Logic.Players.GameStates
         {
             _turn.EndUndo();
 
-            Game.CommandBuffer.Undo();
+            Game.UciBuffer.Undo();
             Game.ChangeTurn();
             Game.SetPreviousState();
         }

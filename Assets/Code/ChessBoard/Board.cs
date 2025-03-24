@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AssetsAndResources;
 using ChessBoard.Info;
 using ChessBoard.Pieces;
@@ -31,16 +30,14 @@ namespace ChessBoard
         [Header("Ui")]
         [SerializeField] private PromotionPanel promotionPanel;
 
-        /// This is white piece references what is on board in current game
         public HashSet<Piece> WhitePieces { get; } = new();
-        /// This is black piece references what is on board in current game
         public HashSet<Piece> BlackPieces { get; } = new();
         public List<Square> Squares { get; } = new();
         private Dictionary<string, Square> SquaresHash { get; } = new();
 
         // Initialized
         private Game _game;
-        private Buffer _commandBuffer;
+        private UciBuffer _commandUciBuffer;
         private GameObject[] _prefabs;
         private ParsedPreset _boardPreset;
         private PieceColor _turnColor;
@@ -49,11 +46,11 @@ namespace ChessBoard
 
         public Square NullSquare => nullSquare;
 
-        public void Init(Game game, Buffer commandBuffer, ParsedPreset boardPreset, GameObject[] prefabs,
+        public void Init(Game game, UciBuffer commandUciBuffer, ParsedPreset boardPreset, GameObject[] prefabs,
             PieceColor turnColor)
         {
             _game = game;
-            _commandBuffer = commandBuffer;
+            _commandUciBuffer = commandUciBuffer;
             _prefabs = prefabs;
             _boardPreset = boardPreset;
             _turnColor = turnColor;
@@ -88,6 +85,11 @@ namespace ChessBoard
         /// Get square by address on the board. example: "c1", "d3" ...
         public Square GetSquare(string squareAddress)
         {
+            if (squareAddress == null)
+            {
+                return NullSquare;
+            }
+
             return SquaresHash.TryGetValue(squareAddress, out Square moveFromSquare)
                 ? moveFromSquare
                 : NullSquare;
@@ -246,12 +248,11 @@ namespace ChessBoard
 
         public EnPassantInfo GetEnPassantInfo()
         {
-            string epSquareAddress = _commandBuffer.GetEpSquareAddress();
+            string epSquareAddress = _commandUciBuffer.GetEpSquareAddress();
             if (epSquareAddress == "-")
             {
                 epSquareAddress = _boardPreset.EnPassant;
             }
-            epSquareAddress ??= "-";
 
             Square epSquare = GetSquare(epSquareAddress);
 

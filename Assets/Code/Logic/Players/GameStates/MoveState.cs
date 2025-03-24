@@ -207,7 +207,7 @@ namespace Logic.Players.GameStates
         {
             _turn.End();
 
-            Game.CommandBuffer.Add(_moveData);
+            Game.UciBuffer.Add(_moveData);
             Game.ChangeTurn();
             Game.SetState(new IdleState(Game));
         }

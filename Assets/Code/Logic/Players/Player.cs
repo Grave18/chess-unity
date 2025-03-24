@@ -9,19 +9,16 @@
             Game = game;
         }
 
+        public virtual void Start()
+        {
+        }
+
         public virtual void Update()
         {
-
         }
 
-        public virtual void AllowMakeMove()
+        public virtual void Stop()
         {
-
-        }
-
-        public virtual void DisallowMakeMove()
-        {
-
         }
     }
 }

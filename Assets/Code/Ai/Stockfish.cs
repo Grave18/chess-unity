@@ -4,20 +4,16 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ChessBoard;
-using ChessBoard.Info;
 using GameAndScene.Initialization;
-using Logic;
+using Logic.MovesBuffer;
 using UnityEngine;
-using Buffer = Logic.MovesBuffer.Buffer;
 using Debug = UnityEngine.Debug;
 
 namespace Ai
 {
     public sealed class Stockfish : IDisposable
     {
-        private readonly Board _board;
-        private readonly Game _game;
+        private readonly UciBuffer _uciBuffer;
         private readonly string _fen;
 
         private PlayerSettings _playerSettings;
@@ -33,13 +29,15 @@ namespace Ai
             RedirectStandardError = true,
             CreateNoWindow = true,
         };
-        private readonly TaskCompletionSource<bool> _isAiLoaded = new();
-        // private Buffer _buffer;
+        private string _out = string.Empty;
+        private readonly StringBuilder _outStringBuilder = new();
+        private readonly StringBuilder _errorStringBuilder = new();
 
-        public Stockfish(Board board, Game game, Buffer commandBuffer, string fen)
+        private readonly TaskCompletionSource<bool> _isAiLoaded = new();
+
+        public Stockfish(UciBuffer uciBuffer, string fen)
         {
-            _board = board;
-            _game = game;
+            _uciBuffer = uciBuffer;
             _fen = fen;
         }
 
@@ -48,11 +46,17 @@ namespace Ai
             _process?.Dispose();
         }
 
-        public async Task ShowState()
+        public void ShowProcessOutput()
+        {
+            Debug.Log("StdOut: " + _outStringBuilder.ToString());
+            Debug.Log("StdErr: " + _errorStringBuilder.ToString());
+        }
+
+        public async Task ShowInternalBoardState()
         {
             try
             {
-                string state = await GetState();
+                string state = await GetInternalBoardState();
                 LogState(state);
             }
             catch (Exception)
@@ -61,10 +65,10 @@ namespace Ai
             }
         }
 
-        private async Task<string> GetState()
+        private async Task<string> GetInternalBoardState()
         {
             CancellationToken exitCancellationToken = Application.exitCancellationToken;
-            await PostCommand("d", exitCancellationToken);
+            PostCommand("d");
             string state = await ReadAllOutput("Checkers:", exitCancellationToken);
             return state;
         }
@@ -86,34 +90,61 @@ namespace Ai
         private void StartStockfish()
         {
             _process = Process.Start(_startInfo);
+
+            if (IsProcessDead())
+            {
+                return;
+            }
+
+            _process!.OutputDataReceived += ReadOutput;
+            _process!.ErrorDataReceived += ReadError;
+            _process.BeginOutputReadLine();
+            _process.BeginErrorReadLine();
+        }
+
+        private void ReadError(object sender, DataReceivedEventArgs outLine)
+        {
+            if (!string.IsNullOrEmpty(outLine.Data))
+            {
+                _errorStringBuilder.AppendLine(outLine.Data);
+            }
+        }
+
+        private void ReadOutput(object sender, DataReceivedEventArgs outLine)
+        {
+            if (!string.IsNullOrEmpty(outLine.Data))
+            {
+                _out = outLine.Data;
+                _outStringBuilder.AppendLine(outLine.Data);
+            }
         }
 
         private async Task SetupStockfish()
         {
             // Enable uci mode
-            await PostCommand("uci");
+            PostCommand("uci");
             await FindAnswer("uciok", Application.exitCancellationToken);
 
             // Set Threads
             int logicalProcessorsCount = SystemInfo.processorCount;
             Debug.Log($"Logical processors count = {logicalProcessorsCount}");
-            await PostCommand($"setoption name Threads value {logicalProcessorsCount/2}");
+            PostCommand($"setoption name Threads value {logicalProcessorsCount/2}");
         }
 
         private async Task StartNewGame()
         {
-            await PostCommand("ucinewgame");
-            await PostCommand("isready");
+            PostCommand("ucinewgame");
+            PostCommand("isready");
             await FindAnswer("readyok", Application.exitCancellationToken);
         }
 
         private void DeclareReady()
         {
-            Debug.Log("Computer is ready");
+            Debug.Log("Stockfish loaded!");
             _isAiLoaded.SetResult(true);
         }
 
-        public async Task<AiCalculationsResult> GetAiResult(PlayerSettings playerSettings, CancellationToken token)
+        public async Task<string> GetUci(PlayerSettings playerSettings, CancellationToken token)
         {
             _playerSettings = playerSettings;
 
@@ -123,18 +154,22 @@ namespace Ai
                 return null;
             }
 
-            string moveString = await GetMoveString(token);
-            if (moveString == null) return null;
+            string bestMove = await GetBestMove(token);
 
-            if (IsNoMoreMoves(moveString))
+            if (bestMove == null)
             {
-                LogNoMoreMoves(moveString);
                 return null;
             }
 
-            ExtractSquareAddressesAndPromotionFrom(moveString, out string moveFrom, out string moveTo, out string promotion);
+            if (IsNoMoreMoves(bestMove))
+            {
+                LogNoMoreMoves(bestMove);
+                return null;
+            }
 
-            return GetAICalculationsResult(moveFrom, moveTo, promotion);
+            string uci = ParseBestMoveToUci(bestMove);
+
+            return uci;
         }
 
         private async Task<bool> IsAiFailedToLoad()
@@ -154,28 +189,45 @@ namespace Ai
             Debug.Log(message);
         }
 
-        private async Task<string> GetMoveString(CancellationToken token)
+        private async Task<string> GetBestMove(CancellationToken token)
         {
-            string move = null;
             try
             {
-                move = await CalculateMove(token);
+                string move = await GetBestMoveFromStockfish(token);
+                return move;
             }
             catch (TaskCanceledException)
             {
-                Debug.Log("Move was canceled");
+                await HandleTaskCancel();
+                return null;
+            }
+            catch (InvalidOperationException ex)
+            {
+                Debug.LogError("Invalid operation Exception: " + ex.Message);
                 return null;
             }
             catch (Exception ex)
             {
-                Debug.LogError(ex.Message);
+                Debug.LogError(ex);
                 return null;
             }
-
-            return move;
         }
 
-        private async Task<string> CalculateMove(CancellationToken token)
+        private async Task HandleTaskCancel()
+        {
+            Debug.Log("Move was canceled");
+            try
+            {
+                PostCommand("stop");
+                await FindAnswer("bestmove", Application.exitCancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(ex);
+            }
+        }
+
+        private async Task<string> GetBestMoveFromStockfish(CancellationToken token)
         {
             string name = $"{_playerSettings.Name}(Computer {_playerSettings.ComputerSkillLevel})";
 
@@ -184,16 +236,16 @@ namespace Ai
 
             // Set start position
             // Todo: get uci from command buffer _buffer.GetUciMoves()
-            string positionCommand = $"position fen {_fen} here";
+            string positionCommand = $"position fen {_fen} {_uciBuffer.GetMovesUci()}";
             Debug.Log(positionCommand);
-            await PostCommand(positionCommand, token);
+            PostCommand(positionCommand);
 
             // Set skill Level
-            await PostCommand($"setoption name Skill Level value {(int)_playerSettings.ComputerSkillLevel}", token);
+            PostCommand($"setoption name Skill Level value {(int)_playerSettings.ComputerSkillLevel}");
 
             // Set command with time
             string goCommand = $"go movetime {_playerSettings.ComputerThinkTimeMs}";
-            await PostCommand(goCommand, token);
+            PostCommand(goCommand);
 
             // Get answer
             string output = await FindAnswer("bestmove", token);
@@ -204,84 +256,49 @@ namespace Ai
             }
 
             Debug.Log($"<color=green>{name} end calculate move</color>");
+            Debug.Log($"<color=cyan>{output}</color>");
 
             return output;
         }
 
-        private static void ExtractSquareAddressesAndPromotionFrom(string move,
-            out string moveFrom, out string moveTo, out string promotion)
+        private static string ParseBestMoveToUci(string move)
         {
-            // Extract move form string
-            moveFrom = move.Substring(9, 2);
-            moveTo = move.Substring(11, 2);
+            string result;
 
-            promotion = " ";
             if(move.Length >= 14)
             {
-                promotion = move.Substring(13, 1);
+                result = move.Substring(9, 5);
+                result = result.Trim();
+            }
+            else
+            {
+                result = move.Substring(9, 4);
             }
 
-            LogMove(move, moveFrom, moveTo, promotion);
-        }
-
-        private static void LogMove(string move, string moveFrom, string moveTo, string promotion)
-        {
-            // Log
-            string message = $"Best Move: <color=cyan>{moveFrom}{moveTo}</color>";
-            message += promotion == " " ? string.Empty : $". Promotion to: {promotion}";
-            message += $"\n<color=gray>{move}</color>";
-
-            Debug.Log(message);
-        }
-
-        private AiCalculationsResult GetAICalculationsResult(string moveFrom, string moveTo, string promotion)
-        {
-            Square moveFromSquare = _board.GetSquare(moveFrom);
-            Square moveToSquare = _board.GetSquare(moveTo);
-
-            PieceType promotionType = promotion switch
-            {
-                "q" => PieceType.Queen,
-                "r" => PieceType.Rook,
-                "b" => PieceType.Bishop,
-                "n" => PieceType.Knight,
-                _ => PieceType.None,
-            };
-
-            var aiCalculationsResult = new AiCalculationsResult(moveFromSquare, moveToSquare, promotionType);
-            return aiCalculationsResult;
+            return result;
         }
 
         /// Find line what contains find
         private async Task<string> FindAnswer(string find, CancellationToken token)
         {
-            if (_process is { HasExited: true })
+            if (IsProcessDead())
             {
                 Debug.Log("Can not read. Process is null or exited");
                 return null;
             }
 
-            StreamReader reader = _process.StandardOutput;
-
-            string output = string.Empty;
-            while (!output.Contains(find))
+            while (!_out.Contains(find) && !token.IsCancellationRequested)
             {
-                await Task.Delay(25, token);
-                if (token.IsCancellationRequested) break;
-                output = await reader.ReadLineAsync();
+                await Task.Delay(10, token);
             }
 
             if (token.IsCancellationRequested)
             {
-                await PostCommand("stop");
-                while (!output.Contains(find))
-                {
-                    await Task.Delay(10, token);
-                    output = await reader.ReadLineAsync();
-                }
-
                 throw new TaskCanceledException();
             }
+
+            string output = _out;
+            _out = string.Empty;
 
             return output;
         }
@@ -289,7 +306,7 @@ namespace Ai
         /// Read all output
         private async Task<string> ReadAllOutput(string find, CancellationToken token)
         {
-            if (_process is { HasExited: true })
+            if (IsProcessDead())
             {
                 Debug.Log("Can not read. Process is null or exited");
                 return null;
@@ -299,7 +316,7 @@ namespace Ai
 
             string output = string.Empty;
             StringBuilder sb = new();
-            while (!token.IsCancellationRequested && !output.Contains(find))
+            while (!output.Contains(find) && !token.IsCancellationRequested)
             {
                 await Task.Delay(25, token);
                 output = await reader.ReadLineAsync();
@@ -308,40 +325,27 @@ namespace Ai
 
             if (token.IsCancellationRequested)
             {
-                await PostCommand("stop");
-                while (!output.Contains(find))
-                {
-                    await Task.Delay(25, token);
-                    output = await reader.ReadLineAsync();
-                    sb.AppendLine(output);
-                }
-
                 throw new TaskCanceledException();
             }
 
             return sb.ToString();
         }
 
-        private async Task PostCommand(string command)
+        private void PostCommand(string command)
         {
-            if (_process is { HasExited: true })
+            if (IsProcessDead())
             {
                 Debug.Log($"Cannot execute {command}. Process is null or exited");
                 return;
             }
 
             StreamWriter writer = _process.StandardInput;
-            await writer.WriteLineAsync(command);
+            writer.WriteLine(command);
         }
 
-        private async Task PostCommand(string command, CancellationToken token)
+        private bool IsProcessDead()
         {
-            await PostCommand(command);
-
-            if (token.IsCancellationRequested)
-            {
-                throw new TaskCanceledException();
-            }
+            return _process is { HasExited: true };
         }
     }
 }

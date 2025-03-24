@@ -15,60 +15,41 @@ namespace Logic.Players
             _playerWhite = playerWhite;
             _playerBlack = playerBlack;
             _currentPlayer = _playerWhite;
-
-            SubscribeToEvents();
         }
+
+        public void StartPlayer()
+        {
+            _currentPlayer.Start();
+        }
+
         public void UpdatePlayer()
         {
             _currentPlayer.Update();
         }
 
-        public void ChangePlayers(Player playerWhite, Player playerBlack)
+        public void StopPlayer()
+        {
+            _currentPlayer.Stop();
+        }
+
+        public void SubstitutePlayers(Player playerWhite, Player playerBlack)
         {
             _playerWhite = playerWhite;
             _playerBlack = playerBlack;
 
-            OnEndTurn();
+            ChangeCurrentPlayer();
         }
 
-        private void OnPlay()
-        {
-            _currentPlayer.AllowMakeMove();
-        }
-
-        private void OnPause()
-        {
-            _currentPlayer.DisallowMakeMove();
-        }
-
-        private void OnEndTurn()
+        public void ChangeCurrentPlayer()
         {
             if (_game.CurrentTurnColor == PieceColor.White)
             {
                 _currentPlayer = _playerWhite;
-                _playerWhite.AllowMakeMove();
-                _playerBlack.DisallowMakeMove();
             }
             else if (_game.CurrentTurnColor == PieceColor.Black)
             {
                 _currentPlayer = _playerBlack;
-                _playerBlack.AllowMakeMove();
-                _playerWhite.DisallowMakeMove();
             }
-        }
-
-        private void SubscribeToEvents()
-        {
-            // _game.OnPlay += OnPlay;
-            // _game.OnPause += OnPause;
-            // _game.OnEndTurn += OnEndTurn;
-        }
-
-        private void OnDestroy()
-        {
-            // _game.OnPlay -= OnPlay;
-            // _game.OnPause -= OnPause;
-            // _game.OnEndTurn -= OnEndTurn;
         }
     }
 }

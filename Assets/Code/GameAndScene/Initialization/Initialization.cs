@@ -31,7 +31,7 @@ namespace GameAndScene.Initialization
         [SerializeField] private GameSettings gameSettings;
 
         private Stockfish _stockfish;
-        private readonly Buffer _commandBuffer = new();
+        private readonly UciBuffer _commandUciBuffer = new();
 
         private async void Start()
         {
@@ -45,8 +45,8 @@ namespace GameAndScene.Initialization
             ParsedPreset parsedPreset = assets.GetParsedPreset();
             PieceColor turnColor = Assets.GetTurnColorFromPreset(parsedPreset);
 
-            game.Init(board, _commandBuffer, turnColor);
-            board.Init(game, _commandBuffer, parsedPreset, prefabs, turnColor);
+            game.Init(board, _commandUciBuffer, turnColor);
+            board.Init(game, _commandUciBuffer, parsedPreset, prefabs, turnColor);
             clock.Init(game);
             uciString.Init(game, board, assets);
             highlighter.Init(game);
@@ -81,7 +81,7 @@ namespace GameAndScene.Initialization
         {
             if (IsNeedToConfigureAi())
             {
-                _stockfish = new Stockfish(board, game, _commandBuffer, assets.BoardPreset.Fen);
+                _stockfish = new Stockfish(_commandUciBuffer, assets.BoardPreset.Fen);
                 _ = _stockfish.Start();
             }
         }
@@ -105,7 +105,7 @@ namespace GameAndScene.Initialization
         {
             return playerSettings.PlayerType switch
             {
-                PlayerType.Computer => new Computer(game, _commandBuffer, playerSettings, _stockfish),
+                PlayerType.Computer => new Computer(game, playerSettings, _stockfish),
                 PlayerType.Offline  => new PlayerOffline(game, mainCamera, highlighter, layerMask, gameSettings.IsAutoPromoteToQueen, promotionPanel),
                 _ => null,
             };
@@ -126,13 +126,19 @@ namespace GameAndScene.Initialization
             Player playerWhite = GetPlayer(gameSettings.Player1Settings);
             Player playerBlack = GetPlayer(gameSettings.Player2Settings);
 
-            competitors.ChangePlayers(playerWhite, playerBlack);
+            competitors.SubstitutePlayers(playerWhite, playerBlack);
         }
 
         [Button(space: 10)]
         private void ShowStockfishState()
         {
-            _ = _stockfish?.ShowState();
+            _ = _stockfish?.ShowInternalBoardState();
+        }
+
+        [Button(space: 10)]
+        private void ShowStockfishOutput()
+        {
+            _stockfish?.ShowProcessOutput();
         }
 
         private void Update()

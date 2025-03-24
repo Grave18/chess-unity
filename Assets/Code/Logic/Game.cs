@@ -13,13 +13,11 @@ namespace Logic
     {
         [field: Header("References")]
         [field:SerializeField] public Competitors Competitors { get; set; }
-
         public Board Board { get; private set; }
-        public Buffer CommandBuffer { get; private set; }
+        public UciBuffer UciBuffer { get; private set; }
 
-        [field: Header("Debug")]
-        [field: SerializeField] public PieceColor CurrentTurnColor { get; private set; } = PieceColor.White;
-        [field: SerializeField] public CheckType CheckType { get; set; } = CheckType.None;
+        public PieceColor CurrentTurnColor { get; private set; } = PieceColor.White;
+        public CheckType CheckType { get; set; } = CheckType.None;
 
         public ISelectable Selected { get; private set; }
 
@@ -48,10 +46,10 @@ namespace Logic
         public IEnumerable<Square> Squares => Board.Squares;
         public Square NullSquare => Board.NullSquare;
 
-        public void Init(Board board, Buffer commandBuffer,PieceColor turnColor)
+        public void Init(Board board, UciBuffer commandUciBuffer,PieceColor turnColor)
         {
             Board = board;
-            CommandBuffer = commandBuffer;
+            UciBuffer = commandUciBuffer;
             CurrentTurnColor = turnColor;
         }
 
@@ -86,6 +84,7 @@ namespace Logic
         public void ChangeTurn()
         {
             CurrentTurnColor = CurrentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
+            Competitors.ChangeCurrentPlayer();
         }
 
         private void Update()

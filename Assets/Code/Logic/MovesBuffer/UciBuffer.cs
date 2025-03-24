@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Logic.MovesBuffer
 {
-    public class Buffer
+    public class UciBuffer
     {
         private readonly LinkedList<MoveData> _buffer = new();
         private LinkedListNode<MoveData> _head;
@@ -63,6 +63,33 @@ namespace Logic.MovesBuffer
                 : "-";
 
             return address;
+        }
+
+        public string GetMovesUci()
+        {
+            if (_buffer.Count == 0)
+            {
+                return string.Empty;
+            }
+
+            var sb = new StringBuilder();
+            sb.Append("moves");
+            foreach (MoveData entry in _buffer)
+            {
+                if (_head == null)
+                {
+                    break;
+                }
+
+                sb.Append($" {entry.Uci}");
+
+                if (_head.Value == entry)
+                {
+                    break;
+                }
+            }
+
+            return sb.ToString();
         }
 
         public string GetAllUciDebug()
