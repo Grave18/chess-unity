@@ -107,6 +107,7 @@ namespace Logic.MovesBuffer
         public void Clear()
         {
             _buffer.Clear();
+            _head = null;
         }
     }
 }

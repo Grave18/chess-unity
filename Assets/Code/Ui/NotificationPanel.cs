@@ -37,16 +37,17 @@ namespace Ui
         {
             restartButton.onClick.AddListener(game.StartGame);
 
-            // game.OnEndTurn += UpdateNotificationText;
-            // game.OnStart += UpdateNotificationText;
-            // game.OnEnd += UpdateNotificationText;
+            game.OnChangeTurn+= UpdateNotificationText;
+            game.OnStart += UpdateNotificationText;
+            game.OnEnd += UpdateNotificationText;
         }
 
         private void OnDisable()
         {
-            // game.OnEndTurn -= UpdateNotificationText;
-            // game.OnStart -= UpdateNotificationText;
-            // game.OnEnd -= UpdateNotificationText;
+            restartButton.onClick.RemoveListener(game.StartGame);
+            game.OnChangeTurn -= UpdateNotificationText;
+            game.OnStart -= UpdateNotificationText;
+            game.OnEnd -= UpdateNotificationText;
         }
     }
 }

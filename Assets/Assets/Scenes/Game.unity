@@ -6248,7 +6248,7 @@ GameObject:
   m_Component:
   - component: {fileID: 813510559}
   m_Layer: 5
-  m_Name: SettingsExitPanel
+  m_Name: SettingsAndExitPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9703,10 +9703,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   competitors: {fileID: 1739655008}
+  beatenPieces: {fileID: 735258344}
   piecesParent: {fileID: 543450652193350432}
   squaresParent: {fileID: 1081509498}
   nullSquare: {fileID: 1785828115}
-  promotionPanel: {fileID: 0}
 --- !u!4 &1194414646 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8046962630147883797, guid: f39d1981e8c3c244fb4129f1387a5c3d,

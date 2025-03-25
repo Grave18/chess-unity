@@ -7,7 +7,6 @@ using EditorCools;
 using Logic;
 using Logic.MovesBuffer;
 using Logic.Players;
-using Ui.Promotion;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -23,12 +22,10 @@ namespace ChessBoard
 
         [Header("References")]
         [SerializeField] private Competitors competitors;
+        [SerializeField] private BeatenPieces beatenPieces;
         [SerializeField] private Transform piecesParent;
         [SerializeField] private Transform squaresParent;
         [SerializeField] private Square nullSquare;
-
-        [Header("Ui")]
-        [SerializeField] private PromotionPanel promotionPanel;
 
         public HashSet<Piece> WhitePieces { get; } = new();
         public HashSet<Piece> BlackPieces { get; } = new();
@@ -150,6 +147,7 @@ namespace ChessBoard
         public void Build()
         {
             DestroyBoardAndPieces();
+            beatenPieces.Clear();
             FindAllSquares();
             HashSquares();
             LoadPiecesFromPreset();
@@ -427,7 +425,7 @@ namespace ChessBoard
 
         private void DestroyPieces()
         {
-            Transform[] pieces = piecesParent.Cast<Transform>().ToArray();
+            var pieces = piecesParent.Cast<Transform>();
             foreach (Transform piece in pieces)
             {
                 Destroy(piece.gameObject);

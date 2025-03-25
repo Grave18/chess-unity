@@ -60,6 +60,7 @@ namespace Logic
         {
             CheckType = CheckType.None;
             CurrentTurnColor = _startingColor;
+            UciBuffer.Clear();
             Board.Build();
             SetState(new IdleState(this));
             FireStart();

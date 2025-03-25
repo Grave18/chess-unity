@@ -67,5 +67,12 @@ namespace ChessBoard
 
             return lastPiece;
         }
+
+        public void Clear()
+        {
+            _beatenPieces.Clear();
+            _whiteIndex = 0;
+            _blackIndex = 0;
+        }
     }
 }

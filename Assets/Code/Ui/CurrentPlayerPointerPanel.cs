@@ -12,10 +12,10 @@ namespace Ui
 
         private void OnEnable()
         {
-            // game.OnEndTurn += OnEndTurn;
+            game.OnChangeTurn += OnChangeTurn;
         }
 
-        private void OnEndTurn()
+        private void OnChangeTurn()
         {
             if (game.CurrentTurnColor == PieceColor.White)
             {
