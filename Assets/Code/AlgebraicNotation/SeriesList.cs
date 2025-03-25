@@ -159,17 +159,18 @@ namespace AlgebraicNotation
                 stringBuilder.AppendLine(value);
             }
 
-            if (game.IsGameOver())
-            {
-                string endGameText = game.GetWinner() switch
-                {
-                    PieceColor.White => "1-0",
-                    PieceColor.Black => "0-1",
-                    PieceColor.None => "\u00bd-\u00bd", // ½-½
-                    _ => string.Empty,
-                };
-                stringBuilder.AppendLine(endGameText);
-            }
+            // Todo: refactor IsGameOver()
+            // if (game.IsGameOver())
+            // {
+            //     string endGameText = game.GetWinner() switch
+            //     {
+            //         PieceColor.White => "1-0",
+            //         PieceColor.Black => "0-1",
+            //         PieceColor.None => "\u00bd-\u00bd", // ½-½
+            //         _ => string.Empty,
+            //     };
+            //     stringBuilder.AppendLine(endGameText);
+            // }
 
             return stringBuilder.ToString();
         }

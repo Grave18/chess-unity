@@ -33,7 +33,7 @@ namespace GameAndScene.Initialization
         private Stockfish _stockfish;
         private readonly UciBuffer _commandUciBuffer = new();
 
-        private async void Start()
+        private async void Awake()
         {
             await Initialize();
             game.StartGame();
@@ -41,15 +41,16 @@ namespace GameAndScene.Initialization
 
         private async Task Initialize()
         {
-            GameObject[] prefabs = await assets.LoadPrefabs();
             ParsedPreset parsedPreset = assets.GetParsedPreset();
             PieceColor turnColor = Assets.GetTurnColorFromPreset(parsedPreset);
-
             game.Init(board, _commandUciBuffer, turnColor);
-            board.Init(game, _commandUciBuffer, parsedPreset, prefabs, turnColor);
             clock.Init(game);
-            uciString.Init(game, board, assets);
             highlighter.Init(game);
+
+            GameObject[] prefabs = await assets.LoadPrefabs();
+
+            board.Init(game, _commandUciBuffer, parsedPreset, prefabs, turnColor);
+            uciString.Init(game, board, assets);
 
             InitPlayers();
         }

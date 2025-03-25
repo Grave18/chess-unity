@@ -20,7 +20,8 @@ namespace Ui
                 case CheckType.DoubleCheck: SetPanel(text: "Double check", isText: true, isButton: false); break;
                 case CheckType.CheckMate:   SetPanel(text: "Checkmate", isText: true, isButton: true);     break;
                 case CheckType.Stalemate:   SetPanel(text: "Stalemate", isText: true, isButton: true);     break;
-                case CheckType.TimeOut:     SetPanel(text: "Time is over", isText: true, isButton: true);  break;
+                case CheckType.TimeOutWhite
+                    or CheckType.TimeOutBlack:     SetPanel(text: "Time is over", isText: true, isButton: true);  break;
                 default:                    SetPanel(text: "", isText: false, isButton: false);            break;
             }
         }

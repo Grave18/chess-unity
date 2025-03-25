@@ -19,8 +19,16 @@ namespace Logic.Players.GameStates
         public override void Enter()
         {
             CalculateCurrentTurn();
-            _isRunning = true;
-            Game.Competitors.StartPlayer();
+
+            if(IsGameOver())
+            {
+                Game.FireEnd();
+            }
+            else
+            {
+                _isRunning = true;
+                Game.Competitors.StartPlayer();
+            }
         }
 
         private void CalculateCurrentTurn()
@@ -138,6 +146,11 @@ namespace Logic.Players.GameStates
                 CheckType.Check or CheckType.DoubleCheck => CheckType.CheckMate,
                 _ => Game.CheckType,
             };
+        }
+
+        private bool IsGameOver()
+        {
+            return Game.CheckType is CheckType.CheckMate or CheckType.Stalemate or CheckType.TimeOutWhite or CheckType.TimeOutBlack;
         }
 
         public override void Exit()

@@ -3,12 +3,11 @@ using UnityEngine;
 
 namespace Logic
 {
-    // Todo: update to new system
     public class Clock : MonoBehaviour
     {
         [SerializeField] private int timeMinutes = 5;
 
-        public bool IsPlaying { get; private set; }
+        private bool _isPlaying;
 
         private TimeSpan _initialWhiteTime;
         private TimeSpan _initialBlackTime;
@@ -27,29 +26,52 @@ namespace Logic
             _initialWhiteTime = TimeSpan.FromMinutes(timeMinutes);
             _initialBlackTime = _initialWhiteTime;
 
-            SubscribeToGameEvents();
+            OnEnable();
         }
 
-        public void StartTimer()
+        private void OnEnable()
         {
-            IsPlaying = true;
+            if(_game == null)
+            {
+                return;
+            }
+
+            _game.OnStart += StartTimer;
+            _game.OnChangeTurn += Play;
+            _game.OnEnd += Pause;
+            _game.OnPlay += Play;
+            _game.OnPause += Pause;
+        }
+
+        private void OnDisable()
+        {
+            _game.OnStart -= StartTimer;
+            _game.OnChangeTurn -= Play;
+            _game.OnEnd -= Pause;
+            _game.OnPlay -= Play;
+            _game.OnPause -= Pause;
+        }
+
+        private void StartTimer()
+        {
+            _isPlaying = true;
             _whiteTime = _initialWhiteTime;
             _blackTime = _initialBlackTime;
         }
 
-        public void Play()
+        private void Play()
         {
-            IsPlaying = true;
+            _isPlaying = true;
         }
 
-        public void Pause()
+        private void Pause()
         {
-            IsPlaying = false;
+            _isPlaying = false;
         }
 
         private void Update()
         {
-            if (!IsPlaying || _game == null)
+            if (!_isPlaying || _game == null)
             {
                 return;
             }
@@ -71,26 +93,10 @@ namespace Logic
 
             if (time.TotalSeconds <= 0)
             {
-                IsPlaying = false;
+                _isPlaying = false;
                 time = TimeSpan.Zero;
                 _game.SetTimeOut(pieceColor);
             }
-        }
-
-        private void SubscribeToGameEvents()
-        {
-            // _game.OnStart += StartTimer;
-            // _game.OnEnd += Pause;
-            // _game.OnPlay += Play;
-            // _game.OnPause += Pause;
-        }
-
-        private void OnDestroy()
-        {
-            // _game.OnStart -= StartTimer;
-            // _game.OnEnd -= Pause;
-            // _game.OnPlay -= Play;
-            // _game.OnPause -= Pause;
         }
     }
 }

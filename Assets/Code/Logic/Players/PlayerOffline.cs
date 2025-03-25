@@ -1,3 +1,4 @@
+using System;
 using ChessBoard;
 using ChessBoard.Pieces;
 using Highlighting;
@@ -81,7 +82,15 @@ namespace Logic.Players
             Square fromSquare = Game.Selected.GetSquare();
             Square toSquare = selectable.GetSquare();
 
-            string uci = $"{fromSquare?.Address}{toSquare?.Address}";
+            string uci = string.Empty;
+            try
+            {
+                uci = $"{fromSquare.Address}{toSquare.Address}";
+            }
+            catch (NullReferenceException)
+            {
+                Debug.Log("Move to square is null");
+            }
 
             if (CanPromote(piece, toSquare))
             {

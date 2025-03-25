@@ -24,15 +24,17 @@ namespace Logic
         public AttackLinesList AttackLines { get; } = new();
         public HashSet<Square> UnderAttackSquares { get; set; } = new();
 
-        // public event UnityAction<int, int, int, int> a;
-        // public event Action OnStart;
-        // public event Action OnEnd;
-        // public event Action OnEndTurn;
+        public event UnityAction OnStart;
+        public event UnityAction OnEnd;
+        public event UnityAction OnChangeTurn;
         public event UnityAction OnPlay;
         public event UnityAction OnPause;
 
         public void FirePlay() => OnPlay?.Invoke();
         public void FirePause() => OnPause?.Invoke();
+        public void FireStart() => OnStart?.Invoke();
+        public void FireEnd() => OnEnd?.Invoke();
+        private void FireChangeTurn() => OnChangeTurn?.Invoke();
 
         private GameState _state;
         private GameState _previousState;
@@ -46,18 +48,21 @@ namespace Logic
         public IEnumerable<Square> Squares => Board.Squares;
         public Square NullSquare => Board.NullSquare;
 
+        private PieceColor _startingColor;
         public void Init(Board board, UciBuffer commandUciBuffer,PieceColor turnColor)
         {
             Board = board;
             UciBuffer = commandUciBuffer;
-            CurrentTurnColor = turnColor;
+            _startingColor = turnColor;
         }
 
         public void StartGame()
         {
             CheckType = CheckType.None;
+            CurrentTurnColor = _startingColor;
             Board.Build();
             SetState(new IdleState(this));
+            FireStart();
         }
 
         public void SetState(GameState state)
@@ -85,6 +90,7 @@ namespace Logic
         {
             CurrentTurnColor = CurrentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
             Competitors.ChangeCurrentPlayer();
+            FireChangeTurn();
         }
 
         private void Update()
@@ -117,20 +123,6 @@ namespace Logic
             _state?.Pause();
         }
 
-        public void EndTurn()
-        {
-            // currentTurnColor = currentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
-            // _state = GameState.Idle;
-            //
-            // CalculateEndMove();
-            // OnEndTurn?.Invoke();
-            //
-            // if(IsGameOver())
-            // {
-            //     OnEnd?.Invoke();
-            // }
-        }
-
         public PieceColor GetWinner()
         {
             if (CheckType == CheckType.CheckMate)
@@ -138,9 +130,14 @@ namespace Logic
                 return CurrentTurnColor ==  PieceColor.White ? PieceColor.Black : PieceColor.White;
             }
 
-            if (CheckType == CheckType.TimeOut)
+            if (CheckType == CheckType.TimeOutWhite)
             {
-                return _timeOutColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
+                return PieceColor.Black;
+            }
+
+            if (CheckType == CheckType.TimeOutBlack)
+            {
+                return PieceColor.White;
             }
 
             if (CheckType == CheckType.Stalemate)
@@ -153,13 +150,14 @@ namespace Logic
 
         public void SetTimeOut(PieceColor pieceColor)
         {
-            CheckType = CheckType.TimeOut;
-            _timeOutColor = pieceColor;
-        }
-
-        public bool IsGameOver()
-        {
-            return CheckType is CheckType.CheckMate or CheckType.Stalemate or CheckType.TimeOut;
+            if (pieceColor == PieceColor.White)
+            {
+                CheckType = CheckType.TimeOutWhite;
+            }
+            else if (pieceColor == PieceColor.Black)
+            {
+                CheckType = CheckType.TimeOutBlack;
+            }
         }
 
         /// Get section relative to current piece color

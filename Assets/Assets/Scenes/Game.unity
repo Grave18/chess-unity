@@ -9776,8 +9776,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Competitors>k__BackingField: {fileID: 1739655008}
-  <CurrentTurnColor>k__BackingField: 0
-  <CheckType>k__BackingField: 0
 --- !u!1 &1227854461
 GameObject:
   m_ObjectHideFlags: 0
@@ -13262,7 +13260,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 949107596}
   m_HandleRect: {fileID: 949107595}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -14053,12 +14051,12 @@ MonoBehaviour:
       <Name>k__BackingField: Player
       <PlayerType>k__BackingField: 0
       <ComputerSkillLevel>k__BackingField: 10
-      <ComputerThinkTimeMs>k__BackingField: 1000
+      <ComputerThinkTimeMs>k__BackingField: 500
     Player2Settings:
       <Name>k__BackingField: Player
-      <PlayerType>k__BackingField: 1
+      <PlayerType>k__BackingField: 0
       <ComputerSkillLevel>k__BackingField: 10
-      <ComputerThinkTimeMs>k__BackingField: 1000
+      <ComputerThinkTimeMs>k__BackingField: 500
     Fen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     IsAutoPromoteToQueen: 0
 --- !u!4 &1866814439
