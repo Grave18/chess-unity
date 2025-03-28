@@ -54,28 +54,35 @@ namespace Ui.AlgebraicNotation
             }
             else if (moveData.TurnColor == PieceColor.Black)
             {
-                NotationItem notationItem = _notationItems.Last();
-                notationItem.AddBlack(moveData.AlgebraicNotation);
+                NotationItem notationItem = _notationItems.LastOrDefault();
+                if (notationItem != null)
+                {
+                    notationItem.AddBlack(moveData.AlgebraicNotation);
+                }
             }
             else
             {
                 Debug.LogError("AlgebraicNotationPanel: Invalid turn color");
             }
 
-            StartCoroutine(ResetScrollbar(0));
+            ResetScrollbar(0);
         }
 
         private void OnDelete(MoveData moveData)
         {
+            NotationItem notationItem = _notationItems.LastOrDefault();
+            if (notationItem == null)
+            {
+                return;
+            }
+
             if (moveData.TurnColor == PieceColor.White)
             {
-                NotationItem notationItem = _notationItems.Last();
                 _notationItems.Remove(notationItem);
                 Destroy(notationItem.gameObject);
             }
             else if (moveData.TurnColor == PieceColor.Black)
             {
-                NotationItem notationItem = _notationItems.Last();
                 notationItem.RemoveBlack();
             }
             else
@@ -86,7 +93,13 @@ namespace Ui.AlgebraicNotation
 
         private void OnUndo(MoveData moveData)
         {
+            if (_index < 0 && _index >= _notationItems.Count)
+            {
+                return;
+            }
+
             NotationItem notationItem = _notationItems[_index];
+
             if (moveData.TurnColor == PieceColor.White)
             {
                 _index -= 1;
@@ -101,7 +114,7 @@ namespace Ui.AlgebraicNotation
                 Debug.LogError("AlgebraicNotationPanel: Invalid turn color");
             }
 
-            StartCoroutine(ResetScrollbar(GetPositionFromIndex()));
+            ResetScrollbar(GetPositionFromIndex());
         }
 
         private void OnRedo(MoveData moveData)
@@ -109,21 +122,38 @@ namespace Ui.AlgebraicNotation
             if (moveData.TurnColor == PieceColor.White)
             {
                 _index += 1;
-                NotationItem notationItem = _notationItems[_index];
-                notationItem.UnFadeWhite();
+                if (_index >= 0 && _index < _notationItems.Count)
+                {
+                    NotationItem notationItem = _notationItems[_index];
+                    notationItem.UnFadeWhite();
+                }
             }
             else if (moveData.TurnColor == PieceColor.Black)
             {
-                NotationItem notationItem = _notationItems[_index];
-                notationItem.UnFadeBlack();
+                if (_index >= 0 && _index < _notationItems.Count)
+                {
+                    NotationItem notationItem = _notationItems[_index];
+                    notationItem.UnFadeBlack();
+                }
             }
             else
             {
                 Debug.LogError("AlgebraicNotationPanel: Invalid turn color");
             }
 
-            StartCoroutine(ResetScrollbar(GetPositionFromIndex()));
+            ResetScrollbar(GetPositionFromIndex());
+        }
 
+        private void ResetScrollbar(float position)
+        {
+            StartCoroutine(Coroutine());
+            return;
+
+            IEnumerator Coroutine()
+            {
+                yield return new WaitForEndOfFrame();
+                scrollView.verticalNormalizedPosition = position;
+            }
         }
 
         private float GetPositionFromIndex()
@@ -136,12 +166,6 @@ namespace Ui.AlgebraicNotation
             }
 
             return 1f;
-        }
-
-        private IEnumerator ResetScrollbar(float position)
-        {
-            yield return new WaitForEndOfFrame();
-            scrollView.verticalNormalizedPosition = position;
         }
     }
 }
