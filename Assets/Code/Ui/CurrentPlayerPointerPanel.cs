@@ -15,15 +15,15 @@ namespace Ui
             game.OnChangeTurn += OnChangeTurn;
         }
 
-        private void OnChangeTurn()
+        private void OnChangeTurn(PieceColor color)
         {
-            if (game.CurrentTurnColor == PieceColor.White)
+            if (color == PieceColor.White)
             {
 
                 whiteImage.CrossFadeAlpha(1f, 0.2f, false);
                 blackImage.CrossFadeAlpha(0f, 0.2f, false);
             }
-            else if (game.CurrentTurnColor == PieceColor.Black)
+            else if (color == PieceColor.Black)
             {
                 whiteImage.CrossFadeAlpha(0f, 0.2f, false);
                 blackImage.CrossFadeAlpha(1f, 0.2f, false);

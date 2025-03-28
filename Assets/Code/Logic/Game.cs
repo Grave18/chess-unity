@@ -26,7 +26,7 @@ namespace Logic
 
         public event UnityAction OnStart;
         public event UnityAction OnEnd;
-        public event UnityAction OnChangeTurn;
+        public event UnityAction<PieceColor> OnChangeTurn;
         public event UnityAction OnPlay;
         public event UnityAction OnPause;
 
@@ -34,11 +34,10 @@ namespace Logic
         public void FirePause() => OnPause?.Invoke();
         public void FireStart() => OnStart?.Invoke();
         public void FireEnd() => OnEnd?.Invoke();
-        private void FireChangeTurn() => OnChangeTurn?.Invoke();
+        private void FireChangeTurn(PieceColor color) => OnChangeTurn?.Invoke(color);
 
         private GameState _state;
         private GameState _previousState;
-        private PieceColor _timeOutColor = PieceColor.None;
 
         // Getters
         public HashSet<Piece> WhitePieces => Board.WhitePieces;
@@ -91,7 +90,7 @@ namespace Logic
         {
             CurrentTurnColor = CurrentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
             Competitors.ChangeCurrentPlayer();
-            FireChangeTurn();
+            FireChangeTurn(CurrentTurnColor);
         }
 
         private void Update()
@@ -192,6 +191,16 @@ namespace Logic
         public void Deselect()
         {
             Selected = null;
+        }
+
+        public bool IsWhiteTurn()
+        {
+            return CurrentTurnColor == PieceColor.White;
+        }
+
+        public bool IsBlackTurn()
+        {
+            return CurrentTurnColor == PieceColor.Black;
         }
     }
 }

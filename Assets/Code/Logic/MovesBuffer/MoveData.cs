@@ -9,6 +9,8 @@ namespace Logic.MovesBuffer
         public MoveType MoveType;
         public bool IsFirstMove;
         public string EpSquareAddress = "-";
+        public string AlgebraicNotation;
+        public PieceColor TurnColor;
 
         public Piece HiddenPawn;
         public Piece BeatenPiece;

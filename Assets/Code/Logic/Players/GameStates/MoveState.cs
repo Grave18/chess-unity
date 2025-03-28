@@ -75,6 +75,9 @@ namespace Logic.Players.GameStates
                 IsFirstMove = piece.IsFirstMove,
             };
 
+            bool isValid = false;
+
+            Piece promotedPiece = null;
             // Move
             if (piece.CanMoveTo(parsedUci.ToSquare, out MoveInfo moveInfo))
             {
@@ -89,17 +92,17 @@ namespace Logic.Players.GameStates
                 {
                     _moveData.MoveType = MoveType.MovePromotion;
                     _moveData.HiddenPawn = piece;
-                    Piece promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
+                    promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                         parsedUci.ToSquare);
                     _turn = new MovePromotion(_moveData.HiddenPawn, parsedUci.FromSquare, parsedUci.ToSquare,
                         promotedPiece);
                 }
 
-                return true;
+                isValid = true;
             }
 
             // Capture
-            if (piece.CanCaptureAt(parsedUci.ToSquare, out CaptureInfo captureInfo))
+            else if (piece.CanCaptureAt(parsedUci.ToSquare, out CaptureInfo captureInfo))
             {
                 _moveData.BeatenPiece = captureInfo.BeatenPiece;
                 if (parsedUci.PromotedPieceType == PieceType.None)
@@ -112,25 +115,27 @@ namespace Logic.Players.GameStates
                 {
                     _moveData.MoveType = MoveType.CapturePromotion;
                     _moveData.HiddenPawn = piece;
-                    Piece promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
+                    promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                         parsedUci.ToSquare);
                     _turn = new CapturePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece,
                         _moveData.BeatenPiece);
                 }
 
-                return true;
+                isValid = true;
             }
 
             // Castling
-            if (piece is King king && king.CanCastlingAt(parsedUci.ToSquare, out CastlingInfo castlingInfo))
+            else if (piece is King king && king.CanCastlingAt(parsedUci.ToSquare, out CastlingInfo castlingInfo))
             {
                 _moveData.MoveType = castlingInfo.MoveType;
                 _moveData.CastlingInfo = castlingInfo;
                 _turn = new Castling(_moveData.CastlingInfo, _moveData.IsFirstMove);
-                return true;
+                isValid = true;
             }
 
-            return false;
+            _moveData.TurnColor = Game.CurrentTurnColor;
+            _moveData.AlgebraicNotation = SeriesList.Get(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.MoveType, Game.CheckType, promotedPiece);
+            return isValid;
         }
 
         private void Run()

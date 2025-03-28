@@ -1,12 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
+using UnityEngine.Events;
 
 namespace Logic.MovesBuffer
 {
-    public class UciBuffer
+    public class UciBuffer : MonoBehaviour
     {
         private readonly LinkedList<MoveData> _buffer = new();
         private LinkedListNode<MoveData> _head;
+
+        public event UnityAction<MoveData> OnAdd;
+        public event UnityAction<MoveData> OnUndo;
+        public event UnityAction<MoveData> OnRedo;
+        public event UnityAction<MoveData> OnDelete;
 
         public void Add(MoveData moveData)
         {
@@ -19,12 +26,16 @@ namespace Logic.MovesBuffer
             {
                 _buffer.AddAfter(_head, newNode);
             }
+
             _head = newNode;
 
             while (_buffer.Last != _head)
             {
+                OnDelete?.Invoke(_buffer.Last.Value);
                 _buffer.RemoveLast();
             }
+
+            OnAdd?.Invoke(newNode.Value);
         }
 
         public bool CanUndo(out MoveData moveData)
@@ -42,6 +53,7 @@ namespace Logic.MovesBuffer
 
         public void Undo()
         {
+            OnUndo?.Invoke(_head?.Value);
             _head = _head?.Previous;
         }
 
@@ -54,6 +66,7 @@ namespace Logic.MovesBuffer
         public void Redo()
         {
             _head = _head?.Next ?? _buffer.First;
+            OnRedo?.Invoke(_head?.Value);
         }
 
         public string GetEpSquareAddress()

@@ -59,6 +59,11 @@ namespace Logic
             _blackTime = _initialBlackTime;
         }
 
+        private void Play(PieceColor color)
+        {
+            Play();
+        }
+
         private void Play()
         {
             _isPlaying = true;

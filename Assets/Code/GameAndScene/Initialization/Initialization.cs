@@ -9,10 +9,10 @@ using Logic.MovesBuffer;
 using Logic.Players;
 using Ui.Promotion;
 using UnityEngine;
-using Utils;
 
 namespace GameAndScene.Initialization
 {
+    [DefaultExecutionOrder(-1)]
     public sealed class Initialization : MonoBehaviour
     {
         [Header("References")]
@@ -26,12 +26,12 @@ namespace GameAndScene.Initialization
         [SerializeField] private Camera mainCamera;
         [SerializeField] private LayerMask layerMask;
         [SerializeField] private PromotionPanel promotionPanel;
+        [SerializeField] private UciBuffer uciBuffer;
 
         [Header("Settings")]
         [SerializeField] private GameSettings gameSettings;
 
         private Stockfish _stockfish;
-        private readonly UciBuffer _commandUciBuffer = new();
 
         private async void Awake()
         {
@@ -43,13 +43,13 @@ namespace GameAndScene.Initialization
         {
             ParsedPreset parsedPreset = assets.GetParsedPreset();
             PieceColor turnColor = Assets.GetTurnColorFromPreset(parsedPreset);
-            game.Init(board, _commandUciBuffer, turnColor);
+            game.Init(board, uciBuffer, turnColor);
             clock.Init(game);
             highlighter.Init(game);
 
             GameObject[] prefabs = await assets.LoadPrefabs();
 
-            board.Init(game, _commandUciBuffer, parsedPreset, prefabs, turnColor);
+            board.Init(game, uciBuffer, parsedPreset, prefabs, turnColor);
             uciString.Init(game, board, assets);
 
             InitPlayers();
@@ -82,7 +82,7 @@ namespace GameAndScene.Initialization
         {
             if (IsNeedToConfigureAi())
             {
-                _stockfish = new Stockfish(_commandUciBuffer, assets.BoardPreset.Fen);
+                _stockfish = new Stockfish(uciBuffer, assets.BoardPreset.Fen);
                 _ = _stockfish.Start();
             }
         }

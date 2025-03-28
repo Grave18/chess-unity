@@ -13,6 +13,11 @@ namespace Ui
 
         private void UpdateNotificationText()
         {
+            UpdateNotificationText(PieceColor.None);
+        }
+
+        private void UpdateNotificationText(PieceColor color)
+        {
             switch (game.CheckType)
             {
                 case CheckType.None:        SetPanel(text: "", isText: false, isButton: false);            break;
