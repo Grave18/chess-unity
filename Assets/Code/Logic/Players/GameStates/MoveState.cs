@@ -3,6 +3,7 @@ using ChessBoard.Info;
 using ChessBoard.Pieces;
 using Logic.MovesBuffer;
 using Logic.Players.Moves;
+using Notation;
 using UnityEngine;
 
 namespace Logic.Players.GameStates

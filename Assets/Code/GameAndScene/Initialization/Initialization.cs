@@ -7,8 +7,10 @@ using Highlighting;
 using Logic;
 using Logic.MovesBuffer;
 using Logic.Players;
+using Notation;
 using Ui.Promotion;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace GameAndScene.Initialization
 {
@@ -20,7 +22,7 @@ namespace GameAndScene.Initialization
         [SerializeField] private Game game;
         [SerializeField] private Board board;
         [SerializeField] private Clock clock;
-        [SerializeField] private UciString uciString;
+        [FormerlySerializedAs("uciString")] [SerializeField] private FenString fenString;
         [SerializeField] private Competitors competitors;
         [SerializeField] private Highlighter highlighter;
         [SerializeField] private Camera mainCamera;
@@ -50,7 +52,7 @@ namespace GameAndScene.Initialization
             GameObject[] prefabs = await assets.LoadPrefabs();
 
             board.Init(game, uciBuffer, parsedPreset, prefabs, turnColor);
-            uciString.Init(game, board, assets);
+            fenString.Init(game, board, assets);
 
             InitPlayers();
         }
