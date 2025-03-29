@@ -5,7 +5,7 @@ namespace Logic
 {
     public class Clock : MonoBehaviour
     {
-        [SerializeField] private int timeMinutes = 5;
+        [SerializeField] private Vector2Int time = new(5, 0);
 
         private bool _isPlaying;
 
@@ -23,7 +23,7 @@ namespace Logic
         public void Init(Game game)
         {
             _game = game;
-            _initialWhiteTime = TimeSpan.FromMinutes(timeMinutes);
+            _initialWhiteTime = TimeSpan.FromMinutes(time.x) + TimeSpan.FromSeconds(time.y);
             _initialBlackTime = _initialWhiteTime;
 
             OnEnable();

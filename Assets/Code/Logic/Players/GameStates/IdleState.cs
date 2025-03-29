@@ -150,7 +150,7 @@ namespace Logic.Players.GameStates
 
         private bool IsGameOver()
         {
-            return Game.CheckType is CheckType.CheckMate or CheckType.Stalemate or CheckType.TimeOutWhite or CheckType.TimeOutBlack;
+            return Game.CheckType is CheckType.CheckMate or CheckType.Stalemate || IsTimeOut();
         }
 
         public override void Exit()
@@ -196,7 +196,17 @@ namespace Logic.Players.GameStates
                 return;
             }
 
+            if (IsTimeOut())
+            {
+                _isRunning = false;
+            }
+
             Game.Competitors.UpdatePlayer();
+        }
+
+        private bool IsTimeOut()
+        {
+            return Game.CheckType is CheckType.TimeOutWhite or CheckType.TimeOutBlack;
         }
     }
 }

@@ -21,10 +21,12 @@ namespace Ui.AlgebraicNotation
         [Header("Settings")]
         [SerializeField] private int numOfVisibleItems = 5;
 
+        private int _index = -1;
         private readonly List<NotationItem> _notationItems = new();
 
         private void OnEnable()
         {
+            game.OnStart += Clear;
             uciBuffer.OnAdd += OnAdd;
             uciBuffer.OnUndo += OnUndo;
             uciBuffer.OnRedo += OnRedo;
@@ -33,29 +35,31 @@ namespace Ui.AlgebraicNotation
 
         private void OnDisable()
         {
+            game.OnStart -= Clear;
             uciBuffer.OnAdd -= OnAdd;
             uciBuffer.OnUndo -= OnUndo;
             uciBuffer.OnRedo -= OnRedo;
             uciBuffer.OnDelete -= OnDelete;
         }
 
-        private int _index = -1;
 
         private void OnAdd(MoveData moveData)
         {
             if (moveData.TurnColor == PieceColor.White)
             {
                 _index += 1;
-                GameObject instance = Instantiate(notationItemPrefab, scrollView.content);
-                var notationItem = instance.GetComponent<NotationItem>();
-
-                _notationItems.Add(notationItem);
+                NotationItem notationItem = GetNotationItem();
                 notationItem.AddWhite(moveData.AlgebraicNotation, _notationItems.Count);
             }
             else if (moveData.TurnColor == PieceColor.Black)
             {
                 NotationItem notationItem = _notationItems.LastOrDefault();
-                if (notationItem != null)
+                if (notationItem == null)
+                {
+                    notationItem = GetNotationItem();
+                    notationItem.AddBlack(moveData.AlgebraicNotation, _notationItems.Count);
+                }
+                else
                 {
                     notationItem.AddBlack(moveData.AlgebraicNotation);
                 }
@@ -66,6 +70,14 @@ namespace Ui.AlgebraicNotation
             }
 
             ResetScrollbar(0);
+        }
+
+        private NotationItem GetNotationItem()
+        {
+            GameObject instance = Instantiate(notationItemPrefab, scrollView.content);
+            var notationItem = instance.GetComponent<NotationItem>();
+            _notationItems.Add(notationItem);
+            return notationItem;
         }
 
         private void OnDelete(MoveData moveData)
@@ -93,7 +105,7 @@ namespace Ui.AlgebraicNotation
 
         private void OnUndo(MoveData moveData)
         {
-            if (_index < 0 && _index >= _notationItems.Count)
+            if (_index < 0 || _index >= _notationItems.Count)
             {
                 return;
             }
@@ -166,6 +178,17 @@ namespace Ui.AlgebraicNotation
             }
 
             return 1f;
+        }
+
+        private void Clear()
+        {
+            foreach (var notationItem in _notationItems)
+            {
+                Destroy(notationItem.gameObject);
+            }
+
+            _index = 0;
+            _notationItems.Clear();
         }
     }
 }

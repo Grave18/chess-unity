@@ -17,6 +17,7 @@ namespace Logic
         public UciBuffer UciBuffer { get; private set; }
 
         public PieceColor CurrentTurnColor { get; private set; } = PieceColor.White;
+        public PieceColor PreviousTurnColor => CurrentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
         public CheckType CheckType { get; set; } = CheckType.None;
 
         public ISelectable Selected { get; private set; }
@@ -158,6 +159,8 @@ namespace Logic
             {
                 CheckType = CheckType.TimeOutBlack;
             }
+
+            FireEnd();
         }
 
         /// Get section relative to current piece color

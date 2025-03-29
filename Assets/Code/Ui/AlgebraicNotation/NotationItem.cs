@@ -21,8 +21,14 @@ namespace Ui.AlgebraicNotation
             whiteText.color = normalColor;
         }
 
-        public void AddBlack(string algebraicNotation)
+        public void AddBlack(string algebraicNotation, int panelCount = -1)
         {
+            if (panelCount != -1)
+            {
+                countText.text = panelCount.ToString();
+                whiteText.text = "—";
+            }
+
             blackText.text = algebraicNotation;
             blackText.color = normalColor;
         }
