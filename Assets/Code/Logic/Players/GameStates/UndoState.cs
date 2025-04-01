@@ -118,7 +118,7 @@ namespace Logic.Players.GameStates
             Game.SetPreviousState();
         }
 
-        public override void Exit()
+        public override void Exit(string nextState)
         {
             // Empty
         }
@@ -180,9 +180,11 @@ namespace Logic.Players.GameStates
         private void EndMove()
         {
             _turn.EndUndo();
-
             Game.UciBuffer.Undo();
+
             Game.ChangeTurn();
+            Game.Calculate();
+            Game.FireEndMove();
             Game.SetPreviousState();
         }
     }

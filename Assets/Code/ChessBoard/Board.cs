@@ -159,7 +159,9 @@ namespace ChessBoard
             // Get all squares components form parent tree
             foreach (Transform squareTransform in squaresParent)
             {
-                Squares.Add(squareTransform.GetComponent<Square>());
+                var square = squareTransform.GetComponent<Square>();
+                square.SetPiece(null);
+                Squares.Add(square);
             }
         }
 

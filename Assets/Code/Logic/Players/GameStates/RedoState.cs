@@ -129,7 +129,7 @@ namespace Logic.Players.GameStates
             Game.SetPreviousState();
         }
 
-        public override void Exit()
+        public override void Exit(string nextState)
         {
             // Empty
         }
@@ -193,7 +193,10 @@ namespace Logic.Players.GameStates
             _turn.End();
 
             Game.UciBuffer.Redo();
+
             Game.ChangeTurn();
+            Game.Calculate();
+            Game.FireEndMove();
             Game.SetPreviousState();
         }
     }

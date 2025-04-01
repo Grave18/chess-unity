@@ -11,7 +11,7 @@
         }
 
         public abstract void Enter();
-        public abstract void Exit();
+        public abstract void Exit(string nextState);
         public abstract void Move(string uci);
         public abstract void Undo();
         public abstract void Redo();

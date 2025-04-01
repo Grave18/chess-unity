@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using ChessBoard;
 using ChessBoard.Pieces;
 using Logic.MovesBuffer;
@@ -27,15 +28,15 @@ namespace Logic
 
         public event UnityAction OnStart;
         public event UnityAction OnEnd;
-        public event UnityAction<PieceColor> OnChangeTurn;
+        public event UnityAction OnEndMove;
         public event UnityAction OnPlay;
         public event UnityAction OnPause;
 
-        public void FirePlay() => OnPlay?.Invoke();
-        public void FirePause() => OnPause?.Invoke();
         public void FireStart() => OnStart?.Invoke();
         public void FireEnd() => OnEnd?.Invoke();
-        private void FireChangeTurn(PieceColor color) => OnChangeTurn?.Invoke(color);
+        public void FireEndMove() => OnEndMove?.Invoke();
+        public void FirePlay() => OnPlay?.Invoke();
+        public void FirePause() => OnPause?.Invoke();
 
         private GameState _state;
         private GameState _previousState;
@@ -60,16 +61,18 @@ namespace Logic
         {
             CheckType = CheckType.None;
             CurrentTurnColor = _startingColor;
+            Selected = null;
             UciBuffer.Clear();
             Board.Build();
+            Calculate();
             SetState(new IdleState(this));
             FireStart();
         }
 
-        public void SetState(GameState state)
+        public void SetState(GameState state, string nextState = "None")
         {
             _previousState = _state;
-            _state?.Exit();
+            _state?.Exit(nextState);
             _state = state;
             _state?.Enter();
         }
@@ -78,12 +81,13 @@ namespace Logic
         {
             if (_previousState != null)
             {
-                SetState(_previousState);
+                SetState(_previousState, _previousState.Name);
                 _previousState = null;
             }
             else
             {
-                Debug.Log("No previous Game State found");
+                SetState(new IdleState(this), "Idle");
+                Debug.Log("Go to default Idle state");
             }
         }
 
@@ -91,7 +95,6 @@ namespace Logic
         {
             CurrentTurnColor = CurrentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
             Competitors.ChangeCurrentPlayer();
-            FireChangeTurn(CurrentTurnColor);
         }
 
         private void Update()
@@ -204,6 +207,125 @@ namespace Logic
         public bool IsBlackTurn()
         {
             return CurrentTurnColor == PieceColor.Black;
+        }
+
+        /// Calculate under attack squares, check type, moves and captures
+        public void Calculate()
+        {
+            UnderAttackSquares = GetUnderAttackSquares(PrevTurnPieces);
+            CheckType = CalculateCheck(PrevTurnPieces);
+
+            foreach (Piece piece in CurrentTurnPieces)
+            {
+                piece.CalculateMovesAndCaptures();
+                piece.CalculateConstrains();
+            }
+
+            CalculateCheckMateOrStalemate(CurrentTurnPieces);
+        }
+
+        private static HashSet<Square> GetUnderAttackSquares(HashSet<Piece> pieces)
+        {
+            var underAttackSquares = new HashSet<Square>();
+            foreach (Piece piece in pieces)
+            {
+                piece.CalculateMovesAndCaptures();
+                FillUnderAttackSquaresForPiece(piece, underAttackSquares);
+            }
+
+            return underAttackSquares;
+        }
+
+        private static void FillUnderAttackSquaresForPiece(Piece piece, HashSet<Square> underAttackSquares)
+        {
+            // Pawn's under attack
+            if (piece is Pawn pawn)
+            {
+                var attackSquares = new List<Square>(pawn.UnderAttackSquares);
+                foreach (Square underAttackSquare in attackSquares)
+                {
+                    underAttackSquares.Add(underAttackSquare);
+                }
+            }
+            // Other piece's under attack
+            else
+            {
+                var moveSquares = new List<Square>(piece.MoveSquares.Keys);
+                foreach (Square moveSquare in moveSquares)
+                {
+                    underAttackSquares.Add(moveSquare);
+                }
+            }
+
+            // All pieces defends
+            foreach (Square defendSquare in piece.DefendSquares)
+            {
+                underAttackSquares.Add(defendSquare);
+            }
+        }
+
+        private CheckType CalculateCheck(HashSet<Piece> pieces)
+        {
+            AttackLines.Clear();
+
+            foreach (Piece piece in pieces)
+            {
+                // Fill under attack line
+                bool isCheck = IsPieceMakeCheck(piece);
+                if (piece is LongRange longRange)
+                {
+                    if (!longRange.HasAttackLine) continue;
+
+                    var attackLine = new AttackLine(piece, isCheck, longRange.AttackLineSquares, longRange.SquareBehindKing);
+                    AttackLines.Add(attackLine);
+                }
+                else
+                {
+                    if (!isCheck) continue;
+
+                    var attackLine = new AttackLine(piece, true);
+                    AttackLines.Add(attackLine);
+                }
+            }
+
+            return AttackLines.GetCheckCount() switch
+            {
+                0 => CheckType.None,
+                1 => CheckType.Check,
+                _ => CheckType.DoubleCheck
+            };
+
+            bool IsPieceMakeCheck(Piece piece)
+            {
+                foreach ((Square square, _) in piece.CaptureSquares)
+                {
+                    if (square.HasPiece() && square.GetPiece() is King king &&
+                        king.GetPieceColor() != piece.GetPieceColor())
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        private void CalculateCheckMateOrStalemate(HashSet<Piece> currentTurnPieces)
+        {
+            // If all pieces have no moves
+            if (currentTurnPieces.Any(piece => piece.MoveSquares.Count  > 0
+                                               || piece.CaptureSquares.Count > 0))
+            {
+                CheckType = CheckType.None;
+                return;
+            }
+
+            CheckType = CheckType switch
+            {
+                CheckType.None => CheckType.Stalemate,
+                CheckType.Check or CheckType.DoubleCheck => CheckType.CheckMate,
+                _ => CheckType,
+            };
         }
     }
 }

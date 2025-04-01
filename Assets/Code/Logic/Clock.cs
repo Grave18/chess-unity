@@ -37,7 +37,7 @@ namespace Logic
             }
 
             _game.OnStart += StartTimer;
-            _game.OnChangeTurn += Play;
+            _game.OnEndMove += Play;
             _game.OnEnd += Pause;
             _game.OnPlay += Play;
             _game.OnPause += Pause;
@@ -46,7 +46,7 @@ namespace Logic
         private void OnDisable()
         {
             _game.OnStart -= StartTimer;
-            _game.OnChangeTurn -= Play;
+            _game.OnEndMove -= Play;
             _game.OnEnd -= Pause;
             _game.OnPlay -= Play;
             _game.OnPause -= Pause;

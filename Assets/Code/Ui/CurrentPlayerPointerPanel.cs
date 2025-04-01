@@ -13,29 +13,24 @@ namespace Ui
 
         private void OnEnable()
         {
-            game.OnStart += OnStart;
-            game.OnChangeTurn += OnChangeTurn;
+            game.OnStart += Fade;
+            game.OnEndMove += Fade;
         }
 
         private void OnDisable()
         {
-            game.OnStart -= OnStart;
-            game.OnChangeTurn -= OnChangeTurn;
+            game.OnStart -= Fade;
+            game.OnEndMove -= Fade;
         }
 
-        private void OnStart()
+        private void Fade()
         {
-            OnChangeTurn(game.CurrentTurnColor);
-        }
-
-        private void OnChangeTurn(PieceColor color)
-        {
-            if (color == PieceColor.White)
+            if (game.IsWhiteTurn())
             {
                 whiteImage.CrossFadeAlpha(1f, 0.2f, false);
                 blackImage.CrossFadeAlpha(0f, 0.2f, false);
             }
-            else if (color == PieceColor.Black)
+            else if (game.IsBlackTurn())
             {
                 whiteImage.CrossFadeAlpha(0f, 0.2f, false);
                 blackImage.CrossFadeAlpha(1f, 0.2f, false);

@@ -150,7 +150,7 @@ namespace Logic.Players.GameStates
             Game.SetState(new IdleState(Game));
         }
 
-        public override void Exit()
+        public override void Exit(string nextState)
         {
             // Empty
         }
@@ -214,7 +214,10 @@ namespace Logic.Players.GameStates
             _turn.End();
 
             Game.UciBuffer.Add(_moveData);
+
             Game.ChangeTurn();
+            Game.Calculate();
+            Game.FireEndMove();
             Game.SetState(new IdleState(Game));
         }
     }

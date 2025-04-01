@@ -20,7 +20,7 @@ namespace Ui
         private void OnEnable()
         {
             restartButton.onClick.AddListener(game.StartGame);
-            game.OnChangeTurn += UpdateNotificationText;
+            game.OnEndMove += UpdateNotificationText;
             game.OnStart += UpdateNotificationText;
             game.OnEnd += UpdateNotificationText;
         }
@@ -28,17 +28,12 @@ namespace Ui
         private void OnDisable()
         {
             restartButton.onClick.RemoveListener(game.StartGame);
-            game.OnChangeTurn -= UpdateNotificationText;
+            game.OnEndMove -= UpdateNotificationText;
             game.OnStart -= UpdateNotificationText;
             game.OnEnd -= UpdateNotificationText;
         }
 
         private void UpdateNotificationText()
-        {
-            UpdateNotificationText(game.PreviousTurnColor);
-        }
-
-        private void UpdateNotificationText(PieceColor color)
         {
             switch (game.CheckType)
             {
@@ -52,7 +47,7 @@ namespace Ui
                     SetPanel(text: "Double check", additional: "", isText: true, isPanel: false);
                     break;
                 case CheckType.CheckMate:
-                    ProcessCheckmate(color);
+                    ProcessCheckmate(game.CurrentTurnColor);
                     break;
                 case CheckType.Stalemate:
                     SetPanel(text: "Stalemate", additional: "", isText: true, isPanel: true);
@@ -66,9 +61,9 @@ namespace Ui
             }
         }
 
-        private void ProcessTimeOut(CheckType color)
+        private void ProcessTimeOut(CheckType checkType)
         {
-            string additional = color switch
+            string additional = checkType switch
             {
                 CheckType.TimeOutWhite => "White runs out of time",
                 CheckType.TimeOutBlack => "Black runs out of time",
@@ -78,12 +73,12 @@ namespace Ui
             SetPanel(text: "Time is over", additional, isText: true, isPanel: true);
         }
 
-        private void ProcessCheckmate(PieceColor color)
+        private void ProcessCheckmate(PieceColor currentColor)
         {
-            string additional = color switch
+            string additional = currentColor switch
             {
-                PieceColor.White => "White wins this game",
-                PieceColor.Black => "Black wins this game",
+                PieceColor.Black => "White wins this game",
+                PieceColor.White => "Black wins this game",
                 _ => "Invalid color"
             };
 
