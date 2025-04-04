@@ -135,7 +135,7 @@ namespace Logic.Players.GameStates
             }
 
             _moveData.TurnColor = Game.CurrentTurnColor;
-            _moveData.AlgebraicNotation = SeriesList.Get(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.MoveType, Game.CheckType, promotedPiece);
+            _moveData.AlgebraicNotation = Algebraic.Get(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.MoveType, promotedPiece);
             return isValid;
         }
 
@@ -213,12 +213,17 @@ namespace Logic.Players.GameStates
         {
             _turn.End();
 
-            Game.UciBuffer.Add(_moveData);
-
             Game.ChangeTurn();
             Game.Calculate();
+            UpdateAlgebraicNotation();
+            Game.UciBuffer.Add(_moveData);
             Game.FireEndMove();
             Game.SetState(new IdleState(Game));
+        }
+
+        private void UpdateAlgebraicNotation()
+        {
+            _moveData.AlgebraicNotation += Algebraic.GetCheck(Game.CheckType);
         }
     }
 }

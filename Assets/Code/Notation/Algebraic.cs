@@ -6,11 +6,10 @@ using Logic.MovesBuffer;
 
 namespace Notation
 {
-    public static class SeriesList
+    public static class Algebraic
     {
         /// Get algebraic turn notation. Example: "e2e4", "0-0", ...
-        public static string Get(Piece piece, Square fromSquare, Square toSquare, MoveType moveType,
-            CheckType checkType, Piece promotedPiece)
+        public static string Get(Piece piece, Square fromSquare, Square toSquare, MoveType moveType, Piece promotedPiece)
         {
             // Castling
             if(moveType == MoveType.CastlingShort)
@@ -67,15 +66,18 @@ namespace Notation
                 }
             }
 
-            // Is check
-            switch (checkType)
-            {
-                case CheckType.Check:       turnSb.Append("+");  break;
-                case CheckType.DoubleCheck: turnSb.Append("++"); break;
-                case CheckType.CheckMate:   turnSb.Append("#");  break;
-            }
-
             return turnSb.ToString();
+        }
+
+        public static string GetCheck(CheckType checkType)
+        {
+            return checkType switch
+            {
+                CheckType.Check => "+",
+                CheckType.DoubleCheck => "++",
+                CheckType.CheckMate => "#",
+                _ => string.Empty,
+            };
         }
     }
 }

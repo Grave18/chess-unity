@@ -180,10 +180,10 @@ namespace Logic.Players.GameStates
         private void EndMove()
         {
             _turn.EndUndo();
-            Game.UciBuffer.Undo();
 
             Game.ChangeTurn();
             Game.Calculate();
+            Game.UciBuffer.Undo();
             Game.FireEndMove();
             Game.SetPreviousState();
         }

@@ -45,11 +45,12 @@ namespace Ui.AlgebraicNotation
 
         private void OnAdd(MoveData moveData)
         {
+            string algebraicNotation = moveData.AlgebraicNotation;
             if (moveData.TurnColor == PieceColor.White)
             {
                 _index += 1;
                 NotationItem notationItem = GetNotationItem();
-                notationItem.AddWhite(moveData.AlgebraicNotation, _notationItems.Count);
+                notationItem.AddWhite(algebraicNotation, _notationItems.Count);
             }
             else if (moveData.TurnColor == PieceColor.Black)
             {
@@ -57,11 +58,11 @@ namespace Ui.AlgebraicNotation
                 if (notationItem == null)
                 {
                     notationItem = GetNotationItem();
-                    notationItem.AddBlack(moveData.AlgebraicNotation, _notationItems.Count);
+                    notationItem.AddBlack(algebraicNotation, _notationItems.Count);
                 }
                 else
                 {
-                    notationItem.AddBlack(moveData.AlgebraicNotation);
+                    notationItem.AddBlack(algebraicNotation);
                 }
             }
             else
