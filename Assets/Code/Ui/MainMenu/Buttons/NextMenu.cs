@@ -2,7 +2,8 @@
 
 namespace Ui.MainMenu.Buttons
 {
-    public class NextMenuButton : ButtonBase
+    [RequireComponent(typeof(Button))]
+    public class NextMenu : ButtonCallbackBase
     {
         [SerializeField] private MenuPanel nextPanel;
 

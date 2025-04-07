@@ -2,7 +2,8 @@
 
 namespace Ui.MainMenu.Buttons
 {
-    public class ExitButton : ButtonBase
+    [RequireComponent(typeof(Button))]
+    public class Exit : ButtonCallbackBase
     {
         protected override void OnClick()
         {

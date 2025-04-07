@@ -2,7 +2,8 @@
 
 namespace Ui.MainMenu.Buttons
 {
-    public class ApplySettingsButton : ButtonBase
+    [RequireComponent(typeof(Button))]
+    public class ApplySettings : ButtonCallbackBase
     {
         [SerializeField] private GraphicsSettingsContainer graphicsSettingsContainer;
 
