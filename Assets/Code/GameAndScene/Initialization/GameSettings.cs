@@ -6,6 +6,7 @@ namespace GameAndScene.Initialization
     public class GameSettings
     {
         public const string Key = "GameSettings";
+        public Vector2 Time;
         public PlayerSettings Player1Settings;
         public PlayerSettings Player2Settings;
 

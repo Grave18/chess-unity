@@ -24,7 +24,7 @@ namespace Ui.MainMenu.Dropdowns
 
         protected abstract List<string> AddOptionsToDropdown();
 
-        protected void OnEnable()
+        protected virtual void OnEnable()
         {
             _dropdown.onValueChanged.AddListener(SetValue);
 
@@ -33,16 +33,16 @@ namespace Ui.MainMenu.Dropdowns
 
         protected abstract int SetCurrentOptionInDropdown(List<string> options);
 
-        protected void OnDisable()
+        protected virtual void OnDisable()
         {
             _dropdown.onValueChanged.RemoveListener(SetValue);
         }
 
-        private void SetValue(int value)
+        private void SetValue(int index)
         {
-            string optionText = _dropdown.options[value].text;
+            string optionText = _dropdown.options[index].text;
 
-            ApplyOption(optionText, value);
+            ApplyOption(optionText, index);
         }
 
         protected abstract void ApplyOption(string optionText, int index);

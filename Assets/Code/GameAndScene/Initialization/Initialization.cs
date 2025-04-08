@@ -10,7 +10,6 @@ using Logic.Players;
 using Notation;
 using Ui.Promotion;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace GameAndScene.Initialization
 {
@@ -22,7 +21,7 @@ namespace GameAndScene.Initialization
         [SerializeField] private Game game;
         [SerializeField] private Board board;
         [SerializeField] private Clock clock;
-        [FormerlySerializedAs("uciString")] [SerializeField] private FenString fenString;
+        [SerializeField] private FenString fenString;
         [SerializeField] private Competitors competitors;
         [SerializeField] private Highlighter highlighter;
         [SerializeField] private Camera mainCamera;

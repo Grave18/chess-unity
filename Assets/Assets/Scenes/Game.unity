@@ -7052,6 +7052,7 @@ MonoBehaviour:
   promotionPanel: {fileID: 59947144}
   uciBuffer: {fileID: 2060320542}
   gameSettings:
+    Time: {x: 0, y: 0}
     Player1Settings:
       <Name>k__BackingField: Player
       <PlayerType>k__BackingField: 1
@@ -14234,63 +14235,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1128990300}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1866814437
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1866814439}
-  - component: {fileID: 1866814438}
-  m_Layer: 0
-  m_Name: GameSetttingsConfigurator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1866814438
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1866814437}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e05798511e6644d69d12939fc1767b28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameSettings:
-    Player1Settings:
-      <Name>k__BackingField: Player
-      <PlayerType>k__BackingField: 1
-      <ComputerSkillLevel>k__BackingField: 10
-      <ComputerThinkTimeMs>k__BackingField: 1000
-    Player2Settings:
-      <Name>k__BackingField: Player
-      <PlayerType>k__BackingField: 1
-      <ComputerSkillLevel>k__BackingField: 10
-      <ComputerThinkTimeMs>k__BackingField: 1000
-    Fen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
-    IsAutoPromoteToQueen: 0
---- !u!4 &1866814439
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1866814437}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1873592590
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15953,7 +15897,6 @@ SceneRoots:
   - {fileID: 1783972075}
   - {fileID: 59947148}
   - {fileID: 1824123378}
-  - {fileID: 1866814439}
   - {fileID: 1110215395}
   - {fileID: 853249565}
   - {fileID: 1663133264}

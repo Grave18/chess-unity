@@ -21,8 +21,6 @@ namespace Ui.MainMenu.Buttons
             button?.onClick.RemoveListener(OnClick);
         }
 
-        protected virtual void OnClick()
-        {
-        }
+        protected abstract void OnClick();
     }
 }
