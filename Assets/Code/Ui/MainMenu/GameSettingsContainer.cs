@@ -9,7 +9,6 @@ namespace Ui.MainMenu
     public class GameSettingsContainer: MonoBehaviour
     {
         [SerializeField] private GameSettings gameSettings;
-        private Vector2 _time;
         private ComputerSkillLevel _computerSkillLevel;
 
         private void Awake()
@@ -34,7 +33,7 @@ namespace Ui.MainMenu
         {
             if (int.TryParse(time, out int result))
             {
-                _time = new Vector2(result, 0);
+                gameSettings.Time = new Vector2(result, 0);
             }
         }
 
@@ -56,11 +55,29 @@ namespace Ui.MainMenu
             return gameSettings.Player2Settings.ComputerSkillLevel.ToString();
         }
 
+        public void SetFen(string value)
+        {
+            gameSettings.Fen = value;
+        }
+
+        public string GetFen()
+        {
+            return gameSettings.Fen;
+        }
+
         public void SetComputerGame()
         {
-            gameSettings.Player2Settings.PlayerType = PlayerType.Computer;
-            gameSettings.Player2Settings.ComputerSkillLevel = _computerSkillLevel;
-            gameSettings.Time = _time;
+            PlayerSettings computerPlayerSettings = gameSettings.Player2Settings;
+            computerPlayerSettings.PlayerType = PlayerType.Computer;
+            computerPlayerSettings.ComputerSkillLevel = _computerSkillLevel;
+
+            Save();
+        }
+
+        public void Set2PlayersOfflineGame()
+        {
+            gameSettings.Player1Settings.PlayerType = PlayerType.Offline;
+            gameSettings.Player2Settings.PlayerType = PlayerType.Offline;
 
             Save();
         }
