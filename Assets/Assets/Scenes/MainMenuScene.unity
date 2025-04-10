@@ -2289,7 +2289,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f73717e14e244dd5a6938e090c858469, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: Game
+  sceneReference:
+    sceneAsset: {fileID: 102900000, guid: 99c9720ab356a0642a771bea13969a05, type: 3}
+    scenePath: Assets/Assets/Scenes/GameScene.unity
   gameSettingsContainer: {fileID: 1174948613}
 --- !u!1 &1568474883 stripped
 GameObject:
@@ -2941,7 +2943,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bab0fb7affae4e6c84e1fc5c4e90ad2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: Game
+  sceneReference:
+    sceneAsset: {fileID: 102900000, guid: 99c9720ab356a0642a771bea13969a05, type: 3}
+    scenePath: Assets/Assets/Scenes/GameScene.unity
   gameSettingsContainer: {fileID: 1174948613}
 --- !u!1 &1883752461 stripped
 GameObject:
