@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using AssetsAndResources;
 
 namespace Notation
 {
@@ -8,7 +7,7 @@ namespace Notation
     {
         private static bool _isValid;
         private static string _errorMessage = string.Empty;
-        private static ParsedPreset _fenSplit;
+        private static FenSplit _fenSplit;
 
         public static bool IsValid(string fen, out string errorMessage)
         {
@@ -20,8 +19,8 @@ namespace Notation
 
             _isValid = true;
             _errorMessage = string.Empty;
-            _fenSplit = GetParsedPreset(fen);
 
+            SplitFenWithValidation(fen);
             ValidatePiecesPreset();
             ValidateTurnColor();
             ValidateCastling();
@@ -33,7 +32,7 @@ namespace Notation
             return _isValid;
         }
 
-        private static ParsedPreset GetParsedPreset(string fen)
+        private static void SplitFenWithValidation(string fen)
         {
             fen = fen.Trim();
             string[] splitPreset = fen.Split(' ');
@@ -55,7 +54,7 @@ namespace Notation
                 }
             }
 
-            var parsedPreset = new ParsedPreset
+            _fenSplit = new FenSplit
             {
                 PiecesPreset = splitPreset.Length > 0 ? splitPreset[0] : string.Empty,
                 TurnColor =    splitPreset.Length > 1 ? splitPreset[1] : string.Empty,
@@ -70,8 +69,6 @@ namespace Notation
                 _errorMessage += $"Part '{splitPreset[6]}' is more than expected parts count";
                 _isValid = false;
             }
-
-            return parsedPreset;
         }
 
         private static void ValidatePiecesPreset()

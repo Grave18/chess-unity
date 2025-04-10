@@ -9,15 +9,22 @@ namespace Ui.MainMenu
     public class GameSettingsContainer: MonoBehaviour
     {
         [SerializeField] private GameSettings gameSettings;
+
         private ComputerSkillLevel _computerSkillLevel;
+        private bool _isInitialized;
 
         private void Awake()
         {
-            LoadSettings();
+            Init();
         }
 
-        private void LoadSettings()
+        public void Init()
         {
+            if (_isInitialized)
+            {
+                return;
+            }
+
             if (PlayerPrefs.HasKey(GameSettings.Key))
             {
                 string jsonString = PlayerPrefs.GetString(GameSettings.Key);
@@ -25,8 +32,12 @@ namespace Ui.MainMenu
             }
             else
             {
+                Debug.Log("GameSettings is not presented. Adding new");
                 gameSettings = new GameSettings();
+                Save();
             }
+
+            _isInitialized = true;
         }
 
         public void SetTime(string time)
@@ -68,6 +79,7 @@ namespace Ui.MainMenu
         public void SetComputerGame()
         {
             PlayerSettings computerPlayerSettings = gameSettings.Player2Settings;
+            computerPlayerSettings.Name = "Computer";
             computerPlayerSettings.PlayerType = PlayerType.Computer;
             computerPlayerSettings.ComputerSkillLevel = _computerSkillLevel;
 
@@ -86,6 +98,11 @@ namespace Ui.MainMenu
         {
             string jsonString = JsonUtility.ToJson(gameSettings);
             PlayerPrefs.SetString(GameSettings.Key, jsonString);
+        }
+
+        public GameSettings GetGameSettings()
+        {
+            return gameSettings;
         }
     }
 }
