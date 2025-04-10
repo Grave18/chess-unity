@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using AssetsAndResources;
 using ChessBoard.Info;
 using ChessBoard.Pieces;
 using EditorCools;
 using Logic;
 using Logic.MovesBuffer;
 using Logic.Players;
+using Notation;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -36,20 +36,20 @@ namespace ChessBoard
         private Game _game;
         private UciBuffer _commandUciBuffer;
         private GameObject[] _prefabs;
-        private ParsedPreset _boardPreset;
+        private FenSplit _fenSplit;
         private PieceColor _turnColor;
 
         private GameObject _boardInstance;
 
         public Square NullSquare => nullSquare;
 
-        public void Init(Game game, UciBuffer commandUciBuffer, ParsedPreset boardPreset, GameObject[] prefabs,
+        public void Init(Game game, UciBuffer commandUciBuffer, FenSplit boardPreset, GameObject[] prefabs,
             PieceColor turnColor)
         {
             _game = game;
             _commandUciBuffer = commandUciBuffer;
             _prefabs = prefabs;
-            _boardPreset = boardPreset;
+            _fenSplit = boardPreset;
             _turnColor = turnColor;
         }
 
@@ -177,7 +177,7 @@ namespace ChessBoard
         private void LoadPiecesFromPreset()
         {
             int x = 0;
-            foreach (char ch in _boardPreset.PiecesPreset)
+            foreach (char ch in _fenSplit.PiecesPreset)
             {
                 Square square = Squares[x];
                 Piece piece;
@@ -251,7 +251,7 @@ namespace ChessBoard
             string epSquareAddress = _commandUciBuffer.GetEpSquareAddress();
             if (epSquareAddress == "-")
             {
-                epSquareAddress = _boardPreset.EnPassant;
+                epSquareAddress = _fenSplit.EnPassant;
             }
 
             Square epSquare = GetSquare(epSquareAddress);
@@ -286,8 +286,8 @@ namespace ChessBoard
 
         private void CheckBlackRookFirstMove(Square square, Piece piece)
         {
-            if (_boardPreset.Castling.Contains("k") && square.Address == "h8"
-                || _boardPreset.Castling.Contains("q") && square.Address == "a8")
+            if (_fenSplit.Castling.Contains("k") && square.Address == "h8"
+                || _fenSplit.Castling.Contains("q") && square.Address == "a8")
             {
                 piece.IsFirstMove = true;
             }
@@ -295,8 +295,8 @@ namespace ChessBoard
 
         private void CheckWhiteRookFirstMove(Square square, Piece piece)
         {
-            if (_boardPreset.Castling.Contains("K") && square.Address == "h1"
-                || _boardPreset.Castling.Contains("Q") && square.Address == "a1")
+            if (_fenSplit.Castling.Contains("K") && square.Address == "h1"
+                || _fenSplit.Castling.Contains("Q") && square.Address == "a1")
             {
                 piece.IsFirstMove = true;
             }
@@ -304,8 +304,8 @@ namespace ChessBoard
 
         private void CheckBlackKingFirstMove(Piece piece)
         {
-            if (_boardPreset.Castling.Contains("k")
-                || _boardPreset.Castling.Contains("q"))
+            if (_fenSplit.Castling.Contains("k")
+                || _fenSplit.Castling.Contains("q"))
             {
                 piece.IsFirstMove = true;
             }
@@ -313,8 +313,8 @@ namespace ChessBoard
 
         private void CheckWhiteKingFirstMove(Piece piece)
         {
-            if (_boardPreset.Castling.Contains("K")
-                || _boardPreset.Castling.Contains("Q"))
+            if (_fenSplit.Castling.Contains("K")
+                || _fenSplit.Castling.Contains("Q"))
             {
                 piece.IsFirstMove = true;
             }

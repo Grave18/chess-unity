@@ -8,6 +8,7 @@ using Logic;
 using Logic.MovesBuffer;
 using Logic.Players;
 using Notation;
+using Ui.MainMenu;
 using Ui.Promotion;
 using UnityEngine;
 
@@ -18,72 +19,58 @@ namespace GameAndScene.Initialization
     {
         [Header("References")]
         [SerializeField] private Assets assets;
+
         [SerializeField] private Game game;
         [SerializeField] private Board board;
         [SerializeField] private Clock clock;
-        [SerializeField] private FenString fenString;
+        [SerializeField] private FenFromBoard fenFromBoard;
         [SerializeField] private Competitors competitors;
         [SerializeField] private Highlighter highlighter;
         [SerializeField] private Camera mainCamera;
         [SerializeField] private LayerMask layerMask;
         [SerializeField] private PromotionPanel promotionPanel;
         [SerializeField] private UciBuffer uciBuffer;
-
-        [Header("Settings")]
-        [SerializeField] private GameSettings gameSettings;
+        [SerializeField] private GameSettingsContainer gameSettingsContainer;
 
         private Stockfish _stockfish;
+        private GameSettings _gameSettings;
 
         private async void Awake()
         {
-            await Initialize();
+            await Init();
             game.StartGame();
         }
 
-        private async Task Initialize()
+        private async Task Init()
         {
-            ParsedPreset parsedPreset = assets.GetParsedPreset();
-            PieceColor turnColor = Assets.GetTurnColorFromPreset(parsedPreset);
+            gameSettingsContainer.Init();
+            _gameSettings = gameSettingsContainer.GetGameSettings();
+            FenSplit fenSplit = FenUtility.GetFenSplit(_gameSettings.Fen);
+
+            PieceColor turnColor = Assets.GetTurnColorFromPreset(fenSplit);
             game.Init(board, uciBuffer, turnColor);
             clock.Init(game);
             highlighter.Init(game);
 
             GameObject[] prefabs = await assets.LoadPrefabs();
 
-            board.Init(game, uciBuffer, parsedPreset, prefabs, turnColor);
-            fenString.Init(game, board, assets);
+            board.Init(game, uciBuffer, fenSplit, prefabs, turnColor);
+            fenFromBoard.Init(game, board, _gameSettings.Fen);
 
             InitPlayers();
         }
 
         private void InitPlayers()
         {
-            bool isGameSettingsLoaded = LoadGameSettings();
-
-            if (isGameSettingsLoaded)
-            {
-                ConfigureAiIfNeeded();
-                ConfigurePlayers();
-            }
-            else
-            {
-                Debug.LogError("GameSettings is null");
-            }
-        }
-
-        private bool LoadGameSettings()
-        {
-            string json = PlayerPrefs.GetString(GameSettings.Key, string.Empty);
-            gameSettings = JsonUtility.FromJson<GameSettings>(json);
-
-            return gameSettings != null;
+            ConfigureAiIfNeeded();
+            ConfigurePlayers();
         }
 
         private void ConfigureAiIfNeeded()
         {
             if (IsNeedToConfigureAi())
             {
-                _stockfish = new Stockfish(uciBuffer, assets.BoardPreset.Fen);
+                _stockfish = new Stockfish(uciBuffer, _gameSettings.Fen);
                 _ = _stockfish.Start();
             }
         }
@@ -91,14 +78,14 @@ namespace GameAndScene.Initialization
         private bool IsNeedToConfigureAi()
         {
             return _stockfish == null
-                   && (gameSettings.Player1Settings.PlayerType == PlayerType.Computer
-                       || gameSettings.Player2Settings.PlayerType == PlayerType.Computer);
+                   && (_gameSettings.Player1Settings.PlayerType == PlayerType.Computer
+                       || _gameSettings.Player2Settings.PlayerType == PlayerType.Computer);
         }
 
         private void ConfigurePlayers()
         {
-            Player playerWhite = GetPlayer(gameSettings.Player1Settings);
-            Player playerBlack = GetPlayer(gameSettings.Player2Settings);
+            Player playerWhite = GetPlayer(_gameSettings.Player1Settings);
+            Player playerBlack = GetPlayer(_gameSettings.Player2Settings);
 
             competitors.Init(game, playerWhite, playerBlack);
         }
@@ -108,7 +95,8 @@ namespace GameAndScene.Initialization
             return playerSettings.PlayerType switch
             {
                 PlayerType.Computer => new Computer(game, playerSettings, _stockfish),
-                PlayerType.Offline  => new PlayerOffline(game, mainCamera, highlighter, layerMask, gameSettings.IsAutoPromoteToQueen, promotionPanel),
+                PlayerType.Offline => new PlayerOffline(game, mainCamera, highlighter, layerMask,
+                    _gameSettings.IsAutoPromoteToQueen, promotionPanel),
                 _ => null,
             };
         }
@@ -125,8 +113,8 @@ namespace GameAndScene.Initialization
         {
             ConfigureAiIfNeeded();
 
-            Player playerWhite = GetPlayer(gameSettings.Player1Settings);
-            Player playerBlack = GetPlayer(gameSettings.Player2Settings);
+            Player playerWhite = GetPlayer(_gameSettings.Player1Settings);
+            Player playerBlack = GetPlayer(_gameSettings.Player2Settings);
 
             competitors.SubstitutePlayers(playerWhite, playerBlack);
         }
@@ -147,7 +135,7 @@ namespace GameAndScene.Initialization
         {
             if (Input.GetKeyDown(KeyCode.L))
             {
-                _ = Initialize();
+                _ = Init();
             }
             else if (Input.GetKeyDown(KeyCode.U))
             {

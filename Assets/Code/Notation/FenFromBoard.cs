@@ -1,5 +1,4 @@
 using System.Text;
-using AssetsAndResources;
 using ChessBoard;
 using ChessBoard.Info;
 using ChessBoard.Pieces;
@@ -9,19 +8,19 @@ using UnityEngine;
 
 namespace Notation
 {
-    public class FenString : MonoBehaviour
+    public class FenFromBoard : MonoBehaviour
     {
         private Game _game;
         private Board _board;
-        private Assets _assets;
+        private string _fen;
 
         private readonly StringBuilder _uciStringBuilder = new();
 
-        public void Init(Game game, Board board, Assets assets)
+        public void Init(Game game, Board board, string fen)
         {
             _game = game;
             _board = board;
-            _assets = assets;
+            _fen = fen;
         }
 
         [Button(space: 10)]
@@ -30,7 +29,7 @@ namespace Notation
             string uci = Get();
 
             Debug.Log($"<color=gray>{uci}</color>");
-            Debug.Log($"Is identical with preset: {uci == _assets.BoardPreset.Fen}");
+            Debug.Log($"Is identical with preset: {uci == _fen}");
         }
 
         public string Get()

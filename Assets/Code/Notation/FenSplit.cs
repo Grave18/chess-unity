@@ -1,6 +1,6 @@
-﻿namespace AssetsAndResources
+﻿namespace Notation
 {
-    public struct ParsedPreset
+    public struct FenSplit
     {
         public string PiecesPreset;
         public string TurnColor;
