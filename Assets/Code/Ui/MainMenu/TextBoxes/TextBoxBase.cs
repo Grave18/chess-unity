@@ -5,21 +5,26 @@ namespace Ui.MainMenu.TextBoxes
 {
     public abstract class TextBoxBase : MonoBehaviour
     {
-        protected TMP_InputField TextBox;
+        private TMP_InputField _textBox;
 
         protected virtual void Awake()
         {
-            TextBox = GetComponentInChildren<TMP_InputField>();
+            _textBox = GetComponentInChildren<TMP_InputField>();
         }
 
         protected virtual void OnEnable()
         {
-            TextBox.onEndEdit.AddListener(OnEndEdit);
+            _textBox.onEndEdit.AddListener(OnEndEdit);
         }
 
         protected virtual void OnDisable()
         {
-            TextBox.onEndEdit.RemoveListener(OnEndEdit);
+            _textBox.onEndEdit.RemoveListener(OnEndEdit);
+        }
+
+        protected void SetText(string text)
+        {
+            _textBox.text = text;
         }
 
         protected abstract void OnEndEdit(string value);

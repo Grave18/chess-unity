@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Notation;
+using UnityEngine;
 
 namespace Ui.MainMenu.TextBoxes
 {
@@ -9,12 +10,19 @@ namespace Ui.MainMenu.TextBoxes
         protected override void Awake()
         {
             base.Awake();
-            TextBox.text = gameSettingsContainer.GetFen();
+            SetText(gameSettingsContainer.GetFen());
         }
 
-        protected override void OnEndEdit(string value)
+        protected override void OnEndEdit(string fen)
         {
-            gameSettingsContainer.SetFen(value);
+            if (FenValidator.IsValid(fen, out string errorMessage))
+            {
+                gameSettingsContainer.SetFen(fen);
+            }
+            else
+            {
+                Debug.LogWarning(errorMessage);
+            }
         }
     }
 }

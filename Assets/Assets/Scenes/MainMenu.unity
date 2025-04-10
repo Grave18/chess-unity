@@ -924,6 +924,7 @@ GameObject:
   m_Component:
   - component: {fileID: 922387940}
   - component: {fileID: 922387941}
+  - component: {fileID: 922387942}
   m_Layer: 0
   m_Name: FenStringTextBox
   m_TagString: Untagged
@@ -971,6 +972,19 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &922387942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 922387939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fc5529a404743dfa3852b6af81491c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameSettingsContainer: {fileID: 1174948613}
 --- !u!224 &926994536 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3133663220586500664, guid: 4aaff250fd3a3f24a8802ac5de1950c5,
@@ -1400,7 +1414,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameSettings:
-    Time: {x: 0, y: 0}
     Player1Settings:
       <Name>k__BackingField: Player
       <PlayerType>k__BackingField: 1
@@ -1411,6 +1424,7 @@ MonoBehaviour:
       <PlayerType>k__BackingField: 0
       <ComputerSkillLevel>k__BackingField: 10
       <ComputerThinkTimeMs>k__BackingField: 1000
+    Time: {x: 0, y: 0}
     Fen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     IsAutoPromoteToQueen: 0
 --- !u!1001 &1214983105
@@ -4912,11 +4926,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_text
       value: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\u200B"
-      objectReference: {fileID: 0}
-    - target: {fileID: 8106823660252240110, guid: a6daedb2442379c4db432d38ceb43508,
-        type: 3}
-      propertyPath: m_Text
-      value: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
