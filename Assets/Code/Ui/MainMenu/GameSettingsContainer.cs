@@ -9,9 +9,9 @@ namespace Ui.MainMenu
     public class GameSettingsContainer: MonoBehaviour
     {
         [SerializeField] private GameSettings gameSettings;
+        [SerializeField] private bool isInitialized;
 
         private ComputerSkillLevel _computerSkillLevel;
-        private bool _isInitialized;
 
         private void Awake()
         {
@@ -20,7 +20,7 @@ namespace Ui.MainMenu
 
         public void Init()
         {
-            if (_isInitialized)
+            if (isInitialized)
             {
                 return;
             }
@@ -37,7 +37,7 @@ namespace Ui.MainMenu
                 Save();
             }
 
-            _isInitialized = true;
+            isInitialized = true;
         }
 
         public void SetTime(string time)
@@ -76,7 +76,7 @@ namespace Ui.MainMenu
             return gameSettings.Fen;
         }
 
-        public void SetComputerGame()
+        public void SetupGameWithComputer()
         {
             PlayerSettings computerPlayerSettings = gameSettings.Player2Settings;
             computerPlayerSettings.Name = "Computer";
@@ -86,10 +86,15 @@ namespace Ui.MainMenu
             Save();
         }
 
-        public void Set2PlayersOfflineGame()
+        public void SetupGameOffline()
         {
-            gameSettings.Player1Settings.PlayerType = PlayerType.Offline;
-            gameSettings.Player2Settings.PlayerType = PlayerType.Offline;
+            PlayerSettings player1Settings = gameSettings.Player1Settings;
+            player1Settings.Name = "Player White";
+            player1Settings.PlayerType = PlayerType.Offline;
+
+            PlayerSettings player2Settings = gameSettings.Player2Settings;
+            player2Settings.Name = "Player Black";
+            player2Settings.PlayerType = PlayerType.Offline;
 
             Save();
         }
