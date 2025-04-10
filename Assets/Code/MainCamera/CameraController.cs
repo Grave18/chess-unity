@@ -43,7 +43,7 @@ namespace MainCamera
         private void Update()
         {
             // Position
-            var pos = transform.position;
+            Vector3 pos = transform.position;
 
             if (Input.GetButton("Fire2"))
             {
