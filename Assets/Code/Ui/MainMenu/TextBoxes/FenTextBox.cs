@@ -10,7 +10,7 @@ namespace Ui.MainMenu.TextBoxes
         protected override void Awake()
         {
             base.Awake();
-            SetText(gameSettingsContainer.GetFen());
+            SetText(gameSettingsContainer.GetCurrentFen());
         }
 
         protected override void OnEndEdit(string fen)

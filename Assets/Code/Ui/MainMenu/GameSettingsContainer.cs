@@ -68,12 +68,12 @@ namespace Ui.MainMenu
 
         public void SetFen(string value)
         {
-            gameSettings.Fen = value;
+            gameSettings.CurrentFen = value;
         }
 
-        public string GetFen()
+        public string GetCurrentFen()
         {
-            return gameSettings.Fen;
+            return gameSettings.CurrentFen;
         }
 
         public void SetupGameWithComputer()
@@ -108,6 +108,21 @@ namespace Ui.MainMenu
         public GameSettings GetGameSettings()
         {
             return gameSettings;
+        }
+
+        public void SetDefaultFen()
+        {
+            gameSettings.CurrentFen = gameSettings.DefaultFen;
+        }
+
+        public void SetSavedFen()
+        {
+            gameSettings.CurrentFen = gameSettings.SavedFen;
+        }
+
+        public string GetSavedFen()
+        {
+            return gameSettings.SavedFen;
         }
     }
 }

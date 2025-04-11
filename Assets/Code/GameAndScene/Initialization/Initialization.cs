@@ -48,7 +48,7 @@ namespace GameAndScene.Initialization
         {
             gameSettingsContainer.Init();
             _gameSettings = gameSettingsContainer.GetGameSettings();
-            FenSplit fenSplit = FenUtility.GetFenSplit(_gameSettings.Fen);
+            FenSplit fenSplit = FenUtility.GetFenSplit(_gameSettings.CurrentFen);
 
             PieceColor turnColor = Assets.GetTurnColorFromPreset(fenSplit);
             game.Init(board, uciBuffer, turnColor);
@@ -58,7 +58,7 @@ namespace GameAndScene.Initialization
             GameObject[] prefabs = await assets.LoadPrefabs();
 
             board.Init(game, uciBuffer, fenSplit, prefabs, turnColor);
-            fenFromBoard.Init(game, board, _gameSettings.Fen);
+            fenFromBoard.Init(game, board, _gameSettings.CurrentFen);
 
             InitPlayers();
         }
@@ -73,7 +73,7 @@ namespace GameAndScene.Initialization
         {
             if (IsNeedToConfigureAi())
             {
-                _stockfish = new Stockfish(uciBuffer, _gameSettings.Fen);
+                _stockfish = new Stockfish(uciBuffer, _gameSettings.CurrentFen);
                 _ = _stockfish.Start();
             }
         }

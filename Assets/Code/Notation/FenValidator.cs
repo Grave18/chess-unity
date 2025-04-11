@@ -181,7 +181,7 @@ namespace Notation
                         squaresInRankCount += 1;
                         break;
                     default:
-                        _errorMessage = $"Invalid character {ch} in rank {rankCount}";
+                        _errorMessage = $"Invalid character '{ch}' in rank {rankCount}";
                         _isValid = false;
                         return;
                 }
