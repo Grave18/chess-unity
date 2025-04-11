@@ -1,18 +1,18 @@
-﻿using Common;
+﻿using GameAndScene;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Ui.MainMenu.Buttons
 {
     public class StartGameOffline : ButtonCallbackBase
     {
-        [SerializeField] private SceneReference sceneReference;
+        [Header("References")]
+        [SerializeField] private SceneLoader sceneLoader;
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
 
         protected override void OnClick()
         {
             gameSettingsContainer.SetupGameOffline();
-            SceneManager.LoadSceneAsync(sceneReference);
+            sceneLoader.LoadGame();
         }
     }
 }

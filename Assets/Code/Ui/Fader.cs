@@ -1,20 +1,22 @@
 using System.Collections;
+using GameAndScene;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Ui
 {
     public class Fader : MonoBehaviour
     {
+        [Header("References")]
+        [SerializeField] private SceneLoader sceneLoader;
+
+        [Header("Settings")]
         [SerializeField] private Image image;
         [SerializeField] private float secondsToStart = 1f;
         [SerializeField] private float secondsToAppear = 3f;
         [SerializeField] private float secondsToStay = 3f;
         [SerializeField] private float secondsToFade = 3f;
         [SerializeField] private float scaleFactor = 1f;
-
-        public UnityEvent OnComplete;
 
         private IEnumerator Start()
         {
@@ -45,7 +47,7 @@ namespace Ui
                 yield return null;
             }
 
-            OnComplete.Invoke();
+            sceneLoader.LoadMainMenu();
         }
 
         private IEnumerator Scale()

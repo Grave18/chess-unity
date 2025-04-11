@@ -1,12 +1,23 @@
 using Common;
+using GameAndScene;
+using Notation;
+using Ui.MainMenu;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ExitPopup : MonoBehaviour
 {
+    [Header("References")]
+    [SerializeField] private GameSettingsContainer gameSettingsContainer;
+    [SerializeField] private FenFromBoard fenFromBoard;
+    [SerializeField] private SceneLoader sceneLoader;
+
+    [Header("UI")]
+    [SerializeField] private Toggle saveBoardToggle;
     [SerializeField] private Button yesButton;
     [SerializeField] private Button noButton;
+
+    [Header("Scene")]
     [SerializeField] private SceneReference sceneReference;
 
     public void OnEnable()
@@ -35,6 +46,12 @@ public class ExitPopup : MonoBehaviour
 
     private void ExitToMainMenu()
     {
-        SceneManager.LoadSceneAsync(sceneReference);
+        if (saveBoardToggle.isOn)
+        {
+            string fen = fenFromBoard.Get();
+            gameSettingsContainer.SaveFen(fen);
+        }
+
+        sceneLoader.LoadMainMenu();
     }
 }

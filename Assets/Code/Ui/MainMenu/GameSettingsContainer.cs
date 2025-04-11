@@ -124,5 +124,11 @@ namespace Ui.MainMenu
         {
             return gameSettings.SavedFen;
         }
+
+        public void SaveFen(string fen)
+        {
+            gameSettings.SavedFen = fen;
+            Save();
+        }
     }
 }
