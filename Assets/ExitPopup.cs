@@ -1,4 +1,3 @@
-using Common;
 using GameAndScene;
 using Notation;
 using Ui.MainMenu;
@@ -15,21 +14,17 @@ public class ExitPopup : MonoBehaviour
     [Header("UI")]
     [SerializeField] private Toggle saveBoardToggle;
     [SerializeField] private Button yesButton;
-    [SerializeField] private Button noButton;
 
-    [Header("Scene")]
-    [SerializeField] private SceneReference sceneReference;
+    public bool IsOpened => gameObject.activeSelf;
 
     public void OnEnable()
     {
         yesButton.onClick.AddListener(ExitToMainMenu);
-        noButton.onClick.AddListener(Hide);
     }
 
     public void OnDisable()
     {
         yesButton.onClick.RemoveListener(ExitToMainMenu);
-        noButton.onClick.RemoveListener(Hide);
     }
 
     public void Show()

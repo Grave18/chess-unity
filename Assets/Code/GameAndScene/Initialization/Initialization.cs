@@ -109,7 +109,7 @@ namespace GameAndScene.Initialization
             _stockfish?.Dispose();
         }
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR
 
         [Button(space: 10)]
         private void UpdatePlayers()
@@ -133,6 +133,10 @@ namespace GameAndScene.Initialization
         {
             _stockfish?.ShowProcessOutput();
         }
+
+#endif
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
 
         private void Update()
         {

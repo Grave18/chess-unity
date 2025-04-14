@@ -4,6 +4,8 @@ namespace Ui.MainMenu
 {
     public class MenuPanel : MonoBehaviour
     {
+        public bool IsOpened => gameObject.activeSelf;
+
         public void Show()
         {
             gameObject.SetActive(true);
