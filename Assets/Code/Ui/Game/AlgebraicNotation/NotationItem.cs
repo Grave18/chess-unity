@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 
-namespace Ui.AlgebraicNotation
+namespace Ui.Game.AlgebraicNotation
 {
     public class NotationItem : MonoBehaviour
     {

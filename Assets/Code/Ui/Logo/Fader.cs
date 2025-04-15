@@ -58,7 +58,7 @@ namespace Ui
                 float uDt = Time.unscaledDeltaTime;
                 period -= uDt;
 
-                var scale = image.transform.localScale;
+                Vector3 scale = image.transform.localScale;
                 scale.x += uDt * scaleFactor;
                 scale.y += uDt * scaleFactor;
                 scale.z += uDt * scaleFactor;

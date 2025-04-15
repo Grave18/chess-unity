@@ -6,7 +6,7 @@ using Logic;
 using UnityEngine;
 using Utils.Mathematics;
 
-namespace Ui.Promotion
+namespace Ui.Game.Promotion
 {
     public class PromotionPanel : MonoBehaviour
     {

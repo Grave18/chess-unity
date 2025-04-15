@@ -7,8 +7,8 @@ using Logic;
 using Logic.MovesBuffer;
 using Logic.Players;
 using Notation;
+using Ui.Game.Promotion;
 using Ui.MainMenu;
-using Ui.Promotion;
 using UnityEngine;
 
 #if UNITY_EDITOR

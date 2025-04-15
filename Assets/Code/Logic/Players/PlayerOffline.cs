@@ -2,7 +2,7 @@ using System;
 using ChessBoard;
 using ChessBoard.Pieces;
 using Highlighting;
-using Ui.Promotion;
+using Ui.Game.Promotion;
 using UnityEngine;
 
 namespace Logic.Players

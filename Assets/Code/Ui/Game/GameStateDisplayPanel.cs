@@ -2,11 +2,11 @@
 using TMPro;
 using UnityEngine;
 
-namespace Ui
+namespace Ui.Game
 {
     public class GameStateDisplayPanel : MonoBehaviour
     {
-        [SerializeField] private Game game;
+        [SerializeField] private Logic.Game game;
         [SerializeField] private TMP_Text whiteText;
         [SerializeField] private TMP_Text blackText;
 

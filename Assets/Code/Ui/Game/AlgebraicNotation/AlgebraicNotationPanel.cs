@@ -6,12 +6,12 @@ using Logic.MovesBuffer;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Ui.AlgebraicNotation
+namespace Ui.Game.AlgebraicNotation
 {
     public class AlgebraicNotationPanel : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private Game game;
+        [SerializeField] private Logic.Game game;
         [SerializeField] private UciBuffer uciBuffer;
 
         [Header("Ui")]

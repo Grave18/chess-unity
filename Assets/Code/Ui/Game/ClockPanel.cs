@@ -3,7 +3,7 @@ using Logic;
 using TMPro;
 using UnityEngine;
 
-namespace Ui
+namespace Ui.Game
 {
     public class ClockPanel : MonoBehaviour
     {

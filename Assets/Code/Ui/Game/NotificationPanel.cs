@@ -3,12 +3,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Ui
+namespace Ui.Game
 {
     public class NotificationPanel : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private Game game;
+        [SerializeField] private Logic.Game game;
 
         [Header("UI")]
         [SerializeField] private GameObject buttonPanel;

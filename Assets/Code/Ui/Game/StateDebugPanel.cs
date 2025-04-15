@@ -1,12 +1,11 @@
-using Logic;
 using TMPro;
 using UnityEngine;
 
-namespace Ui
+namespace Ui.Game
 {
     public class StateDebugPanel : MonoBehaviour
     {
-        [SerializeField] private Game game;
+        [SerializeField] private Logic.Game game;
 
         [SerializeField] private TMP_Text stateText;
         [SerializeField] private TMP_Text turnText;

@@ -1,13 +1,12 @@
-﻿using Logic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Ui
+namespace Ui.Game
 {
     public class UndoRedoPausePanel : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private Game game;
+        [SerializeField] private Logic.Game game;
 
         [Header("UI")]
         [SerializeField] private Button undo;

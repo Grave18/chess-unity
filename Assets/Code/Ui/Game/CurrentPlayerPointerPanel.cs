@@ -1,13 +1,11 @@
-﻿using System;
-using Logic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Ui
+namespace Ui.Game
 {
     public class CurrentPlayerPointerPanel : MonoBehaviour
     {
-        [SerializeField] private Game game;
+        [SerializeField] private Logic.Game game;
         [SerializeField] private Image whiteImage;
         [SerializeField] private Image blackImage;
 
