@@ -214,7 +214,7 @@ namespace Logic.Players.GameStates
             _turn.End();
 
             Game.ChangeTurn();
-            Game.Calculate();
+            Game.PreformCaluculations();
             UpdateAlgebraicNotation();
             Game.UciBuffer.Add(_moveData);
             Game.FireEndMove();

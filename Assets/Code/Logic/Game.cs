@@ -59,14 +59,19 @@ namespace Logic
 
         public void StartGame()
         {
+            ResetGameState();
+            PreformCaluculations();
+            SetState(new IdleState(this));
+            FireStart();
+        }
+
+        private void ResetGameState()
+        {
             CheckType = CheckType.None;
             CurrentTurnColor = _startingColor;
             Selected = null;
             UciBuffer.Clear();
             Board.Build();
-            Calculate();
-            SetState(new IdleState(this));
-            FireStart();
         }
 
         public void SetState(GameState state, string nextState = "None")
@@ -210,7 +215,7 @@ namespace Logic
         }
 
         /// Calculate under attack squares, check type, moves and captures
-        public void Calculate()
+        public void PreformCaluculations()
         {
             UnderAttackSquares = GetUnderAttackSquares(PrevTurnPieces);
             CheckType = CalculateCheck(PrevTurnPieces);

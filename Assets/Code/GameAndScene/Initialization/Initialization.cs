@@ -87,17 +87,17 @@ namespace GameAndScene.Initialization
 
         private void ConfigurePlayers()
         {
-            Player playerWhite = GetPlayer(_gameSettings.Player1Settings);
-            Player playerBlack = GetPlayer(_gameSettings.Player2Settings);
+            IPlayer playerWhite = GetPlayer(_gameSettings.Player1Settings);
+            IPlayer playerBlack = GetPlayer(_gameSettings.Player2Settings);
 
             competitors.Init(game, playerWhite, playerBlack);
         }
 
-        private Player GetPlayer(PlayerSettings playerSettings)
+        private IPlayer GetPlayer(PlayerSettings playerSettings)
         {
             return playerSettings.PlayerType switch
             {
-                PlayerType.Computer => new Computer(game, playerSettings, _stockfish),
+                PlayerType.Computer => new PlayerComputer(game, playerSettings, _stockfish),
                 PlayerType.Offline => new PlayerOffline(game, mainCamera, highlighter, layerMask,
                     _gameSettings.IsAutoPromoteToQueen, promotionPanel),
                 _ => null,
@@ -116,8 +116,8 @@ namespace GameAndScene.Initialization
         {
             ConfigureAiIfNeeded();
 
-            Player playerWhite = GetPlayer(_gameSettings.Player1Settings);
-            Player playerBlack = GetPlayer(_gameSettings.Player2Settings);
+            IPlayer playerWhite = GetPlayer(_gameSettings.Player1Settings);
+            IPlayer playerBlack = GetPlayer(_gameSettings.Player2Settings);
 
             competitors.SubstitutePlayers(playerWhite, playerBlack);
         }

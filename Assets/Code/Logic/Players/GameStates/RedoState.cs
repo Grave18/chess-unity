@@ -193,7 +193,7 @@ namespace Logic.Players.GameStates
             _turn.End();
 
             Game.ChangeTurn();
-            Game.Calculate();
+            Game.PreformCaluculations();
             Game.UciBuffer.Redo();
             Game.FireEndMove();
             Game.SetPreviousState();

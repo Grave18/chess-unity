@@ -7,8 +7,9 @@ using UnityEngine;
 
 namespace Logic.Players
 {
-    public class PlayerOffline : Player
+    public class PlayerOffline : IPlayer
     {
+        private readonly Game _game;
         private readonly Camera _mainCamera;
         private readonly PromotionPanel _promotionPanel;
         private readonly Highlighter _highlighter;
@@ -19,8 +20,8 @@ namespace Logic.Players
 
         public PlayerOffline(Game game, Camera mainCamera, Highlighter highlighter, LayerMask layerMask,
             bool isAutoPromoteToQueen, PromotionPanel promotionPanel)
-            : base(game)
         {
+            _game = game;
             _highlighter = highlighter;
             _mainCamera = mainCamera;
             _layerMask = layerMask;
@@ -28,7 +29,13 @@ namespace Logic.Players
             _promotionPanel = promotionPanel;
         }
 
-        public override void Update()
+
+        public void Start()
+        {
+            // Empty
+        }
+
+        public void Update()
         {
             // Cast ray from cursor
             Vector3 mousePos = Input.mousePosition;
@@ -50,24 +57,29 @@ namespace Logic.Players
             }
         }
 
+        public void Stop()
+        {
+            // Empty
+        }
+
         private void Click(ISelectable selectable)
         {
             // Deselect if not hit anything
             if (selectable == null)
             {
-                Game.Deselect();
+                _game.Deselect();
                 return;
             }
 
             // Select if clicked on current turn piece
-            if (Game.CanSelect(selectable))
+            if (_game.CanSelect(selectable))
             {
-                Game.Select(selectable);
+                _game.Select(selectable);
                 return;
             }
 
             // Exit early if no selected piece
-            if (Game.Selected == null)
+            if (_game.Selected == null)
             {
                 return;
             }
@@ -78,8 +90,8 @@ namespace Logic.Players
         /// Construct Uci string of move. example: "b1a1q", "e2e4"
         private void ConstructUci(ISelectable selectable)
         {
-            Piece piece = Game.Selected.GetPiece();
-            Square fromSquare = Game.Selected.GetSquare();
+            Piece piece = _game.Selected.GetPiece();
+            Square fromSquare = _game.Selected.GetSquare();
             Square toSquare = selectable.GetSquare();
 
             string uci = string.Empty;
@@ -101,10 +113,10 @@ namespace Logic.Players
                     return;
                 }
 
-                Game.Pause();
-                _promotionPanel.RequestPromotedPiece(Game.CurrentTurnColor, pieceLetter =>
+                _game.Pause();
+                _promotionPanel.RequestPromotedPiece(_game.CurrentTurnColor, pieceLetter =>
                 {
-                    Game.Play();
+                    _game.Play();
                     uci += pieceLetter;
                     Move(uci);
                 });
@@ -117,8 +129,8 @@ namespace Logic.Players
 
         private void Move(string uci)
         {
-            Game.Move(uci);
-            Game.Deselect();
+            _game.Move(uci);
+            _game.Deselect();
         }
 
         private static bool CanPromote(Piece piece, Square toSquare)

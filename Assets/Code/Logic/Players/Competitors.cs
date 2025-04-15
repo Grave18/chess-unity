@@ -5,11 +5,11 @@ namespace Logic.Players
     public class Competitors : MonoBehaviour
     {
         private Game _game;
-        private Player _playerWhite;
-        private Player _playerBlack;
-        private Player _currentPlayer;
+        private IPlayer _playerWhite;
+        private IPlayer _playerBlack;
+        private IPlayer _currentPlayer;
 
-        public void Init(Game game, Player playerWhite, Player playerBlack)
+        public void Init(Game game, IPlayer playerWhite, IPlayer playerBlack)
         {
             _game = game;
             _playerWhite = playerWhite;
@@ -32,7 +32,7 @@ namespace Logic.Players
             _currentPlayer.Stop();
         }
 
-        public void SubstitutePlayers(Player playerWhite, Player playerBlack)
+        public void SubstitutePlayers(IPlayer playerWhite, IPlayer playerBlack)
         {
             _playerWhite = playerWhite;
             _playerBlack = playerBlack;
