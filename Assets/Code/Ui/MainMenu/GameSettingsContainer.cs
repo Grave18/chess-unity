@@ -8,8 +8,9 @@ namespace Ui.MainMenu
 {
     public class GameSettingsContainer: MonoBehaviour
     {
-        [SerializeField] private GameSettings gameSettings;
+        [Tooltip("Use it if no need to load settings")]
         [SerializeField] private bool isInitialized;
+        [SerializeField] private GameSettings gameSettings;
 
         private ComputerSkillLevel _computerSkillLevel;
 

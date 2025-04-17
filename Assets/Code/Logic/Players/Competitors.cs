@@ -19,17 +19,17 @@ namespace Logic.Players
 
         public void StartPlayer()
         {
-            _currentPlayer.Start();
+            _currentPlayer.StartPlayer();
         }
 
         public void UpdatePlayer()
         {
-            _currentPlayer.Update();
+            _currentPlayer.UpdatePlayer();
         }
 
         public void StopPlayer()
         {
-            _currentPlayer.Stop();
+            _currentPlayer.StopPlayer();
         }
 
         public void SubstitutePlayers(IPlayer playerWhite, IPlayer playerBlack)

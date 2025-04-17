@@ -2,10 +2,10 @@
 {
     public interface IPlayer
     {
-        void Start();
+        void StartPlayer();
 
-        void Update();
+        void UpdatePlayer();
 
-        void Stop();
+        void StopPlayer();
     }
 }

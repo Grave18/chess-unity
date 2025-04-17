@@ -29,13 +29,12 @@ namespace Logic.Players
             _promotionPanel = promotionPanel;
         }
 
-
-        public void Start()
+        public void StartPlayer()
         {
             // Empty
         }
 
-        public void Update()
+        public void UpdatePlayer()
         {
             // Cast ray from cursor
             Vector3 mousePos = Input.mousePosition;
@@ -55,11 +54,6 @@ namespace Logic.Players
                 Click(selectable);
                 _highlighter.UpdateHighlighting();
             }
-        }
-
-        public void Stop()
-        {
-            // Empty
         }
 
         private void Click(ISelectable selectable)
@@ -138,6 +132,11 @@ namespace Logic.Players
             return piece is Pawn
                    && toSquare?.Rank is "1" or "8"
                    && (piece.CanMoveTo(toSquare, out _) || piece.CanCaptureAt(toSquare, out _));
+        }
+
+        public void StopPlayer()
+        {
+            // Empty
         }
     }
 }

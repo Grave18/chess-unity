@@ -21,7 +21,7 @@ namespace Logic.Players
 
 
         /// Get calculations from Ai and make move
-        public async void Start()
+        public async void StartPlayer()
         {
             string uci = await _stockfish.GetUci(_playerSettings, _moveCts.Token);
 
@@ -33,13 +33,13 @@ namespace Logic.Players
             _game.Move(uci);
         }
 
-        public void Update()
+        public void UpdatePlayer()
         {
             // Empty
         }
 
         // Stop All Ai calculations
-        public void Stop()
+        public void StopPlayer()
         {
             _moveCts?.Cancel();
             _moveCts = new CancellationTokenSource();
