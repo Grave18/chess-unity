@@ -2560,7 +2560,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 177198598}
   m_HandleRect: {fileID: 177198597}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3175,7 +3175,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 417405393}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 21.222, y: 0, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
@@ -3241,7 +3241,7 @@ MonoBehaviour:
   zoomSmoothTime: 0.15
   minPitchRad: 0.3
   maxPitchRad: 1.57
-  pitchRad: 0.5
+  pitchRad: 0.9
   yawRad: -1.5708
   orbitSensitivity: 0.2
   yawSmoothTime: 0.08
@@ -4438,7 +4438,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 331832537}
@@ -8802,19 +8801,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   assets: {fileID: 1663133263}
+  gameSettingsContainer: {fileID: 1470752476}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 192
   game: {fileID: 1216111693}
   board: {fileID: 1190829613}
   clock: {fileID: 428172018}
   fenFromBoard: {fileID: 1300988198}
   competitors: {fileID: 1739655008}
   highlighter: {fileID: 1544682202}
-  mainCamera: {fileID: 330585545}
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 192
-  promotionPanel: {fileID: 59947144}
   uciBuffer: {fileID: 2060320542}
-  gameSettingsContainer: {fileID: 1470752476}
+  promotionPanel: {fileID: 59947144}
+  mainCamera: {fileID: 330585545}
+  cameraController: {fileID: 330585548}
   playerOnlineWhite: {fileID: 313843066}
   playerOnlineBlack: {fileID: 721045146}
 --- !u!4 &853249565
@@ -18810,6 +18810,7 @@ SceneRoots:
   - {fileID: 721045147}
   - {fileID: 1110215395}
   - {fileID: 853249565}
+  - {fileID: 330585546}
   - {fileID: 1663133264}
   - {fileID: 1216111692}
   - {fileID: 1190829612}

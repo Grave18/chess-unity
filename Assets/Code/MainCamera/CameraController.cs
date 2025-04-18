@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Logic;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace MainCamera
@@ -43,18 +44,39 @@ namespace MainCamera
 
         private Camera _camera;
 
+        private bool _isInitialized;
+
         private void Awake()
         {
             _camera = GetComponent<Camera>();
             Assert.IsNotNull(_camera);
+        }
+
+        public void Init(PieceColor color)
+        {
+            if (color == PieceColor.White)
+            {
+                yawRad = -1.5708f;
+            }
+            else if (color == PieceColor.Black)
+            {
+                yawRad = 1.5708f;
+            }
 
             _newDistance = distance;
             _newYawRad = yawRad;
             _newPitchRad = pitchRad;
+
+            _isInitialized = true;
         }
 
         private void Update()
         {
+            if (!_isInitialized)
+            {
+                return;
+            }
+
             CalculateTFromPitch();
             CalculateZoom();
             CalculateOrbit();

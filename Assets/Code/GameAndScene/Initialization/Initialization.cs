@@ -6,7 +6,9 @@ using Highlighting;
 using Logic;
 using Logic.MovesBuffer;
 using Logic.Players;
+using MainCamera;
 using Notation;
+using ParrelSync;
 using Ui.Game.Promotion;
 using Ui.MainMenu;
 using UnityEngine;
@@ -20,22 +22,24 @@ namespace GameAndScene.Initialization
     [DefaultExecutionOrder(-1)]
     public sealed class Initialization : MonoBehaviour
     {
-        [Header("References")]
-        [SerializeField] private Assets assets;
+        [Header("Settings")] [SerializeField] private Assets assets;
+        [SerializeField] private GameSettingsContainer gameSettingsContainer;
+        [SerializeField] private LayerMask layerMask;
 
-        [SerializeField] private Game game;
+        [Header("Game")] [SerializeField] private Game game;
         [SerializeField] private Board board;
         [SerializeField] private Clock clock;
         [SerializeField] private FenFromBoard fenFromBoard;
         [SerializeField] private Competitors competitors;
         [SerializeField] private Highlighter highlighter;
-        [SerializeField] private Camera mainCamera;
-        [SerializeField] private LayerMask layerMask;
-        [SerializeField] private PromotionPanel promotionPanel;
         [SerializeField] private UciBuffer uciBuffer;
-        [SerializeField] private GameSettingsContainer gameSettingsContainer;
 
-        [SerializeField] private PlayerOnline playerOnlineWhite;
+        [Header("Ui")] [SerializeField] private PromotionPanel promotionPanel;
+
+        [Header("Camera")] [SerializeField] private Camera mainCamera;
+        [SerializeField] private CameraController cameraController;
+
+        [Header("Players")] [SerializeField] private PlayerOnline playerOnlineWhite;
         [SerializeField] private PlayerOnline playerOnlineBlack;
 
         private Stockfish _stockfish;
@@ -63,7 +67,20 @@ namespace GameAndScene.Initialization
             board.Init(game, uciBuffer, fenSplit, prefabs, turnColor);
             fenFromBoard.Init(game, board, _gameSettings.CurrentFen);
 
+            InitCamera();
             InitPlayers();
+        }
+
+        private void InitCamera()
+        {
+            if (ClonesManager.IsClone())
+            {
+                cameraController.Init(PieceColor.Black);
+            }
+            else
+            {
+                cameraController.Init(PieceColor.White);
+            }
         }
 
         private void InitPlayers()
