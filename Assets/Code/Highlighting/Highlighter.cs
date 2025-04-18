@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using ChessBoard;
+﻿using ChessBoard;
 using ChessBoard.Info;
 using ChessBoard.Pieces;
 using Logic;
@@ -23,12 +22,12 @@ namespace Highlighting
         public void Init(Game game)
         {
             _game = game;
-            // _game.OnEndTurn += UpdateHighlighting;
+            _game.OnEndMove += UpdateHighlighting;
         }
 
         private void OnDestroy()
         {
-            // _game.OnEndTurn -= UpdateHighlighting;
+            _game.OnEndMove -= UpdateHighlighting;
         }
 
         public void UpdateHighlighting()

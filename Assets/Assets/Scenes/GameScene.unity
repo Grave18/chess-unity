@@ -14266,12 +14266,12 @@ MonoBehaviour:
   gameSettings:
     Player1Settings:
       <Name>k__BackingField: Player
-      <PlayerType>k__BackingField: 1
+      <PlayerType>k__BackingField: 2
       <ComputerSkillLevel>k__BackingField: 10
       <ComputerThinkTimeMs>k__BackingField: 1000
     Player2Settings:
       <Name>k__BackingField: Player
-      <PlayerType>k__BackingField: 1
+      <PlayerType>k__BackingField: 2
       <ComputerSkillLevel>k__BackingField: 10
       <ComputerThinkTimeMs>k__BackingField: 1000
     Time: {x: 30, y: 0}
