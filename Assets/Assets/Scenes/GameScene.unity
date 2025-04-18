@@ -3097,7 +3097,7 @@ GameObject:
   - component: {fileID: 330585548}
   - component: {fileID: 330585549}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: MainCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3142,9 +3142,9 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
-  field of view: 40
+  near clip plane: 0.1
+  far clip plane: 100
+  field of view: 60
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -3233,20 +3233,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e10f13fcf7f34d14bc892e6bc04829f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  distance: 1.5000001
+  offset: {x: 0, y: 0.15, z: 0}
   minDistance: 1
-  maxDistance: 4
-  zoomScrollWheelSensitivity: 2.5
-  zoomKeyboardSensitivity: 0.2
+  maxDistance: 3
+  distance: 1.25
+  zoomSensitivity: 2.5
   zoomSmoothTime: 0.15
-  yawRad: -1.5535734
-  pitchRad: 0.49459586
-  minPitchRad: 0.1
-  maxPitchRad: 1
+  minPitchRad: 0.3
+  maxPitchRad: 1.57
+  pitchRad: 0.5
+  yawRad: -1.5708
   orbitSensitivity: 0.2
   yawSmoothTime: 0.08
   pitchSmoothTime: 0.08
+  fovStart: 60
+  fovEnd: 30
+  distanceFovMultEnd: 1.5
 --- !u!114 &330585549
 MonoBehaviour:
   m_ObjectHideFlags: 0
