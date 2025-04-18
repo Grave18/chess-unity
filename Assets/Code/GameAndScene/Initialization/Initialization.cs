@@ -35,6 +35,9 @@ namespace GameAndScene.Initialization
         [SerializeField] private UciBuffer uciBuffer;
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
 
+        [SerializeField] private PlayerOnline playerOnlineWhite;
+        [SerializeField] private PlayerOnline playerOnlineBlack;
+
         private Stockfish _stockfish;
         private GameSettings _gameSettings;
 
@@ -87,21 +90,45 @@ namespace GameAndScene.Initialization
 
         private void ConfigurePlayers()
         {
-            IPlayer playerWhite = GetPlayer(_gameSettings.Player1Settings);
-            IPlayer playerBlack = GetPlayer(_gameSettings.Player2Settings);
+            IPlayer playerWhite = GetPlayer(_gameSettings.Player1Settings, PieceColor.White);
+            IPlayer playerBlack = GetPlayer(_gameSettings.Player2Settings, PieceColor.Black);
 
             competitors.Init(game, playerWhite, playerBlack);
         }
 
-        private IPlayer GetPlayer(PlayerSettings playerSettings)
+        private IPlayer GetPlayer(PlayerSettings playerSettings, PieceColor color)
         {
-            return playerSettings.PlayerType switch
+            if (playerSettings.PlayerType == PlayerType.Computer)
             {
-                PlayerType.Computer => new PlayerComputer(game, playerSettings, _stockfish),
-                PlayerType.Offline => new PlayerOffline(game, mainCamera, highlighter, layerMask,
-                    _gameSettings.IsAutoPromoteToQueen, promotionPanel),
-                _ => null,
-            };
+                return new PlayerComputer(game, playerSettings, _stockfish);
+            }
+
+            if (playerSettings.PlayerType == PlayerType.Offline)
+            {
+                return new PlayerOffline(game, mainCamera, highlighter, layerMask,
+                    _gameSettings.IsAutoPromoteToQueen, promotionPanel);
+            }
+
+            if (playerSettings.PlayerType == PlayerType.Online)
+            {
+                if (color == PieceColor.White)
+                {
+                    playerOnlineWhite.Init(game, mainCamera, highlighter, layerMask,
+                        _gameSettings.IsAutoPromoteToQueen, promotionPanel, color);
+
+                    return playerOnlineWhite;
+                }
+
+                if (color == PieceColor.Black)
+                {
+                    playerOnlineBlack.Init(game, mainCamera, highlighter, layerMask,
+                        _gameSettings.IsAutoPromoteToQueen, promotionPanel, color);
+
+                    return playerOnlineBlack;
+                }
+            }
+
+            return null;
         }
 
         private void OnDestroy()
@@ -116,8 +143,8 @@ namespace GameAndScene.Initialization
         {
             ConfigureAiIfNeeded();
 
-            IPlayer playerWhite = GetPlayer(_gameSettings.Player1Settings);
-            IPlayer playerBlack = GetPlayer(_gameSettings.Player2Settings);
+            IPlayer playerWhite = GetPlayer(_gameSettings.Player1Settings, PieceColor.White);
+            IPlayer playerBlack = GetPlayer(_gameSettings.Player2Settings, PieceColor.Black);
 
             competitors.SubstitutePlayers(playerWhite, playerBlack);
         }
