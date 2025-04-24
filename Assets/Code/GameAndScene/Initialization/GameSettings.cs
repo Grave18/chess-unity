@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Logic;
+using UnityEngine;
 
 namespace GameAndScene.Initialization
 {
@@ -6,6 +7,8 @@ namespace GameAndScene.Initialization
     public class GameSettings
     {
         public const string Key = "GameSettings";
+
+        public PieceColor Color;
 
         public PlayerSettings Player1Settings;
         public PlayerSettings Player2Settings;

@@ -8,12 +8,12 @@ using Logic.MovesBuffer;
 using Logic.Players;
 using MainCamera;
 using Notation;
-using ParrelSync;
 using Ui.Game.Promotion;
 using Ui.MainMenu;
 using UnityEngine;
 
 #if UNITY_EDITOR
+using ParrelSync;
 using EditorCools;
 #endif
 
@@ -73,6 +73,7 @@ namespace GameAndScene.Initialization
 
         private void InitCamera()
         {
+#if UNITY_EDITOR
             if (ClonesManager.IsClone())
             {
                 cameraController.Init(PieceColor.Black);
@@ -81,6 +82,7 @@ namespace GameAndScene.Initialization
             {
                 cameraController.Init(PieceColor.White);
             }
+#endif
         }
 
         private void InitPlayers()

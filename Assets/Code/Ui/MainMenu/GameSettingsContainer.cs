@@ -41,6 +41,42 @@ namespace Ui.MainMenu
             isInitialized = true;
         }
 
+        public void SetupGameWithComputer()
+        {
+            PlayerSettings computerPlayerSettings = gameSettings.Player2Settings;
+            computerPlayerSettings.Name = "Computer";
+            computerPlayerSettings.PlayerType = PlayerType.Computer;
+            computerPlayerSettings.ComputerSkillLevel = _computerSkillLevel;
+
+            Save();
+        }
+
+        public void SetupGameOffline()
+        {
+            PlayerSettings player1Settings = gameSettings.Player1Settings;
+            player1Settings.Name = "Player White";
+            player1Settings.PlayerType = PlayerType.Offline;
+
+            PlayerSettings player2Settings = gameSettings.Player2Settings;
+            player2Settings.Name = "Player Black";
+            player2Settings.PlayerType = PlayerType.Offline;
+
+            Save();
+        }
+
+        public void SetupGameOnline()
+        {
+            PlayerSettings player1Settings = gameSettings.Player1Settings;
+            player1Settings.Name = "Player White";
+            player1Settings.PlayerType = PlayerType.Online;
+
+            PlayerSettings player2Settings = gameSettings.Player2Settings;
+            player2Settings.Name = "Player Black";
+            player2Settings.PlayerType = PlayerType.Online;
+
+            Save();
+        }
+
         public void SetTime(string time)
         {
             if (int.TryParse(time, out int result))
@@ -75,29 +111,6 @@ namespace Ui.MainMenu
         public string GetCurrentFen()
         {
             return gameSettings.CurrentFen;
-        }
-
-        public void SetupGameWithComputer()
-        {
-            PlayerSettings computerPlayerSettings = gameSettings.Player2Settings;
-            computerPlayerSettings.Name = "Computer";
-            computerPlayerSettings.PlayerType = PlayerType.Computer;
-            computerPlayerSettings.ComputerSkillLevel = _computerSkillLevel;
-
-            Save();
-        }
-
-        public void SetupGameOffline()
-        {
-            PlayerSettings player1Settings = gameSettings.Player1Settings;
-            player1Settings.Name = "Player White";
-            player1Settings.PlayerType = PlayerType.Offline;
-
-            PlayerSettings player2Settings = gameSettings.Player2Settings;
-            player2Settings.Name = "Player Black";
-            player2Settings.PlayerType = PlayerType.Offline;
-
-            Save();
         }
 
         private void Save()

@@ -3,7 +3,7 @@ using GameAndScene;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Ui
+namespace Ui.Logo
 {
     public class Fader : MonoBehaviour
     {

@@ -20,14 +20,14 @@ namespace Ui.MainMenu.Buttons
         private TMP_Text _text;
         private RectTransform _transform;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             _button = GetComponentInChildren<UnityEngine.UI.Button>();
             _text = _button.GetComponentInChildren<TMP_Text>();
             _transform = _button.GetComponent<RectTransform>();
         }
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             ApplyClass();
         }
@@ -58,6 +58,7 @@ namespace Ui.MainMenu.Buttons
         }
 
 #if UNITY_EDITOR
+        // private void OnValidate()
         [Button(name: "Apply Class", space: 10)]
         private void ApplyClassInEditor()
         {

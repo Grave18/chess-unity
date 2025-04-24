@@ -15,6 +15,7 @@ using Steamworks;
 #endif
 using UnityEngine;
 using UnityEngine.Events;
+// ReSharper disable All
 
 namespace PurrLobby.Providers
 {
@@ -40,7 +41,7 @@ namespace PurrLobby.Providers
         public event UnityAction<List<LobbyUser>> OnLobbyPlayerListUpdated;
         public event UnityAction<List<FriendUser>> OnFriendListPulled;
         public event UnityAction<string> OnError;
-        
+
         [SerializeField] private bool handleSteamInit = false;
 
         private Steamworks.CallResult<Steamworks.LobbyCreated_t> _LobbyCreated;
@@ -179,7 +180,7 @@ namespace PurrLobby.Providers
 
             if (handleSteamInit)
                 HandleSteamInit();
-            
+
             return Task.CompletedTask;
         }
 
@@ -196,7 +197,7 @@ namespace PurrLobby.Providers
                 RunSteamCallbacks();
             }
         }
-        
+
         private async void RunSteamCallbacks()
         {
             var runCallbacks = true;
@@ -263,7 +264,7 @@ namespace PurrLobby.Providers
 
         public Task LeaveLobbyAsync()
         {
-            if (!IsSteamClientAvailable || _currentLobby == Steamworks.CSteamID.Nil) 
+            if (!IsSteamClientAvailable || _currentLobby == Steamworks.CSteamID.Nil)
                 return Task.CompletedTask;
 
             Steamworks.SteamMatchmaking.LeaveLobby(_currentLobby);

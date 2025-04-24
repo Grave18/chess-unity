@@ -821,7 +821,7 @@ PlayerSettings:
     Standalone: DOTWEEN;STEAMWORKS_NET
     VisionOS: DOTWEEN
     WebGL: DOTWEEN
-    Windows Store Apps: DOTWEEN
+    Windows Store Apps: DOTWEEN;STEAMWORKS_NET
     XboxOne: DOTWEEN
     iPhone: DOTWEEN
     tvOS: DOTWEEN
