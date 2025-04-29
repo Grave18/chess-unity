@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecc0db107c124c338f632c209b3d9d2a, type: 3}
+  m_Name: BuildSettings
+  m_EditorClassIdentifier: 
+  BuildPath: D:\dev\unity\portfolio\chess_3d\Build
+  BuildTargetGroup: 1
+  BuildTarget: 19
+  BuildOptions: 521
+  developmentBuild: 1
+  allowDebugging: 1
+  autoConnectProfiler: 0
+  deepProfiling: 0
+  waitForPlayerConnection: 0
+  showBuildFolder: 1
+  autoRunPlayer: 0
+  clanBuild: 0
