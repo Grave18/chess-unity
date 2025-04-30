@@ -52,6 +52,9 @@ namespace PurrLobby
 
         private Lobby _lastKnownState;
         public Lobby CurrentLobby => _currentLobby;
+
+        public bool IsInLobby => _currentLobby.IsValid;
+
         private LobbyDataHolder _lobbyDataHolder;
 
         private bool IsStarting = false;
@@ -385,7 +388,9 @@ namespace PurrLobby
         private async void CallOnAllReady()
         {
             await WaitForAllTasksAsync();
-            if(_currentLobby.IsValid && _currentLobby.Members.TrueForAll(x => x.IsReady))
+            if(_currentLobby.IsValid
+               && _currentLobby.Members.Count == 2
+               && _currentLobby.Members.TrueForAll(x => x.IsReady))
             {
                 await _currentProvider.SetAllReadyAsync();
 

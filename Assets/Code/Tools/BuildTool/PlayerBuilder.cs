@@ -1,7 +1,9 @@
 ﻿#if UNITY_EDITOR
 
+using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.AddressableAssets.Settings;
 
 namespace Tools.BuildTool
 {
@@ -12,13 +14,22 @@ namespace Tools.BuildTool
         private static BuildPlayerOptions _buildPlayerOptions;
 
         [MenuItem("Tools/Grave/Build Player &b")]
-        private static void Build()
+        public static void Build()
         {
             LoadSettingsIfNeeded();
             SetLocationPathName();
             SetBuildPlayerOptions();
 
+            AddressableAssetSettings.BuildPlayerContent();
             BuildPipeline.BuildPlayer(_buildPlayerOptions);
+
+            if (_buildSettings.AddSteamAppidFile)
+            {
+                using FileStream fs = File.Create(_buildSettings.BuildPath + "/steam_appid.txt");
+                using StreamWriter sw = new(fs);
+
+                sw.WriteLine(_buildSettings.SteamAppid);
+            }
         }
 
         private static void LoadSettingsIfNeeded()

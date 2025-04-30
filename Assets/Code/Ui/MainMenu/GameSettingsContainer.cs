@@ -66,6 +66,7 @@ namespace Ui.MainMenu
 
         public void SetupGameOnline()
         {
+
             PlayerSettings player1Settings = gameSettings.Player1Settings;
             player1Settings.Name = "Player White";
             player1Settings.PlayerType = PlayerType.Online;

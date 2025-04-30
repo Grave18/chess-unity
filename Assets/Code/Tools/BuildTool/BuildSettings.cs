@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿#if UNITY_EDITOR
+
+using System;
+using System.IO;
 using EditorCools;
 using UnityEditor;
 using UnityEngine;
@@ -13,6 +16,10 @@ namespace Tools.BuildTool
         public BuildTargetGroup BuildTargetGroup = BuildTargetGroup.Standalone;
         public BuildTarget BuildTarget = BuildTarget.StandaloneWindows64;
         public BuildOptions BuildOptions;
+
+        [Header("Steam")]
+        public bool AddSteamAppidFile;
+        public int SteamAppid = 480;
 
         [Header("Development")]
         [SerializeField] private bool developmentBuild;
@@ -61,5 +68,13 @@ namespace Tools.BuildTool
                 BuildPath = newBuildPath;
             }
         }
+
+        [Button(space:10)]
+        private void Build()
+        {
+            PlayerBuilder.Build();
+        }
     }
 }
+
+#endif
