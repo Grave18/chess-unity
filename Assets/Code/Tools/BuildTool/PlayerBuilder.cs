@@ -16,6 +16,28 @@ namespace Tools.BuildTool
         [MenuItem("Tools/Grave/Build Player &b")]
         public static void Build()
         {
+            if (EditorApplication.isPlaying)
+            {
+                EditorApplication.ExitPlaymode();
+                EditorApplication.playModeStateChanged += PlaymodeStateChanged;
+            }
+            else
+            {
+                BuildInternal();
+            }
+        }
+
+        private static void PlaymodeStateChanged(PlayModeStateChange playMode)
+        {
+            if (playMode == PlayModeStateChange.EnteredEditMode)
+            {
+                BuildInternal();
+                EditorApplication.playModeStateChanged -= PlaymodeStateChanged;
+            }
+        }
+
+        private static void BuildInternal()
+        {
             LoadSettingsIfNeeded();
             SetLocationPathName();
             SetBuildPlayerOptions();
@@ -23,13 +45,7 @@ namespace Tools.BuildTool
             AddressableAssetSettings.BuildPlayerContent();
             BuildPipeline.BuildPlayer(_buildPlayerOptions);
 
-            if (_buildSettings.AddSteamAppidFile)
-            {
-                using FileStream fs = File.Create(_buildSettings.BuildPath + "/steam_appid.txt");
-                using StreamWriter sw = new(fs);
-
-                sw.WriteLine(_buildSettings.SteamAppid);
-            }
+            AddSteamAppId();
         }
 
         private static void LoadSettingsIfNeeded()
@@ -67,6 +83,17 @@ namespace Tools.BuildTool
                 target = _buildSettings.BuildTarget,
                 options = _buildSettings.BuildOptions,
             };
+        }
+
+        private static void AddSteamAppId()
+        {
+            if (_buildSettings.AddSteamAppidFile)
+            {
+                using FileStream fs = File.Create(_buildSettings.BuildPath + "/steam_appid.txt");
+                using StreamWriter sw = new(fs);
+
+                sw.WriteLine(_buildSettings.SteamAppid);
+            }
         }
     }
 }
