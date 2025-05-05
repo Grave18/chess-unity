@@ -4,7 +4,7 @@ namespace Ui.MainMenu
 {
     public class MenuPanel : MonoBehaviour
     {
-        [SerializeField] private PanelManager panelManager;
+        [SerializeField] private PanelManagerBase panelManager;
 
         public bool IsOpened => gameObject.activeSelf;
 

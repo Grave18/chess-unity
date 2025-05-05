@@ -2,7 +2,7 @@ using PurrLobby;
 using Ui.MainMenu;
 using UnityEngine;
 
-public class PanelManager : MonoBehaviour
+public class PanelManager : PanelManagerBase
 {
     [Header("References")]
     [SerializeField] private LobbyManager lobbyManager;
@@ -10,29 +10,6 @@ public class PanelManager : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private MenuPanel lobbyPanel;
     [SerializeField] private MenuPanel onlinePanel;
-
-    public MenuPanel CurrentPanel { get; private set; }
-
-    private void Awake()
-    {
-        FindOpenedPanel();
-    }
-
-    private void FindOpenedPanel()
-    {
-        MenuPanel[] panels = FindObjectsByType<MenuPanel>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-
-        foreach (MenuPanel panel in panels)
-        {
-            SetCurrentPanel(panel);
-        }
-    }
-
-    public void SetCurrentPanel(MenuPanel panel)
-    {
-        CurrentPanel?.Hide();
-        CurrentPanel = panel;
-    }
 
     private void OnEnable()
     {
