@@ -12,6 +12,8 @@ namespace PurrLobby
     public class LobbyManager : MonoBehaviour
     {
         [SerializeField] private MonoBehaviour currentProvider;
+        private const int playersCount = 1;
+
         private ILobbyProvider _currentProvider;
 
         private readonly Queue<Action> _delayedActions = new Queue<Action>();
@@ -389,7 +391,7 @@ namespace PurrLobby
         {
             await WaitForAllTasksAsync();
             if(_currentLobby.IsValid
-               && _currentLobby.Members.Count == 2
+               && _currentLobby.Members.Count == playersCount
                && _currentLobby.Members.TrueForAll(x => x.IsReady))
             {
                 await _currentProvider.SetAllReadyAsync();

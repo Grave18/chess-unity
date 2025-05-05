@@ -6,9 +6,13 @@ namespace Ui.MainMenu.Lobby
 {
     public class LobbyList : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] private LobbyManager lobbyManager;
         [SerializeField] private LobbyEntry lobbyEntryPrefab;
         [SerializeField] private Transform content;
+
+        [Header("Settings")]
+        [SerializeField] private float updateInterval = 5f;
 
         private bool _isActive;
         private float _lastSearchTime;
@@ -58,7 +62,7 @@ namespace Ui.MainMenu.Lobby
                 return;
             }
 
-            if (_lastSearchTime + 5f < Time.time)
+            if (_lastSearchTime + updateInterval < Time.time)
             {
                 _lastSearchTime = Time.time;
                 lobbyManager.SearchLobbies();
