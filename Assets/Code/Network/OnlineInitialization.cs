@@ -1,6 +1,7 @@
 using GameAndScene;
 using Logic;
 using Logic.Players;
+using MainCamera;
 using PurrNet;
 using Ui.MainMenu;
 using UnityEngine;
@@ -13,6 +14,7 @@ namespace Network
         [SerializeField] private Game game;
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
         [SerializeField] private SceneLoader sceneLoader;
+        [SerializeField] private CameraController cameraController;
 
         [Header("Online part")]
         [SerializeField] private PlayerOnline playerOnlineWhite;
@@ -57,9 +59,8 @@ namespace Network
 
         private void InitializationAsClient(PlayerID player)
         {
-            _playerId = player.id;
-        }
 
+        }
 
         // TODO: make disconnection
         protected override void OnDespawned()

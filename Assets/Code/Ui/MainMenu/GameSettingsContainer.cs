@@ -2,6 +2,7 @@
 using System.Globalization;
 using Ai;
 using GameAndScene.Initialization;
+using Logic;
 using UnityEngine;
 
 namespace Ui.MainMenu
@@ -64,8 +65,9 @@ namespace Ui.MainMenu
             Save();
         }
 
-        public void SetupGameOnline()
+        public void SetupGameOnline(PieceColor playerColor)
         {
+            gameSettings.PlayerColor = playerColor;
 
             PlayerSettings player1Settings = gameSettings.Player1Settings;
             player1Settings.Name = "Player White";

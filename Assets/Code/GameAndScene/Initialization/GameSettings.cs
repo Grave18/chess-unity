@@ -8,7 +8,7 @@ namespace GameAndScene.Initialization
     {
         public const string Key = "GameSettings";
 
-        public PieceColor Color;
+        public PieceColor PlayerColor = PieceColor.White;
 
         public PlayerSettings Player1Settings;
         public PlayerSettings Player2Settings;

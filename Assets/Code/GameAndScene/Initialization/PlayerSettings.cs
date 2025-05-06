@@ -1,21 +1,14 @@
 ﻿using Ai;
-using UnityEngine;
+using Logic;
 
 namespace GameAndScene.Initialization
 {
     [System.Serializable]
     public class PlayerSettings
     {
-        [field: SerializeField]
-        public string Name { get; set; } = "Player";
-
-        [field: SerializeField]
-        public PlayerType PlayerType { get; set; } = PlayerType.Offline;
-
-        [field: SerializeField]
-        public ComputerSkillLevel ComputerSkillLevel { get; set; } = ComputerSkillLevel.Medium;
-
-        [field: SerializeField]
-        public int ComputerThinkTimeMs { get; set; } = 1000;
+        public string Name = "Player";
+        public PlayerType PlayerType = PlayerType.Offline;
+        public ComputerSkillLevel ComputerSkillLevel = ComputerSkillLevel.Medium;
+        public int ComputerThinkTimeMs = 1000;
     }
 }

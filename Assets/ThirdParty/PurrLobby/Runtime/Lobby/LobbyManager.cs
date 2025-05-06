@@ -12,7 +12,7 @@ namespace PurrLobby
     public class LobbyManager : MonoBehaviour
     {
         [SerializeField] private MonoBehaviour currentProvider;
-        private const int playersCount = 2;
+        private const int playersCount = 1;
 
         private ILobbyProvider _currentProvider;
 
@@ -60,6 +60,14 @@ namespace PurrLobby
         private LobbyDataHolder _lobbyDataHolder;
 
         private bool IsStarting = false;
+
+        public int GetPlayerIndexInLobby()
+        {
+            string localUserId = _currentProvider.GetLocalUserIdAsync().Result;
+            int playerIndexInLobby = _currentLobby.Members.FindIndex((LobbyUser x) => x.Id == localUserId);
+
+            return playerIndexInLobby;
+        }
 
         private void Awake()
         {

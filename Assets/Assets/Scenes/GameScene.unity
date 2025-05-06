@@ -16758,6 +16758,7 @@ MonoBehaviour:
   game: {fileID: 1216111693}
   gameSettingsContainer: {fileID: 1470752476}
   sceneLoader: {fileID: 850497300}
+  cameraController: {fileID: 330585548}
   playerOnlineWhite: {fileID: 313843066}
   playerOnlineBlack: {fileID: 721045146}
   clock: {fileID: 428172018}

@@ -1,4 +1,5 @@
-﻿using PurrLobby;
+﻿using Logic;
+using PurrLobby;
 using Ui.MainMenu.Buttons;
 using UnityEngine;
 
@@ -13,7 +14,16 @@ namespace Ui.MainMenu.Lobby
 
         protected override void OnClick()
         {
-            gameSettingsContainer.SetupGameOnline();
+            int playerIndexInLobby = lobbyManager.GetPlayerIndexInLobby();
+
+            PieceColor playerColor = playerIndexInLobby switch
+            {
+                0 => PieceColor.White,
+                1 => PieceColor.Black,
+                _ => PieceColor.None,
+            };
+
+            gameSettingsContainer.SetupGameOnline(playerColor);
             lobbyManager.ToggleLocalReady();
         }
     }

@@ -69,31 +69,26 @@ namespace GameAndScene.Initialization
             game.Init(board, uciBuffer, turnColor);
             highlighter.Init(game);
 
-            if (IsOffline)
-            {
-                clock.InitOffline(game, _gameSettings);
-            }
-
             GameObject[] prefabs = await assets.LoadPrefabs();
             board.Init(game, uciBuffer, fenSplit, prefabs, turnColor);
             fenFromBoard.Init(game, board, _gameSettings.CurrentFen);
 
+            InitClockOffline();
             InitCamera();
             InitPlayers();
         }
 
+        private void InitClockOffline()
+        {
+            if (IsOffline)
+            {
+                clock.InitOffline(game, _gameSettings);
+            }
+        }
+
         private void InitCamera()
         {
-#if UNITY_EDITOR
-            if (ClonesManager.IsClone())
-            {
-                cameraController.Init(PieceColor.Black);
-            }
-            else
-            {
-                cameraController.Init(PieceColor.White);
-            }
-#endif
+            cameraController.Init(_gameSettings.PlayerColor);
         }
 
         private void InitPlayers()
