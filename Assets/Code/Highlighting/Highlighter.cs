@@ -1,7 +1,9 @@
-﻿using ChessBoard;
-using ChessBoard.Info;
-using ChessBoard.Pieces;
-using Logic;
+﻿using ChessGame;
+using ChessGame.ChessBoard;
+using ChessGame.ChessBoard.Info;
+using ChessGame.ChessBoard.Pieces;
+using ChessGame.Logic;
+using Effects;
 using UnityEngine;
 
 namespace Highlighting

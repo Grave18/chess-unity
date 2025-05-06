@@ -1,4 +1,4 @@
-using Logic.MovesBuffer;
+using ChessGame.Logic.MovesBuffer;
 using TMPro;
 using UnityEngine;
 
@@ -6,7 +6,7 @@ namespace Ui.Game
 {
     public class BufferDebugPanel : MonoBehaviour
     {
-        [SerializeField] private Logic.Game game;
+        [SerializeField] private ChessGame.Logic.Game game;
         [SerializeField] private TMP_Text uciText;
 
         private void Update()

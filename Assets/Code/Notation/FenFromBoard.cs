@@ -1,9 +1,10 @@
 using System.Text;
-using ChessBoard;
-using ChessBoard.Info;
-using ChessBoard.Pieces;
+using ChessGame;
+using ChessGame.ChessBoard;
+using ChessGame.ChessBoard.Info;
+using ChessGame.ChessBoard.Pieces;
+using ChessGame.Logic;
 using EditorCools;
-using Logic;
 using UnityEngine;
 
 namespace Notation

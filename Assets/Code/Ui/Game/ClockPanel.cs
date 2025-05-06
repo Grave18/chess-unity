@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using Logic;
+using ChessGame.Logic;
 using TMPro;
 using UnityEngine;
 

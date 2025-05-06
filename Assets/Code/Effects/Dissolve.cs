@@ -1,69 +1,71 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
-public class Dissolve : MonoBehaviour
+namespace Effects
 {
-    [SerializeField] private float dissolveTime = 1f;
-
-    private static readonly int TimeId = Shader.PropertyToID("_T");
-    private static readonly int SeedId = Shader.PropertyToID("_Seed");
-    private static readonly int IsHighlightedId = Shader.PropertyToID("_IsHighlighted");
-
-    private MeshRenderer _meshRenderer;
-    private Material _material;
-
-    private void Awake()
+    public class Dissolve : MonoBehaviour
     {
-        _meshRenderer = GetComponent<MeshRenderer>();
-        _material = _meshRenderer.material;
-    }
+        [SerializeField] private float dissolveTime = 1f;
 
-    private void Start()
-    {
-        _material.SetFloat(SeedId, UnityEngine.Random.Range(0f, 100f));
+        private static readonly int TimeId = Shader.PropertyToID("_T");
+        private static readonly int SeedId = Shader.PropertyToID("_Seed");
+        private static readonly int IsHighlightedId = Shader.PropertyToID("_IsHighlighted");
 
-        StartCoroutine(Appear());
-    }
+        private MeshRenderer _meshRenderer;
+        private Material _material;
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.W))
+        private void Awake()
         {
+            _meshRenderer = GetComponent<MeshRenderer>();
+            _material = _meshRenderer.material;
+        }
+
+        private void Start()
+        {
+            _material.SetFloat(SeedId, UnityEngine.Random.Range(0f, 100f));
+
             StartCoroutine(Appear());
         }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            StartCoroutine(Disappear());
-        }
-    }
 
-    private IEnumerator Appear()
-    {
-        float time = 0f;
-        while (time <= dissolveTime)
+        private void Update()
         {
-            time += Time.deltaTime;
-            float calculatedTime = Mathf.Lerp(0.001f, 1f, time / dissolveTime);
-            _material.SetFloat(TimeId, calculatedTime);
-            yield return null;
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                StartCoroutine(Appear());
+            }
+            else if (Input.GetKeyDown(KeyCode.S))
+            {
+                StartCoroutine(Disappear());
+            }
         }
-    }
 
-    private IEnumerator Disappear()
-    {
-        float time = 0f;
-        while (time <= dissolveTime)
+        private IEnumerator Appear()
         {
-            time += Time.deltaTime;
-            float calculatedTime = Mathf.Lerp(1f, 0.001f, time / dissolveTime);
-            _material.SetFloat(TimeId, calculatedTime);
-            yield return null;
+            float time = 0f;
+            while (time <= dissolveTime)
+            {
+                time += Time.deltaTime;
+                float calculatedTime = Mathf.Lerp(0.001f, 1f, time / dissolveTime);
+                _material.SetFloat(TimeId, calculatedTime);
+                yield return null;
+            }
         }
-    }
 
-    public void HighlightPiece(bool enableHighlight)
-    {
-        _material.SetInt(IsHighlightedId, enableHighlight ? 1 : 0);
+        private IEnumerator Disappear()
+        {
+            float time = 0f;
+            while (time <= dissolveTime)
+            {
+                time += Time.deltaTime;
+                float calculatedTime = Mathf.Lerp(1f, 0.001f, time / dissolveTime);
+                _material.SetFloat(TimeId, calculatedTime);
+                yield return null;
+            }
+        }
+
+        public void HighlightPiece(bool enableHighlight)
+        {
+            _material.SetInt(IsHighlightedId, enableHighlight ? 1 : 0);
+        }
     }
 }

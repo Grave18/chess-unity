@@ -5,7 +5,7 @@ namespace Ui.Game
 {
     public class CurrentPlayerPointerPanel : MonoBehaviour
     {
-        [SerializeField] private Logic.Game game;
+        [SerializeField] private ChessGame.Logic.Game game;
         [SerializeField] private Image whiteImage;
         [SerializeField] private Image blackImage;
 

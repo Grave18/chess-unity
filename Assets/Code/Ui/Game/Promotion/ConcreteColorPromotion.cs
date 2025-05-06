@@ -1,4 +1,4 @@
-﻿using ChessBoard.Info;
+﻿using ChessGame.ChessBoard.Info;
 using UnityEngine;
 using UnityEngine.UI;
 

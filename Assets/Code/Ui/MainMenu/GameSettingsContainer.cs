@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using Ai;
-using GameAndScene.Initialization;
-using Logic;
+using ChessGame.Logic;
+using Initialization;
 using UnityEngine;
 
 namespace Ui.MainMenu

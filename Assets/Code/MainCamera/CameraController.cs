@@ -1,4 +1,4 @@
-﻿using Logic;
+﻿using ChessGame.Logic;
 using UnityEngine;
 using UnityEngine.Assertions;
 

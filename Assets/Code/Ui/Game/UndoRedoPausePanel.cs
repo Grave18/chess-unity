@@ -6,7 +6,7 @@ namespace Ui.Game
     public class UndoRedoPausePanel : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private Logic.Game game;
+        [SerializeField] private ChessGame.Logic.Game game;
 
         [Header("UI")]
         [SerializeField] private Button undo;

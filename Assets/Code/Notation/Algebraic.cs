@@ -1,8 +1,8 @@
 ﻿using System.Text;
-using ChessBoard;
-using ChessBoard.Pieces;
-using Logic;
-using Logic.MovesBuffer;
+using ChessGame.ChessBoard;
+using ChessGame.ChessBoard.Pieces;
+using ChessGame.Logic;
+using ChessGame.Logic.MovesBuffer;
 
 namespace Notation
 {

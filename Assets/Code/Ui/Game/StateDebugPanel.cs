@@ -6,7 +6,7 @@ namespace Ui.Game
 {
     public class StateDebugPanel : MonoBehaviour
     {
-        [SerializeField] private Logic.Game game;
+        [SerializeField] private ChessGame.Logic.Game game;
 
         [SerializeField] private TMP_Text authorityText;
         [SerializeField] private TMP_Text stateText;

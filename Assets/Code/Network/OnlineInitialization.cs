@@ -1,6 +1,6 @@
+using ChessGame.Logic;
+using ChessGame.Logic.Players;
 using GameAndScene;
-using Logic;
-using Logic.Players;
 using MainCamera;
 using PurrNet;
 using Ui.MainMenu;

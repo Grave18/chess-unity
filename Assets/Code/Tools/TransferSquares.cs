@@ -1,5 +1,5 @@
-﻿
-using ChessBoard;
+﻿using ChessGame;
+using ChessGame.ChessBoard;
 using UnityEngine;
 
 #if UNITY_EDITOR
