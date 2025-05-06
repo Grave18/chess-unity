@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using Ui.Common;
+using UnityEngine;
 
 namespace Ui.MainMenu.Buttons
 {
-    [RequireComponent(typeof(Button))]
+    [RequireComponent(typeof(ButtonBase))]
     public class Exit : ButtonCallbackBase
     {
         protected override void OnClick()

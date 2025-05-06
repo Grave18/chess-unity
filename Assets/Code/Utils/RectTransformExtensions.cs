@@ -1,4 +1,4 @@
-﻿using Ui.MainMenu.Classes;
+﻿using Ui.Common.Classes;
 using UnityEngine;
 
 namespace Utils

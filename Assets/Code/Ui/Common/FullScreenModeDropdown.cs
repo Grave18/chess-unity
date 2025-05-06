@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Ui.MainMenu.Dropdowns
+namespace Ui.Common
 {
     public class WindowModeDropdown : DropdownBase
     {

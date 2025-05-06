@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 
-namespace Ui.MainMenu.Classes
+namespace Ui.Common.Classes
 {
     [CreateAssetMenu(fileName = "ButtonClass", menuName = "Classes/ButtonClass")]
     public class ButtonClass : ScriptableObject

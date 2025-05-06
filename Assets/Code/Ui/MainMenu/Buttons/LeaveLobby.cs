@@ -1,9 +1,10 @@
 ﻿using PurrLobby;
+using Ui.Common;
 using UnityEngine;
 
 namespace Ui.MainMenu.Buttons
 {
-    [RequireComponent(typeof(Button))]
+    [RequireComponent(typeof(ButtonBase))]
     public class LeaveLobby : ButtonCallbackBase
     {
         [SerializeField] private MenuPanel nextPanel;

@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using Ui.Common;
+using UnityEngine;
 
 namespace Ui.MainMenu.Buttons
 {
-    [RequireComponent(typeof(Button))]
+    [RequireComponent(typeof(ButtonBase))]
     public class ApplySettings : ButtonCallbackBase
     {
         [SerializeField] private GraphicsSettingsContainer graphicsSettingsContainer;

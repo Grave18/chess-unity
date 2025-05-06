@@ -1,17 +1,14 @@
-﻿using TMPro;
-using Ui.MainMenu.Classes;
+﻿using EditorCools;
+using TMPro;
+using Ui.Common.Classes;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using Utils;
 
-#if UNITY_EDITOR
-using EditorCools;
-using UnityEditor;
-#endif
-
-namespace Ui.MainMenu.Buttons
+namespace Ui.Common
 {
-    public class Button : MonoBehaviour
+    public class ButtonBase : MonoBehaviour
     {
         [SerializeField] private string text = "Default";
         [SerializeField] private ButtonClass buttonClass;

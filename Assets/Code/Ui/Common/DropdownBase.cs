@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using TMPro;
+using Ui.MainMenu;
 using UnityEngine;
 
-namespace Ui.MainMenu.Dropdowns
+namespace Ui.Common
 {
     public abstract class DropdownBase : MonoBehaviour
     {

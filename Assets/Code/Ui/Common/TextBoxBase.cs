@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 
-namespace Ui.MainMenu.TextBoxes
+namespace Ui.Common
 {
     public abstract class TextBoxBase : MonoBehaviour
     {
