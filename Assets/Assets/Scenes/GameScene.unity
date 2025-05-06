@@ -4096,7 +4096,6 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  time: {x: 30, y: 0}
 --- !u!1 &428490318
 GameObject:
   m_ObjectHideFlags: 0
@@ -16729,7 +16728,7 @@ GameObject:
   - component: {fileID: 1816012520}
   - component: {fileID: 1816012519}
   m_Layer: 0
-  m_Name: Ownership
+  m_Name: OnlineInitialization
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16756,6 +16755,9 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
+  game: {fileID: 1216111693}
+  gameSettingsContainer: {fileID: 1470752476}
+  sceneLoader: {fileID: 850497300}
   playerOnlineWhite: {fileID: 313843066}
   playerOnlineBlack: {fileID: 721045146}
   clock: {fileID: 428172018}

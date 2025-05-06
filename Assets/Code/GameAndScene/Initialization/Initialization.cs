@@ -22,11 +22,13 @@ namespace GameAndScene.Initialization
     [DefaultExecutionOrder(-1)]
     public sealed class Initialization : MonoBehaviour
     {
-        [Header("Settings")] [SerializeField] private Assets assets;
+        [Header("Settings")]
+        [SerializeField] private Assets assets;
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
         [SerializeField] private LayerMask layerMask;
 
-        [Header("Game")] [SerializeField] private Game game;
+        [Header("Game")]
+        [SerializeField] private Game game;
         [SerializeField] private Board board;
         [SerializeField] private Clock clock;
         [SerializeField] private FenFromBoard fenFromBoard;
@@ -34,16 +36,22 @@ namespace GameAndScene.Initialization
         [SerializeField] private Highlighter highlighter;
         [SerializeField] private UciBuffer uciBuffer;
 
-        [Header("Ui")] [SerializeField] private PromotionPanel promotionPanel;
+        [Header("Ui")]
+        [SerializeField] private PromotionPanel promotionPanel;
 
-        [Header("Camera")] [SerializeField] private Camera mainCamera;
+        [Header("Camera")]
+        [SerializeField] private Camera mainCamera;
         [SerializeField] private CameraController cameraController;
 
-        [Header("Players")] [SerializeField] private PlayerOnline playerOnlineWhite;
+        [Header("Players")]
+        [SerializeField] private PlayerOnline playerOnlineWhite;
         [SerializeField] private PlayerOnline playerOnlineBlack;
 
         private Stockfish _stockfish;
         private GameSettings _gameSettings;
+
+        public bool IsOffline => _gameSettings.Player1Settings.PlayerType != PlayerType.Online
+                                && _gameSettings.Player2Settings.PlayerType != PlayerType.Online;
 
         private async void Awake()
         {
@@ -59,11 +67,14 @@ namespace GameAndScene.Initialization
 
             PieceColor turnColor = Assets.GetTurnColorFromPreset(fenSplit);
             game.Init(board, uciBuffer, turnColor);
-            clock.Init(game);
             highlighter.Init(game);
 
-            GameObject[] prefabs = await assets.LoadPrefabs();
+            if (IsOffline)
+            {
+                clock.InitOffline(game, _gameSettings);
+            }
 
+            GameObject[] prefabs = await assets.LoadPrefabs();
             board.Init(game, uciBuffer, fenSplit, prefabs, turnColor);
             fenFromBoard.Init(game, board, _gameSettings.CurrentFen);
 

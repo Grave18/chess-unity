@@ -1,4 +1,5 @@
 ﻿using System;
+using GameAndScene.Initialization;
 using PurrNet;
 using UnityEngine;
 
@@ -6,43 +7,45 @@ namespace Logic
 {
     public class Clock : NetworkBehaviour
     {
-        [SerializeField] private Vector2Int time = new(30, 0);
+        private Game _game;
 
         private bool _isPlaying;
+        private bool _isInitialized;
 
-        private SyncVar<TimeSpan> _initialWhiteTime = new();
-        private SyncVar<TimeSpan> _initialBlackTime = new();
+        private TimeSpan _initialWhiteTime;
+        private TimeSpan _initialBlackTime;
 
         private SyncVar<TimeSpan> _whiteTime = new();
         private SyncVar<TimeSpan> _blackTime = new();
 
-        private Game _game;
+        private bool _isInit;
 
         public TimeSpan WhiteTime => _whiteTime.value;
         public TimeSpan BlackTime => _blackTime.value;
 
-        private bool _isInitialized;
-
-        public void Init(Game game)
+        public void InitOffline(Game game, GameSettings gameSettings)
         {
-            _game = game;
-            _initialWhiteTime.value = TimeSpan.FromMinutes(time.x) + TimeSpan.FromSeconds(time.y);
-            _initialBlackTime.value = _initialWhiteTime.value;
-
-            OnEnable();
+            InitInternal(game, gameSettings);
         }
 
-        private void OnEnable()
+        public void InitOnline(Game game, GameSettings gameSettings)
         {
-            if(_game == null || _isInitialized)
+            InitInternal(game, gameSettings);
+            StartTimer();
+        }
+
+        private void InitInternal(Game game, GameSettings gameSettings)
+        {
+            if (_isInit)
             {
+                Debug.Log("{nameof(Clock): Clock is already initialized}");
                 return;
             }
 
-            if (!isController)
-            {
-                return;
-            }
+            _game = game;
+            _initialWhiteTime = TimeSpan.FromMinutes(gameSettings.Time.x)
+                                      + TimeSpan.FromSeconds(gameSettings.Time.y);
+            _initialBlackTime = _initialWhiteTime;
 
             _game.OnStart += StartTimer;
             _game.OnEndMove += Play;
@@ -50,24 +53,14 @@ namespace Logic
             _game.OnPlay += Play;
             _game.OnPause += Pause;
 
-            _isInitialized = true;
+            _isInit = true;
         }
 
-        protected override void OnSpawned()
+        protected override void OnDestroy()
         {
-            base.OnSpawned();
+            base.OnDestroy();
 
-            if (!isController)
-            {
-                return;
-            }
-
-            OnEnable();
-        }
-
-        private void OnDisable()
-        {
-            if (!isController)
+            if (_game == null)
             {
                 return;
             }
@@ -82,8 +75,8 @@ namespace Logic
         private void StartTimer()
         {
             _isPlaying = true;
-            _whiteTime.value = _initialWhiteTime.value;
-            _blackTime.value = _initialBlackTime.value;
+            _whiteTime.value = _initialWhiteTime;
+            _blackTime.value = _initialBlackTime;
         }
 
         private void Play(PieceColor color)
