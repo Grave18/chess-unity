@@ -13,7 +13,6 @@ using Ui.MainMenu;
 using UnityEngine;
 
 #if UNITY_EDITOR
-using ParrelSync;
 using EditorCools;
 #endif
 
@@ -40,8 +39,8 @@ namespace GameAndScene.Initialization
         [SerializeField] private PromotionPanel promotionPanel;
 
         [Header("Camera")]
-        [SerializeField] private Camera mainCamera;
         [SerializeField] private CameraController cameraController;
+        [SerializeField] private Camera mainCamera;
 
         [Header("Players")]
         [SerializeField] private PlayerOnline playerOnlineWhite;

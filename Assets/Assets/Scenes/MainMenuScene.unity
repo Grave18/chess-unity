@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: a325078d2ec967248be703fb75ad6a90, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -97,7 +97,8 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 0}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 524ff821530bd0146a0413ed213f2d23,
+    type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -4027,6 +4028,7 @@ MonoBehaviour:
   lobbyEntryPrefab: {fileID: -829664520429341635, guid: 5ef05ce5d1b0f6940849791bfcab5956,
     type: 3}
   content: {fileID: 955895769}
+  updateInterval: 5
 --- !u!224 &971080910 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3045500372402241410, guid: c5189870e3b10b341b846633c5c14f10,
@@ -4572,17 +4574,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isInitialized: 0
   gameSettings:
-    Color: 0
+    PlayerColor: 1
     Player1Settings:
-      <Name>k__BackingField: Player
-      <PlayerType>k__BackingField: 1
-      <ComputerSkillLevel>k__BackingField: 10
-      <ComputerThinkTimeMs>k__BackingField: 1000
+      Name: Player
+      PlayerType: 1
+      ComputerSkillLevel: 10
+      ComputerThinkTimeMs: 1000
     Player2Settings:
-      <Name>k__BackingField: Computer
-      <PlayerType>k__BackingField: 0
-      <ComputerSkillLevel>k__BackingField: 10
-      <ComputerThinkTimeMs>k__BackingField: 1000
+      Name: Player
+      PlayerType: 1
+      ComputerSkillLevel: 10
+      ComputerThinkTimeMs: 1000
     Time: {x: 0, y: 0}
     CurrentFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     DefaultFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
