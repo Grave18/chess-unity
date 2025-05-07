@@ -23,7 +23,7 @@
                 if (buttonAttribute == null)
                     continue;
 
-                buttons.Add(new Button(method, buttonAttribute));
+                buttons.Add(new Button(method, buttonAttribute, buttonAttribute.Args));
             }
 
             ButtonGroups = buttons.GroupBy(button =>
