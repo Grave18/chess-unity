@@ -9,16 +9,15 @@ namespace ChessGame.Logic
     {
         private Game _game;
 
-        private bool _isPlaying;
-        private bool _isInitialized;
-
         private TimeSpan _initialWhiteTime;
         private TimeSpan _initialBlackTime;
 
         private SyncVar<TimeSpan> _whiteTime = new();
         private SyncVar<TimeSpan> _blackTime = new();
 
-        private bool _isInit;
+        private bool _isPlaying;
+        private bool _isInitialized;
+        private bool _isOnline;
 
         public TimeSpan WhiteTime => _whiteTime.value;
         public TimeSpan BlackTime => _blackTime.value;
@@ -26,17 +25,19 @@ namespace ChessGame.Logic
         public void InitOffline(Game game, GameSettings gameSettings)
         {
             InitInternal(game, gameSettings);
+            _isOnline = false;
         }
 
         public void InitOnline(Game game, GameSettings gameSettings)
         {
             InitInternal(game, gameSettings);
             StartTimer();
+            _isOnline = true;
         }
 
         private void InitInternal(Game game, GameSettings gameSettings)
         {
-            if (_isInit)
+            if (_isInitialized)
             {
                 Debug.Log("{nameof(Clock): Clock is already initialized}");
                 return;
@@ -53,7 +54,7 @@ namespace ChessGame.Logic
             _game.OnPlay += Play;
             _game.OnPause += Pause;
 
-            _isInit = true;
+            _isInitialized = true;
         }
 
         protected override void OnDestroy()
@@ -74,9 +75,9 @@ namespace ChessGame.Logic
 
         private void StartTimer()
         {
-            _isPlaying = true;
             _whiteTime.value = _initialWhiteTime;
             _blackTime.value = _initialBlackTime;
+            _isPlaying = true;
         }
 
         private void Play(PieceColor color)
@@ -101,7 +102,7 @@ namespace ChessGame.Logic
                 return;
             }
 
-            if (!isController)
+            if (_isOnline && !isController)
             {
                 return;
             }

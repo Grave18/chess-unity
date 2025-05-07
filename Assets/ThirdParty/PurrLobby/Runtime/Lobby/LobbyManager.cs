@@ -12,7 +12,7 @@ namespace PurrLobby
     public class LobbyManager : MonoBehaviour
     {
         [SerializeField] private MonoBehaviour currentProvider;
-        private const int playersCount = 2;
+        private const int playersCount = 1;
 
         private ILobbyProvider _currentProvider;
 
