@@ -15,16 +15,18 @@ namespace PurrLobby
     {
         private NetworkManager _networkManager;
         private LobbyDataHolder _lobbyDataHolder;
-        
+
         private void Awake()
         {
             if(!TryGetComponent(out _networkManager)) {
                 PurrLogger.LogError($"Failed to get {nameof(NetworkManager)} component.", this);
             }
-            
+
             _lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
             if(!_lobbyDataHolder)
+            {
                 PurrLogger.LogError($"Failed to get {nameof(LobbyDataHolder)} component.", this);
+            }
         }
 
         private void Start()
@@ -34,24 +36,25 @@ namespace PurrLobby
                 PurrLogger.LogError($"Failed to start connection. {nameof(NetworkManager)} is null!", this);
                 return;
             }
-            
+
             if (!_lobbyDataHolder)
             {
                 PurrLogger.LogError($"Failed to start connection. {nameof(LobbyDataHolder)} is null!", this);
                 return;
             }
-            
+
             if (!_lobbyDataHolder.CurrentLobby.IsValid)
             {
-                PurrLogger.LogError($"Failed to start connection. Lobby is invalid!", this);
+                PurrLogger.Log("Offline game. Can't start connection. Destroying multiplayer part", this);
+                Destroy(gameObject);
                 return;
             }
 
-            if(_networkManager.transport is PurrTransport) {
-                (_networkManager.transport as PurrTransport).roomName = _lobbyDataHolder.CurrentLobby.LobbyId;
-            } 
-            
-#if UTP_LOBBYRELAY
+            if(_networkManager.transport is PurrTransport transport) {
+                transport.roomName = _lobbyDataHolder.CurrentLobby.LobbyId;
+            }
+
+#if UTP_LOBBYRELAYD
             else if(_networkManager.transport is UTPTransport) {
                 if(_lobbyDataHolder.CurrentLobby.IsOwner) {
                     (_networkManager.transport as UTPTransport).InitializeRelayServer((Allocation)_lobbyDataHolder.CurrentLobby.ServerObject);
@@ -63,7 +66,10 @@ namespace PurrLobby
 #endif
 
             if(_lobbyDataHolder.CurrentLobby.IsOwner)
+            {
                 _networkManager.StartServer();
+            }
+
             StartCoroutine(StartClient());
         }
 

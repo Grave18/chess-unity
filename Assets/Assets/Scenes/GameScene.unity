@@ -3106,12 +3106,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 313843065}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 575615453}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &314300213 stripped
 RectTransform:
@@ -3413,6 +3413,8 @@ MonoBehaviour:
   fovStart: 60
   fovEnd: 30
   distanceFovMultEnd: 1.5
+  autoRotateSpeed: 1
+  easingOfAutoRotation: 3
 --- !u!1 &331832536
 GameObject:
   m_ObjectHideFlags: 0
@@ -5435,7 +5437,10 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1816012520}
+  - {fileID: 313843067}
+  - {fileID: 721045147}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &575615454
@@ -7504,12 +7509,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 721045145}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 575615453}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &728006803
 PrefabInstance:
@@ -16999,7 +17004,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 575615453}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1824123373
 GameObject:
@@ -19293,9 +19298,6 @@ SceneRoots:
   - {fileID: 1824123378}
   - {fileID: 190828686}
   - {fileID: 575615453}
-  - {fileID: 1816012520}
-  - {fileID: 313843067}
-  - {fileID: 721045147}
   - {fileID: 1110215395}
   - {fileID: 853249565}
   - {fileID: 1663133264}
