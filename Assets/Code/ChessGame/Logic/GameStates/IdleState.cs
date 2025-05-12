@@ -1,6 +1,6 @@
 ﻿using ChessGame.Logic.MovesBuffer;
 
-namespace ChessGame.Logic.Players.GameStates
+namespace ChessGame.Logic.GameStates
 {
     public class IdleState : GameState
     {

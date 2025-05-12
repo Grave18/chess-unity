@@ -1,7 +1,7 @@
 ﻿using ChessGame.ChessBoard;
 using ChessGame.ChessBoard.Info;
 
-namespace ChessGame.Logic.Players.GameStates
+namespace ChessGame.Logic.GameStates
 {
     public struct ParsedUci
     {

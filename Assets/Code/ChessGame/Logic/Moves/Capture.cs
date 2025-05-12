@@ -1,7 +1,7 @@
 ﻿using ChessGame.ChessBoard;
 using ChessGame.ChessBoard.Pieces;
 
-namespace ChessGame.Logic.Players.Moves
+namespace ChessGame.Logic.Moves
 {
     public class Capture : Turn
     {

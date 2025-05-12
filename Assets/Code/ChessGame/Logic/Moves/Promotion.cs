@@ -2,7 +2,7 @@
 using ChessGame.ChessBoard.Pieces;
 using UnityEngine;
 
-namespace ChessGame.Logic.Players.Moves
+namespace ChessGame.Logic.Moves
 {
     public class Promotion
     {

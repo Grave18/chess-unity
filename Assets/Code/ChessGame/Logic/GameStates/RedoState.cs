@@ -1,11 +1,11 @@
 ﻿using ChessGame.ChessBoard;
 using ChessGame.ChessBoard.Info;
 using ChessGame.ChessBoard.Pieces;
+using ChessGame.Logic.Moves;
 using ChessGame.Logic.MovesBuffer;
-using ChessGame.Logic.Players.Moves;
 using UnityEngine;
 
-namespace ChessGame.Logic.Players.GameStates
+namespace ChessGame.Logic.GameStates
 {
     public class RedoState : GameState
     {

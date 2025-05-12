@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using ChessGame.ChessBoard;
 using ChessGame.ChessBoard.Pieces;
+using ChessGame.Logic.GameStates;
 using ChessGame.Logic.MovesBuffer;
 using ChessGame.Logic.Players;
-using ChessGame.Logic.Players.GameStates;
 using UnityEngine;
 using UnityEngine.Events;
 

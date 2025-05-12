@@ -3,7 +3,7 @@ using ChessGame.ChessBoard.Pieces;
 using UnityEngine;
 using Utils.Mathematics;
 
-namespace ChessGame.Logic.Players.Moves
+namespace ChessGame.Logic.Moves
 {
     public class SimpleMove : Turn
     {

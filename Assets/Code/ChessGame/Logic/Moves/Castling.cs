@@ -1,6 +1,6 @@
 ﻿using ChessGame.ChessBoard.Info;
 
-namespace ChessGame.Logic.Players.Moves
+namespace ChessGame.Logic.Moves
 {
     public class Castling : Turn
     {

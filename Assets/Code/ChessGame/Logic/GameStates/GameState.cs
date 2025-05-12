@@ -1,4 +1,4 @@
-﻿namespace ChessGame.Logic.Players.GameStates
+﻿namespace ChessGame.Logic.GameStates
 {
     public abstract class GameState
     {
