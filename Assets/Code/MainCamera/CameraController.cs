@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using ChessGame.Logic;
-using EditorCools;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using Utils.Mathematics;
+
+#if UNITY_EDITOR
+using EditorCools;
+#endif
 
 namespace MainCamera
 {
@@ -15,7 +18,6 @@ namespace MainCamera
         [SerializeField] private Vector3 offset = new(0, 0.15f, 0);
 
         [Header("Zoom")]
-        [Tooltip("Camera distance from the target")]
         [SerializeField] private float minDistance = 1f;
         [SerializeField] private float maxDistance = 2.5f;
         [SerializeField] private float distance = 1.5f;
@@ -36,9 +38,13 @@ namespace MainCamera
         [SerializeField] private float fovEnd = 30f;
         [SerializeField] private float distanceFovMultEnd = 1.5f;
 
-        [Header("Auto Rotate")]
-        [SerializeField] private float autoRotateSpeed = 1f;
-        [SerializeField] private EasingType easingOfAutoRotation = EasingType.InOutQuad;
+        [Header("Rotate to start position")]
+        [SerializeField] private float initialPositionRotateSpeed = 1f;
+        [SerializeField] private EasingType initialPositionRotateEasing = EasingType.InOutQuad;
+
+        [Header("Auto rotation")]
+        [SerializeField] private float autoRotateSpeed = 2f;
+        [SerializeField] private EasingType autoRotateEasing = EasingType.InOutQuad;
 
         private float _zoomCurrentVelocity;
         private float _yawCurrentVelocity;
@@ -48,7 +54,7 @@ namespace MainCamera
         private float _newYawRad;
         private float _newPitchRad;
         private Vector3 _newPosition;
-        private float _t;
+        private float _tPitch;
 
         private Camera _camera;
 
@@ -78,13 +84,12 @@ namespace MainCamera
             RotateToStartPosition(color, () => _isInitialized = true);
         }
 
-        [Button(space: 10, args: new object[] { PieceColor.White, null })]
-        private void RotateToStartPosition(PieceColor color, UnityAction continuation)
+        public void RotateToStartPosition(PieceColor color, UnityAction continuation = null)
         {
-            StartCoroutine(Rotate(color, continuation));
+            StartCoroutine(RotateToStartPositionRoutine(color, continuation));
         }
 
-        private IEnumerator Rotate(PieceColor playerColor, UnityAction continuation)
+        private IEnumerator RotateToStartPositionRoutine(PieceColor playerColor, UnityAction continuation)
         {
             float targetYawRad = playerColor switch
             {
@@ -94,17 +99,10 @@ namespace MainCamera
             };
 
             float t = 0f;
-
             while (t < 1f)
             {
-                CalculateTFromPitch();
-
-                t += Time.deltaTime * autoRotateSpeed;
-
-                yawRad = Mathf.Lerp(-3.14f, targetYawRad, Easing.Generic(t, easingOfAutoRotation));
-                pitchRad = Mathf.Lerp(1.56f, 0.73f, Easing.Generic(t, easingOfAutoRotation));
-                distance = Mathf.Lerp(3f, 1.25f, Easing.Generic(t, easingOfAutoRotation));
-
+                CalculateTPitch();
+                CalculateRotateToStartPosition(targetYawRad, ref t);
                 CalculateCameraPosition();
                 ApplyToCamera();
 
@@ -118,6 +116,15 @@ namespace MainCamera
             continuation?.Invoke();
         }
 
+        private void CalculateRotateToStartPosition(float targetYawRad, ref float t)
+        {
+            t += Time.deltaTime * initialPositionRotateSpeed;
+
+            yawRad = Mathf.Lerp(-3.14f, targetYawRad, Easing.Generic(t, initialPositionRotateEasing));
+            pitchRad = Mathf.Lerp(1.56f, 0.73f, Easing.Generic(t, initialPositionRotateEasing));
+            distance = Mathf.Lerp(3f, 1.25f, Easing.Generic(t, initialPositionRotateEasing));
+        }
+
         private void Update()
         {
             if (!_isInitialized)
@@ -125,7 +132,7 @@ namespace MainCamera
                 return;
             }
 
-            CalculateTFromPitch();
+            CalculateTPitch();
             CalculateZoom();
             CalculateOrbit();
             CalculateCameraPosition();
@@ -133,9 +140,9 @@ namespace MainCamera
         }
 
         /// t = min pitch -> 0 max pitch -> 1
-        private void CalculateTFromPitch()
+        private void CalculateTPitch()
         {
-            _t = (pitchRad - minPitchRad) / (maxPitchRad - minPitchRad);
+            _tPitch = (pitchRad - minPitchRad) / (maxPitchRad - minPitchRad);
         }
 
         private void CalculateZoom()
@@ -170,7 +177,7 @@ namespace MainCamera
         private void CalculateCameraPosition()
         {
             // Less fov more distance from target to camera
-            _distanceMult = Mathf.Lerp(1f, distanceFovMultEnd, _t);
+            _distanceMult = Mathf.Lerp(1f, distanceFovMultEnd, _tPitch);
             float currentDistance = distance * _distanceMult;
 
             // Position
@@ -183,7 +190,88 @@ namespace MainCamera
         {
             transform.position = _newPosition;
             transform.LookAt(offset);
-            _camera.fieldOfView = Mathf.Lerp(fovStart, fovEnd, _t);
+            _camera.fieldOfView = Mathf.Lerp(fovStart, fovEnd, _tPitch);
         }
+
+        public void AutoRotate(PieceColor color, UnityAction continuation = null)
+        {
+            StartCoroutine(AutoRotateRoutine(color, continuation));
+        }
+
+        private IEnumerator AutoRotateRoutine(PieceColor color, UnityAction continuation)
+        {
+            _isInitialized = false;
+
+            ClampYawRadTo_0_360();
+
+            float startYawRad = yawRad;
+            float endYawRad = color switch
+            {
+                PieceColor.White => Mathf.PI * 1.5f,
+                PieceColor.Black => Mathf.PI * 0.5f,
+                _ => Mathf.PI * 1.5f,
+            };
+
+            float t = 0;
+            while (t < 1f)
+            {
+                RotateYawFromTo(startYawRad, endYawRad, ref t);
+                CalculateCameraPosition();
+                ApplyToCamera();
+
+                yield return null;
+            }
+
+            _newYawRad = yawRad;
+
+            _isInitialized = true;
+
+            continuation?.Invoke();
+        }
+
+        private void ClampYawRadTo_0_360()
+        {
+            yawRad %= Mathf.PI * 2f;
+
+            if (yawRad < 0)
+            {
+                yawRad = 2*Mathf.PI + yawRad;
+            }
+        }
+
+        private void RotateYawFromTo(float startYawRad, float endYawRad, ref float t)
+        {
+            t += Time.deltaTime * autoRotateSpeed;
+            float start = Mathf.Rad2Deg * startYawRad;
+            float end = Mathf.Rad2Deg * endYawRad;
+            yawRad = Mathf.Deg2Rad * Mathf.LerpAngle(start, end, Easing.Generic(t, autoRotateEasing));
+        }
+
+#if UNITY_EDITOR
+
+        [Button(space: 20, row:"0")]
+        public void AutoRotateWhite()
+        {
+            AutoRotate(PieceColor.White);
+        }
+
+        [Button(space: 10, row:"0")]
+        public void AutoRotateBlack()
+        {
+            AutoRotate(PieceColor.Black);
+        }
+
+        [Button(space: 10, row: "1")]
+        public void RotateToStartPositionWhite()
+        {
+           RotateToStartPosition(PieceColor.White);
+        }
+
+        [Button(space: 10, row: "1")]
+        public void RotateToStartPositionBlack()
+        {
+            RotateToStartPosition(PieceColor.Black);
+        }
+#endif
     }
 }

@@ -3413,8 +3413,10 @@ MonoBehaviour:
   fovStart: 60
   fovEnd: 30
   distanceFovMultEnd: 1.5
-  autoRotateSpeed: 1
-  easingOfAutoRotation: 3
+  initialPositionRotateSpeed: 1
+  initialPositionRotateEasing: 3
+  autoRotateSpeed: 2
+  autoRotateEasing: 3
 --- !u!1 &331832536
 GameObject:
   m_ObjectHideFlags: 0
