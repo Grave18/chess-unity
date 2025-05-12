@@ -22,17 +22,10 @@ namespace ChessGame.Logic
         public TimeSpan WhiteTime => _whiteTime.value;
         public TimeSpan BlackTime => _blackTime.value;
 
-        public void InitOffline(Game game, GameSettings gameSettings)
+        public void Init(Game game, GameSettings gameSettings, bool isOffline)
         {
             InitInternal(game, gameSettings);
-            _isOnline = false;
-        }
-
-        public void InitOnline(Game game, GameSettings gameSettings)
-        {
-            InitInternal(game, gameSettings);
-            StartTimer();
-            _isOnline = true;
+            _isOnline = !isOffline;
         }
 
         private void InitInternal(Game game, GameSettings gameSettings)
@@ -57,24 +50,13 @@ namespace ChessGame.Logic
             _isInitialized = true;
         }
 
-        protected override void OnDestroy()
+        private void StartTimer()
         {
-            base.OnDestroy();
-
-            if (_game == null)
+            if (_isOnline && !isController)
             {
                 return;
             }
 
-            _game.OnStart -= StartTimer;
-            _game.OnEndMove -= Play;
-            _game.OnEnd -= Pause;
-            _game.OnPlay -= Play;
-            _game.OnPause -= Pause;
-        }
-
-        private void StartTimer()
-        {
             _whiteTime.value = _initialWhiteTime;
             _blackTime.value = _initialBlackTime;
             _isPlaying = true;

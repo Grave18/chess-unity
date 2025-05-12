@@ -3413,7 +3413,7 @@ MonoBehaviour:
   fovStart: 60
   fovEnd: 30
   distanceFovMultEnd: 1.5
-  initialPositionRotateSpeed: 1
+  initialPositionRotateSpeed: 0.2
   initialPositionRotateEasing: 3
   autoRotateSpeed: 2
   autoRotateEasing: 3

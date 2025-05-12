@@ -19,7 +19,7 @@ namespace Ui.Game
 
         private void OnEnable()
         {
-            restartButton.onClick.AddListener(game.StartGame);
+            restartButton.onClick.AddListener(game.RestartGame);
             game.OnEndMove += UpdateNotificationText;
             game.OnStart += UpdateNotificationText;
             game.OnEnd += UpdateNotificationText;
@@ -27,7 +27,7 @@ namespace Ui.Game
 
         private void OnDisable()
         {
-            restartButton.onClick.RemoveListener(game.StartGame);
+            restartButton.onClick.RemoveListener(game.RestartGame);
             game.OnEndMove -= UpdateNotificationText;
             game.OnStart -= UpdateNotificationText;
             game.OnEnd -= UpdateNotificationText;

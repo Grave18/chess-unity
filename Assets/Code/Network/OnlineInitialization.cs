@@ -49,7 +49,7 @@ namespace Network
             {
                 playerOnlineWhite.GiveOwnership(player);
                 clock.GiveOwnership(player);
-                clock.InitOnline(game, gameSettingsContainer.GetGameSettings());
+                clock.Init(game, gameSettingsContainer.GetGameSettings(), isOffline: false);
             }
             else
             {

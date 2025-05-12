@@ -29,12 +29,18 @@ namespace ChessGame.Logic
         public event UnityAction OnStart;
         public event UnityAction OnEnd;
         public event UnityAction OnEndMove;
+        public event UnityAction<PieceColor> OnEndMoveColor;
         public event UnityAction OnPlay;
         public event UnityAction OnPause;
 
         public void FireStart() => OnStart?.Invoke();
         public void FireEnd() => OnEnd?.Invoke();
-        public void FireEndMove() => OnEndMove?.Invoke();
+        public void FireEndMove()
+        {
+            OnEndMove?.Invoke();
+            OnEndMoveColor?.Invoke(CurrentTurnColor);
+        }
+
         public void FirePlay() => OnPlay?.Invoke();
         public void FirePause() => OnPause?.Invoke();
 
@@ -50,11 +56,18 @@ namespace ChessGame.Logic
         public Square NullSquare => Board.NullSquare;
 
         private PieceColor _startingColor;
-        public void Init(Board board, UciBuffer commandUciBuffer,PieceColor turnColor)
+
+        public void Init(Board board, UciBuffer commandUciBuffer, PieceColor color)
         {
             Board = board;
             UciBuffer = commandUciBuffer;
-            _startingColor = turnColor;
+            _startingColor = color;
+        }
+
+        public void RestartGame()
+        {
+            StartGame();
+            Board.Build();
         }
 
         public void StartGame()
@@ -71,7 +84,6 @@ namespace ChessGame.Logic
             CurrentTurnColor = _startingColor;
             Selected = null;
             UciBuffer.Clear();
-            Board.Build();
         }
 
         public void SetState(GameState state, string nextState = "None")

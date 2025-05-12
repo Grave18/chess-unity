@@ -1,17 +1,23 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections;
+using System.Threading.Tasks;
 using Ai;
 using AssetsAndResources;
 using ChessGame.ChessBoard;
 using ChessGame.Logic;
 using ChessGame.Logic.MovesBuffer;
 using ChessGame.Logic.Players;
-using EditorCools;
 using Highlighting;
 using MainCamera;
 using Notation;
+using PurrNet;
+using PurrNet.Transports;
 using Ui.Game.Promotion;
 using Ui.MainMenu;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using EditorCools;
+#endif
 
 namespace Initialization
 {
@@ -52,7 +58,41 @@ namespace Initialization
         private async void Awake()
         {
             await Init();
-            game.StartGame();
+
+            board.Build();
+
+            WarmUpGame();
+        }
+
+        private void WarmUpGame()
+        {
+            bool isCameraSet = false;
+            bool isConnected = false;
+            cameraController.RotateToStartPosition(_gameSettings.PlayerColor, () => isCameraSet = true);
+
+            if(!IsOffline && InstanceHandler.NetworkManager != null)
+            {
+                InstanceHandler.NetworkManager.onClientConnectionState += OnClientConnectionState;
+            }
+
+            StartCoroutine(StartGameRoutine());
+
+            return;
+
+            void OnClientConnectionState(ConnectionState state)
+            {
+                if (state == ConnectionState.Connected)
+                {
+                    isConnected = true;
+                    InstanceHandler.NetworkManager.onClientConnectionState -= OnClientConnectionState;
+                }
+            }
+
+            IEnumerator StartGameRoutine()
+            {
+                yield return new WaitUntil(() => isCameraSet && (IsOffline || isConnected));
+                game.StartGame();
+            }
         }
 
         private async Task Init()
@@ -67,6 +107,7 @@ namespace Initialization
 
             GameObject[] prefabs = await assets.LoadPrefabs();
             board.Init(game, uciBuffer, fenSplit, prefabs, turnColor);
+
             fenFromBoard.Init(game, board, _gameSettings.CurrentFen);
 
             InitClockOffline();
@@ -78,13 +119,13 @@ namespace Initialization
         {
             if (IsOffline)
             {
-                clock.InitOffline(game, _gameSettings);
+                clock.Init(game, _gameSettings, isOffline: true);
             }
         }
 
         private void InitCamera()
         {
-            cameraController.Init(_gameSettings.PlayerColor);
+            cameraController.Init(_gameSettings.PlayerColor, game, IsOffline);
         }
 
         private void InitPlayers()

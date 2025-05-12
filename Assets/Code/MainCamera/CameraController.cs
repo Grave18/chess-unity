@@ -39,11 +39,11 @@ namespace MainCamera
         [SerializeField] private float distanceFovMultEnd = 1.5f;
 
         [Header("Rotate to start position")]
-        [SerializeField] private float initialPositionRotateSpeed = 1f;
+        [SerializeField] private float initialPositionRotateTimeSec = 3f;
         [SerializeField] private EasingType initialPositionRotateEasing = EasingType.InOutQuad;
 
         [Header("Auto rotation")]
-        [SerializeField] private float autoRotateSpeed = 2f;
+        [SerializeField] private float autoRotateTimeSec = 1f;
         [SerializeField] private EasingType autoRotateEasing = EasingType.InOutQuad;
 
         private float _zoomCurrentVelocity;
@@ -58,7 +58,7 @@ namespace MainCamera
 
         private Camera _camera;
 
-        private bool _isInitialized;
+        private bool _isUpdating;
 
         private void Awake()
         {
@@ -66,7 +66,7 @@ namespace MainCamera
             Assert.IsNotNull(_camera);
         }
 
-        public void Init(PieceColor color)
+        public void Init(PieceColor color, Game game, bool isOffline)
         {
             if (color == PieceColor.White)
             {
@@ -81,7 +81,10 @@ namespace MainCamera
             _newYawRad = yawRad;
             _newPitchRad = pitchRad;
 
-            RotateToStartPosition(color, () => _isInitialized = true);
+            if (isOffline)
+            {
+                game.OnEndMoveColor += AutoRotate;
+            }
         }
 
         public void RotateToStartPosition(PieceColor color, UnityAction continuation = null)
@@ -91,6 +94,8 @@ namespace MainCamera
 
         private IEnumerator RotateToStartPositionRoutine(PieceColor playerColor, UnityAction continuation)
         {
+            _isUpdating = false;
+
             float targetYawRad = playerColor switch
             {
                 PieceColor.White => -1.5708f,
@@ -114,11 +119,13 @@ namespace MainCamera
             _newDistance = distance;
 
             continuation?.Invoke();
+
+            _isUpdating = true;
         }
 
         private void CalculateRotateToStartPosition(float targetYawRad, ref float t)
         {
-            t += Time.deltaTime * initialPositionRotateSpeed;
+            t += Time.deltaTime * 1f/initialPositionRotateTimeSec;
 
             yawRad = Mathf.Lerp(-3.14f, targetYawRad, Easing.Generic(t, initialPositionRotateEasing));
             pitchRad = Mathf.Lerp(1.56f, 0.73f, Easing.Generic(t, initialPositionRotateEasing));
@@ -127,7 +134,7 @@ namespace MainCamera
 
         private void Update()
         {
-            if (!_isInitialized)
+            if (!_isUpdating)
             {
                 return;
             }
@@ -193,14 +200,19 @@ namespace MainCamera
             _camera.fieldOfView = Mathf.Lerp(fovStart, fovEnd, _tPitch);
         }
 
-        public void AutoRotate(PieceColor color, UnityAction continuation = null)
+        public void AutoRotate(PieceColor color)
+        {
+            StartCoroutine(AutoRotateRoutine(color, null));
+        }
+
+        public void AutoRotate(PieceColor color, UnityAction continuation)
         {
             StartCoroutine(AutoRotateRoutine(color, continuation));
         }
 
         private IEnumerator AutoRotateRoutine(PieceColor color, UnityAction continuation)
         {
-            _isInitialized = false;
+            _isUpdating = false;
 
             ClampYawRadTo_0_360();
 
@@ -224,9 +236,9 @@ namespace MainCamera
 
             _newYawRad = yawRad;
 
-            _isInitialized = true;
-
             continuation?.Invoke();
+
+            _isUpdating = true;
         }
 
         private void ClampYawRadTo_0_360()
@@ -241,7 +253,7 @@ namespace MainCamera
 
         private void RotateYawFromTo(float startYawRad, float endYawRad, ref float t)
         {
-            t += Time.deltaTime * autoRotateSpeed;
+            t += Time.deltaTime * 1f/autoRotateTimeSec;
             float start = Mathf.Rad2Deg * startYawRad;
             float end = Mathf.Rad2Deg * endYawRad;
             yawRad = Mathf.Deg2Rad * Mathf.LerpAngle(start, end, Easing.Generic(t, autoRotateEasing));
