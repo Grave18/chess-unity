@@ -19,6 +19,12 @@ namespace Tools
             LoadScene("GameScene");
         }
 
+        [MenuItem("Tools/Load Online Bootstrap &3")]
+        private static void LoadOnlineBootstrap()
+        {
+            LoadScene("OnlineBootstrapScene");
+        }
+
 
         private static void LoadScene(string scene)
         {
