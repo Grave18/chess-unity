@@ -73,7 +73,7 @@ namespace ChessGame.Logic.MovesBuffer
         {
             string address = _head != null
                 ? _head.Value.EpSquareAddress
-                : "-";
+                : string.Empty;
 
             return address;
         }

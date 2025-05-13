@@ -246,7 +246,8 @@ namespace ChessGame.ChessBoard
         public EnPassantInfo GetEnPassantInfo()
         {
             string epSquareAddress = _commandUciBuffer.GetEpSquareAddress();
-            if (epSquareAddress == "-")
+
+            if (epSquareAddress == string.Empty)
             {
                 epSquareAddress = _fenSplit.EnPassant;
             }

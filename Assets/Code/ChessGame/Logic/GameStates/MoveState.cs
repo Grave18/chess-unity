@@ -214,9 +214,9 @@ namespace ChessGame.Logic.GameStates
             _turn.End();
 
             Game.ChangeTurn();
+            Game.UciBuffer.Add(_moveData);
             Game.PreformCaluculations();
             UpdateAlgebraicNotation();
-            Game.UciBuffer.Add(_moveData);
             Game.FireEndMove();
             Game.SetState(new IdleState(Game));
         }

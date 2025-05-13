@@ -182,8 +182,8 @@ namespace ChessGame.Logic.GameStates
             _turn.EndUndo();
 
             Game.ChangeTurn();
-            Game.PreformCaluculations();
             Game.UciBuffer.Undo();
+            Game.PreformCaluculations();
             Game.FireEndMove();
             Game.SetPreviousState();
         }
