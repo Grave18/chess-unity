@@ -8,7 +8,7 @@ namespace Ui.Game
     public class ClockPanel : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private Clock clock;
+        [SerializeField] private Initialization.Initialization initialization;
 
         [Header("Ui")]
         [SerializeField] private TMP_Text whiteText;
@@ -17,6 +17,9 @@ namespace Ui.Game
         private IEnumerator Start()
         {
             var wait = new WaitForSeconds(0.2f);
+            IClock clock = initialization.Clock;
+
+            yield return new WaitWhile (() => clock == null);
 
             while (Application.isPlaying)
             {

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ChessGame.Logic
 {
-    public class Clock : NetworkBehaviour
+    public class ClockOnline : NetworkBehaviour, IClock
     {
         private Game _game;
 
@@ -17,18 +17,11 @@ namespace ChessGame.Logic
 
         private bool _isPlaying;
         private bool _isInitialized;
-        private bool _isOnline;
 
         public TimeSpan WhiteTime => _whiteTime.value;
         public TimeSpan BlackTime => _blackTime.value;
 
-        public void Init(Game game, GameSettings gameSettings, bool isOffline)
-        {
-            InitInternal(game, gameSettings);
-            _isOnline = !isOffline;
-        }
-
-        private void InitInternal(Game game, GameSettings gameSettings)
+        public void Init(Game game, GameSettings gameSettings)
         {
             if (_isInitialized)
             {
@@ -38,8 +31,10 @@ namespace ChessGame.Logic
 
             _game = game;
             _initialWhiteTime = TimeSpan.FromMinutes(gameSettings.Time.x)
-                                      + TimeSpan.FromSeconds(gameSettings.Time.y);
+                                + TimeSpan.FromSeconds(gameSettings.Time.y);
             _initialBlackTime = _initialWhiteTime;
+
+            InitTime();
 
             _game.OnStart += StartTimer;
             _game.OnEndMove += Play;
@@ -52,19 +47,24 @@ namespace ChessGame.Logic
 
         private void StartTimer()
         {
-            if (_isOnline && !isController)
+            if (!isController)
+            {
+                return;
+            }
+
+            InitTime();
+            Play();
+        }
+
+        private void InitTime()
+        {
+            if (!isHost)
             {
                 return;
             }
 
             _whiteTime.value = _initialWhiteTime;
             _blackTime.value = _initialBlackTime;
-            _isPlaying = true;
-        }
-
-        private void Play(PieceColor color)
-        {
-            Play();
         }
 
         private void Play()
@@ -84,7 +84,7 @@ namespace ChessGame.Logic
                 return;
             }
 
-            if (_isOnline && !isController)
+            if (!isController)
             {
                 return;
             }

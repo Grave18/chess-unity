@@ -13,11 +13,13 @@ namespace Ui.Game
         [SerializeField] private TMP_Text turnText;
         [SerializeField] private TMP_Text checkText;
 
-        [SerializeField] private NetworkManager networkManager;
-
         private void Update()
         {
-            string authority = networkManager.isServer ? "Server" : "Client";
+            string authority = "Offline";
+            if (InstanceHandler.NetworkManager != null)
+            {
+                authority = InstanceHandler.NetworkManager.isServer ? "Server" : "Client";
+            }
             authorityText.text = "Authority: " + authority;
             stateText.text = "State: " + game.GetStateName();
             turnText.text = "Turn: " + game.CurrentTurnColor;

@@ -8,12 +8,12 @@ using ChessGame.Logic.MovesBuffer;
 using ChessGame.Logic.Players;
 using Highlighting;
 using MainCamera;
+using Network;
 using Notation;
-using PurrNet;
-using PurrNet.Transports;
 using Ui.Game.Promotion;
 using Ui.MainMenu;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 #if UNITY_EDITOR
 using EditorCools;
@@ -32,7 +32,7 @@ namespace Initialization
         [Header("Game")]
         [SerializeField] private Game game;
         [SerializeField] private Board board;
-        [SerializeField] private Clock clock;
+        [SerializeField] private ClockOffline clockOffline;
         [SerializeField] private FenFromBoard fenFromBoard;
         [SerializeField] private Competitors competitors;
         [SerializeField] private Highlighter highlighter;
@@ -45,12 +45,10 @@ namespace Initialization
         [SerializeField] private CameraController cameraController;
         [SerializeField] private Camera mainCamera;
 
-        [Header("Players")]
-        [SerializeField] private PlayerOnline playerOnlineWhite;
-        [SerializeField] private PlayerOnline playerOnlineBlack;
-
         private Stockfish _stockfish;
         private GameSettings _gameSettings;
+
+        public IClock Clock { get; private set; }
 
         public bool IsOffline => _gameSettings.Player1Settings.PlayerType != PlayerType.Online
                                 && _gameSettings.Player2Settings.PlayerType != PlayerType.Online;
@@ -64,37 +62,6 @@ namespace Initialization
             WarmUpGame();
         }
 
-        private void WarmUpGame()
-        {
-            bool isCameraSet = false;
-            bool isConnected = false;
-            cameraController.RotateToStartPosition(_gameSettings.PlayerColor, () => isCameraSet = true);
-
-            if(!IsOffline && InstanceHandler.NetworkManager != null)
-            {
-                InstanceHandler.NetworkManager.onClientConnectionState += OnClientConnectionState;
-            }
-
-            StartCoroutine(StartGameRoutine());
-
-            return;
-
-            void OnClientConnectionState(ConnectionState state)
-            {
-                if (state == ConnectionState.Connected)
-                {
-                    isConnected = true;
-                    InstanceHandler.NetworkManager.onClientConnectionState -= OnClientConnectionState;
-                }
-            }
-
-            IEnumerator StartGameRoutine()
-            {
-                yield return new WaitUntil(() => isCameraSet && (IsOffline || isConnected));
-                game.StartGame();
-            }
-        }
-
         private async Task Init()
         {
             gameSettingsContainer.Init();
@@ -103,24 +70,24 @@ namespace Initialization
 
             PieceColor turnColor = Assets.GetTurnColorFromPreset(fenSplit);
             game.Init(board, uciBuffer, turnColor);
+
+            InitClock();
+            InitCamera();
             highlighter.Init(game);
 
             GameObject[] prefabs = await assets.LoadPrefabs();
             board.Init(game, uciBuffer, fenSplit, prefabs, turnColor);
 
-            fenFromBoard.Init(game, board, _gameSettings.CurrentFen);
-
-            InitClockOffline();
-            InitCamera();
             InitPlayers();
+            fenFromBoard.Init(game, board, _gameSettings.CurrentFen);
         }
 
-        private void InitClockOffline()
+        private void InitClock()
         {
-            if (IsOffline)
-            {
-                clock.Init(game, _gameSettings, isOffline: true);
-            }
+            Clock = IsOffline ? clockOffline : OnlineInstanceHandler.Clock;
+            Assert.IsNotNull(Clock, $"{nameof(Initialization)}: Clock is null");
+
+            Clock.Init(game, _gameSettings);
         }
 
         private void InitCamera()
@@ -175,6 +142,9 @@ namespace Initialization
             {
                 if (color == PieceColor.White)
                 {
+                    PlayerOnline playerOnlineWhite = OnlineInstanceHandler.PlayerWhite;
+                    Assert.IsNotNull(playerOnlineWhite, $"{nameof(Initialization)}: PlayerOnline is null");
+
                     playerOnlineWhite.Init(game, mainCamera, highlighter, layerMask,
                         _gameSettings.IsAutoPromoteToQueen, promotionPanel, color);
 
@@ -183,6 +153,9 @@ namespace Initialization
 
                 if (color == PieceColor.Black)
                 {
+                    PlayerOnline playerOnlineBlack = OnlineInstanceHandler.PlayerBlack;
+                    Assert.IsNotNull(playerOnlineBlack, $"{nameof(Initialization)}: PlayerOnline is null");
+
                     playerOnlineBlack.Init(game, mainCamera, highlighter, layerMask,
                         _gameSettings.IsAutoPromoteToQueen, promotionPanel, color);
 
@@ -191,6 +164,23 @@ namespace Initialization
             }
 
             return null;
+        }
+
+        private void WarmUpGame()
+        {
+            bool isCameraSet = false;
+            cameraController.RotateToStartPosition(_gameSettings.PlayerColor, () => isCameraSet = true);
+
+            StartCoroutine(StartGameRoutine());
+
+            return;
+
+            IEnumerator StartGameRoutine()
+            {
+                yield return new WaitUntil(() => isCameraSet);
+
+                game.StartGame();
+            }
         }
 
         private void OnDestroy()

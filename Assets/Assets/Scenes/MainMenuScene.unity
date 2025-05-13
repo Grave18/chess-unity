@@ -2883,7 +2883,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lobbyManager: {fileID: 905780854}
-  nextScene: GameScene
+  nextScene: OnlineBootstrapScene
 --- !u!1001 &916211044
 PrefabInstance:
   m_ObjectHideFlags: 0
