@@ -14,8 +14,9 @@ namespace Ui.MainMenu.Buttons
 
         protected override void OnClick()
         {
+
             gameSettingsContainer.SetupGameOnline(isServer ? PieceColor.White : PieceColor.Black);
-            PlayerPrefs.SetInt("IsServer", isServer ? 1 : 0);
+            GameSettingsContainer.IsLocalhostServer = isServer;
 
             sceneLoader.LoadOnlineLocalhost();
         }

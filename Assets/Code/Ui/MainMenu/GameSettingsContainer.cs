@@ -3,6 +3,7 @@ using System.Globalization;
 using Ai;
 using ChessGame.Logic;
 using Initialization;
+using ParrelSync;
 using UnityEngine;
 
 namespace Ui.MainMenu
@@ -14,6 +15,14 @@ namespace Ui.MainMenu
         [SerializeField] private GameSettings gameSettings;
 
         private ComputerSkillLevel _computerSkillLevel;
+
+        public static string GameSettingsKey => ClonesManager.IsClone() ? "GameSettingsClone" : "GameSettings";
+        private static string localhostServerKey => ClonesManager.IsClone() ? "IsServerClone" : "IsServer";
+        public static bool IsLocalhostServer
+        {
+            get => PlayerPrefs.GetInt(localhostServerKey, 0) == 1;
+            set => PlayerPrefs.SetInt(localhostServerKey, value ? 1 : 0);
+        }
 
         private void Awake()
         {
@@ -27,9 +36,9 @@ namespace Ui.MainMenu
                 return;
             }
 
-            if (PlayerPrefs.HasKey(GameSettings.Key))
+            if (PlayerPrefs.HasKey(GameSettingsKey))
             {
-                string jsonString = PlayerPrefs.GetString(GameSettings.Key);
+                string jsonString = PlayerPrefs.GetString(GameSettingsKey);
                 gameSettings = JsonUtility.FromJson<GameSettings>(jsonString);
             }
             else
@@ -116,12 +125,6 @@ namespace Ui.MainMenu
             return gameSettings.CurrentFen;
         }
 
-        private void Save()
-        {
-            string jsonString = JsonUtility.ToJson(gameSettings);
-            PlayerPrefs.SetString(GameSettings.Key, jsonString);
-        }
-
         public GameSettings GetGameSettings()
         {
             return gameSettings;
@@ -146,6 +149,12 @@ namespace Ui.MainMenu
         {
             gameSettings.SavedFen = fen;
             Save();
+        }
+
+        private void Save()
+        {
+            string jsonString = JsonUtility.ToJson(gameSettings);
+            PlayerPrefs.SetString(GameSettingsKey, jsonString);
         }
     }
 }

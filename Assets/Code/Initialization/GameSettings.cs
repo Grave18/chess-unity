@@ -6,12 +6,11 @@ namespace Initialization
     [System.Serializable]
     public class GameSettings
     {
-        public const string Key = "GameSettings";
 
         public PieceColor PlayerColor = PieceColor.White;
 
-        public PlayerSettings Player1Settings;
-        public PlayerSettings Player2Settings;
+        public PlayerSettings Player1Settings = new();
+        public PlayerSettings Player2Settings = new();
 
         [Space]
         public Vector2 Time;

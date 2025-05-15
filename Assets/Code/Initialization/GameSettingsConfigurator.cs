@@ -1,4 +1,5 @@
 ﻿using EditorCools;
+using Ui.MainMenu;
 using UnityEngine;
 
 namespace Initialization
@@ -11,7 +12,7 @@ namespace Initialization
         private void Save()
         {
             string json = JsonUtility.ToJson(gameSettings, prettyPrint: true);
-            PlayerPrefs.SetString(GameSettings.Key, json);
+            PlayerPrefs.SetString(GameSettingsContainer.GameSettingsKey, json);
         }
 
 #if UNITY_EDITOR

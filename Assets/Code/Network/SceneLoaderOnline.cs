@@ -1,16 +1,14 @@
+using Network.Localhost;
 using PurrNet;
 using TMPro;
 using UnityEngine;
 
 namespace Network
 {
-    public class SceneLoaderOnline : NetworkBehaviour
+    public class SceneLoaderOnline : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] [PurrScene] private string gameScene;
-
-        [Header("Settings")]
-        [SerializeField] private int connectionCount = 2;
 
         [Header("Debug Ui")]
         [SerializeField] private TMP_Text debugText;
@@ -25,7 +23,7 @@ namespace Network
             }
         }
 
-        protected override void OnDestroy()
+        private void OnDestroy()
         {
             if (InstanceHandler.NetworkManager != null)
             {
@@ -39,14 +37,14 @@ namespace Network
             {
                 _connectionCount.value += 1;
 
-                if (_connectionCount == connectionCount)
+                if (_connectionCount == LocalhostPlayersCount.Get)
                 {
                     LoadGame();
                 }
             }
             else
             {
-                debugText.text = $"Connections: {_connectionCount}.";
+                debugText.text = $"Host: {InstanceHandler.NetworkManager.isHost}. Connections: {_connectionCount}";
             }
         }
 
