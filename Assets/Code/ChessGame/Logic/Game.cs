@@ -27,13 +27,19 @@ namespace ChessGame.Logic
         public HashSet<Square> UnderAttackSquares { get; set; } = new();
 
         public event UnityAction OnStart;
+        public event UnityAction<PieceColor> OnStartColor;
         public event UnityAction OnEnd;
         public event UnityAction OnEndMove;
         public event UnityAction<PieceColor> OnEndMoveColor;
         public event UnityAction OnPlay;
         public event UnityAction OnPause;
 
-        public void FireStart() => OnStart?.Invoke();
+        public void FireStart()
+        {
+            OnStart?.Invoke();
+            OnStartColor?.Invoke(CurrentTurnColor);
+        }
+
         public void FireEnd() => OnEnd?.Invoke();
         public void FireEndMove()
         {

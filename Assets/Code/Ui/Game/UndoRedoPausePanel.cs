@@ -44,24 +44,12 @@ namespace Ui.Game
             }
         }
 
-        private void OnEndMove(PieceColor color)
-        {
-            if (OnlineInstanceHandler.IsOnline)
-            {
-                PieceColor playerColor = gameSettingsContainer.GetGameSettings().PlayerColor;
-                pause.interactable = playerColor == color;
-            }
-            else
-            {
-                pause.interactable = true;
-            }
-        }
-
         private void OnEnable()
         {
             game.OnPlay += OnPlay;
             game.OnPause += OnPause;
-            game.OnEndMoveColor += OnEndMove;
+            game.OnEndMoveColor += DisablePauseIfOnlineAndNotMoving;
+            game.OnStartColor += DisablePauseIfOnlineAndNotMoving;
             undo.onClick.AddListener(OnUndoPressed);
             redo.onClick.AddListener(OnRedoPressed);
             pause.onClick.AddListener(OnPlayPausePressed);
@@ -71,10 +59,26 @@ namespace Ui.Game
         {
             game.OnPlay -= OnPlay;
             game.OnPause -= OnPause;
+            game.OnEndMoveColor -= DisablePauseIfOnlineAndNotMoving;
+            game.OnStartColor -= DisablePauseIfOnlineAndNotMoving;
             undo.onClick.RemoveListener(OnUndoPressed);
             redo.onClick.RemoveListener(OnRedoPressed);
             pause.onClick.RemoveListener(OnPlayPausePressed);
         }
+
+        private void DisablePauseIfOnlineAndNotMoving(PieceColor currentTurnColor)
+        {
+            if (OnlineInstanceHandler.IsOnline)
+            {
+                PieceColor playerColor = gameSettingsContainer.GameSettings.PlayerColor;
+                pause.interactable = playerColor == currentTurnColor;
+            }
+            else
+            {
+                pause.interactable = true;
+            }
+        }
+
 
         private void OnPlay()
         {

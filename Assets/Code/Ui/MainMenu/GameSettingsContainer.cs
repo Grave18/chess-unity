@@ -16,6 +16,8 @@ namespace Ui.MainMenu
 
         private ComputerSkillLevel _computerSkillLevel;
 
+        public GameSettings GameSettings => gameSettings;
+
         public static string GameSettingsKey => ClonesManager.IsClone() ? "GameSettingsClone" : "GameSettings";
         private static string localhostServerKey => ClonesManager.IsClone() ? "IsServerClone" : "IsServer";
         public static bool IsLocalhostServer
@@ -125,10 +127,6 @@ namespace Ui.MainMenu
             return gameSettings.CurrentFen;
         }
 
-        public GameSettings GetGameSettings()
-        {
-            return gameSettings;
-        }
 
         public void SetDefaultFen()
         {

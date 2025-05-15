@@ -66,7 +66,7 @@ namespace Initialization
         private async Task Init()
         {
             gameSettingsContainer.Init();
-            _gameSettings = gameSettingsContainer.GetGameSettings();
+            _gameSettings = gameSettingsContainer.GameSettings;
             FenSplit fenSplit = FenUtility.GetFenSplit(_gameSettings.CurrentFen);
 
             PieceColor turnColor = Assets.GetTurnColorFromPreset(fenSplit);
