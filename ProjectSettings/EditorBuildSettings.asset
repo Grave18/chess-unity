@@ -18,8 +18,11 @@ EditorBuildSettings:
     path: Assets/Assets/Scenes/BlankScene.unity
     guid: 38369a9a32eb9a54fac212dab2a3449e
   - enabled: 1
-    path: Assets/Assets/Scenes/OnlineBootstrapScene.unity
+    path: Assets/Assets/Scenes/OnlineLobbyScene.unity
     guid: 7dae04351999db9469c21076f4ba4315
+  - enabled: 1
+    path: Assets/Assets/Scenes/OnlineLocalhostScene.unity
+    guid: 9c0b0537b08d3e04c89049f71e9c8f25
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: a487de2a43d04144e936ccb5e4e53abc,
       type: 2}

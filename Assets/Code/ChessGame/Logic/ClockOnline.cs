@@ -67,11 +67,13 @@ namespace ChessGame.Logic
             _blackTime.value = _initialBlackTime;
         }
 
+        [ObserversRpc]
         private void Play()
         {
             _isPlaying = true;
         }
 
+        [ObserversRpc]
         private void Pause()
         {
             _isPlaying = false;

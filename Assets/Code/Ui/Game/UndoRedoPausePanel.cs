@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using ChessGame.Logic;
+using Network;
+using Ui.MainMenu;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Ui.Game
@@ -7,6 +10,8 @@ namespace Ui.Game
     {
         [Header("References")]
         [SerializeField] private ChessGame.Logic.Game game;
+        [SerializeField] private Initialization.Initialization initialization;
+        [SerializeField] private GameSettingsContainer gameSettingsContainer;
 
         [Header("UI")]
         [SerializeField] private Button undo;
@@ -20,10 +25,43 @@ namespace Ui.Game
 
         private bool _isPause;
 
+        private void Start()
+        {
+            HandleUndoRedoButtons();
+        }
+
+        private void HandleUndoRedoButtons()
+        {
+            if (OnlineInstanceHandler.IsOnline)
+            {
+                undo.interactable = false;
+                redo.interactable = false;
+            }
+            else
+            {
+                undo.interactable = true;
+                redo.interactable = true;
+            }
+        }
+
+        private void OnEndMove(PieceColor color)
+        {
+            if (OnlineInstanceHandler.IsOnline)
+            {
+                PieceColor playerColor = gameSettingsContainer.GetGameSettings().PlayerColor;
+                pause.interactable = playerColor == color;
+            }
+            else
+            {
+                pause.interactable = true;
+            }
+        }
+
         private void OnEnable()
         {
             game.OnPlay += OnPlay;
             game.OnPause += OnPause;
+            game.OnEndMoveColor += OnEndMove;
             undo.onClick.AddListener(OnUndoPressed);
             redo.onClick.AddListener(OnRedoPressed);
             pause.onClick.AddListener(OnPlayPausePressed);

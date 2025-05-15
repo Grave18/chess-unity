@@ -19,12 +19,17 @@ namespace Tools
             LoadScene("GameScene");
         }
 
-        [MenuItem("Tools/Load Online Bootstrap &3")]
-        private static void LoadOnlineBootstrap()
+        [MenuItem("Tools/Load Online Lobby &3")]
+        private static void LoadOnlineLobby()
         {
-            LoadScene("OnlineBootstrapScene");
+            LoadScene("OnlineLobbyScene");
         }
 
+        [MenuItem("Tools/Load Online Localhost &4")]
+        private static void LoadOnlineLocalhost()
+        {
+            LoadScene("OnlineLocalhostScene");
+        }
 
         private static void LoadScene(string scene)
         {

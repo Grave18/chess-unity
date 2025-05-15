@@ -9,26 +9,41 @@ namespace GameAndScene
         [Header("Scenes")]
         [SerializeField] private SceneReference mainMenuScene;
         [SerializeField] private SceneReference gameScene;
+        [SerializeField] private SceneReference onlineLobbyScene;
+        [SerializeField] private SceneReference onlineLocalhostScene;
         [SerializeField] private SceneReference blankScene;
 
         public void LoadMainMenu()
         {
-            SceneManager.LoadSceneAsync(blankScene);
-            SceneManager.LoadSceneAsync(mainMenuScene);
+            LoadScene(mainMenuScene);
         }
 
         public void LoadGame()
         {
-            SceneManager.LoadSceneAsync(blankScene);
-            SceneManager.LoadSceneAsync(gameScene);
+            LoadScene(gameScene);
+        }
+
+        public void LoadOnlineLobby()
+        {
+            LoadScene(onlineLobbyScene);
+        }
+
+        public void LoadOnlineLocalhost()
+        {
+            LoadScene(onlineLocalhostScene);
         }
 
         public void ReloadCurrentScene()
         {
             string currentSceneName = SceneManager.GetActiveScene().name;
 
+            LoadScene(currentSceneName);
+        }
+
+        private void LoadScene(string sceneName)
+        {
             SceneManager.LoadSceneAsync(blankScene);
-            SceneManager.LoadSceneAsync(currentSceneName);
+            SceneManager.LoadSceneAsync(sceneName);
         }
     }
 }

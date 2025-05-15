@@ -52,6 +52,7 @@ namespace Initialization
 
         public bool IsOffline => _gameSettings.Player1Settings.PlayerType != PlayerType.Online
                                 && _gameSettings.Player2Settings.PlayerType != PlayerType.Online;
+        public bool IsOnline => !IsOffline;
 
         private async void Awake()
         {

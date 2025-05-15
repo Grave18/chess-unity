@@ -12,6 +12,9 @@ namespace Network
         [SerializeField] private PlayerOnline playerOnlineBlack;
         [SerializeField] private ClockOnline clockOnline;
 
+        public static bool IsOnline => Instance != null;
+        public static bool IsOffline => !IsOnline;
+
         public static PlayerOnline PlayerWhite => Instance.playerOnlineWhite;
         public static PlayerOnline PlayerBlack => Instance.playerOnlineBlack;
         public static ClockOnline Clock => Instance.clockOnline;

@@ -1,4 +1,5 @@
 using PurrNet;
+using TMPro;
 using UnityEngine;
 
 namespace Network
@@ -11,7 +12,10 @@ namespace Network
         [Header("Settings")]
         [SerializeField] private int connectionCount = 2;
 
-        private int _connectionCount;
+        [Header("Debug Ui")]
+        [SerializeField] private TMP_Text debugText;
+
+        private readonly SyncVar<int> _connectionCount = new();
 
         private void Awake()
         {
@@ -33,12 +37,16 @@ namespace Network
         {
             if (asServer)
             {
-                _connectionCount += 1;
+                _connectionCount.value += 1;
 
                 if (_connectionCount == connectionCount)
                 {
                     LoadGame();
                 }
+            }
+            else
+            {
+                debugText.text = $"Connections: {_connectionCount}.";
             }
         }
 

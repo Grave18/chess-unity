@@ -12814,6 +12814,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   game: {fileID: 1216111693}
+  initialization: {fileID: 853249564}
   undo: {fileID: 1781307173}
   redo: {fileID: 679570397}
   pause: {fileID: 2128437071}
