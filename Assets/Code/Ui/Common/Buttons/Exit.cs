@@ -1,7 +1,6 @@
-﻿using Ui.Common;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Ui.MainMenu.Buttons
+namespace Ui.Common.Buttons
 {
     [RequireComponent(typeof(ButtonBase))]
     public class Exit : ButtonCallbackBase

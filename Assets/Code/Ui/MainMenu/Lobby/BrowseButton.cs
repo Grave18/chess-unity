@@ -1,5 +1,6 @@
 ﻿using PurrLobby;
 using Ui.Common;
+using Ui.Common.Buttons;
 using Ui.MainMenu.Buttons;
 using UnityEngine;
 

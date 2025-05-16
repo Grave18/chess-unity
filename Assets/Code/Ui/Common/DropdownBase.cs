@@ -7,8 +7,6 @@ namespace Ui.Common
 {
     public abstract class DropdownBase : MonoBehaviour
     {
-        [SerializeField] protected GraphicsSettingsContainer graphicsSettingsContainer;
-
         private TMP_Dropdown _dropdown;
         private List<string> _options = new();
 

@@ -1,11 +1,11 @@
 ﻿using PurrLobby;
 using Ui.Common;
-using Ui.MainMenu.Buttons;
+using Ui.Common.Buttons;
 using UnityEngine;
 
-namespace Ui.MainMenu.Lobby
+namespace Ui.MainMenu.Buttons
 {
-    public class CreateLobbyButton : ButtonCallbackBase
+    public class CreateLobby : ButtonCallbackBase
     {
         [SerializeField] private LobbyManager lobbyManager;
 

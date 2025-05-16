@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace Ui.MainMenu
 {
+    [DefaultExecutionOrder(-1)]
     public class GameSettingsContainer: MonoBehaviour
     {
         [Tooltip("Use it if no need to load settings")]
@@ -125,27 +126,43 @@ namespace Ui.MainMenu
             Save();
         }
 
-        public string GetCurrentFen()
-        {
-            return gameSettings.CurrentFen;
-        }
-
-
-        public void SetDefaultFen()
+        public void SetCurrentFromDefaultFen()
         {
             gameSettings.CurrentFen = gameSettings.DefaultFen;
             Save();
         }
 
-        public string GetDefaultFen()
-        {
-            return gameSettings.DefaultFen;
-        }
-
-        public void SetSavedFen()
+        public void SetCurrentFromSavedFen()
         {
             gameSettings.CurrentFen = gameSettings.SavedFen;
             Save();
+        }
+
+        public void SetCurrentFromCustomFen()
+        {
+            gameSettings.CurrentFen = gameSettings.CustomFen;
+            Save();
+        }
+
+        public string GetCurrentFen()
+        {
+            return gameSettings.CurrentFen;
+        }
+
+        public void SetCustomFen(string value)
+        {
+            gameSettings.CustomFen = value;
+            Save();
+        }
+
+        public string GetCustomFen()
+        {
+            return gameSettings.CustomFen;
+        }
+
+        public string GetDefaultFen()
+        {
+            return gameSettings.DefaultFen;
         }
 
         public string GetSavedFen()

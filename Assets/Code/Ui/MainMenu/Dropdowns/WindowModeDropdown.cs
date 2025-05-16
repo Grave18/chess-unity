@@ -1,9 +1,13 @@
 ﻿using System.Collections.Generic;
+using Ui.Common;
+using UnityEngine;
 
-namespace Ui.Common
+namespace Ui.MainMenu.Dropdowns
 {
     public class WindowModeDropdown : DropdownBase
     {
+        [SerializeField] protected GraphicsSettingsContainer graphicsSettingsContainer;
+
         protected override List<string> AddOptionsToDropdown()
         {
             return new List<string>

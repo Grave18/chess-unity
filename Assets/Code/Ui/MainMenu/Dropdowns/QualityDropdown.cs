@@ -7,6 +7,8 @@ namespace Ui.MainMenu.Dropdowns
 {
     public class QualityDropdown : DropdownBase
     {
+        [SerializeField] protected GraphicsSettingsContainer graphicsSettingsContainer;
+
         protected override int SetCurrentOptionInDropdown(List<string> options)
         {
             return graphicsSettingsContainer.GetQuality();

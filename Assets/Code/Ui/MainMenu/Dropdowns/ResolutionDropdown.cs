@@ -7,6 +7,8 @@ namespace Ui.MainMenu.Dropdowns
 {
     public class ResolutionDropdown : DropdownBase
     {
+        [SerializeField] protected GraphicsSettingsContainer graphicsSettingsContainer;
+
         protected override List<string> AddOptionsToDropdown()
         {
             IEnumerable<Resolution> resolutions = Screen.resolutions.Reverse();

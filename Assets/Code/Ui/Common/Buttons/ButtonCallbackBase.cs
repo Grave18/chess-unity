@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Ui.Common
+namespace Ui.Common.Buttons
 {
     public abstract class ButtonCallbackBase : MonoBehaviour
     {

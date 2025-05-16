@@ -2,64 +2,67 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class UiFader : MonoBehaviour
+namespace Ui.Common
 {
-    [Header("Settings")]
-    [SerializeField] private float speed = 1f;
-    [SerializeField] private float delay = 1f;
-    [SerializeField] private bool  isOnStart;
-
-    private CanvasGroup _canvasGroup;
-
-    private void Awake()
+    public class UiFader : MonoBehaviour
     {
-        _canvasGroup = GetComponent<CanvasGroup>();
-        Assert.IsNotNull(_canvasGroup);
-    }
+        [Header("Settings")]
+        [SerializeField] private float speed = 1f;
+        [SerializeField] private float delay = 1f;
+        [SerializeField] private bool  isOnStart;
 
-    private void Start()
-    {
-        if (isOnStart)
+        private CanvasGroup _canvasGroup;
+
+        private void Awake()
         {
-            UnFade();
+            _canvasGroup = GetComponent<CanvasGroup>();
+            Assert.IsNotNull(_canvasGroup);
         }
-    }
 
-    public void Fade()
-    {
-        StartCoroutine(FadeRoutine(isFade: true));
-    }
-
-    public void UnFade()
-    {
-        StartCoroutine(FadeRoutine(isFade: false));
-    }
-
-    private IEnumerator FadeRoutine(bool isFade)
-    {
-        _canvasGroup.alpha = isFade ? 1f : 0f;
-        yield return new WaitForSeconds(delay);
-
-        if (isFade)
+        private void Start()
         {
-            float t = 1f;
-            while (t > 0f)
+            if (isOnStart)
             {
-                t -= Time.deltaTime * speed;
-                _canvasGroup.alpha = t;
-
-                yield return null;
+                UnFade();
             }
         }
-        else
-        {
-            float t = 0f;
-            while (t < 1f)
-            {
-                t += Time.deltaTime * speed;
-                _canvasGroup.alpha = t;
 
-                yield return null;
+        public void Fade()
+        {
+            StartCoroutine(FadeRoutine(isFade: true));
+        }
+
+        public void UnFade()
+        {
+            StartCoroutine(FadeRoutine(isFade: false));
+        }
+
+        private IEnumerator FadeRoutine(bool isFade)
+        {
+            _canvasGroup.alpha = isFade ? 1f : 0f;
+            yield return new WaitForSeconds(delay);
+
+            if (isFade)
+            {
+                float t = 1f;
+                while (t > 0f)
+                {
+                    t -= Time.deltaTime * speed;
+                    _canvasGroup.alpha = t;
+
+                    yield return null;
+                }
+            }
+            else
+            {
+                float t = 0f;
+                while (t < 1f)
+                {
+                    t += Time.deltaTime * speed;
+                    _canvasGroup.alpha = t;
+
+                    yield return null;
+                }
             }
         }
     }

@@ -1,6 +1,7 @@
 using ChessGame.Logic;
 using GameAndScene;
 using Ui.Common;
+using Ui.Common.Buttons;
 using UnityEngine;
 
 namespace Ui.MainMenu.Buttons

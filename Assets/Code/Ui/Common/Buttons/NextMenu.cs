@@ -1,7 +1,7 @@
-﻿using Ui.Common;
+﻿using Ui.MainMenu;
 using UnityEngine;
 
-namespace Ui.MainMenu.Buttons
+namespace Ui.Common.Buttons
 {
     [RequireComponent(typeof(ButtonBase))]
     public class NextMenu : ButtonCallbackBase

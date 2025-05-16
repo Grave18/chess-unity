@@ -68,7 +68,7 @@ namespace Ui.Game
 
             if (value)
             {
-                gameSettingsContainer.SetDefaultFen();
+                gameSettingsContainer.SetCurrentFromDefaultFen();
             }
         }
 
@@ -78,7 +78,7 @@ namespace Ui.Game
 
             if (value)
             {
-                gameSettingsContainer.SetSavedFen();
+                gameSettingsContainer.SetCurrentFromSavedFen();
             }
         }
 
@@ -88,7 +88,8 @@ namespace Ui.Game
 
             if (value)
             {
-                OnEndEdit(_customInputField.text);
+                gameSettingsContainer.SetCurrentFromCustomFen();
+                _customInputField.text = gameSettingsContainer.GetCustomFen();
             }
         }
 
@@ -97,6 +98,7 @@ namespace Ui.Game
             if (FenValidator.IsValid(fen, out string errorMessage))
             {
                 gameSettingsContainer.SetCurrentFen(fen);
+                gameSettingsContainer.SetCustomFen(fen);
             }
             else
             {

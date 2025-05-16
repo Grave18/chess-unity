@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Utils;
 
-namespace Ui.Common
+namespace Ui.Common.Buttons
 {
     public class ButtonBase : MonoBehaviour
     {
