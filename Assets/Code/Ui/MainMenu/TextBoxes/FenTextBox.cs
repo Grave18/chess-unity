@@ -18,7 +18,7 @@ namespace Ui.MainMenu.TextBoxes
         {
             if (FenValidator.IsValid(fen, out string errorMessage))
             {
-                gameSettingsContainer.SetFen(fen);
+                gameSettingsContainer.SetCurrentFen(fen);
             }
             else
             {

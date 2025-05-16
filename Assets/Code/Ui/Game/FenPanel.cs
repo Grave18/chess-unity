@@ -96,7 +96,7 @@ namespace Ui.Game
         {
             if (FenValidator.IsValid(fen, out string errorMessage))
             {
-                gameSettingsContainer.SetFen(fen);
+                gameSettingsContainer.SetCurrentFen(fen);
             }
             else
             {

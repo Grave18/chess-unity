@@ -96,14 +96,7 @@ namespace Ui.MainMenu
             if (int.TryParse(time, out int result))
             {
                 gameSettings.Time = new Vector2(result, 0);
-            }
-        }
-
-        public void SetDifficulty(string optionText)
-        {
-            if (Enum.TryParse(optionText, out ComputerSkillLevel computerSkillLevel))
-            {
-                 _computerSkillLevel = computerSkillLevel;
+                Save();
             }
         }
 
@@ -112,14 +105,24 @@ namespace Ui.MainMenu
             return gameSettings.Time.x.ToString(CultureInfo.InvariantCulture);
         }
 
+        public void SetDifficulty(string optionText)
+        {
+            if (Enum.TryParse(optionText, out ComputerSkillLevel computerSkillLevel))
+            {
+                 _computerSkillLevel = computerSkillLevel;
+                 Save();
+            }
+        }
+
         public string GetDifficulty()
         {
             return gameSettings.Player2Settings.ComputerSkillLevel.ToString();
         }
 
-        public void SetFen(string value)
+        public void SetCurrentFen(string value)
         {
             gameSettings.CurrentFen = value;
+            Save();
         }
 
         public string GetCurrentFen()
@@ -131,11 +134,18 @@ namespace Ui.MainMenu
         public void SetDefaultFen()
         {
             gameSettings.CurrentFen = gameSettings.DefaultFen;
+            Save();
+        }
+
+        public string GetDefaultFen()
+        {
+            return gameSettings.DefaultFen;
         }
 
         public void SetSavedFen()
         {
             gameSettings.CurrentFen = gameSettings.SavedFen;
+            Save();
         }
 
         public string GetSavedFen()

@@ -1,19 +1,22 @@
+using System.Collections;
 using Network.Localhost;
 using PurrNet;
 using TMPro;
+using Ui.MainMenu;
 using UnityEngine;
 
 namespace Network
 {
-    public class SceneLoaderOnline : MonoBehaviour
+    public class SceneLoaderOnline : NetworkBehaviour
     {
         [Header("References")]
         [SerializeField] [PurrScene] private string gameScene;
+        [SerializeField] private GameSettingsContainer gameSettingsContainer;
 
         [Header("Debug Ui")]
         [SerializeField] private TMP_Text debugText;
 
-        private readonly SyncVar<int> _connectionCount = new();
+        private int _connectionCount;
 
         private void Awake()
         {
@@ -23,7 +26,17 @@ namespace Network
             }
         }
 
-        private void OnDestroy()
+        protected override void OnObserverAdded(PlayerID player)
+        {
+            base.OnObserverAdded(player);
+
+            if (player.id == 002)
+            {
+                SetPreset(player, gameSettingsContainer.GetCurrentFen());
+            }
+        }
+
+        protected override void OnDestroy()
         {
             if (InstanceHandler.NetworkManager != null)
             {
@@ -35,11 +48,11 @@ namespace Network
         {
             if (asServer)
             {
-                _connectionCount.value += 1;
+                _connectionCount += 1;
 
                 if (_connectionCount == LocalhostPlayersCount.Get)
                 {
-                    LoadGame();
+                    StartCoroutine(LoadGame());
                 }
             }
             else
@@ -48,9 +61,16 @@ namespace Network
             }
         }
 
-        private void LoadGame()
+        private IEnumerator LoadGame()
         {
+            yield return new WaitForSecondsRealtime(0.5f);
             InstanceHandler.NetworkManager.sceneModule.LoadSceneAsync(gameScene);
+        }
+
+        [TargetRpc]
+        private void SetPreset(PlayerID target, string preset)
+        {
+            gameSettingsContainer.SetCurrentFen(preset);
         }
     }
 }
