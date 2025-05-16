@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ChessGame.ChessBoard;
@@ -5,6 +6,7 @@ using ChessGame.ChessBoard.Pieces;
 using ChessGame.Logic.GameStates;
 using ChessGame.Logic.MovesBuffer;
 using ChessGame.Logic.Players;
+using MainCamera;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -62,26 +64,43 @@ namespace ChessGame.Logic
         public Square NullSquare => Board.NullSquare;
 
         private PieceColor _startingColor;
+        private Competitors _competitors;
+        private CameraController _cameraController;
 
-        public void Init(Board board, UciBuffer commandUciBuffer, PieceColor color)
+        public void Init(Board board, Competitors competitors, CameraController cameraController, UciBuffer commandUciBuffer, PieceColor color)
         {
             Board = board;
+            _competitors = competitors;
+            _cameraController = cameraController;
             UciBuffer = commandUciBuffer;
             _startingColor = color;
         }
 
         public void RestartGame()
         {
-            StartGame();
+            _competitors.Restart();
             Board.Build();
+            StartGame();
         }
 
         public void StartGame()
         {
-            ResetGameState();
-            PreformCaluculations();
-            SetState(new IdleState(this));
-            FireStart();
+            bool isCameraSet = false;
+            _cameraController.RotateToStartPosition(() => isCameraSet = true);
+
+            StartCoroutine(StartGameRoutine());
+
+            return;
+
+            IEnumerator StartGameRoutine()
+            {
+                yield return new WaitUntil(() => isCameraSet);
+
+                ResetGameState();
+                PreformCaluculations();
+                SetState(new IdleState(this));
+                FireStart();
+            }
         }
 
         private void ResetGameState()
@@ -117,7 +136,7 @@ namespace ChessGame.Logic
         public void ChangeTurn()
         {
             CurrentTurnColor = CurrentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
-            Competitors.ChangeCurrentPlayer();
+            Competitors.SwapCurrentPlayer();
         }
 
         private void Update()

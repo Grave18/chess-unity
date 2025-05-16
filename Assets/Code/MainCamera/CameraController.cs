@@ -59,6 +59,7 @@ namespace MainCamera
         private Camera _camera;
 
         private bool _isUpdating;
+        private PieceColor _rotateCameraToColor;
 
         private void Awake()
         {
@@ -66,13 +67,15 @@ namespace MainCamera
             Assert.IsNotNull(_camera);
         }
 
-        public void Init(PieceColor color, Game game, bool isOffline)
+        public void Init(PieceColor rotateCameraToColor, Game game, bool isAutoRotationOn)
         {
-            if (color == PieceColor.White)
+            _rotateCameraToColor = rotateCameraToColor;
+
+            if (_rotateCameraToColor == PieceColor.White)
             {
                 yawRad = -1.5708f;
             }
-            else if (color == PieceColor.Black)
+            else if (_rotateCameraToColor == PieceColor.Black)
             {
                 yawRad = 1.5708f;
             }
@@ -81,15 +84,15 @@ namespace MainCamera
             _newYawRad = yawRad;
             _newPitchRad = pitchRad;
 
-            if (isOffline)
+            if (isAutoRotationOn)
             {
                 game.OnEndMoveColor += AutoRotate;
             }
         }
 
-        public void RotateToStartPosition(PieceColor color, UnityAction continuation = null)
+        public void RotateToStartPosition(UnityAction continuation = null)
         {
-            StartCoroutine(RotateToStartPositionRoutine(color, continuation));
+            StartCoroutine(RotateToStartPositionRoutine(_rotateCameraToColor, continuation));
         }
 
         private IEnumerator RotateToStartPositionRoutine(PieceColor playerColor, UnityAction continuation)
@@ -273,16 +276,10 @@ namespace MainCamera
             AutoRotate(PieceColor.Black);
         }
 
-        [Button(space: 10, row: "1")]
-        public void RotateToStartPositionWhite()
+        [Button(space: 10)]
+        public void RotateToStartPositionButton()
         {
-           RotateToStartPosition(PieceColor.White);
-        }
-
-        [Button(space: 10, row: "1")]
-        public void RotateToStartPositionBlack()
-        {
-            RotateToStartPosition(PieceColor.Black);
+           RotateToStartPosition();
         }
 #endif
     }

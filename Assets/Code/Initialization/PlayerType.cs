@@ -3,7 +3,7 @@
     public enum PlayerType
     {
         Computer,
-        Offline,
+        Human,
         Online,
     }
 }

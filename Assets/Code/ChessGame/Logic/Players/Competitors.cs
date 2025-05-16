@@ -7,6 +7,8 @@ namespace ChessGame.Logic.Players
         private Game _game;
         private IPlayer _playerWhite;
         private IPlayer _playerBlack;
+
+        private IPlayer _initialPlayer;
         private IPlayer _currentPlayer;
 
         public void Init(Game game, IPlayer playerWhite, IPlayer playerBlack, PieceColor firstMoveColor)
@@ -14,7 +16,14 @@ namespace ChessGame.Logic.Players
             _game = game;
             _playerWhite = playerWhite;
             _playerBlack = playerBlack;
-            _currentPlayer = firstMoveColor == PieceColor.White ? _playerWhite : _playerBlack;
+
+            _initialPlayer = firstMoveColor == PieceColor.White ? _playerWhite : _playerBlack;
+            _currentPlayer = _initialPlayer;
+        }
+
+        public void Restart()
+        {
+            _currentPlayer = _initialPlayer;
         }
 
         public void StartPlayer()
@@ -37,10 +46,10 @@ namespace ChessGame.Logic.Players
             _playerWhite = playerWhite;
             _playerBlack = playerBlack;
 
-            ChangeCurrentPlayer();
+            SwapCurrentPlayer();
         }
 
-        public void ChangeCurrentPlayer()
+        public void SwapCurrentPlayer()
         {
             if (_game.CurrentTurnColor == PieceColor.White)
             {

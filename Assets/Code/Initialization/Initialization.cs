@@ -1,6 +1,5 @@
-﻿using System.Collections;
+﻿using Ai;
 using System.Threading.Tasks;
-using Ai;
 using AssetsAndResources;
 using ChessGame.ChessBoard;
 using ChessGame.Logic;
@@ -51,17 +50,18 @@ namespace Initialization
 
         public IClock Clock { get; private set; }
 
-        public bool IsOffline => _gameSettings.Player1Settings.PlayerType != PlayerType.Online
-                                && _gameSettings.Player2Settings.PlayerType != PlayerType.Online;
-        public bool IsOnline => !IsOffline;
+        private bool IsOffline => _gameSettings.Player1Settings.PlayerType != PlayerType.Online
+                                  && _gameSettings.Player2Settings.PlayerType != PlayerType.Online;
+
+        private bool IsVsPlayer => _gameSettings.Player1Settings.PlayerType == PlayerType.Human
+                                   && _gameSettings.Player2Settings.PlayerType == PlayerType.Human;
 
         private async void Awake()
         {
             await Init();
 
             board.Build();
-
-            WarmUpGame();
+            game.StartGame();
         }
 
         private async Task Init()
@@ -73,7 +73,7 @@ namespace Initialization
             FenSplit fenSplit = FenUtility.GetFenSplit(_gameSettings.CurrentFen);
             _turnColor = Assets.GetTurnColorFromPreset(fenSplit);
 
-            game.Init(board, uciBuffer, _turnColor);
+            game.Init(board, competitors, cameraController,uciBuffer, _turnColor);
 
             InitClock();
 
@@ -83,10 +83,10 @@ namespace Initialization
 
             GameObject[] prefabs = await assets.LoadPrefabs();
             board.Init(game, uciBuffer, fenSplit, prefabs, _turnColor);
-
-            InitPlayers();
-
             fenFromBoard.Init(game, board, _gameSettings.CurrentFen);
+
+            InitAi();
+            InitPlayers();
         }
 
         private void InitClock()
@@ -99,16 +99,20 @@ namespace Initialization
 
         private void InitCamera()
         {
-            cameraController.Init(_gameSettings.PlayerColor, game, IsOffline);
+            // Rotate camera to side in fen string only if 2 players
+            PieceColor rotateCameraToColor = IsVsPlayer ? _turnColor : _gameSettings.PlayerColor;
+            cameraController.Init(rotateCameraToColor, game, IsVsPlayer);
         }
 
         private void InitPlayers()
         {
-            ConfigureAiIfNeeded();
-            ConfigurePlayers();
+            IPlayer playerWhite = GetPlayer(_gameSettings.Player1Settings, PieceColor.White);
+            IPlayer playerBlack = GetPlayer(_gameSettings.Player2Settings, PieceColor.Black);
+
+            competitors.Init(game, playerWhite, playerBlack, _turnColor);
         }
 
-        private void ConfigureAiIfNeeded()
+        private void InitAi()
         {
             if (IsNeedToConfigureAi())
             {
@@ -124,14 +128,6 @@ namespace Initialization
                        || _gameSettings.Player2Settings.PlayerType == PlayerType.Computer);
         }
 
-        private void ConfigurePlayers()
-        {
-            IPlayer playerWhite = GetPlayer(_gameSettings.Player1Settings, PieceColor.White);
-            IPlayer playerBlack = GetPlayer(_gameSettings.Player2Settings, PieceColor.Black);
-
-            competitors.Init(game, playerWhite, playerBlack, _turnColor);
-        }
-
         private IPlayer GetPlayer(PlayerSettings playerSettings, PieceColor color)
         {
             if (playerSettings.PlayerType == PlayerType.Computer)
@@ -139,7 +135,7 @@ namespace Initialization
                 return new PlayerComputer(game, playerSettings, _stockfish);
             }
 
-            if (playerSettings.PlayerType == PlayerType.Offline)
+            if (playerSettings.PlayerType == PlayerType.Human)
             {
                 return new PlayerOffline(game, mainCamera, highlighter, layerMask,
                     _gameSettings.IsAutoPromoteToQueen, promotionPanel);
@@ -173,23 +169,6 @@ namespace Initialization
             return null;
         }
 
-        private void WarmUpGame()
-        {
-            bool isCameraSet = false;
-            cameraController.RotateToStartPosition(_gameSettings.PlayerColor, () => isCameraSet = true);
-
-            StartCoroutine(StartGameRoutine());
-
-            return;
-
-            IEnumerator StartGameRoutine()
-            {
-                yield return new WaitUntil(() => isCameraSet);
-
-                game.StartGame();
-            }
-        }
-
         private void OnDestroy()
         {
             _stockfish?.Dispose();
@@ -200,7 +179,7 @@ namespace Initialization
         [Button(space: 10)]
         private void UpdatePlayers()
         {
-            ConfigureAiIfNeeded();
+            InitAi();
 
             IPlayer playerWhite = GetPlayer(_gameSettings.Player1Settings, PieceColor.White);
             IPlayer playerBlack = GetPlayer(_gameSettings.Player2Settings, PieceColor.Black);

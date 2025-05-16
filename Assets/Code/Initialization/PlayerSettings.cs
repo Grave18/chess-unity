@@ -6,7 +6,7 @@ namespace Initialization
     public class PlayerSettings
     {
         public string Name = "Player";
-        public PlayerType PlayerType = PlayerType.Offline;
+        public PlayerType PlayerType = PlayerType.Human;
         public ComputerSkillLevel ComputerSkillLevel = ComputerSkillLevel.Medium;
         public int ComputerThinkTimeMs = 1000;
     }

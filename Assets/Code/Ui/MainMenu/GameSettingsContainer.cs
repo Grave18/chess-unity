@@ -68,11 +68,11 @@ namespace Ui.MainMenu
         {
             PlayerSettings player1Settings = gameSettings.Player1Settings;
             player1Settings.Name = "Player White";
-            player1Settings.PlayerType = PlayerType.Offline;
+            player1Settings.PlayerType = PlayerType.Human;
 
             PlayerSettings player2Settings = gameSettings.Player2Settings;
             player2Settings.Name = "Player Black";
-            player2Settings.PlayerType = PlayerType.Offline;
+            player2Settings.PlayerType = PlayerType.Human;
 
             Save();
         }

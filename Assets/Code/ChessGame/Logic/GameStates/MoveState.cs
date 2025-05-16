@@ -50,6 +50,7 @@ namespace ChessGame.Logic.GameStates
             Square toSquare = Game.Board.GetSquare(to);
             var promotedPieceType = PieceType.None;
 
+            // If uci with promotion
             if (uci.Length == 5)
             {
                 string promotion = uci.Substring(4, 1);
