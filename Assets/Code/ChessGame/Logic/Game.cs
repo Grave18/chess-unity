@@ -97,7 +97,7 @@ namespace ChessGame.Logic
                 yield return new WaitUntil(() => isCameraSet);
 
                 ResetGameState();
-                PreformCaluculations();
+                PreformCalculations();
                 SetState(new IdleState(this));
                 FireStart();
             }
@@ -222,7 +222,7 @@ namespace ChessGame.Logic
 
         public string GetStateName()
         {
-            return _state?.Name;
+            return _state?.Name ?? "No State";
         }
 
         public bool CanSelect(ISelectable selectable)
@@ -252,7 +252,7 @@ namespace ChessGame.Logic
         }
 
         /// Calculate under attack squares, check type, moves and captures
-        public void PreformCaluculations()
+        public void PreformCalculations()
         {
             UnderAttackSquares = GetUnderAttackSquares(PrevTurnPieces);
             CheckType = CalculateCheck(PrevTurnPieces);
@@ -330,12 +330,14 @@ namespace ChessGame.Logic
                 }
             }
 
-            return AttackLines.GetCheckCount() switch
+            CheckType check = AttackLines.GetCheckCount() switch
             {
                 0 => CheckType.None,
                 1 => CheckType.Check,
                 _ => CheckType.DoubleCheck
             };
+
+            return check;
 
             bool IsPieceMakeCheck(Piece piece)
             {
@@ -355,10 +357,8 @@ namespace ChessGame.Logic
         private void CalculateCheckMateOrStalemate(HashSet<Piece> currentTurnPieces)
         {
             // If all pieces have no moves
-            if (currentTurnPieces.Any(piece => piece.MoveSquares.Count  > 0
-                                               || piece.CaptureSquares.Count > 0))
+            if (IsAnyPieceHasMove(currentTurnPieces))
             {
-                CheckType = CheckType.None;
                 return;
             }
 
@@ -368,6 +368,12 @@ namespace ChessGame.Logic
                 CheckType.Check or CheckType.DoubleCheck => CheckType.CheckMate,
                 _ => CheckType,
             };
+        }
+
+        private static bool IsAnyPieceHasMove(HashSet<Piece> currentTurnPieces)
+        {
+            return currentTurnPieces.Any(piece => piece.MoveSquares.Count  > 0
+                                                  || piece.CaptureSquares.Count > 0);
         }
     }
 }

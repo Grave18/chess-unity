@@ -1,6 +1,7 @@
 using ChessGame.Logic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Ui.Game
@@ -19,7 +20,7 @@ namespace Ui.Game
 
         private void OnEnable()
         {
-            restartButton.onClick.AddListener(game.RestartGame);
+            restartButton.onClick.AddListener(RestartGame);
             game.OnEndMove += UpdateNotificationText;
             game.OnStart += UpdateNotificationText;
             game.OnEnd += UpdateNotificationText;
@@ -27,10 +28,16 @@ namespace Ui.Game
 
         private void OnDisable()
         {
-            restartButton.onClick.RemoveListener(game.RestartGame);
+            restartButton.onClick.RemoveListener(RestartGame);
             game.OnEndMove -= UpdateNotificationText;
             game.OnStart -= UpdateNotificationText;
             game.OnEnd -= UpdateNotificationText;
+        }
+
+        private void RestartGame()
+        {
+            buttonPanel.SetActive(false);
+            game.RestartGame();
         }
 
         private void UpdateNotificationText()

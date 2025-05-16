@@ -36,7 +36,7 @@ namespace ChessGame.Logic.GameStates
             }
             else
             {
-                Abort();
+                Abort(_uci);
             }
         }
 
@@ -145,9 +145,9 @@ namespace ChessGame.Logic.GameStates
             _isRunning = true;
         }
 
-        private void Abort()
+        private void Abort(string uci)
         {
-            Debug.Log("Invalid move");
+            Debug.Log($"{uci}: invalid move");
             Game.SetState(new IdleState(Game));
         }
 
@@ -216,7 +216,7 @@ namespace ChessGame.Logic.GameStates
 
             Game.ChangeTurn();
             Game.UciBuffer.Add(_moveData);
-            Game.PreformCaluculations();
+            Game.PreformCalculations();
             UpdateAlgebraicNotation();
             Game.FireEndMove();
             Game.SetState(new IdleState(Game));

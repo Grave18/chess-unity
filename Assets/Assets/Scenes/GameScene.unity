@@ -8943,10 +8943,10 @@ RectTransform:
   - {fileID: 1449034955}
   m_Father: {fileID: 1783972075}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 397.25235}
-  m_SizeDelta: {x: -1374.4434, y: -860.6183}
+  m_AnchoredPosition: {x: 0, y: -140}
+  m_SizeDelta: {x: -1380, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &948061434
 MonoBehaviour:
@@ -13929,18 +13929,19 @@ MonoBehaviour:
     PlayerColor: 1
     Player1Settings:
       Name: Player
-      PlayerType: 1
+      PlayerType: 0
       ComputerSkillLevel: 10
       ComputerThinkTimeMs: 1000
     Player2Settings:
       Name: Player
-      PlayerType: 1
+      PlayerType: 0
       ComputerSkillLevel: 10
       ComputerThinkTimeMs: 1000
     Time: {x: 30, y: 0}
     CurrentFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     DefaultFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     SavedFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+    CustomFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     IsAutoPromoteToQueen: 0
 --- !u!4 &1470752477
 Transform:
