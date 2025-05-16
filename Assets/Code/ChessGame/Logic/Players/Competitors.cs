@@ -9,12 +9,12 @@ namespace ChessGame.Logic.Players
         private IPlayer _playerBlack;
         private IPlayer _currentPlayer;
 
-        public void Init(Game game, IPlayer playerWhite, IPlayer playerBlack)
+        public void Init(Game game, IPlayer playerWhite, IPlayer playerBlack, PieceColor firstMoveColor)
         {
             _game = game;
             _playerWhite = playerWhite;
             _playerBlack = playerBlack;
-            _currentPlayer = _playerWhite;
+            _currentPlayer = firstMoveColor == PieceColor.White ? _playerWhite : _playerBlack;
         }
 
         public void StartPlayer()

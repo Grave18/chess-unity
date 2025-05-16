@@ -13,7 +13,6 @@ namespace ChessGame.Logic.Players
         private Game _game;
         private Camera _mainCamera;
         private PromotionPanel _promotionPanel;
-        private PieceColor _color;
         private Highlighter _highlighter;
         private LayerMask _layerMask;
         private bool _isAutoPromoteToQueen;
@@ -21,7 +20,7 @@ namespace ChessGame.Logic.Players
         private const float MaxDistance = 100;
 
         public void Init(Game game, Camera mainCamera, Highlighter highlighter, LayerMask layerMask,
-            bool isAutoPromoteToQueen, PromotionPanel promotionPanel, PieceColor color)
+            bool isAutoPromoteToQueen, PromotionPanel promotionPanel)
         {
             _game = game;
             _highlighter = highlighter;
@@ -29,7 +28,6 @@ namespace ChessGame.Logic.Players
             _layerMask = layerMask;
             _isAutoPromoteToQueen = isAutoPromoteToQueen;
             _promotionPanel = promotionPanel;
-            _color = color;
         }
 
         public void StartPlayer()
@@ -50,7 +48,7 @@ namespace ChessGame.Logic.Players
             // Cast ray from cursor
             Vector3 mousePos = UnityEngine.Input.mousePosition;
             Ray ray = _mainCamera.ScreenPointToRay(mousePos);
-            bool isHit = Physics.Raycast(ray, out RaycastHit hit, MaxDistance, _layerMask);
+            Physics.Raycast(ray, out RaycastHit hit, MaxDistance, _layerMask);
             Transform hitTransform = hit.transform;
 
             if (UnityEngine.Input.GetButtonDown("Fire1"))

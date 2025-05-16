@@ -47,6 +47,7 @@ namespace Initialization
 
         private Stockfish _stockfish;
         private GameSettings _gameSettings;
+        private PieceColor _turnColor;
 
         public IClock Clock { get; private set; }
 
@@ -65,21 +66,26 @@ namespace Initialization
 
         private async Task Init()
         {
+            // For whatever reason, the initialization can't be done in the Awake
             gameSettingsContainer.Init();
+
             _gameSettings = gameSettingsContainer.GameSettings;
             FenSplit fenSplit = FenUtility.GetFenSplit(_gameSettings.CurrentFen);
+            _turnColor = Assets.GetTurnColorFromPreset(fenSplit);
 
-            PieceColor turnColor = Assets.GetTurnColorFromPreset(fenSplit);
-            game.Init(board, uciBuffer, turnColor);
+            game.Init(board, uciBuffer, _turnColor);
 
             InitClock();
+
             InitCamera();
+
             highlighter.Init(game);
 
             GameObject[] prefabs = await assets.LoadPrefabs();
-            board.Init(game, uciBuffer, fenSplit, prefabs, turnColor);
+            board.Init(game, uciBuffer, fenSplit, prefabs, _turnColor);
 
             InitPlayers();
+
             fenFromBoard.Init(game, board, _gameSettings.CurrentFen);
         }
 
@@ -123,7 +129,7 @@ namespace Initialization
             IPlayer playerWhite = GetPlayer(_gameSettings.Player1Settings, PieceColor.White);
             IPlayer playerBlack = GetPlayer(_gameSettings.Player2Settings, PieceColor.Black);
 
-            competitors.Init(game, playerWhite, playerBlack);
+            competitors.Init(game, playerWhite, playerBlack, _turnColor);
         }
 
         private IPlayer GetPlayer(PlayerSettings playerSettings, PieceColor color)
@@ -144,10 +150,10 @@ namespace Initialization
                 if (color == PieceColor.White)
                 {
                     PlayerOnline playerOnlineWhite = OnlineInstanceHandler.PlayerWhite;
-                    Assert.IsNotNull(playerOnlineWhite, $"{nameof(Initialization)}: PlayerOnline is null");
+                    Assert.IsNotNull(playerOnlineWhite, $"{nameof(Initialization)}: PlayerOnline White is null");
 
                     playerOnlineWhite.Init(game, mainCamera, highlighter, layerMask,
-                        _gameSettings.IsAutoPromoteToQueen, promotionPanel, color);
+                        _gameSettings.IsAutoPromoteToQueen, promotionPanel);
 
                     return playerOnlineWhite;
                 }
@@ -155,10 +161,10 @@ namespace Initialization
                 if (color == PieceColor.Black)
                 {
                     PlayerOnline playerOnlineBlack = OnlineInstanceHandler.PlayerBlack;
-                    Assert.IsNotNull(playerOnlineBlack, $"{nameof(Initialization)}: PlayerOnline is null");
+                    Assert.IsNotNull(playerOnlineBlack, $"{nameof(Initialization)}: PlayerOnline Black is null");
 
                     playerOnlineBlack.Init(game, mainCamera, highlighter, layerMask,
-                        _gameSettings.IsAutoPromoteToQueen, promotionPanel, color);
+                        _gameSettings.IsAutoPromoteToQueen, promotionPanel);
 
                     return playerOnlineBlack;
                 }
