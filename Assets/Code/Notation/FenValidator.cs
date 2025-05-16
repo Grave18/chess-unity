@@ -450,6 +450,7 @@ namespace Notation
         private static void CheckEpPawnInPlace(string rankFen, int file, string ep, char pawn)
         {
             int currentFile = 0;
+            bool isFoundPawn = false;
             foreach (char fenSymbol in rankFen)
             {
                 if (IsEmptySpaceNumber(fenSymbol))
@@ -461,12 +462,18 @@ namespace Notation
                     currentFile += 1;
                 }
 
-                if (fenSymbol == pawn && currentFile != file)
+                // If found corresponding file(a-g) and pawn
+                if (fenSymbol == pawn && currentFile == file)
                 {
-                    _errorMessage = $"En passant square '{ep}' is not in the same file as the pawn";
-                    _isValid = false;
-                    return;
+                    isFoundPawn = true;
+                    break;
                 }
+            }
+
+            if (!isFoundPawn)
+            {
+                _errorMessage = $"En passant square '{ep}' is not in the same file as the pawn";
+                _isValid = false;
             }
         }
 
@@ -475,6 +482,7 @@ namespace Notation
             return int.Parse(ch.ToString());
         }
 
+        /// Is 0-8
         private static bool IsEmptySpaceNumber(char ch)
         {
             return ch is > '0' and <= '8';
