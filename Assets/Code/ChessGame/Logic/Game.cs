@@ -28,6 +28,13 @@ namespace ChessGame.Logic
         public AttackLinesList AttackLines { get; } = new();
         public HashSet<Square> UnderAttackSquares { get; set; } = new();
 
+        private GameState _state;
+        private GameState _previousState;
+        private PieceColor _startingColor;
+        private Competitors _competitors;
+        private CameraController _cameraController;
+
+        public event UnityAction OnWarmup;
         public event UnityAction OnStart;
         public event UnityAction<PieceColor> OnStartColor;
         public event UnityAction OnEnd;
@@ -36,24 +43,20 @@ namespace ChessGame.Logic
         public event UnityAction OnPlay;
         public event UnityAction OnPause;
 
+        public void FireWarmup() => OnWarmup?.Invoke();
         public void FireStart()
         {
             OnStart?.Invoke();
             OnStartColor?.Invoke(CurrentTurnColor);
         }
-
         public void FireEnd() => OnEnd?.Invoke();
         public void FireEndMove()
         {
             OnEndMove?.Invoke();
             OnEndMoveColor?.Invoke(CurrentTurnColor);
         }
-
         public void FirePlay() => OnPlay?.Invoke();
         public void FirePause() => OnPause?.Invoke();
-
-        private GameState _state;
-        private GameState _previousState;
 
         // Getters
         public HashSet<Piece> WhitePieces => Board.WhitePieces;
@@ -62,10 +65,6 @@ namespace ChessGame.Logic
         public HashSet<Piece> PrevTurnPieces => CurrentTurnColor == PieceColor.Black ? Board.WhitePieces : Board.BlackPieces;
         public IEnumerable<Square> Squares => Board.Squares;
         public Square NullSquare => Board.NullSquare;
-
-        private PieceColor _startingColor;
-        private Competitors _competitors;
-        private CameraController _cameraController;
 
         public void Init(Board board, Competitors competitors, CameraController cameraController, UciBuffer commandUciBuffer, PieceColor color)
         {
@@ -88,7 +87,11 @@ namespace ChessGame.Logic
             bool isCameraSet = false;
             _cameraController.RotateToStartPosition(() => isCameraSet = true);
 
+            ResetGameState();
+            PreformCalculations();
             StartCoroutine(StartGameRoutine());
+            SetState(new WarmUpState(this));
+            FireWarmup();
 
             return;
 
@@ -96,8 +99,6 @@ namespace ChessGame.Logic
             {
                 yield return new WaitUntil(() => isCameraSet);
 
-                ResetGameState();
-                PreformCalculations();
                 SetState(new IdleState(this));
                 FireStart();
             }

@@ -1,12 +1,10 @@
-﻿using MainCamera;
-
-namespace ChessGame.Logic.GameStates
+﻿namespace ChessGame.Logic.GameStates
 {
     public class WarmUpState : GameState
     {
         public override string Name => "WarmUp";
 
-        public WarmUpState(Game game, CameraController cameraController, PieceColor color) : base(game)
+        public WarmUpState(Game game) : base(game)
         {
 
         }

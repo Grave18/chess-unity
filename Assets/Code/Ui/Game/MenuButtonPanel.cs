@@ -1,31 +1,37 @@
-using Ui.MainMenu;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
 namespace Ui.Game
 {
     public class MenuButtonPanel : MonoBehaviour
     {
+        [Header("References")]
+        [SerializeField] private ChessGame.Logic.Game game;
+
         [Header("Ui")]
-        [FormerlySerializedAs("settingsButton")]
-        [SerializeField] private Button menuButton;
+        [SerializeField] private GameObject restartButton;
 
-        [SerializeField] private MenuPanel menuPanel;
-
-        private void OnEnable()
+        private void Awake()
         {
-            menuButton.onClick.AddListener(SettingsPopupShow);
+            game.OnWarmup += Disable;
+            game.OnEndMove += Disable;
+            game.OnEnd += Enable;
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
-            menuButton.onClick.RemoveListener(SettingsPopupShow);
+            game.OnWarmup -= Disable;
+            game.OnEndMove -= Disable;
+            game.OnEnd -= Enable;
         }
 
-        private void SettingsPopupShow()
+        private void Enable()
         {
-            menuPanel.Show();
+            restartButton.SetActive(true);
+        }
+
+        private void Disable()
+        {
+            restartButton.SetActive(false);
         }
     }
 }

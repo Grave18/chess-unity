@@ -1,8 +1,6 @@
 using ChessGame.Logic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace Ui.Game
 {
@@ -11,33 +9,27 @@ namespace Ui.Game
         [Header("References")]
         [SerializeField] private ChessGame.Logic.Game game;
 
-        [Header("UI")]
-        [SerializeField] private GameObject buttonPanel;
+        [Header("Panels")]
+        [SerializeField] private GameObject additionalPanel;
+
+        [Header("Text")]
         [SerializeField] private TMP_Text notificationText;
         [SerializeField] private TMP_Text additionalText;
-        [SerializeField] private Button restartButton;
-        [SerializeField] private Button homeButton;
 
         private void OnEnable()
         {
-            restartButton.onClick.AddListener(RestartGame);
-            game.OnEndMove += UpdateNotificationText;
+            game.OnWarmup += UpdateNotificationText;
             game.OnStart += UpdateNotificationText;
+            game.OnEndMove += UpdateNotificationText;
             game.OnEnd += UpdateNotificationText;
         }
 
         private void OnDisable()
         {
-            restartButton.onClick.RemoveListener(RestartGame);
-            game.OnEndMove -= UpdateNotificationText;
+            game.OnWarmup -= UpdateNotificationText;
             game.OnStart -= UpdateNotificationText;
+            game.OnEndMove -= UpdateNotificationText;
             game.OnEnd -= UpdateNotificationText;
-        }
-
-        private void RestartGame()
-        {
-            buttonPanel.SetActive(false);
-            game.RestartGame();
         }
 
         private void UpdateNotificationText()
@@ -95,7 +87,7 @@ namespace Ui.Game
         private void SetPanel(string text, string additional, bool isText, bool isPanel)
         {
             notificationText.gameObject.SetActive(isText);
-            buttonPanel.SetActive(isPanel);
+            additionalPanel.SetActive(isPanel);
             notificationText.text = text;
             additionalText.text = additional;
         }

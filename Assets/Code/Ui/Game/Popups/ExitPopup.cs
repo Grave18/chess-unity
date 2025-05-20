@@ -4,7 +4,7 @@ using Ui.MainMenu;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Ui.Game
+namespace Ui.Game.Popups
 {
     public class ExitPopup : MonoBehaviour
     {
@@ -17,7 +17,6 @@ namespace Ui.Game
         [SerializeField] private Toggle saveBoardToggle;
         [SerializeField] private Button yesButton;
 
-        public bool IsOpened => gameObject.activeSelf;
 
         public void OnEnable()
         {
@@ -27,18 +26,6 @@ namespace Ui.Game
         public void OnDisable()
         {
             yesButton.onClick.RemoveListener(ExitToMainMenu);
-        }
-
-        public void Show()
-        {
-            gameObject.SetActive(true);
-            Time.timeScale = 0;
-        }
-
-        public void Hide()
-        {
-            gameObject.SetActive(false);
-            Time.timeScale = 1;
         }
 
         private void ExitToMainMenu()

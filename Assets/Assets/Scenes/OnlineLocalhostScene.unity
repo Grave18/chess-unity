@@ -537,7 +537,7 @@ MonoBehaviour:
   _serverPort: 5000
   _maxConnections: 2
   _address: 127.0.0.1
-  _timeoutInSeconds: 5
+  _timeoutInSeconds: 120
   _pollEventsInUpdate: 0
 --- !u!1 &677459661
 GameObject:
@@ -950,6 +950,7 @@ MonoBehaviour:
   playerOnlineWhite: {fileID: 313843066}
   playerOnlineBlack: {fileID: 721045146}
   clockOnline: {fileID: 1240364636}
+  gameSettingsContainer: {fileID: 0}
 --- !u!1 &1816012518
 GameObject:
   m_ObjectHideFlags: 0
@@ -1052,6 +1053,7 @@ MonoBehaviour:
     CurrentFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     DefaultFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     SavedFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+    CustomFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     IsAutoPromoteToQueen: 0
 --- !u!4 &2013615973
 Transform:
