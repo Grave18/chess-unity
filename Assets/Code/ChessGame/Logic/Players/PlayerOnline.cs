@@ -130,7 +130,7 @@ namespace ChessGame.Logic.Players
             }
         }
 
-        [ObserversRpc]
+        [ObserversRpc(runLocally: true)]
         private void Move(string uci)
         {
             _game.Move(uci);
