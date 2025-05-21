@@ -15,7 +15,7 @@ namespace MainCamera
     public class CameraController : MonoBehaviour
     {
         private const float WhiteInitPosition = Mathf.PI*1.5f;
-        private const float BlackInitialPosition = Mathf.PI*0.5f;
+        private const float BlackInitPosition = Mathf.PI*0.5f;
 
         [Header("Target")]
         [SerializeField] private Vector3 offset = new(0, 0.15f, 0);
@@ -61,9 +61,12 @@ namespace MainCamera
 
         private Camera _camera;
 
-        private bool _isUpdating;
         private PieceColor _rotateCameraToColor;
+        private Game _game;
+
+        private bool _isUpdating;
         private Coroutine _autoRotateRoutine;
+        private bool _isAutoRotationOn;
 
         private void Awake()
         {
@@ -71,9 +74,11 @@ namespace MainCamera
             Assert.IsNotNull(_camera);
         }
 
-        public void Init(PieceColor rotateCameraToColor, Game game, bool isAutoRotationOn)
+        public void Init(Game game, PieceColor rotateCameraToColor, bool isAutoRotationOn)
         {
             _rotateCameraToColor = rotateCameraToColor;
+            _game = game;
+            _isAutoRotationOn = isAutoRotationOn;
 
             if (_rotateCameraToColor == PieceColor.White)
             {
@@ -81,16 +86,26 @@ namespace MainCamera
             }
             else if (_rotateCameraToColor == PieceColor.Black)
             {
-                yawRad = BlackInitialPosition;
+                yawRad = BlackInitPosition;
             }
 
             _newDistance = distance;
             _newYawRad = yawRad;
             _newPitchRad = pitchRad;
 
-            if (isAutoRotationOn)
+            if (_isAutoRotationOn)
             {
-                game.OnEndMoveColor += AutoRotate;
+                _game.OnEndMoveColor += AutoRotate;
+                _game.OnEnd += StopAutoRotate;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (_game != null && _isAutoRotationOn)
+            {
+                _game.OnEndMoveColor -= AutoRotate;
+                _game.OnEnd -= StopAutoRotate;
             }
         }
 
@@ -130,7 +145,7 @@ namespace MainCamera
             t += Time.deltaTime * 1f/initialPositionRotateTimeSec;
 
             yawRad = Mathf.LerpAngle(Mathf.PI, targetYawRad, Easing.Generic(t, initialPositionRotateEasing));
-            pitchRad = Mathf.LerpAngle(BlackInitialPosition, Mathf.PI*0.25f, Easing.Generic(t, initialPositionRotateEasing));
+            pitchRad = Mathf.LerpAngle(BlackInitPosition, Mathf.PI*0.25f, Easing.Generic(t, initialPositionRotateEasing));
             distance = Mathf.Lerp(3f, 1.25f, Easing.Generic(t, initialPositionRotateEasing));
         }
 
@@ -183,25 +198,6 @@ namespace MainCamera
             pitchRad = Mathf.SmoothDamp(pitchRad, _newPitchRad, ref _pitchCurrentVelocity, pitchSmoothTime);
         }
 
-        private void CalculateCameraPosition()
-        {
-            // Less fov more distance from target to camera
-            _distanceMult = Mathf.Lerp(1f, distanceFovMultEnd, _tPitch);
-            float currentDistance = distance * _distanceMult;
-
-            // Position
-            _newPosition.x = currentDistance * Mathf.Cos(yawRad) * Mathf.Cos(pitchRad) + offset.x;
-            _newPosition.y = currentDistance * Mathf.Sin(pitchRad) + offset.y;
-            _newPosition.z = currentDistance * Mathf.Sin(yawRad) * Mathf.Cos(pitchRad) + offset.z;
-        }
-
-        private void ApplyToCamera()
-        {
-            transform.position = _newPosition;
-            transform.LookAt(offset);
-            _camera.fieldOfView = Mathf.Lerp(fovStart, fovEnd, _tPitch);
-        }
-
         public void AutoRotate(PieceColor color)
         {
             AutoRotate(color, null);
@@ -209,11 +205,16 @@ namespace MainCamera
 
         public void AutoRotate(PieceColor color, UnityAction continuation)
         {
-            if (_autoRotateRoutine != null)
+            StopAutoRotate();
+            _autoRotateRoutine = StartCoroutine(AutoRotateRoutine(color, continuation));
+        }
+
+        private void StopAutoRotate()
+        {
+            if(_autoRotateRoutine != null)
             {
                 StopCoroutine(_autoRotateRoutine);
             }
-            _autoRotateRoutine = StartCoroutine(AutoRotateRoutine(color, continuation));
         }
 
         private IEnumerator AutoRotateRoutine(PieceColor color, UnityAction continuation)
@@ -242,17 +243,6 @@ namespace MainCamera
             _isUpdating = true;
         }
 
-        /// Start position for certain color
-        private static float GetTargetYawRad(PieceColor playerColor)
-        {
-            return playerColor switch
-            {
-                PieceColor.White => WhiteInitPosition, // 270 degrees
-                PieceColor.Black => BlackInitialPosition, // 90 degrees
-                _ => WhiteInitPosition,
-            };
-        }
-
         private void ClampYawRadTo_0_360()
         {
             yawRad %= Mathf.PI * 2f;
@@ -264,12 +254,42 @@ namespace MainCamera
             }
         }
 
+        /// Get start position for black or white color
+        private static float GetTargetYawRad(PieceColor playerColor)
+        {
+            return playerColor switch
+            {
+                PieceColor.White => WhiteInitPosition, // 270 degrees
+                PieceColor.Black => BlackInitPosition, // 90 degrees
+                _ => WhiteInitPosition,
+            };
+        }
+
         private void RotateYawFromTo(float startYawRad, float endYawRad, ref float t)
         {
             t += Time.deltaTime * 1f/autoRotateTimeSec;
             float start = Mathf.Rad2Deg * startYawRad;
             float end = Mathf.Rad2Deg * endYawRad;
             yawRad = Mathf.Deg2Rad * Mathf.LerpAngle(start, end, Easing.Generic(t, autoRotateEasing));
+        }
+
+        private void CalculateCameraPosition()
+        {
+            // Less fov more distance from target to camera
+            _distanceMult = Mathf.Lerp(1f, distanceFovMultEnd, _tPitch);
+            float currentDistance = distance * _distanceMult;
+
+            // Position
+            _newPosition.x = currentDistance * Mathf.Cos(yawRad) * Mathf.Cos(pitchRad) + offset.x;
+            _newPosition.y = currentDistance * Mathf.Sin(pitchRad) + offset.y;
+            _newPosition.z = currentDistance * Mathf.Sin(yawRad) * Mathf.Cos(pitchRad) + offset.z;
+        }
+
+        private void ApplyToCamera()
+        {
+            transform.position = _newPosition;
+            transform.LookAt(offset);
+            _camera.fieldOfView = Mathf.Lerp(fovStart, fovEnd, _tPitch);
         }
 
 #if UNITY_EDITOR

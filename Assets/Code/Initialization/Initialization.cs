@@ -101,7 +101,7 @@ namespace Initialization
         {
             // Rotate camera to side in fen string only if 2 players
             PieceColor rotateCameraToColor = IsVsPlayer ? _turnColor : _gameSettings.PlayerColor;
-            cameraController.Init(rotateCameraToColor, game, IsVsPlayer);
+            cameraController.Init(game, rotateCameraToColor, IsVsPlayer);
         }
 
         private void InitPlayers()
