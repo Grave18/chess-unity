@@ -7,21 +7,22 @@ using UnityEngine;
 
 namespace ChessGame.Logic.GameStates
 {
-    public class RedoState : GameState
+    public class RedoState : MovableState
     {
+        private const float MoveTimeSec = 0.1f;
+
         private readonly MoveData _moveData;
         private bool _isRunning;
-        private Turn _turn;
 
-        private float _t = 0;
-        private const float TimeSec = 0.1f;
+        public override string Name => "Redo";
+        protected override float T { get; set; } = 0f;
+        protected override float SoundT => 0.6f;
 
         public RedoState(Game game, MoveData moveData) : base(game)
         {
             _moveData = moveData;
         }
 
-        public override string Name => "Redo";
 
         public override void Enter()
         {
@@ -70,7 +71,7 @@ namespace ChessGame.Logic.GameStates
 
             if (_moveData.MoveType == MoveType.Move)
             {
-                _turn = new SimpleMove(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
+                Turn = new SimpleMove(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
                 return true;
             }
 
@@ -78,14 +79,14 @@ namespace ChessGame.Logic.GameStates
             {
                 Piece promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                     parsedUci.ToSquare);
-                _turn = new MovePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece);
+                Turn = new MovePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece);
                 return true;
             }
 
             if (_moveData.MoveType is MoveType.Capture)
             {
                 _moveData.BeatenPiece = parsedUci.ToSquare.GetPiece();
-                _turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
+                Turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
                     _moveData.IsFirstMove);
                 return true;
             }
@@ -93,7 +94,7 @@ namespace ChessGame.Logic.GameStates
             if (_moveData.MoveType is MoveType.EnPassant)
             {
                 // No need to update _moveData.BeatenPiece because it cannot be promoted piece
-                _turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
+                Turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
                     _moveData.IsFirstMove);
                 return true;
             }
@@ -104,14 +105,14 @@ namespace ChessGame.Logic.GameStates
                 _moveData.BeatenPiece = parsedUci.ToSquare.GetPiece();
                 Piece promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                     parsedUci.ToSquare);
-                _turn = new CapturePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare,
+                Turn = new CapturePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare,
                     promotedPiece, _moveData.BeatenPiece);
                 return true;
             }
 
             if (_moveData.MoveType is MoveType.CastlingShort or MoveType.CastlingLong)
             {
-                _turn = new Castling(_moveData.CastlingInfo, _moveData.IsFirstMove);
+                Turn = new Castling(_moveData.CastlingInfo, _moveData.IsFirstMove);
                 return true;
             }
 
@@ -178,25 +179,29 @@ namespace ChessGame.Logic.GameStates
 
         private bool IsProgressMove()
         {
-            return _t < 1;
+            return T < 1;
         }
 
         private void ProgressMove()
         {
-            _t += Time.deltaTime / TimeSec;
+            float delta = Time.deltaTime / MoveTimeSec;
+            T += delta;
 
-            _turn.Progress(_t);
+            Turn.Progress(T);
+            PlaySound(delta);
         }
 
         private void EndMove()
         {
-            _turn.End();
+            Turn.End();
 
             Game.ChangeTurn();
             Game.UciBuffer.Redo();
             Game.PreformCalculations();
             Game.FireEndMove();
             Game.SetPreviousState();
+
+            PlayCheckSound();
         }
     }
 }

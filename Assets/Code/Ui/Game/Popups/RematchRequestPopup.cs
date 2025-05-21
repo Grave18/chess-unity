@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Ui.Game.Popups
 {
-    public class RematchPopup : NetworkBehaviour
+    public class RematchRequestPopup : NetworkBehaviour
     {
         [Header("References")]
         [SerializeField] private ChessGame.Logic.Game game;
@@ -76,6 +76,7 @@ namespace Ui.Game.Popups
             }
 
             endGamePopup.DeclineRematch();
+            EffectsPlayer.Instance.PlayNotifySound();
         }
     }
 }

@@ -8,22 +8,22 @@ using UnityEngine;
 
 namespace ChessGame.Logic.GameStates
 {
-    public class MoveState : GameState
+    public class MoveState : MovableState
     {
-        private const float MoveTime = 0.3f;
+        private const float MoveTimeSec = 0.3f;
         private readonly string _uci;
 
         private bool _isRunning;
-        private Turn _turn;
         private MoveData _moveData;
-        private float _t = 0;
+
+        public override string Name => "Move";
+        protected override float T { get; set; } = 0f;
+        protected override float SoundT => 0.6f;
 
         public MoveState(Game game, string uci) : base(game)
         {
             _uci = uci;
         }
-
-        public override string Name => "Move";
 
         public override void Enter()
         {
@@ -88,7 +88,7 @@ namespace ChessGame.Logic.GameStates
                 if (parsedUci.PromotedPieceType == PieceType.None)
                 {
                     _moveData.MoveType = MoveType.Move;
-                    _turn = new SimpleMove(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
+                    Turn = new SimpleMove(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
                 }
                 else
                 {
@@ -96,7 +96,7 @@ namespace ChessGame.Logic.GameStates
                     _moveData.HiddenPawn = piece;
                     promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                         parsedUci.ToSquare);
-                    _turn = new MovePromotion(_moveData.HiddenPawn, parsedUci.FromSquare, parsedUci.ToSquare,
+                    Turn = new MovePromotion(_moveData.HiddenPawn, parsedUci.FromSquare, parsedUci.ToSquare,
                         promotedPiece);
                 }
 
@@ -110,7 +110,7 @@ namespace ChessGame.Logic.GameStates
                 if (parsedUci.PromotedPieceType == PieceType.None)
                 {
                     _moveData.MoveType = captureInfo.MoveType;
-                    _turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
+                    Turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
                         _moveData.IsFirstMove);
                 }
                 else
@@ -119,7 +119,7 @@ namespace ChessGame.Logic.GameStates
                     _moveData.HiddenPawn = piece;
                     promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                         parsedUci.ToSquare);
-                    _turn = new CapturePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece,
+                    Turn = new CapturePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece,
                         _moveData.BeatenPiece);
                 }
 
@@ -131,7 +131,7 @@ namespace ChessGame.Logic.GameStates
             {
                 _moveData.MoveType = castlingInfo.MoveType;
                 _moveData.CastlingInfo = castlingInfo;
-                _turn = new Castling(_moveData.CastlingInfo, _moveData.IsFirstMove);
+                Turn = new Castling(_moveData.CastlingInfo, _moveData.IsFirstMove);
                 isValid = true;
             }
 
@@ -200,19 +200,21 @@ namespace ChessGame.Logic.GameStates
 
         private bool IsProgressMove()
         {
-            return _t < 1;
+            return T < 1;
         }
 
         private void ProgressMove()
         {
-            _t += Time.deltaTime / MoveTime;
+            float delta = Time.deltaTime / MoveTimeSec;
+            T += delta;
 
-            _turn.Progress(_t);
+            Turn.Progress(T, isUndo: false);
+            PlaySound(delta);
         }
 
         private void EndMove()
         {
-            _turn.End();
+            Turn.End();
 
             Game.ChangeTurn();
             Game.UciBuffer.Add(_moveData);
@@ -220,6 +222,7 @@ namespace ChessGame.Logic.GameStates
             UpdateAlgebraicNotation();
             Game.FireEndMove();
             Game.SetState(new IdleState(Game));
+            PlayCheckSound();
         }
 
         private void UpdateAlgebraicNotation()

@@ -14,7 +14,7 @@ namespace ChessGame.Logic.Moves
             _promotion = new Promotion(piece, fromSquare, toSquare, otherPiece);
         }
 
-        public override void Progress(float t)
+        public override void Progress(float t, bool isUndo = false)
         {
             _simpleMove.Progress(t);
         }
@@ -29,6 +29,12 @@ namespace ChessGame.Logic.Moves
         {
             _simpleMove.EndUndo();
             _promotion.EndUndo();
+        }
+
+        public override void PlaySound()
+        {
+            base.PlaySound();
+            EffectsPlayer.Instance.PlayPromoteSound();
         }
     }
 }

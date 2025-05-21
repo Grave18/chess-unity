@@ -11,10 +11,10 @@ namespace ChessGame.Logic.Moves
         public Capture(Piece movedPiece, Square fromSquare, Square toSquare, Piece beatenPiece, bool isFirstMove)
         {
             _beatenPiece = beatenPiece;
-            _simpleMove = new SimpleMove(movedPiece, fromSquare,toSquare, isFirstMove);
+            _simpleMove = new SimpleMove(movedPiece, fromSquare,toSquare, isFirstMove, isComposite: true);
         }
 
-        public override void Progress(float t)
+        public override void Progress(float t, bool isUndo = false)
         {
             _simpleMove.Progress(t);
         }
@@ -36,6 +36,12 @@ namespace ChessGame.Logic.Moves
             // Order matters
             _simpleMove.EndUndo();
             beatenPiece.AddToBoard(beatenPieceSquare);
+        }
+
+        public override void PlaySound()
+        {
+            base.PlaySound();
+            EffectsPlayer.Instance.PlayCaptureSound();
         }
     }
 }

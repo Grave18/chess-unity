@@ -7,21 +7,21 @@ using UnityEngine;
 
 namespace ChessGame.Logic.GameStates
 {
-    public class UndoState : GameState
+    public class UndoState : MovableState
     {
+        private const float MoveTimeSec = 0.1f;
+
         private readonly MoveData _moveData;
         private bool _isRunning;
-        private Turn _turn;
 
-        private float _t = 1;
-        private const float TimeSec = 0.1f;
+        public override string Name => "Undo";
+        protected override float T { get; set; } = 1f;
+        protected override float SoundT => 0.4f;
 
         public UndoState(Game game, MoveData moveData) : base(game)
         {
             _moveData = moveData;
         }
-
-        public override string Name => "Undo";
 
         public override void Enter()
         {
@@ -70,7 +70,7 @@ namespace ChessGame.Logic.GameStates
 
             if (_moveData.MoveType == MoveType.Move)
             {
-                _turn = new SimpleMove(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
+                Turn = new SimpleMove(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
                 return true;
             }
 
@@ -78,13 +78,13 @@ namespace ChessGame.Logic.GameStates
             {
                 // Piece and Promoted piece swapped
                 Piece promotedPiece = parsedUci.ToSquare.GetPiece();
-                _turn = new MovePromotion(promotedPiece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.HiddenPawn);
+                Turn = new MovePromotion(promotedPiece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.HiddenPawn);
                 return true;
             }
 
             if (_moveData.MoveType is MoveType.Capture or MoveType.EnPassant)
             {
-                _turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
+                Turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
                     _moveData.IsFirstMove);
                 return true;
             }
@@ -93,14 +93,14 @@ namespace ChessGame.Logic.GameStates
             {
                 Piece promotedPiece = parsedUci.ToSquare.GetPiece();
                 // Piece and Promoted piece swapped
-                _turn = new CapturePromotion(promotedPiece, parsedUci.FromSquare, parsedUci.ToSquare,
+                Turn = new CapturePromotion(promotedPiece, parsedUci.FromSquare, parsedUci.ToSquare,
                     _moveData.HiddenPawn, _moveData.BeatenPiece);
                 return true;
             }
 
             if (_moveData.MoveType is MoveType.CastlingShort or MoveType.CastlingLong)
             {
-                _turn = new Castling(_moveData.CastlingInfo, _moveData.IsFirstMove);
+                Turn = new Castling(_moveData.CastlingInfo, _moveData.IsFirstMove);
                 return true;
             }
 
@@ -167,25 +167,29 @@ namespace ChessGame.Logic.GameStates
 
         private bool IsProgressMove()
         {
-            return _t > 0;
+            return T > 0;
         }
 
         private void ProgressMove()
         {
-            _t -= Time.deltaTime / TimeSec;
+            float delta = Time.deltaTime / MoveTimeSec;
+            T -= delta;
 
-            _turn.Progress(_t);
+            Turn.Progress(T);
+            PlaySound(delta);
         }
 
         private void EndMove()
         {
-            _turn.EndUndo();
+            Turn.EndUndo();
 
             Game.ChangeTurn();
             Game.UciBuffer.Undo();
             Game.PreformCalculations();
             Game.FireEndMove();
             Game.SetPreviousState();
+
+            PlayCheckSound();
         }
     }
 }

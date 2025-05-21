@@ -13,7 +13,7 @@ namespace ChessGame.Logic.Moves
             _rookMove = new SimpleMove(castlingInfo.Rook, castlingInfo.RookFromSquare, castlingInfo.RookToSquare, isFirstMove);
         }
 
-        public override void Progress(float t)
+        public override void Progress(float t, bool isUndo = false)
         {
             if (t < 0.5f)
             {
@@ -35,6 +35,12 @@ namespace ChessGame.Logic.Moves
         {
             _kingMove.EndUndo();
             _rookMove.EndUndo();
+        }
+
+        public override void PlaySound()
+        {
+            base.PlaySound();
+            EffectsPlayer.Instance.PlayCastleSound();
         }
     }
 }

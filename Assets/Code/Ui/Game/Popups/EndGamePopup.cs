@@ -94,6 +94,7 @@ namespace Ui.Game.Popups
             }
 
             rematchPopup.Show();
+            EffectsPlayer.Instance.PlayNotifySound();
         }
 
         public void DeclineRematch()

@@ -9,10 +9,11 @@ using ChessGame.Logic.Players;
 using MainCamera;
 using UnityEngine;
 using UnityEngine.Events;
+using Utils;
 
 namespace ChessGame.Logic
 {
-    public class Game : MonoBehaviour
+    public class Game : SingletonBehaviour<Game>
     {
         [field: Header("References")]
         [field:SerializeField] public Competitors Competitors { get; set; }
@@ -58,6 +59,9 @@ namespace ChessGame.Logic
         public void FirePlay() => OnPlay?.Invoke();
         public void FirePause() => OnPause?.Invoke();
 
+        public bool IsCheck => CheckType is CheckType.Check or CheckType.DoubleCheck;
+        public bool IsCheckMate => CheckType == CheckType.CheckMate;
+
         // Getters
         public HashSet<Piece> WhitePieces => Board.WhitePieces;
         public HashSet<Piece> BlackPieces => Board.BlackPieces;
@@ -101,6 +105,7 @@ namespace ChessGame.Logic
 
                 SetState(new IdleState(this));
                 FireStart();
+                EffectsPlayer.Instance.PlayGameStartSound();
             }
         }
 

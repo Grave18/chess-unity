@@ -11,16 +11,18 @@ namespace ChessGame.Logic.Moves
         private readonly Square _fromSquare;
         private readonly Square _toSquare;
         private readonly bool _isFirstMove;
+        private readonly bool _isComposite;
 
-        public SimpleMove(Piece movedPiece, Square fromSquare, Square toSquare, bool isFirstMove)
+        public SimpleMove(Piece movedPiece, Square fromSquare, Square toSquare, bool isFirstMove, bool isComposite = false)
         {
             _movedPiece = movedPiece;
             _fromSquare = fromSquare;
             _toSquare = toSquare;
             _isFirstMove = isFirstMove;
+            _isComposite = isComposite;
         }
 
-        public override void Progress(float t)
+        public override void Progress(float t, bool isUndo = false)
         {
             Vector3 from = _fromSquare.transform.position;
             Vector3 to = _toSquare.transform.position;
@@ -46,6 +48,21 @@ namespace ChessGame.Logic.Moves
             if (_isFirstMove)
             {
                 _movedPiece.IsFirstMove = true;
+            }
+        }
+
+        public override void PlaySound()
+        {
+            if (!_isComposite)
+            {
+                if (Game.Instance.CurrentTurnColor == PieceColor.White)
+                {
+                    EffectsPlayer.Instance.PlayMoveSound();
+                }
+                else
+                {
+                    EffectsPlayer.Instance.PlayMoveOpponentSound();
+                }
             }
         }
     }
