@@ -60,6 +60,7 @@ namespace MainCamera
 
         private bool _isUpdating;
         private PieceColor _rotateCameraToColor;
+        private Coroutine _autoRotateRoutine;
 
         private void Awake()
         {
@@ -205,12 +206,16 @@ namespace MainCamera
 
         public void AutoRotate(PieceColor color)
         {
-            StartCoroutine(AutoRotateRoutine(color, null));
+            AutoRotate(color, null);
         }
 
         public void AutoRotate(PieceColor color, UnityAction continuation)
         {
-            StartCoroutine(AutoRotateRoutine(color, continuation));
+            if (_autoRotateRoutine != null)
+            {
+                StopCoroutine(_autoRotateRoutine);
+            }
+            _autoRotateRoutine = StartCoroutine(AutoRotateRoutine(color, continuation));
         }
 
         private IEnumerator AutoRotateRoutine(PieceColor color, UnityAction continuation)
@@ -222,8 +227,8 @@ namespace MainCamera
             float startYawRad = yawRad;
             float endYawRad = color switch
             {
-                PieceColor.White => Mathf.PI * 1.5f,
-                PieceColor.Black => Mathf.PI * 0.5f,
+                PieceColor.White => Mathf.PI * 1.5f, // 270 degrees
+                PieceColor.Black => Mathf.PI * 0.5f, // 90 degrees
                 _ => Mathf.PI * 1.5f,
             };
 
@@ -248,6 +253,7 @@ namespace MainCamera
         {
             yawRad %= Mathf.PI * 2f;
 
+            // Convert negative angle
             if (yawRad < 0)
             {
                 yawRad = 2*Mathf.PI + yawRad;
@@ -265,13 +271,13 @@ namespace MainCamera
 #if UNITY_EDITOR
 
         [Button(space: 20, row:"0")]
-        public void AutoRotateWhite()
+        public void AutoRotateWhiteButton()
         {
             AutoRotate(PieceColor.White);
         }
 
         [Button(space: 10, row:"0")]
-        public void AutoRotateBlack()
+        public void AutoRotateBlackButton()
         {
             AutoRotate(PieceColor.Black);
         }
