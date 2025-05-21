@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using ChessGame;
 using ChessGame.Logic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -172,9 +173,7 @@ namespace MainCamera
         private void CalculateZoom()
         {
             // From keyboard
-            _newDistance -= Input.GetAxis("Scroll") * zoomSensitivity;
-            // From scroll wheel
-            _newDistance -= Input.GetAxis("Mouse ScrollWheel") * zoomSensitivity;
+            _newDistance -= GInput.Scroll() * zoomSensitivity;
             _newDistance = Mathf.Clamp(_newDistance, minDistance, maxDistance);
 
             // Smoothing zoom
@@ -183,14 +182,12 @@ namespace MainCamera
 
         private void CalculateOrbit()
         {
-            if (Input.GetButton("Fire2"))
+            if (GInput.Rmb())
             {
-                _newYawRad -= Input.GetAxis("Mouse X") * orbitSensitivity;
-                _newPitchRad -= Input.GetAxis("Mouse Y") * orbitSensitivity;
+                _newYawRad -= GInput.Horizontal() * orbitSensitivity;
+                _newPitchRad -= GInput.Vertical() * orbitSensitivity;
             }
 
-            _newYawRad += Input.GetAxis("Horizontal") * orbitSensitivity;
-            _newPitchRad += Input.GetAxis("Vertical") * orbitSensitivity;
             _newPitchRad = Mathf.Clamp(_newPitchRad, minPitchRad, maxPitchRad);
 
             // Smoothing orbit
@@ -213,6 +210,7 @@ namespace MainCamera
         {
             if(_autoRotateRoutine != null)
             {
+                _isUpdating = true;
                 StopCoroutine(_autoRotateRoutine);
             }
         }

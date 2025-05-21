@@ -46,12 +46,12 @@ namespace ChessGame.Logic.Players
         private void Input()
         {
             // Cast ray from cursor
-            Vector3 mousePos = UnityEngine.Input.mousePosition;
+            Vector3 mousePos = GInput.MousePosition();
             Ray ray = _mainCamera.ScreenPointToRay(mousePos);
             Physics.Raycast(ray, out RaycastHit hit, MaxDistance, _layerMask);
             Transform hitTransform = hit.transform;
 
-            if (UnityEngine.Input.GetButtonDown("Fire1"))
+            if (GInput.Lmb())
             {
                 ISelectable selectable = null;
 

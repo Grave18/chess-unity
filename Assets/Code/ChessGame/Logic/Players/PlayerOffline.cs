@@ -37,12 +37,12 @@ namespace ChessGame.Logic.Players
         public void UpdatePlayer()
         {
             // Cast ray from cursor
-            Vector3 mousePos = Input.mousePosition;
+            Vector3 mousePos = GInput.MousePosition();
             Ray ray = _mainCamera.ScreenPointToRay(mousePos);
             bool isHit = Physics.Raycast(ray, out RaycastHit hit, MaxDistance, _layerMask);
             Transform hitTransform = hit.transform;
 
-            if (Input.GetButtonDown("Fire1"))
+            if (GInput.Lmb())
             {
                 ISelectable selectable = null;
 

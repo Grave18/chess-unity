@@ -25,6 +25,12 @@ namespace Ui.MainMenu
         {
             CurrentPanel?.Hide();
             CurrentPanel = panel;
+
+            SetCurrentPanelHook();
+        }
+
+        protected virtual void SetCurrentPanelHook()
+        {
         }
     }
 }

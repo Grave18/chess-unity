@@ -1,4 +1,5 @@
-﻿using Ui.MainMenu;
+﻿using ChessGame;
+using Ui.MainMenu;
 using UnityEngine;
 
 namespace Ui.Game
@@ -23,6 +24,12 @@ namespace Ui.Game
         {
             game.OnWarmup -= ShowMenuButtonPanel;
             game.OnEnd -= ShowEndGamePopup;
+        }
+
+        /// Disable input if in Menu
+        protected override void SetCurrentPanelHook()
+        {
+            GInput.IsEnabled = CurrentPanel == menuButtonPanel;
         }
 
         public void ShowMenuButtonPanel()
