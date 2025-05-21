@@ -47,7 +47,7 @@ namespace ChessGame.Logic
 
         private void StartTimer()
         {
-            if (!isController)
+            if (!isHost)
             {
                 return;
             }

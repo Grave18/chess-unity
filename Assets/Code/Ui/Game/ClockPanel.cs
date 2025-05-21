@@ -19,15 +19,30 @@ namespace Ui.Game
             var wait = new WaitForSeconds(0.2f);
             IClock clock = initialization.Clock;
 
-            yield return new WaitWhile (() => clock == null);
+            yield return WaitForClockInit(clock);
 
             while (Application.isPlaying)
             {
-                whiteText.text = clock.WhiteTime.ToString(@"mm\:ss");
-                blackText.text = clock.BlackTime.ToString(@"mm\:ss");
+                FormatAndApplyTime(clock);
 
                 yield return wait;
             }
+        }
+
+        private static WaitWhile WaitForClockInit(IClock clock)
+        {
+            return new WaitWhile (() => clock == null);
+        }
+
+        private void FormatAndApplyTime(IClock clock)
+        {
+            int wMin = (int)clock.WhiteTime.TotalMinutes;
+            int wSec = clock.WhiteTime.Seconds;
+            int bMin = (int)clock.BlackTime.TotalMinutes;
+            int bSec = clock.BlackTime.Seconds;
+
+            whiteText.text = $"{wMin:00}:{wSec:00}";
+            blackText.text = $"{bMin:00}:{bSec:00}";
         }
     }
 }
