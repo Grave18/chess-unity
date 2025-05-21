@@ -9,10 +9,15 @@ namespace Ui.Game
         [Header("References")]
         [SerializeField] private ChessGame.Logic.Game game;
 
+        [Header("UI")]
+        [SerializeField] private GameObject inputBlockingPanel;
+
         [Header("Popups")]
         [SerializeField] private MenuPanel exitPopup;
         [SerializeField] private MenuPanel endGamePopup;
         [SerializeField] private MenuPanel menuButtonPanel;
+
+        private bool IsInMenu => CurrentPanel != menuButtonPanel;
 
         private void OnEnable()
         {
@@ -26,10 +31,11 @@ namespace Ui.Game
             game.OnEnd -= ShowEndGamePopup;
         }
 
-        /// Disable input if in Menu
+        /// Disable input if in Menu and enable input blocking
         protected override void SetCurrentPanelHook()
         {
-            GInput.IsEnabled = CurrentPanel == menuButtonPanel;
+            GInput.IsEnabled = !IsInMenu;
+            inputBlockingPanel.SetActive(IsInMenu);
         }
 
         public void ShowMenuButtonPanel()
