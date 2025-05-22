@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using ChessGame.ChessBoard;
 using ChessGame.ChessBoard.Pieces;
@@ -22,7 +23,8 @@ namespace ChessGame.Logic
 
         public PieceColor CurrentTurnColor { get; private set; } = PieceColor.White;
         public PieceColor PreviousTurnColor => CurrentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
-        public CheckType CheckType { get; set; } = CheckType.None;
+        public CheckType CheckType { get; private set; } = CheckType.None;
+        public string CheckDescription { get; private set; }
 
         public ISelectable Selected { get; private set; }
 
@@ -173,31 +175,6 @@ namespace ChessGame.Logic
         public void Pause()
         {
             _state?.Pause();
-        }
-
-        public PieceColor GetWinner()
-        {
-            if (CheckType == CheckType.CheckMate)
-            {
-                return CurrentTurnColor ==  PieceColor.White ? PieceColor.Black : PieceColor.White;
-            }
-
-            if (CheckType == CheckType.TimeOutWhite)
-            {
-                return PieceColor.Black;
-            }
-
-            if (CheckType == CheckType.TimeOutBlack)
-            {
-                return PieceColor.White;
-            }
-
-            if (CheckType == CheckType.Stalemate)
-            {
-                return PieceColor.None;
-            }
-
-            return PieceColor.None;
         }
 
         public void SetTimeOut(PieceColor pieceColor)
@@ -362,18 +339,60 @@ namespace ChessGame.Logic
 
         private void CalculateCheckMateOrStalemate(HashSet<Piece> currentTurnPieces)
         {
-            // If all pieces have no moves
+            if(IsDraw())
+            {
+                CheckType = CheckType.Draw;
+                CheckDescription = "Players have insufficient material";
+            }
+
+            // If all pieces have no moves exit early
             if (IsAnyPieceHasMove(currentTurnPieces))
             {
                 return;
             }
 
-            CheckType = CheckType switch
+            switch (CheckType)
             {
-                CheckType.None => CheckType.Stalemate,
-                CheckType.Check or CheckType.DoubleCheck => CheckType.CheckMate,
-                _ => CheckType,
-            };
+                case CheckType.None:
+                    CheckType = CheckType.Draw;
+                    CheckDescription = "Stalemate. Players have no moves";
+                    break;
+                case CheckType.Check or CheckType.DoubleCheck:
+                    CheckType = CheckType.CheckMate;
+                    break;
+                default:
+                    CheckType = CheckType;
+                    break;
+            }
+        }
+
+        private bool IsDraw()
+        {
+            bool isDraw = CheckDrawOneSide(CurrentTurnPieces, PrevTurnPieces) || CheckDrawOneSide(PrevTurnPieces, CurrentTurnPieces);
+
+            return isDraw;
+        }
+
+        [Pure]
+        private static bool CheckDrawOneSide(HashSet<Piece> currentTurnPieces, HashSet<Piece> prevTurnPieces)
+        {
+            bool oneKing = currentTurnPieces.Count == 1 && currentTurnPieces.First() is King;
+            bool isDraw = oneKing && IsInsufficientFigures(prevTurnPieces);
+
+            return isDraw;
+        }
+
+        /// K-K; K-KN; K-KNN; K-KB
+        private static bool IsInsufficientFigures(HashSet<Piece> prevTurnPieces)
+        {
+            bool oneKing = prevTurnPieces.Count == 1 && prevTurnPieces.First() is King;
+            bool kingAndBishop = prevTurnPieces.Count == 2 && prevTurnPieces.Any(p => p is King) && prevTurnPieces.Any(p => p is Bishop);
+            bool kingAndKnight = prevTurnPieces.Count == 2 && prevTurnPieces.Any(p => p is King) && prevTurnPieces.Any(p => p is Knight);
+            bool kingAnd2Knights = prevTurnPieces.Count == 3 && prevTurnPieces.Any(p => p is King) && prevTurnPieces.OfType<Knight>().Count() == 2;
+
+            bool isInsufficientFigures = oneKing || kingAndBishop || kingAndKnight || kingAnd2Knights;
+
+            return isInsufficientFigures;
         }
 
         private static bool IsAnyPieceHasMove(HashSet<Piece> currentTurnPieces)

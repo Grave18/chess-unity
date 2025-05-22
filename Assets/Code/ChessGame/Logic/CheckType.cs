@@ -6,7 +6,7 @@
         Check,
         DoubleCheck,
         CheckMate,
-        Stalemate,
+        Draw,
         TimeOutWhite,
         TimeOutBlack
     }

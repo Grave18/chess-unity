@@ -48,8 +48,8 @@ namespace Ui.Game
                 case CheckType.CheckMate:
                     ProcessCheckmate(game.CurrentTurnColor);
                     break;
-                case CheckType.Stalemate:
-                    SetPanel(text: "Stalemate", additional: "", isText: true, isPanel: true);
+                case CheckType.Draw:
+                    SetPanel(text: "Draw", additional: game.CheckDescription, isText: true, isPanel: true);
                     break;
                 case CheckType.TimeOutWhite or CheckType.TimeOutBlack:
                     ProcessTimeOut(game.CheckType);

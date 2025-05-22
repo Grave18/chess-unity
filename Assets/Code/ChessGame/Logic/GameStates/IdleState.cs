@@ -27,7 +27,7 @@ namespace ChessGame.Logic.GameStates
 
         private bool IsGameOver()
         {
-            return Game.CheckType is CheckType.CheckMate or CheckType.Stalemate || IsTimeOut();
+            return Game.CheckType is CheckType.CheckMate or CheckType.Draw || IsTimeOut();
         }
 
         public override void Exit(string nextState)

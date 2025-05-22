@@ -14537,7 +14537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ad5b819f6ed4296a39c10030f0158da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isInitialized: 0
+  isInitialized: 1
   gameSettings:
     PlayerColor: 1
     Player1Settings:
@@ -14550,8 +14550,8 @@ MonoBehaviour:
       PlayerType: 1
       ComputerSkillLevel: 10
       ComputerThinkTimeMs: 1000
-    Time: {x: 0, y: 15}
-    CurrentFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+    Time: {x: 50, y: 0}
+    CurrentFen: 8/8/3k4/8/6q1/8/1p6/7K b - - 0 1
     DefaultFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     SavedFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     CustomFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
@@ -16235,7 +16235,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 949107596}
   m_HandleRect: {fileID: 949107595}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
