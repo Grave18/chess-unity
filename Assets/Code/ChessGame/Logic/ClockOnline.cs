@@ -34,8 +34,7 @@ namespace ChessGame.Logic
                                 + TimeSpan.FromSeconds(gameSettings.Time.y);
             _initialBlackTime = _initialWhiteTime;
 
-            InitTime();
-
+            _game.OnWarmup += InitTime;
             _game.OnStart += StartTimer;
             _game.OnEndMove += Play;
             _game.OnEnd += Pause;
@@ -43,6 +42,21 @@ namespace ChessGame.Logic
             _game.OnPause += Pause;
 
             _isInitialized = true;
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            if (_game)
+            {
+                _game.OnWarmup -= InitTime;
+                _game.OnStart -= StartTimer;
+                _game.OnEndMove -= Play;
+                _game.OnEnd -= Pause;
+                _game.OnPlay -= Play;
+                _game.OnPause -= Pause;
+            }
         }
 
         private void StartTimer()
