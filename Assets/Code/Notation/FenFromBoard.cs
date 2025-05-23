@@ -1,11 +1,13 @@
 using System.Text;
-using ChessGame;
 using ChessGame.ChessBoard;
 using ChessGame.ChessBoard.Info;
 using ChessGame.ChessBoard.Pieces;
 using ChessGame.Logic;
-using EditorCools;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using EditorCools;
+#endif
 
 namespace Notation
 {
@@ -22,15 +24,6 @@ namespace Notation
             _game = game;
             _board = board;
             _fen = fen;
-        }
-
-        [Button(space: 10)]
-        public void ShowUci()
-        {
-            string uci = Get();
-
-            Debug.Log($"<color=gray>{uci}</color>");
-            Debug.Log($"Is identical with preset: {uci == _fen}");
         }
 
         public string Get()
@@ -171,5 +164,21 @@ namespace Notation
         {
             _uciStringBuilder.Append(" 1");
         }
+
+#if UNITY_EDITOR
+
+        [Button(space: 10)]
+        public void ShowAndCopyToClipboard()
+        {
+            string uci = Get();
+
+            GUIUtility.systemCopyBuffer = uci;
+
+            Debug.Log($"<color=gray>{uci}</color>");
+            Debug.Log($"Is identical with preset: {uci == _fen}");
+        }
+
+#endif
+
     }
 }
