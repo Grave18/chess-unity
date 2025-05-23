@@ -339,10 +339,9 @@ namespace ChessGame.Logic
 
         private void CalculateCheckMateOrStalemate(HashSet<Piece> currentTurnPieces)
         {
-            if(IsDraw())
+            if(IsInsufficientPieces())
             {
                 CheckType = CheckType.Draw;
-                CheckDescription = "Players have insufficient material";
             }
 
             // If all pieces have no moves exit early
@@ -366,33 +365,57 @@ namespace ChessGame.Logic
             }
         }
 
-        private bool IsDraw()
+        [Pure]
+        private bool IsInsufficientPieces()
         {
-            bool isDraw = CheckDrawOneSide(CurrentTurnPieces, PrevTurnPieces) || CheckDrawOneSide(PrevTurnPieces, CurrentTurnPieces);
+            bool isInsufficientPieces = IsInsufficientPiecesOneSide(CurrentTurnPieces, PrevTurnPieces)
+                          || IsInsufficientPiecesOneSide(PrevTurnPieces, CurrentTurnPieces);
 
-            return isDraw;
+            return isInsufficientPieces;
         }
 
-        [Pure]
-        private static bool CheckDrawOneSide(HashSet<Piece> currentTurnPieces, HashSet<Piece> prevTurnPieces)
+        private bool IsInsufficientPiecesOneSide(HashSet<Piece> thisSide, HashSet<Piece> otherSide)
         {
-            bool oneKing = currentTurnPieces.Count == 1 && currentTurnPieces.First() is King;
-            bool isDraw = oneKing && IsInsufficientFigures(prevTurnPieces);
+            bool oneKingThisSide = thisSide.Count == 1 && thisSide.First() is King;
+            bool isDraw = oneKingThisSide && IsInsufficientFiguresInOtherSide(otherSide);
 
             return isDraw;
         }
 
         /// K-K; K-KN; K-KNN; K-KB
-        private static bool IsInsufficientFigures(HashSet<Piece> prevTurnPieces)
+        private bool IsInsufficientFiguresInOtherSide(HashSet<Piece> otherSide)
         {
-            bool oneKing = prevTurnPieces.Count == 1 && prevTurnPieces.First() is King;
-            bool kingAndBishop = prevTurnPieces.Count == 2 && prevTurnPieces.Any(p => p is King) && prevTurnPieces.Any(p => p is Bishop);
-            bool kingAndKnight = prevTurnPieces.Count == 2 && prevTurnPieces.Any(p => p is King) && prevTurnPieces.Any(p => p is Knight);
-            bool kingAnd2Knights = prevTurnPieces.Count == 3 && prevTurnPieces.Any(p => p is King) && prevTurnPieces.OfType<Knight>().Count() == 2;
+            bool hasKing = otherSide.Count > 0 && otherSide.Any(p => p is King);
 
-            bool isInsufficientFigures = oneKing || kingAndBishop || kingAndKnight || kingAnd2Knights;
+            bool oneKing = otherSide.Count == 1 && hasKing;
+            if (oneKing)
+            {
+                CheckDescription = "Insufficient figures. Both sides has only one king";
+                return true;
+            }
 
-            return isInsufficientFigures;
+            bool kingAndBishop = otherSide.Count == 2 && hasKing && otherSide.Any(p => p is Bishop);
+            if (kingAndBishop)
+            {
+                CheckDescription = "Insufficient figures. One side has one king and other king and bishop";
+                return true;
+            }
+
+            bool kingAndKnight = otherSide.Count == 2 && hasKing && otherSide.Any(p => p is Knight);
+            if (kingAndKnight)
+            {
+                CheckDescription = "Insufficient figures. One side has one king and other king and knight";
+                return true;
+            }
+
+            bool kingAnd2Knights = otherSide.Count == 3 && hasKing && otherSide.OfType<Knight>().Count() == 2;
+            if (kingAnd2Knights)
+            {
+                CheckDescription = "Insufficient figures. One side has one king and other king and 2 knights";
+                return true;
+            }
+
+            return false;
         }
 
         private static bool IsAnyPieceHasMove(HashSet<Piece> currentTurnPieces)

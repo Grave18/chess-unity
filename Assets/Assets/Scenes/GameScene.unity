@@ -14551,7 +14551,7 @@ MonoBehaviour:
       ComputerSkillLevel: 10
       ComputerThinkTimeMs: 1000
     Time: {x: 50, y: 0}
-    CurrentFen: 8/8/3k4/8/6q1/8/1p6/7K b - - 0 1
+    CurrentFen: 8/8/3b4/8/6k1/6P1/8/4N2K b - - 0 1
     DefaultFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     SavedFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     CustomFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
