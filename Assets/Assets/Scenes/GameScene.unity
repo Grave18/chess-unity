@@ -825,7 +825,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -9371,8 +9371,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -140}
-  m_SizeDelta: {x: -1380, y: 220}
+  m_AnchoredPosition: {x: 0, y: -165.0191}
+  m_SizeDelta: {x: -1380, y: 270.0382}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &948061434
 MonoBehaviour:
@@ -12055,6 +12055,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Competitors>k__BackingField: {fileID: 1739655008}
+  rule50Count: 50
+  threefoldCount: 3
 --- !u!1 &1227854461
 GameObject:
   m_ObjectHideFlags: 0
@@ -14389,8 +14391,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -45.535995}
-  m_SizeDelta: {x: 0, y: -91.073}
+  m_AnchoredPosition: {x: 0, y: -56.28017}
+  m_SizeDelta: {x: 0, y: -112.5614}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1449034957
 CanvasRenderer:
@@ -14551,7 +14553,7 @@ MonoBehaviour:
       ComputerSkillLevel: 10
       ComputerThinkTimeMs: 1000
     Time: {x: 50, y: 0}
-    CurrentFen: 8/8/3b4/8/6k1/6P1/8/4N2K b - - 0 1
+    CurrentFen: 5bk1/5p1p/5Q2/8/8/8/8/7K w - - 0 1
     DefaultFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     SavedFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     CustomFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1

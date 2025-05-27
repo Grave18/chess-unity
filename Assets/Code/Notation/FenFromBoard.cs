@@ -4,6 +4,7 @@ using ChessGame.ChessBoard.Info;
 using ChessGame.ChessBoard.Pieces;
 using ChessGame.Logic;
 using UnityEngine;
+using Utils;
 
 #if UNITY_EDITOR
 using EditorCools;
@@ -11,7 +12,7 @@ using EditorCools;
 
 namespace Notation
 {
-    public class FenFromBoard : MonoBehaviour
+    public class FenFromBoard : SingletonBehaviour<FenFromBoard>
     {
         private Game _game;
         private Board _board;
@@ -36,6 +37,19 @@ namespace Notation
             AppendEnPassantSquare();
             AppendHalfMove();
             AppendFullMove();
+
+            return _uciStringBuilder.ToString();
+        }
+
+        /// Don't contain a half move and full move
+        public string GetShort()
+        {
+            _uciStringBuilder.Clear();
+
+            AppendLetters();
+            AppendColor();
+            AppendCastling();
+            AppendEnPassantSquare();
 
             return _uciStringBuilder.ToString();
         }

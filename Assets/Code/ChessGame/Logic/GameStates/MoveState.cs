@@ -75,6 +75,7 @@ namespace ChessGame.Logic.GameStates
             {
                 Uci = _uci,
                 IsFirstMove = piece.IsFirstMove,
+                Rule50Count = GetRule50Count(),
             };
 
             bool isValid = false;
@@ -100,6 +101,12 @@ namespace ChessGame.Logic.GameStates
                         promotedPiece);
                 }
 
+                // Reset rule 50 if pawn move
+                if (piece is Pawn)
+                {
+                    ResetRule50();
+                }
+
                 isValid = true;
             }
 
@@ -123,6 +130,9 @@ namespace ChessGame.Logic.GameStates
                         _moveData.BeatenPiece);
                 }
 
+                // Reset rule 50 if capture move
+                ResetRule50();
+
                 isValid = true;
             }
 
@@ -138,6 +148,16 @@ namespace ChessGame.Logic.GameStates
             _moveData.TurnColor = Game.CurrentTurnColor;
             _moveData.AlgebraicNotation = Algebraic.Get(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.MoveType, promotedPiece);
             return isValid;
+        }
+
+        private int GetRule50Count()
+        {
+            return Game.UciBuffer.Rule50Count + 1;
+        }
+
+        private void ResetRule50()
+        {
+            _moveData.Rule50Count = 0;
         }
 
         private void Run()

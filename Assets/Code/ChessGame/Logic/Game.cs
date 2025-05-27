@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using ChessGame.ChessBoard;
 using ChessGame.ChessBoard.Pieces;
@@ -20,6 +19,10 @@ namespace ChessGame.Logic
         [field:SerializeField] public Competitors Competitors { get; set; }
         public Board Board { get; private set; }
         public UciBuffer UciBuffer { get; private set; }
+
+        [Header("Settings")]
+        [SerializeField] private int rule50Count = 50;
+        [SerializeField] private int ruleThreefoldCount = 3;
 
         public PieceColor CurrentTurnColor { get; private set; } = PieceColor.White;
         public PieceColor PreviousTurnColor => CurrentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
@@ -246,7 +249,7 @@ namespace ChessGame.Logic
                 piece.CalculateConstrains();
             }
 
-            CalculateCheckMateOrStalemate(CurrentTurnPieces);
+            CalculateCheckMateOrDraw(CurrentTurnPieces);
         }
 
         private static HashSet<Square> GetUnderAttackSquares(HashSet<Piece> pieces)
@@ -337,11 +340,26 @@ namespace ChessGame.Logic
             }
         }
 
-        private void CalculateCheckMateOrStalemate(HashSet<Piece> currentTurnPieces)
+        private void CalculateCheckMateOrDraw(HashSet<Piece> currentTurnPieces)
         {
+            if (IsThreefoldRule())
+            {
+                CheckType = CheckType.Draw;
+                CheckDescription = "Threefold repetition draw";
+                return;
+            }
+
+            if (IsRule50())
+            {
+                CheckType = CheckType.Draw;
+                CheckDescription = "Fifty move rule draw";
+                return;
+            }
+
             if(IsInsufficientPieces())
             {
                 CheckType = CheckType.Draw;
+                return;
             }
 
             // If all pieces have no moves exit early
@@ -365,7 +383,18 @@ namespace ChessGame.Logic
             }
         }
 
-        [Pure]
+        private bool IsThreefoldRule()
+        {
+            bool isThreefold = UciBuffer.ThreefoldRepetitionCount == ruleThreefoldCount;
+
+            return isThreefold;
+        }
+
+        private bool IsRule50()
+        {
+            return UciBuffer.Rule50Count == rule50Count * 2;
+        }
+
         private bool IsInsufficientPieces()
         {
             bool isInsufficientPieces = IsInsufficientPiecesOneSide(CurrentTurnPieces, PrevTurnPieces)

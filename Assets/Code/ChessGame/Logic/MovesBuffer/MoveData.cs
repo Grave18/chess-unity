@@ -8,6 +8,8 @@ namespace ChessGame.Logic.MovesBuffer
         public string Uci;
         public MoveType MoveType;
         public bool IsFirstMove;
+        public string ThreefoldShortFen;
+        public int Rule50Count;
         public string EpSquareAddress = "-";
         public string AlgebraicNotation;
         public PieceColor TurnColor;
