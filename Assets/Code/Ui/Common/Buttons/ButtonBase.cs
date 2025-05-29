@@ -3,6 +3,7 @@ using TMPro;
 using Ui.Common.Classes;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UI;
 using Utils;
 
@@ -13,34 +14,38 @@ namespace Ui.Common.Buttons
         [SerializeField] private string text = "Default";
         [SerializeField] private ButtonClass buttonClass;
 
-        private UnityEngine.UI.Button _button;
+        private Button _button;
         private TMP_Text _text;
         private RectTransform _transform;
 
-        protected virtual void Awake()
+        private void Awake()
         {
-            _button = GetComponentInChildren<UnityEngine.UI.Button>();
+            _button = GetComponentInChildren<Button>();
             _text = _button.GetComponentInChildren<TMP_Text>();
             _transform = _button.GetComponent<RectTransform>();
+
+            Assert.IsNotNull(_button, "Button not found");
+            Assert.IsNotNull(_text, "Text not found");
+            Assert.IsNotNull(_transform, "Transform not found");
         }
 
-        protected virtual void OnEnable()
+        private void OnEnable()
         {
             ApplyClass();
         }
 
         private void ApplyClass()
         {
-            _text.color = buttonClass.FgColor;
+            _text.color = _button.interactable ? buttonClass.TextColor : buttonClass.TextDisabledColor;
             _text.text = text;
             _text.fontSize = buttonClass.TextSize;
 
-            if (buttonClass.Font != null)
+            if (buttonClass.Font)
             {
                 _text.font = buttonClass.Font;
             }
 
-            if (buttonClass.BackgroundImage != null)
+            if (buttonClass.BackgroundImage)
             {
                 _button.image.sprite = buttonClass.BackgroundImage;
             }
@@ -54,8 +59,14 @@ namespace Ui.Common.Buttons
                 buttonClass.HorizontalAlignment, buttonClass.VerticalAlignment);
         }
 
+        public void SetButtonEnabled(bool buttonEnabled = true)
+        {
+            _button.interactable = buttonEnabled;
+            _text.color = buttonEnabled ? buttonClass.TextColor : buttonClass.TextDisabledColor;
+        }
+
 #if UNITY_EDITOR
-        // private void OnValidate()
+
         [Button(name: "Apply Class", space: 10)]
         private void ApplyClassInEditor()
         {
@@ -66,13 +77,15 @@ namespace Ui.Common.Buttons
 
         private void RecordUndo()
         {
-            Undo.RecordObject(_text, "Apply Class");
-            Undo.RecordObject(_button, "Apply Class");
-            Undo.RecordObject(_transform, "Apply Class");
+            Undo.RecordObject(_text, "Apply Button Class");
+            Undo.RecordObject(_button, "Apply Button Class");
+            Undo.RecordObject(_transform, "Apply Button Class");
             PrefabUtility.RecordPrefabInstancePropertyModifications(_text);
             PrefabUtility.RecordPrefabInstancePropertyModifications(_button);
             PrefabUtility.RecordPrefabInstancePropertyModifications(_transform);
         }
+
 #endif
+
     }
 }

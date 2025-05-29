@@ -100,7 +100,6 @@ namespace ChessGame.Logic
             PreformCalculations();
             StartCoroutine(StartGameRoutine());
             SetState(new WarmUpState(this));
-            FireWarmup();
 
             return;
 
@@ -122,9 +121,12 @@ namespace ChessGame.Logic
             UciBuffer.Clear();
         }
 
-        public void SetState(GameState state, string nextState = "None")
+        public void SetState(GameState state, string nextState = "None", bool isSetPreviousState = true)
         {
-            _previousState = _state;
+            _previousState = isSetPreviousState
+                ? _state
+                : null;
+
             _state?.Exit(nextState);
             _state = state;
             _state?.Enter();
@@ -191,7 +193,24 @@ namespace ChessGame.Logic
                 CheckType = CheckType.TimeOutBlack;
             }
 
-            FireEnd();
+            SetState(new EndGameState(this));
+        }
+
+        public void DrawByAgreement()
+        {
+            CheckType = CheckType.Draw;
+            CheckDescription = "Draw by agreement";
+            SetState(new EndGameState(this));
+        }
+
+        public bool IsGameOver()
+        {
+            return CheckType is CheckType.CheckMate or CheckType.Draw || IsTimeOut();
+        }
+
+        private bool IsTimeOut()
+        {
+            return CheckType is CheckType.TimeOutWhite or CheckType.TimeOutBlack;
         }
 
         /// Get section relative to current piece color

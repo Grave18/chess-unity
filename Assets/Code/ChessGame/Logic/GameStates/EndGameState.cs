@@ -1,17 +1,19 @@
-﻿namespace ChessGame.Logic.GameStates
-{
-    public class WarmUpState : GameState
-    {
-        public override string Name => "WarmUp";
+﻿using ChessGame.Logic.MovesBuffer;
 
-        public WarmUpState(Game game) : base(game)
+namespace ChessGame.Logic.GameStates
+{
+    public class EndGameState : GameState
+    {
+        public override string Name => "End Game";
+
+        public EndGameState(Game game) : base(game)
         {
 
         }
 
         public override void Enter()
         {
-            Game.FireWarmup();
+            Game.FireEnd();
         }
 
         public override void Exit(string nextState)
@@ -26,7 +28,10 @@
 
         public override void Undo()
         {
-            // Empty
+            if (Game.UciBuffer.CanUndo(out MoveData moveData))
+            {
+                Game.SetState(new UndoState(Game, moveData), isSetPreviousState:false);
+            }
         }
 
         public override void Redo()

@@ -14,20 +14,8 @@ namespace ChessGame.Logic.GameStates
 
         public override void Enter()
         {
-            if(IsGameOver())
-            {
-                Game.FireEnd();
-            }
-            else
-            {
-                _isRunning = true;
-                Game.Competitors.StartPlayer();
-            }
-        }
-
-        private bool IsGameOver()
-        {
-            return Game.CheckType is CheckType.CheckMate or CheckType.Draw || IsTimeOut();
+            _isRunning = true;
+            Game.Competitors.StartPlayer();
         }
 
         public override void Exit(string nextState)
@@ -68,22 +56,17 @@ namespace ChessGame.Logic.GameStates
 
         public override void Update()
         {
+            if (Game.IsGameOver())
+            {
+                Game.SetState(new EndGameState(Game));
+            }
+
             if (!_isRunning)
             {
                 return;
             }
 
-            if (IsTimeOut())
-            {
-                _isRunning = false;
-            }
-
             Game.Competitors.UpdatePlayer();
-        }
-
-        private bool IsTimeOut()
-        {
-            return Game.CheckType is CheckType.TimeOutWhite or CheckType.TimeOutBlack;
         }
     }
 }
