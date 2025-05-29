@@ -4,23 +4,22 @@ using Ui.Common.Buttons;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-// Need for button base Awake is run before this OnEnable
-[DefaultExecutionOrder(1)]
+[DefaultExecutionOrder(1)] // Needed for ButtonBase.Awake() is run before this OnEnable
 public class DrawButtonOnlineEnabler : MonoBehaviour
 {
     [SerializeField] private Game game;
 
     private void OnEnable()
     {
-        EnableButtonIfOnline();
+        SwitchButtonEnabled();
     }
 
-    private void EnableButtonIfOnline()
+    private void SwitchButtonEnabled()
     {
         var buttonBase = GetComponent<ButtonBase>();
         Assert.IsNotNull(buttonBase, "Draw button not found");
 
-        bool isEnabled = OnlineInstanceHandler.IsOnline && !game.IsGameOver();
+        bool isEnabled = OnlineInstanceHandler.IsOnline && !game.IsGameOver() && game.IsMyTurn();
         buttonBase.SetButtonEnabled(isEnabled);
     }
 }

@@ -5,11 +5,12 @@ using ChessGame.Logic;
 using Initialization;
 using ParrelSync;
 using UnityEngine;
+using Utils;
 
 namespace Ui.MainMenu
 {
     [DefaultExecutionOrder(-1)]
-    public class GameSettingsContainer: MonoBehaviour
+    public class GameSettingsContainer: SingletonBehaviour<GameSettingsContainer>
     {
         [Tooltip("Use it if no need to load settings")]
         [SerializeField] private bool isInitialized;
@@ -19,16 +20,20 @@ namespace Ui.MainMenu
 
         public GameSettings GameSettings => gameSettings;
 
+        // TODO: this is for temporary localhost server. Need to be removed
         public static string GameSettingsKey => ClonesManager.IsClone() ? "GameSettingsClone" : "GameSettings";
         private static string localhostServerKey => ClonesManager.IsClone() ? "IsServerClone" : "IsServer";
+
         public static bool IsLocalhostServer
         {
             get => PlayerPrefs.GetInt(localhostServerKey, 0) == 1;
             set => PlayerPrefs.SetInt(localhostServerKey, value ? 1 : 0);
         }
+        // end todo
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             Init();
         }
 

@@ -7,6 +7,7 @@ using ChessGame.Logic.GameStates;
 using ChessGame.Logic.MovesBuffer;
 using ChessGame.Logic.Players;
 using MainCamera;
+using Ui.MainMenu;
 using UnityEngine;
 using UnityEngine.Events;
 using Utils;
@@ -254,6 +255,12 @@ namespace ChessGame.Logic
         public bool IsBlackTurn()
         {
             return CurrentTurnColor == PieceColor.Black;
+        }
+
+        /// Is it turn of current player
+        public bool IsMyTurn()
+        {
+            return CurrentTurnColor == GameSettingsContainer.Instance.GameSettings.PlayerColor;
         }
 
         /// Calculate under attack squares, check type, moves and captures
