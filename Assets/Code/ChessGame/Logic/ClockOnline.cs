@@ -95,7 +95,7 @@ namespace ChessGame.Logic
 
         private void Update()
         {
-            if (!_isPlaying || _game == null)
+            if (!_isPlaying || !_game)
             {
                 return;
             }
@@ -124,8 +124,14 @@ namespace ChessGame.Logic
             {
                 _isPlaying = false;
                 time.value = TimeSpan.Zero;
-                _game.SetTimeOut(pieceColor);
+                SetTimeoutAll(pieceColor);
             }
+        }
+
+        [ObserversRpc]
+        private void SetTimeoutAll(PieceColor pieceColor)
+        {
+            _game.SetTimeOut(pieceColor);
         }
     }
 }
