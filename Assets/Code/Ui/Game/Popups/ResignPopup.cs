@@ -18,6 +18,11 @@ namespace Ui.Game.Popups
             yesButton.OnClick += Resign;
         }
 
+        private void OnDisable()
+        {
+            yesButton.OnClick -= Resign;
+        }
+
         private void Resign()
         {
             if (OnlineInstanceHandler.IsOffline)

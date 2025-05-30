@@ -56,10 +56,7 @@ namespace ChessGame.Logic.GameStates
 
         public override void Update()
         {
-            if (Game.IsGameOver())
-            {
-                Game.SetState(new EndGameState(Game));
-            }
+            Game.CheckCheckmate();
 
             if (!_isRunning)
             {

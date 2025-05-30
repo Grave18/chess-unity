@@ -40,6 +40,7 @@ namespace ChessGame.Logic
         private PieceColor _startingColor;
         private Competitors _competitors;
         private CameraController _cameraController;
+        private PieceColor _winnerColor;
 
         public event UnityAction OnWarmup;
         public event UnityAction OnStart;
@@ -65,8 +66,19 @@ namespace ChessGame.Logic
         public void FirePlay() => OnPlay?.Invoke();
         public void FirePause() => OnPause?.Invoke();
 
+        // End game
         public bool IsCheck => CheckType is CheckType.Check or CheckType.DoubleCheck;
         public bool IsCheckMate => CheckType == CheckType.CheckMate;
+        public bool IsDraw => CheckType == CheckType.Draw;
+        public bool IsWinnerWhite => _winnerColor == PieceColor.White;
+        public bool IsWinnerBlack => _winnerColor == PieceColor.Black;
+        public bool IsGameOver() => CheckType is not CheckType.None and not CheckType.Check and not CheckType.DoubleCheck;
+        private bool IsTimeOut() => CheckType is CheckType.TimeOutWhite or CheckType.TimeOutBlack;
+
+        /// Is it turn of current player
+        public bool IsMyTurn() => CurrentTurnColor == GameSettingsContainer.Instance.GameSettings.PlayerColor;
+        public bool IsWhiteTurn() => CurrentTurnColor == PieceColor.White;
+        public bool IsBlackTurn() => CurrentTurnColor == PieceColor.Black;
 
         // Getters
         public HashSet<Piece> WhitePieces => Board.WhitePieces;
@@ -146,6 +158,11 @@ namespace ChessGame.Logic
             }
         }
 
+        public string GetStateName()
+        {
+            return _state?.Name ?? "No State";
+        }
+
         public void ChangeTurn()
         {
             CurrentTurnColor = CurrentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
@@ -187,19 +204,14 @@ namespace ChessGame.Logic
             if (pieceColor == PieceColor.White)
             {
                 CheckType = CheckType.TimeOutWhite;
+                _winnerColor = PieceColor.Black;
             }
             else if (pieceColor == PieceColor.Black)
             {
                 CheckType = CheckType.TimeOutBlack;
+                _winnerColor = PieceColor.White;
             }
 
-            SetState(new EndGameState(this));
-        }
-
-        public void DrawByAgreement()
-        {
-            CheckType = CheckType.Draw;
-            CheckDescription = "Draw by agreement";
             SetState(new EndGameState(this));
         }
 
@@ -207,67 +219,34 @@ namespace ChessGame.Logic
         {
             CheckType = CheckType.Resign;
             CheckDescription = $"{CurrentTurnColor} player resigned";
+            _winnerColor = PreviousTurnColor;
 
             SetState(new EndGameState(this));
         }
 
-        public bool IsGameOver()
+        public void DrawByAgreement()
         {
-            return CheckType is not CheckType.None and not CheckType.Check and not CheckType.DoubleCheck;
+            Draw("Draw by agreement");
         }
 
-        private bool IsTimeOut()
+        private void Draw(string description)
         {
-            return CheckType is CheckType.TimeOutWhite or CheckType.TimeOutBlack;
+            CheckType = CheckType.Draw;
+            _winnerColor = PieceColor.None;
+            CheckDescription = description;
+
+            SetState(new EndGameState(this));
         }
 
-        /// Get section relative to current piece color
-        public Square GetSquareRel(PieceColor pieceColor, Square currentSquare, Vector2Int offset)
+        public void CheckCheckmate()
         {
-            return Board.GetSquareRel(pieceColor, currentSquare, offset);
-        }
+            if (CheckType is not CheckType.CheckMate)
+            {
+                return;
+            }
 
-        /// Get section relative to absolute position (white side)
-        public Square GetSquareAbs(Square currentSquare, Vector2Int offset)
-        {
-            return Board.GetSquareAbs(currentSquare, offset);
-        }
-
-        public string GetStateName()
-        {
-            return _state?.Name ?? "No State";
-        }
-
-        public bool CanSelect(ISelectable selectable)
-        {
-            return selectable.HasPiece() && selectable.GetPieceColor() == CurrentTurnColor;
-        }
-
-        public void Select(ISelectable selectable)
-        {
-            Selected = selectable;
-        }
-
-        /// Deselect currently selected piece
-        public void Deselect()
-        {
-            Selected = null;
-        }
-
-        public bool IsWhiteTurn()
-        {
-            return CurrentTurnColor == PieceColor.White;
-        }
-
-        public bool IsBlackTurn()
-        {
-            return CurrentTurnColor == PieceColor.Black;
-        }
-
-        /// Is it turn of current player
-        public bool IsMyTurn()
-        {
-            return CurrentTurnColor == GameSettingsContainer.Instance.GameSettings.PlayerColor;
+            _winnerColor = PreviousTurnColor;
+            SetState(new EndGameState(this));
         }
 
         /// Calculate under attack squares, check type, moves and captures
@@ -282,7 +261,8 @@ namespace ChessGame.Logic
                 piece.CalculateConstrains();
             }
 
-            CalculateCheckMateOrDraw(CurrentTurnPieces);
+            CalculateDraw();
+            CalculateCheckMate(CurrentTurnPieces);
         }
 
         private static HashSet<Square> GetUnderAttackSquares(HashSet<Piece> pieces)
@@ -373,46 +353,20 @@ namespace ChessGame.Logic
             }
         }
 
-        private void CalculateCheckMateOrDraw(HashSet<Piece> currentTurnPieces)
+        private void CalculateDraw()
         {
             if (IsThreefoldRule())
             {
-                CheckType = CheckType.Draw;
-                CheckDescription = "Threefold repetition draw";
-                return;
+                Draw("By threefold repetition");
             }
-
-            if (IsRule50())
+            else if (IsRule50())
             {
-                CheckType = CheckType.Draw;
-                CheckDescription = "Fifty move rule draw";
-                return;
+                Draw("By fifty move rule");
             }
-
-            if(IsInsufficientPieces())
+            else if(IsInsufficientPieces())
             {
-                CheckType = CheckType.Draw;
-                return;
-            }
-
-            // If all pieces have no moves exit early
-            if (IsAnyPieceHasMove(currentTurnPieces))
-            {
-                return;
-            }
-
-            switch (CheckType)
-            {
-                case CheckType.None:
-                    CheckType = CheckType.Draw;
-                    CheckDescription = "Stalemate. Players have no moves";
-                    break;
-                case CheckType.Check or CheckType.DoubleCheck:
-                    CheckType = CheckType.CheckMate;
-                    break;
-                default:
-                    CheckType = CheckType;
-                    break;
+                // Description was set earlier
+                Draw(CheckDescription);
             }
         }
 
@@ -480,10 +434,61 @@ namespace ChessGame.Logic
             return false;
         }
 
+        private void CalculateCheckMate(HashSet<Piece> currentTurnPieces)
+        {
+            // If all pieces have no moves exit early
+            if (IsAnyPieceHasMove(currentTurnPieces))
+            {
+                return;
+            }
+
+            switch (CheckType)
+            {
+                case CheckType.None:
+                    CheckType = CheckType.Draw;
+                    CheckDescription = "Stalemate. Players have no moves";
+                    break;
+                case CheckType.Check or CheckType.DoubleCheck:
+                    CheckType = CheckType.CheckMate;
+                    break;
+                default:
+                    CheckType = CheckType;
+                    break;
+            }
+        }
+
         private static bool IsAnyPieceHasMove(HashSet<Piece> currentTurnPieces)
         {
             return currentTurnPieces.Any(piece => piece.MoveSquares.Count  > 0
                                                   || piece.CaptureSquares.Count > 0);
+        }
+
+        /// Get section relative to current piece color
+        public Square GetSquareRel(PieceColor pieceColor, Square currentSquare, Vector2Int offset)
+        {
+            return Board.GetSquareRel(pieceColor, currentSquare, offset);
+        }
+
+        /// Get section relative to absolute position (white side)
+        public Square GetSquareAbs(Square currentSquare, Vector2Int offset)
+        {
+            return Board.GetSquareAbs(currentSquare, offset);
+        }
+
+        public bool CanSelect(ISelectable selectable)
+        {
+            return selectable.HasPiece() && selectable.GetPieceColor() == CurrentTurnColor;
+        }
+
+        public void Select(ISelectable selectable)
+        {
+            Selected = selectable;
+        }
+
+        /// Deselect currently selected piece
+        public void Deselect()
+        {
+            Selected = null;
         }
     }
 }

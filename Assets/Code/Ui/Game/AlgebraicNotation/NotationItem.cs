@@ -14,9 +14,14 @@ namespace Ui.Game.AlgebraicNotation
         [SerializeField] private Color normalColor = Color.white;
         [SerializeField] private Color fadeColor = Color.gray;
 
+        public void AddEndGame(string endGameResult)
+        {
+            AddWhite(endGameResult, -1);
+        }
+
         public void AddWhite(string algebraicNotation, int panelCount)
         {
-            countText.text = panelCount.ToString();
+            countText.text = panelCount == -1 ? string.Empty : panelCount.ToString();
             whiteText.text = algebraicNotation;
             whiteText.color = normalColor;
         }

@@ -26,7 +26,8 @@ namespace Ui.Game.AlgebraicNotation
 
         private void OnEnable()
         {
-            game.OnStart += Clear;
+            game.OnWarmup += Clear;
+            game.OnEnd += NotateEndGame;
             uciBuffer.OnAdd += OnAdd;
             uciBuffer.OnUndo += OnUndo;
             uciBuffer.OnRedo += OnRedo;
@@ -35,13 +36,45 @@ namespace Ui.Game.AlgebraicNotation
 
         private void OnDisable()
         {
-            game.OnStart -= Clear;
+            game.OnWarmup -= Clear;
+            game.OnEnd -= NotateEndGame;
             uciBuffer.OnAdd -= OnAdd;
             uciBuffer.OnUndo -= OnUndo;
             uciBuffer.OnRedo -= OnRedo;
             uciBuffer.OnDelete -= OnDelete;
         }
 
+        private void Clear()
+        {
+            foreach (NotationItem notationItem in _notationItems)
+            {
+                Destroy(notationItem.gameObject);
+            }
+
+            _index = 0;
+            _notationItems.Clear();
+        }
+
+        private void NotateEndGame()
+        {
+            NotationItem notationItem = GetNotationItem();
+            string algebraicNotation = string.Empty;
+
+            if (game.IsDraw)
+            {
+                algebraicNotation = "½-½";
+            }
+            else if (game.IsWinnerWhite)
+            {
+                algebraicNotation = "1-0";
+            }
+            else if (game.IsWinnerBlack)
+            {
+                algebraicNotation = "0-1";
+            }
+
+            notationItem.AddEndGame(algebraicNotation);
+        }
 
         private void OnAdd(MoveData moveData)
         {
@@ -55,7 +88,7 @@ namespace Ui.Game.AlgebraicNotation
             else if (moveData.TurnColor == PieceColor.Black)
             {
                 NotationItem notationItem = _notationItems.LastOrDefault();
-                if (notationItem == null)
+                if (!notationItem)
                 {
                     notationItem = GetNotationItem();
                     notationItem.AddBlack(algebraicNotation, _notationItems.Count);
@@ -84,7 +117,7 @@ namespace Ui.Game.AlgebraicNotation
         private void OnDelete(MoveData moveData)
         {
             NotationItem notationItem = _notationItems.LastOrDefault();
-            if (notationItem == null)
+            if (!notationItem)
             {
                 return;
             }
@@ -179,17 +212,6 @@ namespace Ui.Game.AlgebraicNotation
             }
 
             return 1f;
-        }
-
-        private void Clear()
-        {
-            foreach (var notationItem in _notationItems)
-            {
-                Destroy(notationItem.gameObject);
-            }
-
-            _index = 0;
-            _notationItems.Clear();
         }
     }
 }
