@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using Network;
 using PurrNet;
 using TMPro;
@@ -9,25 +9,27 @@ using UnityEngine.UI;
 
 namespace Ui.Game.Popups
 {
-    public class DrawPopup : NetworkBehaviour
+    public class RematchPopup : NetworkBehaviour
     {
+        [Header("References")]
+        [SerializeField] private ChessGame.Logic.Game game;
+
         [Header("UI")]
         [SerializeField] private PanelManagerInGame panelManagerInGame;
-        [SerializeField] private MenuPanel requestDrawPopup;
+        [SerializeField] private MenuPanel rematchRequestPopup;
         [SerializeField] private TMP_Text text;
 
         [Header("Buttons")]
         [SerializeField] private Button yesButton;
         [SerializeField] private TMP_Text noButtonText;
 
-        [Header("Texts")]
-        [SerializeField] private string initialText = "Do you want to offer draw?";
-        [SerializeField] private string offeredText = "Draw Offered";
-        [SerializeField] private string drawDeclinedText2 = "Draw Declined. This window will be closed";
+        [Header("Text")]
+        [SerializeField] private string initialText = "Do you want to rematch?";
+        [SerializeField] private string rematchRequestedText = "Rematch requested";
+        [SerializeField] private string rematchDeclinedText = "Rematch declined. This window will be closed";
 
         [SerializeField] private string noText = "No";
         [SerializeField] private string closeText = "Close";
-
 
         private MenuPanel _thisMenuPanel;
 
@@ -39,7 +41,8 @@ namespace Ui.Game.Popups
 
         private void OnEnable()
         {
-            yesButton.onClick.AddListener(OfferDraw);
+            yesButton.onClick.AddListener(Rematch);
+
             RestoreState();
         }
 
@@ -52,45 +55,63 @@ namespace Ui.Game.Popups
 
         private void OnDisable()
         {
-            yesButton.onClick.RemoveListener(OfferDraw);
+            yesButton.onClick.RemoveListener(Rematch);
         }
 
-        private void OfferDraw()
+        private void Rematch()
+        {
+            if (OnlineInstanceHandler.IsOffline)
+            {
+                RematchOffline();
+            }
+            else
+            {
+                RematchOnline();
+            }
+        }
+
+        private void RematchOffline()
+        {
+            _thisMenuPanel.Hide();
+            game.RestartGame();
+        }
+
+        private void RematchOnline()
         {
             yesButton.interactable = false;
+            text.text = rematchRequestedText;
             noButtonText.text = closeText;
-            text.text = offeredText;
 
             PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
-            OfferDrawTarget(otherPlayerID);
+            RequestRematchTarget(otherPlayerID);
         }
 
         [ObserversRpc]
-        private void OfferDrawTarget(PlayerID playerId)
+        private void RequestRematchTarget(PlayerID playerId)
         {
             if(playerId.id != localPlayer?.id)
             {
                 return;
             }
 
-            requestDrawPopup.Show();
+            rematchRequestPopup.Show();
             EffectsPlayer.Instance.PlayNotifySound();
         }
 
-        public void AcceptDrawByRequestPopup()
+        public void AcceptRematchByRequestPopup()
         {
             panelManagerInGame.ShowMenuButtonPanel();
         }
 
-        public void DeclineDrawByRequestPopup()
+        public void DeclineRematchByRequestPopup()
         {
-            text.text = drawDeclinedText2;
-            EffectsPlayer.Instance.PlayNotifySound();
+            text.text = rematchDeclinedText;
+            yesButton.interactable = true;
 
-            CloseThisAfterTime();
+            CloseThisPanelAfterTime();
         }
 
-        private void CloseThisAfterTime()
+        private void CloseThisPanelAfterTime()
         {
             if (gameObject.activeInHierarchy)
             {
@@ -103,7 +124,6 @@ namespace Ui.Game.Popups
             {
                 yield return new WaitForSeconds(3f);
 
-                _thisMenuPanel.Hide();
                 panelManagerInGame.ShowMenuButtonPanel();
             }
         }

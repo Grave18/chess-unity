@@ -22,13 +22,11 @@ namespace Ui.Game
         private void OnEnable()
         {
             game.OnWarmup += ShowMenuButtonPanel;
-            game.OnEnd += ShowEndGamePopup;
         }
 
         private void OnDisable()
         {
             game.OnWarmup -= ShowMenuButtonPanel;
-            game.OnEnd -= ShowEndGamePopup;
         }
 
         /// Disable input if in Menu and enable input blocking

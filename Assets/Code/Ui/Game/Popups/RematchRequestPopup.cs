@@ -3,6 +3,7 @@ using PurrNet;
 using Ui.MainMenu;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Ui.Game.Popups
@@ -15,7 +16,7 @@ namespace Ui.Game.Popups
         [Header("Ui")]
         [SerializeField] private PanelManagerInGame panelManagerInGame;
         [SerializeField] private MenuPanel endGamePopupMenuPanel;
-        [SerializeField] private EndGamePopup endGamePopup;
+        [SerializeField] private RematchPopup rematchPopup;
 
         [Header("Buttons")]
         [SerializeField] private Button yesButton;
@@ -58,6 +59,7 @@ namespace Ui.Game.Popups
             }
 
             endGamePopupMenuPanel.Hide();
+            rematchPopup.AcceptRematchByRequestPopup();
             game.RestartGame();
         }
 
@@ -75,7 +77,7 @@ namespace Ui.Game.Popups
                 return;
             }
 
-            endGamePopup.DeclineRematch();
+            rematchPopup.DeclineRematchByRequestPopup();
             EffectsPlayer.Instance.PlayNotifySound();
         }
     }

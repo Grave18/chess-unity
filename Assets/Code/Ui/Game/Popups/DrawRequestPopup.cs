@@ -57,6 +57,7 @@ namespace Ui.Game.Popups
             }
 
             game.DrawByAgreement();
+            drawPopup.AcceptDrawByRequestPopup();
         }
 
         private void DeclineDraw()
