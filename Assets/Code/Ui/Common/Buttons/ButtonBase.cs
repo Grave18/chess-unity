@@ -10,6 +10,7 @@ using Utils;
 
 namespace Ui.Common.Buttons
 {
+    [DefaultExecutionOrder(-1)] // Because Awake must be called early
     public class ButtonBase : MonoBehaviour
     {
         [SerializeField] private string text = "Default";
@@ -19,17 +20,32 @@ namespace Ui.Common.Buttons
         private TMP_Text _text;
         private RectTransform _transform;
 
+        private bool _isInitialized;
+
         public string Text
         {
-            get => _text.text;
-            set => _text.text = value;
+            get
+            {
+                if (!_isInitialized) Awake();
+                return _text.text;
+            }
+            set
+            {
+                if (!_isInitialized) Awake();
+                _text.text = value;
+            }
         }
 
         public bool Interactable
         {
-            get => _button.interactable;
+            get
+            {
+                if (!_isInitialized) Awake();
+                return _button.interactable;
+            }
             set
             {
+                if (!_isInitialized) Awake();
                 _button.interactable = value;
                 _text.color = value ? buttonClass.TextColor : buttonClass.TextDisabledColor;
             }
@@ -37,12 +53,21 @@ namespace Ui.Common.Buttons
 
         public event UnityAction OnClick
         {
-            add => _button.onClick.AddListener(value);
-            remove => _button.onClick.RemoveListener(value);
+            add
+            {
+                if (!_isInitialized) Awake();
+                _button.onClick.AddListener(value);
+            }
+            remove
+            {
+                if (!_isInitialized) Awake();
+                _button.onClick.RemoveListener(value);
+            }
         }
 
         private void Awake()
         {
+            if(_isInitialized) return;
             _button = GetComponentInChildren<Button>();
             _text = _button.GetComponentInChildren<TMP_Text>();
             _transform = _button.GetComponent<RectTransform>();
@@ -50,6 +75,8 @@ namespace Ui.Common.Buttons
             Assert.IsNotNull(_button, "Button not found");
             Assert.IsNotNull(_text, "Text not found");
             Assert.IsNotNull(_transform, "Transform not found");
+
+            _isInitialized = true;
         }
 
         private void OnEnable()
