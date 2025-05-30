@@ -110,7 +110,6 @@ namespace ChessGame.Logic
 
                 SetState(new IdleState(this));
                 FireStart();
-                EffectsPlayer.Instance.PlayGameStartSound();
             }
         }
 
