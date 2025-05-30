@@ -1,7 +1,7 @@
 using Network;
 using PurrNet;
+using Ui.Common.Buttons;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Ui.Game.Popups
 {
@@ -11,13 +11,12 @@ namespace Ui.Game.Popups
         [SerializeField] private ChessGame.Logic.Game game;
 
         [Header("Buttons")]
-        [SerializeField] private Button yesButton;
+        [SerializeField] private ButtonBase yesButton;
 
         private void OnEnable()
         {
-            yesButton.onClick.AddListener(Resign);
+            yesButton.OnClick += Resign;
         }
-
 
         private void Resign()
         {

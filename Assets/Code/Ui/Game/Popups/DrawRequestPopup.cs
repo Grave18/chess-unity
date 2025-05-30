@@ -1,9 +1,9 @@
 using Network;
 using PurrNet;
+using Ui.Common.Buttons;
 using Ui.MainMenu;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.UI;
 
 namespace Ui.Game.Popups
 {
@@ -17,8 +17,8 @@ namespace Ui.Game.Popups
         [SerializeField] private DrawPopup drawPopup;
 
         [Header("Buttons")]
-        [SerializeField] private Button yesButton;
-        [SerializeField] private Button noButton;
+        [SerializeField] private ButtonBase yesButton;
+        [SerializeField] private ButtonBase noButton;
 
         private MenuPanel _thisMenuPanel;
 
@@ -30,14 +30,14 @@ namespace Ui.Game.Popups
 
         private void OnEnable()
         {
-            yesButton.onClick.AddListener(AcceptDraw);
-            noButton.onClick.AddListener(DeclineDraw);
+            yesButton.OnClick += AcceptDraw;
+            noButton.OnClick += DeclineDraw;
         }
 
         private void OnDisable()
         {
-            yesButton.onClick.RemoveListener(AcceptDraw);
-            noButton.onClick.RemoveListener(DeclineDraw);
+            yesButton.OnClick -= AcceptDraw;
+            noButton.OnClick -= DeclineDraw;
         }
 
         private void AcceptDraw()

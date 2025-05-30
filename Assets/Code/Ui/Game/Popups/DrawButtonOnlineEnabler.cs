@@ -21,7 +21,7 @@ namespace Ui.Game.Popups
             Assert.IsNotNull(buttonBase, "Draw button not found");
 
             bool isEnabled = OnlineInstanceHandler.IsOnline && !game.IsGameOver() && game.IsMyTurn();
-            buttonBase.SetButtonEnabled(isEnabled);
+            buttonBase.Interactable = isEnabled;
         }
     }
 }

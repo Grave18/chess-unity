@@ -1,5 +1,6 @@
 using GameAndScene;
 using Notation;
+using Ui.Common.Buttons;
 using Ui.MainMenu;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,17 +16,17 @@ namespace Ui.Game.Popups
 
         [Header("UI")]
         [SerializeField] private Toggle saveBoardToggle;
-        [SerializeField] private Button yesButton;
+        [SerializeField] private ButtonBase yesButton;
 
 
         public void OnEnable()
         {
-            yesButton.onClick.AddListener(ExitToMainMenu);
+            yesButton.OnClick += ExitToMainMenu;
         }
 
         public void OnDisable()
         {
-            yesButton.onClick.RemoveListener(ExitToMainMenu);
+            yesButton.OnClick -= ExitToMainMenu;
         }
 
         private void ExitToMainMenu()

@@ -2,10 +2,10 @@ using System.Collections;
 using Network;
 using PurrNet;
 using TMPro;
+using Ui.Common.Buttons;
 using Ui.MainMenu;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.UI;
 
 namespace Ui.Game.Popups
 {
@@ -20,8 +20,8 @@ namespace Ui.Game.Popups
         [SerializeField] private TMP_Text text;
 
         [Header("Buttons")]
-        [SerializeField] private Button yesButton;
-        [SerializeField] private TMP_Text noButtonText;
+        [SerializeField] private ButtonBase yesButton;
+        [SerializeField] private ButtonBase noButton;
 
         [Header("Text")]
         [SerializeField] private string initialText = "Do you want to rematch?";
@@ -41,7 +41,7 @@ namespace Ui.Game.Popups
 
         private void OnEnable()
         {
-            yesButton.onClick.AddListener(Rematch);
+            yesButton.OnClick += Rematch;
 
             RestoreState();
         }
@@ -49,13 +49,13 @@ namespace Ui.Game.Popups
         private void RestoreState()
         {
             text.text = initialText;
-            yesButton.interactable = true;
-            noButtonText.text = noText;
+            yesButton.Interactable = true;
+            noButton.Text = noText;
         }
 
         private void OnDisable()
         {
-            yesButton.onClick.RemoveListener(Rematch);
+            yesButton.OnClick -= Rematch;
         }
 
         private void Rematch()
@@ -78,9 +78,9 @@ namespace Ui.Game.Popups
 
         private void RematchOnline()
         {
-            yesButton.interactable = false;
+            yesButton.Interactable = false;
             text.text = rematchRequestedText;
-            noButtonText.text = closeText;
+            noButton.Text = closeText;
 
             PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
             RequestRematchTarget(otherPlayerID);
@@ -106,7 +106,7 @@ namespace Ui.Game.Popups
         public void DeclineRematchByRequestPopup()
         {
             text.text = rematchDeclinedText;
-            yesButton.interactable = true;
+            yesButton.Interactable = true;
 
             CloseThisPanelAfterTime();
         }

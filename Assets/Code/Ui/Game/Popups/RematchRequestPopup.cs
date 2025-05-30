@@ -1,10 +1,9 @@
 using Network;
 using PurrNet;
+using Ui.Common.Buttons;
 using Ui.MainMenu;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
 namespace Ui.Game.Popups
 {
@@ -19,8 +18,8 @@ namespace Ui.Game.Popups
         [SerializeField] private RematchPopup rematchPopup;
 
         [Header("Buttons")]
-        [SerializeField] private Button yesButton;
-        [SerializeField] private Button noButton;
+        [SerializeField] private ButtonBase yesButton;
+        [SerializeField] private ButtonBase noButton;
 
         private MenuPanel _thisMenuPanel;
 
@@ -32,14 +31,14 @@ namespace Ui.Game.Popups
 
         private void OnEnable()
         {
-            yesButton.onClick.AddListener(AcceptRematch);
-            noButton.onClick.AddListener(DeclineRematch);
+            yesButton.OnClick += AcceptRematch;
+            noButton.OnClick += DeclineRematch;
         }
 
         private void OnDisable()
         {
-            yesButton.onClick.RemoveListener(AcceptRematch);
-            noButton.onClick.RemoveListener(DeclineRematch);
+            yesButton.OnClick -= AcceptRematch;
+            noButton.OnClick -= DeclineRematch;
         }
 
         private void AcceptRematch()

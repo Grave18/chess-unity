@@ -4,6 +4,7 @@ using Ui.Common.Classes;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using Utils;
 
@@ -17,6 +18,28 @@ namespace Ui.Common.Buttons
         private Button _button;
         private TMP_Text _text;
         private RectTransform _transform;
+
+        public string Text
+        {
+            get => _text.text;
+            set => _text.text = value;
+        }
+
+        public bool Interactable
+        {
+            get => _button.interactable;
+            set
+            {
+                _button.interactable = value;
+                _text.color = value ? buttonClass.TextColor : buttonClass.TextDisabledColor;
+            }
+        }
+
+        public event UnityAction OnClick
+        {
+            add => _button.onClick.AddListener(value);
+            remove => _button.onClick.RemoveListener(value);
+        }
 
         private void Awake()
         {
@@ -59,12 +82,6 @@ namespace Ui.Common.Buttons
                 buttonClass.HorizontalAlignment, buttonClass.VerticalAlignment);
         }
 
-        public void SetButtonEnabled(bool buttonEnabled = true)
-        {
-            _button.interactable = buttonEnabled;
-            _text.color = buttonEnabled ? buttonClass.TextColor : buttonClass.TextDisabledColor;
-        }
-
 #if UNITY_EDITOR
 
         [Button(name: "Apply Class", space: 10)]
@@ -86,6 +103,5 @@ namespace Ui.Common.Buttons
         }
 
 #endif
-
     }
 }

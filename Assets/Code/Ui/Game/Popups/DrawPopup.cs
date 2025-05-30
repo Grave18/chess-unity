@@ -2,10 +2,10 @@
 using Network;
 using PurrNet;
 using TMPro;
+using Ui.Common.Buttons;
 using Ui.MainMenu;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.UI;
 
 namespace Ui.Game.Popups
 {
@@ -17,8 +17,8 @@ namespace Ui.Game.Popups
         [SerializeField] private TMP_Text text;
 
         [Header("Buttons")]
-        [SerializeField] private Button yesButton;
-        [SerializeField] private TMP_Text noButtonText;
+        [SerializeField] private ButtonBase yesButton;
+        [SerializeField] private ButtonBase noButton;
 
         [Header("Texts")]
         [SerializeField] private string initialText = "Do you want to offer draw?";
@@ -27,7 +27,6 @@ namespace Ui.Game.Popups
 
         [SerializeField] private string noText = "No";
         [SerializeField] private string closeText = "Close";
-
 
         private MenuPanel _thisMenuPanel;
 
@@ -39,26 +38,26 @@ namespace Ui.Game.Popups
 
         private void OnEnable()
         {
-            yesButton.onClick.AddListener(OfferDraw);
+            yesButton.OnClick += OfferDraw;
             RestoreState();
         }
 
         private void RestoreState()
         {
             text.text = initialText;
-            yesButton.interactable = true;
-            noButtonText.text = noText;
+            yesButton.Interactable = true;
+            noButton.Text = noText;
         }
 
         private void OnDisable()
         {
-            yesButton.onClick.RemoveListener(OfferDraw);
+            yesButton.OnClick -= OfferDraw;
         }
 
         private void OfferDraw()
         {
-            yesButton.interactable = false;
-            noButtonText.text = closeText;
+            yesButton.Interactable = false;
+            noButton.Text = closeText;
             text.text = offeredText;
 
             PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
