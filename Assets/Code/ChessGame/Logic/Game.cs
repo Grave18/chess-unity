@@ -204,9 +204,17 @@ namespace ChessGame.Logic
             SetState(new EndGameState(this));
         }
 
+        public void Resign()
+        {
+            CheckType = CheckType.Resign;
+            CheckDescription = $"{CurrentTurnColor} player resigned";
+
+            SetState(new EndGameState(this));
+        }
+
         public bool IsGameOver()
         {
-            return CheckType is CheckType.CheckMate or CheckType.Draw || IsTimeOut();
+            return CheckType is not CheckType.None and not CheckType.Check and not CheckType.DoubleCheck;
         }
 
         private bool IsTimeOut()

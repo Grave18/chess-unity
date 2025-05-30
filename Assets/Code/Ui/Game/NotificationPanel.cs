@@ -51,6 +51,9 @@ namespace Ui.Game
                 case CheckType.Draw:
                     SetPanel(text: "Draw", additional: game.CheckDescription, isText: true, isPanel: true);
                     break;
+                case CheckType.Resign:
+                    SetPanel(text: "Resign", additional: game.CheckDescription, isText: true, isPanel: true);
+                    break;
                 case CheckType.TimeOutWhite or CheckType.TimeOutBlack:
                     ProcessTimeOut(game.CheckType);
                     break;
