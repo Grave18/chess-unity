@@ -20,7 +20,7 @@ namespace Ui.Game.Popups
             var buttonBase = GetComponent<ButtonBase>();
             Assert.IsNotNull(buttonBase, "Rematch button not found");
 
-            bool isEnabled = OnlineInstanceHandler.IsOffline || (OnlineInstanceHandler.IsOnline && game.IsGameOver());
+            bool isEnabled = OnlineInstanceHandler.IsOffline || (OnlineInstanceHandler.IsOnline && game.IsGameOver);
             buttonBase.Interactable = isEnabled;
         }
     }

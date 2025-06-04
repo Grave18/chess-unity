@@ -94,23 +94,23 @@ namespace Ui.Game
 
         private void OnUndoPressed()
         {
-            game.Undo();
+            game.Machine.Undo();
         }
 
         private void OnRedoPressed()
         {
-            game.Redo();
+            game.Machine.Redo();
         }
 
         private void OnPlayPausePressed()
         {
             if (_isPause)
             {
-                game.Play();
+                game.Machine.Play();
             }
             else
             {
-                game.Pause();
+                game.Machine.Pause();
             }
         }
     }

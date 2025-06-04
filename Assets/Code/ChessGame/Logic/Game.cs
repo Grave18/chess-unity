@@ -17,31 +17,54 @@ namespace ChessGame.Logic
     public class Game : SingletonBehaviour<Game>
     {
         [field: Header("References")]
+        [field:SerializeField] public MachineManager Machine { get; set; }
         [field:SerializeField] public Competitors Competitors { get; set; }
-        public Board Board { get; private set; }
-        public UciBuffer UciBuffer { get; private set; }
 
         [Header("Settings")]
         [SerializeField] private int rule50Count = 50;
         [SerializeField] private int ruleThreefoldCount = 3;
 
+        public Board Board { get; private set; }
+        public UciBuffer UciBuffer { get; private set; }
+
         public PieceColor CurrentTurnColor { get; private set; } = PieceColor.White;
         public PieceColor PreviousTurnColor => CurrentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
         public CheckType CheckType { get; private set; } = CheckType.None;
         public string CheckDescription { get; private set; }
+        public HashSet<Square> UnderAttackSquares { get; private set; } = new();
+        public AttackLinesList AttackLines { get; } = new();
 
         public ISelectable Selected { get; private set; }
 
-        public AttackLinesList AttackLines { get; } = new();
-        public HashSet<Square> UnderAttackSquares { get; set; } = new();
-
-        private GameState _state;
-        private GameState _previousState;
         private PieceColor _startingColor;
         private Competitors _competitors;
         private CameraController _cameraController;
         private PieceColor _winnerColor;
 
+        // Board shortcuts
+        public HashSet<Piece> WhitePieces => Board.WhitePieces;
+        public HashSet<Piece> BlackPieces => Board.BlackPieces;
+        public IEnumerable<Square> Squares => Board.Squares;
+        public Square NullSquare => Board.NullSquare;
+
+        // End game
+        public bool IsCheck => CheckType is CheckType.Check or CheckType.DoubleCheck;
+        public bool IsCheckMate => CheckType == CheckType.CheckMate;
+        public bool IsDraw => CheckType == CheckType.Draw;
+        public bool IsWinnerWhite => _winnerColor == PieceColor.White;
+        public bool IsWinnerBlack => _winnerColor == PieceColor.Black;
+        private bool IsTimeOut => CheckType is CheckType.TimeOutWhite or CheckType.TimeOutBlack;
+        public bool IsGameOver => CheckType is not CheckType.None and not CheckType.Check and not CheckType.DoubleCheck;
+
+        /// Is it turn of current player
+        public bool IsMyTurn => CurrentTurnColor == GameSettingsContainer.Instance.GameSettings.PlayerColor;
+        public bool IsWhiteTurn => CurrentTurnColor == PieceColor.White;
+        public bool IsBlackTurn => CurrentTurnColor == PieceColor.Black;
+
+        public HashSet<Piece> CurrentTurnPieces => CurrentTurnColor == PieceColor.White ? Board.WhitePieces : Board.BlackPieces;
+        public HashSet<Piece> PrevTurnPieces => CurrentTurnColor == PieceColor.Black ? Board.WhitePieces : Board.BlackPieces;
+
+        // Events and invokers
         public event UnityAction OnWarmup;
         public event UnityAction OnStart;
         public event UnityAction<PieceColor> OnStartColor;
@@ -52,41 +75,11 @@ namespace ChessGame.Logic
         public event UnityAction OnPause;
 
         public void FireWarmup() => OnWarmup?.Invoke();
-        public void FireStart()
-        {
-            OnStart?.Invoke();
-            OnStartColor?.Invoke(CurrentTurnColor);
-        }
+        public void FireStart() { OnStart?.Invoke(); OnStartColor?.Invoke(CurrentTurnColor); }
         public void FireEnd() => OnEnd?.Invoke();
-        public void FireEndMove()
-        {
-            OnEndMove?.Invoke();
-            OnEndMoveColor?.Invoke(CurrentTurnColor);
-        }
+        public void FireEndMove() { OnEndMove?.Invoke(); OnEndMoveColor?.Invoke(CurrentTurnColor); }
         public void FirePlay() => OnPlay?.Invoke();
         public void FirePause() => OnPause?.Invoke();
-
-        // End game
-        public bool IsCheck => CheckType is CheckType.Check or CheckType.DoubleCheck;
-        public bool IsCheckMate => CheckType == CheckType.CheckMate;
-        public bool IsDraw => CheckType == CheckType.Draw;
-        public bool IsWinnerWhite => _winnerColor == PieceColor.White;
-        public bool IsWinnerBlack => _winnerColor == PieceColor.Black;
-        public bool IsGameOver() => CheckType is not CheckType.None and not CheckType.Check and not CheckType.DoubleCheck;
-        private bool IsTimeOut() => CheckType is CheckType.TimeOutWhite or CheckType.TimeOutBlack;
-
-        /// Is it turn of current player
-        public bool IsMyTurn() => CurrentTurnColor == GameSettingsContainer.Instance.GameSettings.PlayerColor;
-        public bool IsWhiteTurn() => CurrentTurnColor == PieceColor.White;
-        public bool IsBlackTurn() => CurrentTurnColor == PieceColor.Black;
-
-        // Getters
-        public HashSet<Piece> WhitePieces => Board.WhitePieces;
-        public HashSet<Piece> BlackPieces => Board.BlackPieces;
-        public HashSet<Piece> CurrentTurnPieces => CurrentTurnColor == PieceColor.White ? Board.WhitePieces : Board.BlackPieces;
-        public HashSet<Piece> PrevTurnPieces => CurrentTurnColor == PieceColor.Black ? Board.WhitePieces : Board.BlackPieces;
-        public IEnumerable<Square> Squares => Board.Squares;
-        public Square NullSquare => Board.NullSquare;
 
         public void Init(Board board, Competitors competitors, CameraController cameraController, UciBuffer commandUciBuffer, PieceColor color)
         {
@@ -112,7 +105,7 @@ namespace ChessGame.Logic
             ResetGameState();
             PreformCalculations();
             StartCoroutine(StartGameRoutine());
-            SetState(new WarmUpState(this));
+            Machine.SetState(new WarmUpState(this));
 
             return;
 
@@ -120,7 +113,7 @@ namespace ChessGame.Logic
             {
                 yield return new WaitUntil(() => isCameraSet);
 
-                SetState(new IdleState(this));
+                Machine.SetState(new IdleState(this));
                 FireStart();
             }
         }
@@ -133,70 +126,10 @@ namespace ChessGame.Logic
             UciBuffer.Clear();
         }
 
-        public void SetState(GameState state, string nextState = "None", bool isSetPreviousState = true)
-        {
-            _previousState = isSetPreviousState
-                ? _state
-                : null;
-
-            _state?.Exit(nextState);
-            _state = state;
-            _state?.Enter();
-        }
-
-        public void SetPreviousState()
-        {
-            if (_previousState != null)
-            {
-                SetState(_previousState, _previousState.Name);
-                _previousState = null;
-            }
-            else
-            {
-                SetState(new IdleState(this), "Idle");
-                Debug.Log("Go to default Idle state");
-            }
-        }
-
-        public string GetStateName()
-        {
-            return _state?.Name ?? "No State";
-        }
-
         public void ChangeTurn()
         {
             CurrentTurnColor = CurrentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
             Competitors.SwapCurrentPlayer();
-        }
-
-        private void Update()
-        {
-            _state?.Update();
-        }
-
-        public void Move(string uci)
-        {
-            _state?.Move(uci);
-        }
-
-        public void Undo()
-        {
-            _state?.Undo();
-        }
-
-        public void Redo()
-        {
-            _state?.Redo();
-        }
-
-        public void Play()
-        {
-            _state?.Play();
-        }
-
-        public void Pause()
-        {
-            _state?.Pause();
         }
 
         public void SetTimeOut(PieceColor pieceColor)
@@ -212,7 +145,7 @@ namespace ChessGame.Logic
                 _winnerColor = PieceColor.White;
             }
 
-            SetState(new EndGameState(this));
+            Machine.SetState(new EndGameState(this));
         }
 
         public void Resign()
@@ -221,7 +154,7 @@ namespace ChessGame.Logic
             CheckDescription = $"{CurrentTurnColor} player resigned";
             _winnerColor = PreviousTurnColor;
 
-            SetState(new EndGameState(this));
+            Machine.SetState(new EndGameState(this));
         }
 
         public void DrawByAgreement()
@@ -235,21 +168,16 @@ namespace ChessGame.Logic
             _winnerColor = PieceColor.None;
             CheckDescription = description;
 
-            SetState(new EndGameState(this));
+            Machine.SetState(new EndGameState(this));
         }
 
-        public void CheckCheckmate()
+        public void Checkmate()
         {
-            if (CheckType is not CheckType.CheckMate)
-            {
-                return;
-            }
-
             _winnerColor = PreviousTurnColor;
-            SetState(new EndGameState(this));
+            Machine.SetState(new EndGameState(this));
         }
 
-        /// Calculate under attack squares, check type, moves and captures
+        /// Calculate under attack squares, check type, moves, captures, draw
         public void PreformCalculations()
         {
             UnderAttackSquares = GetUnderAttackSquares(PrevTurnPieces);
@@ -463,6 +391,7 @@ namespace ChessGame.Logic
                                                   || piece.CaptureSquares.Count > 0);
         }
 
+        // Board shortcuts
         /// Get section relative to current piece color
         public Square GetSquareRel(PieceColor pieceColor, Square currentSquare, Vector2Int offset)
         {
@@ -475,6 +404,7 @@ namespace ChessGame.Logic
             return Board.GetSquareAbs(currentSquare, offset);
         }
 
+        // Selection
         public bool CanSelect(ISelectable selectable)
         {
             return selectable.HasPiece() && selectable.GetPieceColor() == CurrentTurnColor;

@@ -21,7 +21,7 @@ namespace Ui.Game
                 authority = InstanceHandler.NetworkManager.isServer ? "Server" : "Client";
             }
             authorityText.text = "Authority: " + authority;
-            stateText.text = "State: " + game.GetStateName();
+            stateText.text = "State: " + game.Machine.StateName;
             turnText.text = "Turn: " + game.CurrentTurnColor;
             checkText.text = "Check: " + game.CheckType;
         }

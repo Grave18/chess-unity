@@ -127,7 +127,7 @@ namespace ChessGame.Logic.GameStates
         private void Abort()
         {
             Debug.LogError("Invalid Redo");
-            Game.SetPreviousState();
+            Game.Machine.SetPreviousState();
         }
 
         public override void Exit(string nextState)
@@ -199,7 +199,7 @@ namespace ChessGame.Logic.GameStates
             Game.UciBuffer.Redo();
             Game.PreformCalculations();
             Game.FireEndMove();
-            Game.SetPreviousState();
+            Game.Machine.SetPreviousState();
 
             PlayCheckSound();
         }

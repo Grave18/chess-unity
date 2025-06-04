@@ -168,7 +168,7 @@ namespace ChessGame.Logic.GameStates
         private void Abort(string uci)
         {
             Debug.Log($"{uci}: invalid move");
-            Game.SetState(new IdleState(Game));
+            Game.Machine.SetState(new IdleState(Game));
         }
 
         public override void Exit(string nextState)
@@ -241,7 +241,7 @@ namespace ChessGame.Logic.GameStates
             Game.PreformCalculations();
             UpdateAlgebraicNotation();
             Game.FireEndMove();
-            Game.SetState(new IdleState(Game));
+            Game.Machine.SetState(new IdleState(Game));
             PlayCheckSound();
         }
 

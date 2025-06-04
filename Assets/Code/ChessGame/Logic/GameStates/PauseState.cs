@@ -28,7 +28,7 @@ namespace ChessGame.Logic.GameStates
         {
             if (Game.UciBuffer.CanUndo(out MoveData moveData))
             {
-                Game.SetState(new UndoState(Game, moveData));
+                Game.Machine.SetState(new UndoState(Game, moveData));
             }
         }
 
@@ -36,13 +36,13 @@ namespace ChessGame.Logic.GameStates
         {
             if (Game.UciBuffer.CanRedo(out MoveData moveData))
             {
-                Game.SetState(new RedoState(Game, moveData));
+                Game.Machine.SetState(new RedoState(Game, moveData));
             }
         }
 
         public override void Play()
         {
-            Game.SetState(new IdleState(Game));
+            Game.Machine.SetState(new IdleState(Game));
         }
 
         public override void Pause()

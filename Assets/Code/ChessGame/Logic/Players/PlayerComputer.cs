@@ -30,7 +30,7 @@ namespace ChessGame.Logic.Players
                 return;
             }
 
-            _game.Move(uci);
+            _game.Machine.Move(uci);
         }
 
         public void UpdatePlayer()

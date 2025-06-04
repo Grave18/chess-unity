@@ -19,7 +19,7 @@ namespace Ui.Game.Popups
             var buttonBase = GetComponent<ButtonBase>();
             Assert.IsNotNull(buttonBase, "Resign button not found");
 
-            bool isEnabled = !game.IsGameOver() && game.IsMyTurn();
+            bool isEnabled = !game.IsGameOver && game.IsMyTurn;
             buttonBase.Interactable = isEnabled;
         }
     }

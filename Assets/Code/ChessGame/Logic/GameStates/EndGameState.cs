@@ -30,7 +30,7 @@ namespace ChessGame.Logic.GameStates
         {
             if (Game.UciBuffer.CanUndo(out MoveData moveData))
             {
-                Game.SetState(new UndoState(Game, moveData), isSetPreviousState:false);
+                Game.Machine.SetState(new UndoState(Game, moveData), isSetPreviousState:false);
             }
         }
 

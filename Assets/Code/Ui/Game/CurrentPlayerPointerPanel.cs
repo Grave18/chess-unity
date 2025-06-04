@@ -23,12 +23,12 @@ namespace Ui.Game
 
         private void Fade()
         {
-            if (game.IsWhiteTurn())
+            if (game.IsWhiteTurn)
             {
                 whiteImage.CrossFadeAlpha(1f, 0.2f, false);
                 blackImage.CrossFadeAlpha(0f, 0.2f, false);
             }
-            else if (game.IsBlackTurn())
+            else if (game.IsBlackTurn)
             {
                 whiteImage.CrossFadeAlpha(0f, 0.2f, false);
                 blackImage.CrossFadeAlpha(1f, 0.2f, false);

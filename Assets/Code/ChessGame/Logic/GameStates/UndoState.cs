@@ -115,7 +115,7 @@ namespace ChessGame.Logic.GameStates
         private void Abort()
         {
             Debug.LogError("Invalid Undo");
-            Game.SetPreviousState();
+            Game.Machine.SetPreviousState();
         }
 
         public override void Exit(string nextState)
@@ -187,7 +187,7 @@ namespace ChessGame.Logic.GameStates
             Game.UciBuffer.Undo();
             Game.PreformCalculations();
             Game.FireEndMove();
-            Game.SetPreviousState();
+            Game.Machine.SetPreviousState();
 
             PlayCheckSound();
         }
