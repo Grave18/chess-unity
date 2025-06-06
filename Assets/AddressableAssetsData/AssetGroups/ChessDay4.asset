@@ -17,11 +17,17 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: a1bb093482a94854a9a802cd9674f67f
   m_SerializeEntries:
+  - m_GUID: 82473cecb688aea46b1caea01efd733a
+    m_Address: Assets/Assets/Board/ChessDay4/Pieces/Z_Board.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ChessDay4_board
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bae479ca46a761447a61a0cd9c0d4597
     m_Address: Assets/Assets/Board/ChessDay4/Pieces
     m_ReadOnly: 0
     m_SerializedLabels:
-    - ChessDay4
+    - ChessDay4_pieces
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: ba951b888230aaf418b5f85de7354dca, type: 2}

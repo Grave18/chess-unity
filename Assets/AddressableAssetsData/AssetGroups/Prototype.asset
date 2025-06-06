@@ -21,7 +21,13 @@ MonoBehaviour:
     m_Address: Assets/Assets/Board/Prototype/Pieces
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Prototype
+    - Prototype_pieces
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac98afb240e3f20439906d6657acd603
+    m_Address: Assets/Assets/Board/Prototype/Pieces/Z_Board.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prototype_board
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: ba951b888230aaf418b5f85de7354dca, type: 2}

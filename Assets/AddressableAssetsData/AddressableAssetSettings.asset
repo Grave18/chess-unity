@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 9dffec23d6dc6654fac3fe39da1ca5de
   m_currentHash:
     serializedVersion: 2
-    Hash: 03408d314fc94823d8f058d6449fd44c
+    Hash: 00000000000000000000000000000000
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -89,8 +89,10 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
-    - ChessDay4
-    - Prototype
+    - ChessDay4_pieces
+    - Prototype_pieces
+    - ChessDay4_board
+    - Prototype_board
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: e48bb622215c9e14c81fa65c2ccd3434, type: 2}
