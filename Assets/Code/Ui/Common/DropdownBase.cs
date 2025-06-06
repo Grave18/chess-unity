@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using TMPro;
-using Ui.MainMenu;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Ui.Common
 {
@@ -13,6 +13,8 @@ namespace Ui.Common
         protected void Awake()
         {
             _dropdown = GetComponentInChildren<TMP_Dropdown>();
+            Assert.IsNotNull(_dropdown, $"{nameof(DropdownBase)}: Dropdown not found");
+
             _options = AddOptionsToDropdown();
 
             foreach (string option in _options)
@@ -25,9 +27,8 @@ namespace Ui.Common
 
         protected virtual void OnEnable()
         {
-            _dropdown.onValueChanged.AddListener(SetValue);
-
             _dropdown.value = SetCurrentOptionInDropdown(_options);
+            _dropdown.onValueChanged.AddListener(SetValue);
         }
 
         protected abstract int SetCurrentOptionInDropdown(List<string> options);

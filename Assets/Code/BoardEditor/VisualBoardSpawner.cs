@@ -1,91 +1,150 @@
 ﻿using System.Collections.Generic;
 using ChessGame.ChessBoard.Info;
 using ChessGame.Logic;
-using EditorCools;
+using Ui.MainMenu;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+
+#if UNITY_EDITOR
+using EditorCools;
+#endif
 
 namespace BoardEditor
 {
     public class VisualBoardSpawner : MonoBehaviour
     {
-        [Header("Board")] [SerializeField] private AssetLabelReference boardLabel;
+        [Header("References")]
+        [SerializeField] private GameSettingsContainer gameSettingsContainer;
+
+        [Header("Board")]
+        [SerializeField] private AssetLabelReference boardLabel;
         [SerializeField] private Transform boardParent;
 
-        [Header("Pieces")] [SerializeField] private AssetLabelReference piecesLabel;
+        [Header("Pieces")]
+        [SerializeField] private AssetLabelReference piecesLabel;
         [SerializeField] private PieceSpawnPoint[] pieceSpawnPoints;
 
-        [Header("White Pieces")] [SerializeField]
-        private Transform[] whiteKings;
+        private AsyncOperationHandle<GameObject> _boardHandle;
+        private GameObject _boardInstance;
 
-        private AsyncOperationHandle<GameObject> _boardAssetHandle;
-        private AsyncOperationHandle<IList<GameObject>> _piecesAssetHandle;
+        private AsyncOperationHandle<IList<GameObject>> _piecesHandle;
+        private readonly List<GameObject> _pieceInstances = new();
 
-        [Button(space: 10)]
-        public void LoadBoard()
+        private void Awake()
         {
-            if (_boardAssetHandle.IsValid())
+            string boardModelAddress = gameSettingsContainer.GetBoardModelAddress();
+            SpawnBoard(boardModelAddress);
+
+            string pieceModelAddress = gameSettingsContainer.GetPieceModelAddress();
+            SpawnPieces(pieceModelAddress);
+        }
+
+        public void SpawnBoard(string boardModelAddress)
+        {
+            if (_boardInstance)
             {
-                Addressables.Release(_boardAssetHandle);
+                Addressables.ReleaseInstance(_boardInstance);
             }
 
-            _boardAssetHandle = Addressables.InstantiateAsync(boardLabel, boardParent);
+            _boardHandle = Addressables.InstantiateAsync(boardModelAddress, boardParent);
+            _boardHandle.Completed += OnBoardLoaded;
+        }
+
+        private void OnBoardLoaded(AsyncOperationHandle<GameObject> handle)
+        {
+            if (handle.Status != AsyncOperationStatus.Succeeded)
+            {
+                Debug.LogError($"{nameof(VisualBoardSpawner)}: Failed to load board\n" +
+                               $"Status: {handle.Status}\n" +
+                               $"Error: {handle.OperationException}");
+                return;
+            }
+
+            _boardInstance = handle.Result;
+        }
+
+        public void SpawnPieces(string address)
+        {
+            foreach (GameObject piece in _pieceInstances)
+            {
+                Destroy(piece);
+            }
+
+            if (_piecesHandle.IsValid())
+            {
+                Addressables.Release(_piecesHandle);
+            }
+
+            _piecesHandle = Addressables.LoadAssetsAsync<GameObject>(address, _ => { });
+            _piecesHandle.Completed += OnPiecesLoaded;
+        }
+
+        private void OnPiecesLoaded(AsyncOperationHandle<IList<GameObject>> handle)
+        {
+            if (handle.Status != AsyncOperationStatus.Succeeded)
+            {
+                Debug.LogError($"{nameof(VisualBoardSpawner)}: Failed to load pieces\n" +
+                               $"Status: {handle.Status}\n" +
+                               $"Error: {handle.OperationException}");
+                return;
+            }
+
+            IList<GameObject> prefabs = handle.Result;
+            foreach (PieceSpawnPoint point in pieceSpawnPoints)
+            {
+                InstantiatePiece(point, prefabs);
+            }
+        }
+
+        private void InstantiatePiece(PieceSpawnPoint point, IList<GameObject> prefabs)
+        {
+            GameObject currentPrefab = point.PieceColor switch
+            {
+                PieceColor.Black => point.PieceType switch
+                {
+                    PieceType.Bishop => prefabs[0],
+                    PieceType.King => prefabs[1],
+                    PieceType.Knight => prefabs[2],
+                    PieceType.Pawn => prefabs[3],
+                    PieceType.Queen => prefabs[4],
+                    PieceType.Rook => prefabs[5],
+                    _ => null,
+                },
+                PieceColor.White => point.PieceType switch
+                {
+                    PieceType.Bishop => prefabs[6],
+                    PieceType.King => prefabs[7],
+                    PieceType.Knight => prefabs[8],
+                    PieceType.Pawn => prefabs[9],
+                    PieceType.Queen => prefabs[10],
+                    PieceType.Rook => prefabs[11],
+                    _ => null,
+                },
+                _ => null
+            };
+
+            if (currentPrefab)
+            {
+                GameObject instance = Instantiate(currentPrefab, point.transform.position, point.transform.rotation, point.transform);
+                _pieceInstances.Add(instance);
+            }
+        }
+
+    #if UNITY_EDITOR
+
+        [Button(space: 10)]
+        public void LoadPieces()
+        {
+            SpawnPieces(piecesLabel.labelString);
         }
 
         [Button(space: 5)]
-        public async void LoadPieces()
+        public void LoadBoard()
         {
-            try
-            {
-                if (_piecesAssetHandle.IsValid())
-                {
-                    Addressables.Release(_piecesAssetHandle);
-                }
-
-                _piecesAssetHandle = Addressables.LoadAssetsAsync<GameObject>(piecesLabel, _ => { });
-
-                IList<GameObject> prefabs = await _piecesAssetHandle.Task;
-
-                foreach (PieceSpawnPoint point in pieceSpawnPoints)
-                {
-                    InstantiatePiece(point, prefabs);
-                }
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogException(e);
-            }
+            SpawnBoard(boardLabel.labelString);
         }
 
-        private static void InstantiatePiece(PieceSpawnPoint point, IList<GameObject> prefabs)
-        {
-            switch (point.PieceColor)
-            {
-                case PieceColor.Black:
-                    switch (point.PieceType)
-                    {
-                        case PieceType.Bishop: Instantiate(prefabs[0], point.transform.position, point.transform.rotation, point.transform); break;
-                        case PieceType.King: Instantiate(prefabs[1], point.transform.position, point.transform.rotation, point.transform); break;
-                        case PieceType.Knight: Instantiate(prefabs[2], point.transform.position, point.transform.rotation, point.transform); break;
-                        case PieceType.Pawn: Instantiate(prefabs[3], point.transform.position, point.transform.rotation, point.transform); break;
-                        case PieceType.Queen: Instantiate(prefabs[4], point.transform.position, point.transform.rotation, point.transform); break;
-                        case PieceType.Rook: Instantiate(prefabs[5], point.transform.position, point.transform.rotation, point.transform); break;
-                    }
-                    break;
-
-                case PieceColor.White:
-                    switch (point.PieceType)
-                    {
-                        case PieceType.Bishop: Instantiate(prefabs[6], point.transform.position, point.transform.rotation, point.transform); break;
-                        case PieceType.King: Instantiate(prefabs[7], point.transform.position, point.transform.rotation, point.transform); break;
-                        case PieceType.Knight: Instantiate(prefabs[8], point.transform.position, point.transform.rotation, point.transform); break;
-                        case PieceType.Pawn: Instantiate(prefabs[9], point.transform.position, point.transform.rotation, point.transform); break;
-                        case PieceType.Queen: Instantiate(prefabs[10], point.transform.position, point.transform.rotation, point.transform); break;
-                        case PieceType.Rook: Instantiate(prefabs[11], point.transform.position, point.transform.rotation, point.transform); break;
-                    }
-                    break;
-            }
-        }
+#endif
     }
 }

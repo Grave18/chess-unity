@@ -10,24 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: ChessDay4
+  m_Name: Day4
   m_EditorClassIdentifier: 
-  m_GroupName: ChessDay4
+  m_GroupName: Day4
   m_Data:
     m_SerializedData: []
   m_GUID: a1bb093482a94854a9a802cd9674f67f
   m_SerializeEntries:
   - m_GUID: 82473cecb688aea46b1caea01efd733a
-    m_Address: Assets/Assets/Board/ChessDay4/Pieces/Z_Board.prefab
+    m_Address: Day4 Board
     m_ReadOnly: 0
     m_SerializedLabels:
-    - ChessDay4_board
+    - Day4 Board
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bae479ca46a761447a61a0cd9c0d4597
-    m_Address: Assets/Assets/Board/ChessDay4/Pieces
+    m_Address: Day4 Pieces
     m_ReadOnly: 0
     m_SerializedLabels:
-    - ChessDay4_pieces
+    - Day4 Pieces
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: ba951b888230aaf418b5f85de7354dca, type: 2}

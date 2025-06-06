@@ -181,6 +181,44 @@ namespace Ui.MainMenu
             Save();
         }
 
+        public string GetPieceModelAddress()
+        {
+            string piecesModelAddress = gameSettings.PiecesModelAddress;
+
+            if(string.IsNullOrEmpty(piecesModelAddress))
+            {
+                piecesModelAddress = "Day4 Pieces";
+                SetPieceModelAddress(piecesModelAddress);
+            }
+
+            return piecesModelAddress;
+        }
+
+        public void SetPieceModelAddress(string address)
+        {
+            gameSettings.PiecesModelAddress = address;
+            Save();
+        }
+
+        public string GetBoardModelAddress()
+        {
+            string boardModelAddress = gameSettings.BoardModelAddress;
+
+            if(string.IsNullOrEmpty(boardModelAddress))
+            {
+                boardModelAddress = "Day4 Board";
+                SetBoardModelAddress(boardModelAddress);
+            }
+
+            return boardModelAddress;
+        }
+
+        public void SetBoardModelAddress(string address)
+        {
+            gameSettings.BoardModelAddress = address;
+            Save();
+        }
+
         private void Save()
         {
             string jsonString = JsonUtility.ToJson(gameSettings);

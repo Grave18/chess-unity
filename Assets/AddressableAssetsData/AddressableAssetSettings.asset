@@ -89,10 +89,10 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
-    - ChessDay4_pieces
-    - Prototype_pieces
-    - ChessDay4_board
-    - Prototype_board
+    - Day4 Pieces
+    - Prototype Pieces
+    - Day4 Board
+    - Prototype Board
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: e48bb622215c9e14c81fa65c2ccd3434, type: 2}
