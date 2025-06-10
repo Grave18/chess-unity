@@ -95,7 +95,7 @@ namespace Initialization
             Clock = IsOffline ? clockOffline : OnlineInstanceHandler.Clock;
             Assert.IsNotNull(Clock, $"{nameof(Initialization)}: Clock is null");
 
-            Clock.Init(game, _gameSettings);
+            Clock.Init(game, gameSettingsContainer.GetTime());
         }
 
         private void InitCamera()

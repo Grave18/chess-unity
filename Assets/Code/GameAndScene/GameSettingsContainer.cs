@@ -97,18 +97,35 @@ namespace GameAndScene
             Save();
         }
 
+        public string GetTimeString()
+        {
+            Vector2 time = GetTime();
+
+            string timeString = time.x.ToString(CultureInfo.InvariantCulture);
+            return timeString;
+        }
+
+        public Vector2Int GetTime()
+        {
+            Vector2Int time = gameSettings.Time;
+
+            if (time is { x: 0, y: 0 })
+            {
+                time = new Vector2Int(30, 0);
+                gameSettings.Time = time;
+                Save();
+            }
+
+            return time;
+        }
+
         public void SetTime(string time)
         {
             if (int.TryParse(time, out int result))
             {
-                gameSettings.Time = new Vector2(result, 0);
+                gameSettings.Time = new Vector2Int(result, 0);
                 Save();
             }
-        }
-
-        public string GetTime()
-        {
-            return gameSettings.Time.x.ToString(CultureInfo.InvariantCulture);
         }
 
         public void SetDifficulty(string optionText)

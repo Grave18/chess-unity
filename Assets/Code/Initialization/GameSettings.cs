@@ -12,7 +12,7 @@ namespace Initialization
         public PlayerSettings Player2Settings = new();
 
         [Header("Game Settings")]
-        public Vector2 Time;
+        public Vector2Int Time = new(30, 0);
         public string CurrentFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
         public string DefaultFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
         public string SavedFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";

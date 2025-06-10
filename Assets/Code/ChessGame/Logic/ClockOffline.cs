@@ -1,10 +1,9 @@
 ﻿using System;
-using Initialization;
 using UnityEngine;
 
 namespace ChessGame.Logic
 {
-    public class ClockOffline : MonoBehaviour,IClock
+    public class ClockOffline : MonoBehaviour, IClock
     {
         private Game _game;
 
@@ -21,7 +20,7 @@ namespace ChessGame.Logic
         public TimeSpan WhiteTime => _whiteTime;
         public TimeSpan BlackTime => _blackTime;
 
-        public void Init(Game game, GameSettings gameSettings)
+        public void Init(Game game, Vector2Int time)
         {
             if (_isInitialized)
             {
@@ -30,8 +29,7 @@ namespace ChessGame.Logic
             }
 
             _game = game;
-            _initialWhiteTime = TimeSpan.FromMinutes(gameSettings.Time.x)
-                                + TimeSpan.FromSeconds(gameSettings.Time.y);
+            _initialWhiteTime = TimeSpan.FromMinutes(time.x) + TimeSpan.FromSeconds(time.y);
             _initialBlackTime = _initialWhiteTime;
 
             _game.OnWarmup += InitTime;

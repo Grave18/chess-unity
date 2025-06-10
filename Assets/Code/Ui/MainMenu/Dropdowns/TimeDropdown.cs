@@ -23,7 +23,7 @@ namespace Ui.MainMenu.Dropdowns
 
         protected override int SetCurrentOptionInDropdown(List<string> options)
         {
-            string optionText = gameSettingsContainer.GetTime();
+            string optionText = gameSettingsContainer.GetTimeString();
             int index = options.IndexOf(optionText);
 
             return index;
