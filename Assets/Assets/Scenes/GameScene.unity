@@ -10646,6 +10646,9 @@ MonoBehaviour:
     SavedFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     CustomFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     IsAutoPromoteToQueen: 0
+    IsAutorotateCamera: 1
+    PiecesModelAddress: 
+    BoardModelAddress: 
 --- !u!4 &1470752477
 Transform:
   m_ObjectHideFlags: 0
@@ -11353,8 +11356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f495c8e5734746ea8a363a9bcbfdccf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  assetLabel:
-    m_LabelString: ChessDay4
+  gameSettingsContainer: {fileID: 1470752476}
 --- !u!4 &1663133264
 Transform:
   m_ObjectHideFlags: 0

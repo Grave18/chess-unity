@@ -1,16 +1,17 @@
-﻿using Ai;
+﻿using System.Collections.Generic;
+using Ai;
 using System.Threading.Tasks;
 using AssetsAndResources;
 using ChessGame.ChessBoard;
 using ChessGame.Logic;
 using ChessGame.Logic.MovesBuffer;
 using ChessGame.Logic.Players;
+using GameAndScene;
 using Highlighting;
 using MainCamera;
 using Network;
 using Notation;
 using Ui.Game.Promotion;
-using Ui.MainMenu;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -81,8 +82,8 @@ namespace Initialization
 
             highlighter.Init(game);
 
-            GameObject[] prefabs = await assets.LoadPrefabs();
-            board.Init(game, uciBuffer, fenSplit, prefabs, _turnColor);
+            (GameObject boardPrefab, IList<GameObject> piecePrefabs) = await assets.LoadPrefabs();
+            board.Init(game, uciBuffer, fenSplit, boardPrefab, piecePrefabs, _turnColor);
             fenFromBoard.Init(game, board, _gameSettings.CurrentFen);
 
             InitAi();

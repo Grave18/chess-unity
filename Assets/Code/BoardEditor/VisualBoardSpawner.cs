@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using ChessGame.ChessBoard.Info;
 using ChessGame.Logic;
-using Ui.MainMenu;
+using GameAndScene;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;

@@ -1,6 +1,6 @@
+using GameAndScene;
 using Notation;
 using TMPro;
-using Ui.MainMenu;
 using UnityEngine;
 using UnityEngine.UI;
 

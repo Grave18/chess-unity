@@ -1,8 +1,8 @@
 using System.Collections;
+using GameAndScene;
 using Network.Localhost;
 using PurrNet;
 using TMPro;
-using Ui.MainMenu;
 using UnityEngine;
 
 namespace Network

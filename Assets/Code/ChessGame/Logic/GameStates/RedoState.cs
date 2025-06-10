@@ -77,7 +77,7 @@ namespace ChessGame.Logic.GameStates
 
             if (_moveData.MoveType == MoveType.MovePromotion)
             {
-                Piece promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
+                Piece promotedPiece = Game.Board.SpawnPiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                     parsedUci.ToSquare);
                 Turn = new MovePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece);
                 return true;
@@ -103,7 +103,7 @@ namespace ChessGame.Logic.GameStates
             {
                 // Order matters. Must grab captured piece first
                 _moveData.BeatenPiece = parsedUci.ToSquare.GetPiece();
-                Piece promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
+                Piece promotedPiece = Game.Board.SpawnPiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                     parsedUci.ToSquare);
                 Turn = new CapturePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare,
                     promotedPiece, _moveData.BeatenPiece);

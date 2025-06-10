@@ -1,6 +1,6 @@
 ﻿using ChessGame.Logic;
+using GameAndScene;
 using PurrLobby;
-using Ui.Common;
 using Ui.Common.Buttons;
 using UnityEngine;
 

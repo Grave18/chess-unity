@@ -1,7 +1,7 @@
 ﻿using ChessGame.Logic;
 using ChessGame.Logic.Players;
+using GameAndScene;
 using PurrNet;
-using Ui.MainMenu;
 using UnityEngine;
 using Utils;
 

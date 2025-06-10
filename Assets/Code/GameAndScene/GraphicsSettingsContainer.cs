@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Ui.MainMenu
+namespace GameAndScene
 {
     public class GraphicsSettingsContainer : MonoBehaviour
     {

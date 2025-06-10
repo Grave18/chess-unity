@@ -1,4 +1,4 @@
-﻿using Ui.MainMenu;
+﻿using GameAndScene;
 using UnityEngine;
 
 namespace Ui.Common.Buttons

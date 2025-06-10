@@ -7,7 +7,7 @@ using ParrelSync;
 using UnityEngine;
 using Utils;
 
-namespace Ui.MainMenu
+namespace GameAndScene
 {
     [DefaultExecutionOrder(-1)]
     public class GameSettingsContainer: SingletonBehaviour<GameSettingsContainer>

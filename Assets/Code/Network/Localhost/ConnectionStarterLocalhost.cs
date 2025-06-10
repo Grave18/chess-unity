@@ -1,6 +1,6 @@
 using System.Collections;
+using GameAndScene;
 using PurrNet;
-using Ui.MainMenu;
 using UnityEngine;
 using UnityEngine.Assertions;
 

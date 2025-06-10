@@ -32,7 +32,8 @@ namespace ChessGame.ChessBoard
         // Initialized
         private Game _game;
         private UciBuffer _commandUciBuffer;
-        private GameObject[] _prefabs;
+        private GameObject _boardPrefab;
+        private IList<GameObject> _piecePrefabs;
         private FenSplit _fenSplit;
         private PieceColor _turnColor;
 
@@ -40,12 +41,13 @@ namespace ChessGame.ChessBoard
 
         public Square NullSquare => nullSquare;
 
-        public void Init(Game game, UciBuffer commandUciBuffer, FenSplit boardPreset, GameObject[] prefabs,
-            PieceColor turnColor)
+        public void Init(Game game, UciBuffer commandUciBuffer, FenSplit boardPreset, GameObject boardPrefab,
+            IList<GameObject> piecePrefabs, PieceColor turnColor)
         {
             _game = game;
             _commandUciBuffer = commandUciBuffer;
-            _prefabs = prefabs;
+            _boardPrefab = boardPrefab;
+            _piecePrefabs = piecePrefabs;
             _fenSplit = boardPreset;
             _turnColor = turnColor;
         }
@@ -100,15 +102,6 @@ namespace ChessGame.ChessBoard
                 : NullSquare;
         }
 
-        public void DestroyBoardAndPieces()
-        {
-            DestroyPieces();
-            DestroyBoard();
-            _boardInstance = null;
-            WhitePieces.Clear();
-            BlackPieces.Clear();
-        }
-
         /// Get section relative to current piece color
         public Square GetSquareRel(PieceColor pieceColor, Square currentSquare, Vector2Int offset)
         {
@@ -151,6 +144,15 @@ namespace ChessGame.ChessBoard
             InstantiateBoard();
         }
 
+        public void DestroyBoardAndPieces()
+        {
+            DestroyPieces();
+            DestroyBoard();
+            _boardInstance = null;
+            WhitePieces.Clear();
+            BlackPieces.Clear();
+        }
+
         private void FindAllSquares()
         {
             // Get all squares components form parent tree
@@ -190,46 +192,46 @@ namespace ChessGame.ChessBoard
                     }
                     // White
                     case 'B':
-                        piece = CreatePiece(PieceType.Bishop, PieceColor.White, square);
+                        piece = SpawnPiece(PieceType.Bishop, PieceColor.White, square);
                         break;
                     case 'K':
-                        piece = CreatePiece(PieceType.King, PieceColor.White, square);
+                        piece = SpawnPiece(PieceType.King, PieceColor.White, square);
                         CheckWhiteKingFirstMove(piece);
                         break;
                     case 'N':
-                        piece = CreatePiece(PieceType.Knight, PieceColor.White, square);
+                        piece = SpawnPiece(PieceType.Knight, PieceColor.White, square);
                         break;
                     case 'P':
-                        piece = CreatePiece(PieceType.Pawn, PieceColor.White, square);
+                        piece = SpawnPiece(PieceType.Pawn, PieceColor.White, square);
                         CheckWhitePawnFirstMove(square, piece);
                         break;
                     case 'Q':
-                        piece = CreatePiece(PieceType.Queen, PieceColor.White, square);
+                        piece = SpawnPiece(PieceType.Queen, PieceColor.White, square);
                         break;
                     case 'R':
-                        piece = CreatePiece(PieceType.Rook, PieceColor.White, square);
+                        piece = SpawnPiece(PieceType.Rook, PieceColor.White, square);
                         CheckWhiteRookFirstMove(square, piece);
                         break;
                     // Black
                     case 'b':
-                        piece = CreatePiece(PieceType.Bishop, PieceColor.Black, square);
+                        piece = SpawnPiece(PieceType.Bishop, PieceColor.Black, square);
                         break;
                     case 'k':
-                        piece = CreatePiece(PieceType.King, PieceColor.Black, square);
+                        piece = SpawnPiece(PieceType.King, PieceColor.Black, square);
                         CheckBlackKingFirstMove(piece);
                         break;
                     case 'n':
-                        piece = CreatePiece(PieceType.Knight, PieceColor.Black, square);
+                        piece = SpawnPiece(PieceType.Knight, PieceColor.Black, square);
                         break;
                     case 'p':
-                        piece = CreatePiece(PieceType.Pawn, PieceColor.Black, square);
+                        piece = SpawnPiece(PieceType.Pawn, PieceColor.Black, square);
                         CheckBlackPawnFirstMove(square, piece);
                         break;
                     case 'q':
-                        piece = CreatePiece(PieceType.Queen, PieceColor.Black, square);
+                        piece = SpawnPiece(PieceType.Queen, PieceColor.Black, square);
                         break;
                     case 'r':
-                        piece = CreatePiece(PieceType.Rook, PieceColor.Black, square);
+                        piece = SpawnPiece(PieceType.Rook, PieceColor.Black, square);
                         CheckBlackRookFirstMove(square, piece);
                         break;
                     default:
@@ -320,7 +322,7 @@ namespace ChessGame.ChessBoard
 
         private void InstantiateBoard()
         {
-            _boardInstance = Instantiate(_prefabs[12], transform);
+            _boardInstance = Instantiate(_boardPrefab, transform);
         }
 
         public Piece GetOrCreatePiece(string piece, PieceColor pieceColor, string address)
@@ -333,7 +335,7 @@ namespace ChessGame.ChessBoard
 
             PieceType pieceType = GetPieceType(piece);
 
-            return CreatePiece(pieceType, pieceColor, square);
+            return SpawnPiece(pieceType, pieceColor, square);
         }
 
         // Get piece type from letter. Example: q, r, b, n
@@ -367,7 +369,7 @@ namespace ChessGame.ChessBoard
             return pieceLetter;
         }
 
-        public Piece CreatePiece(PieceType pieceType, PieceColor pieceColor, Square square)
+        public Piece SpawnPiece(PieceType pieceType, PieceColor pieceColor, Square square)
         {
             GameObject piecePrefab = GetPrefabOfPiece(pieceType, pieceColor);
             Piece pieceInstance = InstantiatePiece(piecePrefab, square);
@@ -379,36 +381,35 @@ namespace ChessGame.ChessBoard
         {
             GameObject piecePrefab = pieceColor switch
             {
-                PieceColor.White => pieceType switch
-                {
-                    // White
-                    PieceType.Bishop => _prefabs[6],
-                    PieceType.King => _prefabs[7],
-                    PieceType.Knight => _prefabs[8],
-                    PieceType.Pawn => _prefabs[9],
-                    PieceType.Queen => _prefabs[10],
-                    PieceType.Rook => _prefabs[11],
-                    _ => null,
-                },
                 PieceColor.Black => pieceType switch
                 {
-                    // Black
-                    PieceType.Bishop => _prefabs[0],
-                    PieceType.King => _prefabs[1],
-                    PieceType.Knight => _prefabs[2],
-                    PieceType.Pawn => _prefabs[3],
-                    PieceType.Queen => _prefabs[4],
-                    PieceType.Rook => _prefabs[5],
+                    PieceType.Bishop => _piecePrefabs[0],
+                    PieceType.King => _piecePrefabs[1],
+                    PieceType.Knight => _piecePrefabs[2],
+                    PieceType.Pawn => _piecePrefabs[3],
+                    PieceType.Queen => _piecePrefabs[4],
+                    PieceType.Rook => _piecePrefabs[5],
+                    _ => null,
+                },
+                PieceColor.White => pieceType switch
+                {
+                    PieceType.Bishop => _piecePrefabs[6],
+                    PieceType.King => _piecePrefabs[7],
+                    PieceType.Knight => _piecePrefabs[8],
+                    PieceType.Pawn => _piecePrefabs[9],
+                    PieceType.Queen => _piecePrefabs[10],
+                    PieceType.Rook => _piecePrefabs[11],
                     _ => null,
                 },
                 _ => null,
             };
+
             return piecePrefab;
         }
 
         private Piece InstantiatePiece(GameObject piecePrefab, Square square)
         {
-            if (piecePrefab == null)
+            if (!piecePrefab)
             {
                 return null;
             }
@@ -434,7 +435,7 @@ namespace ChessGame.ChessBoard
 
         private void DestroyBoard()
         {
-            if (_boardInstance == null)
+            if (!_boardInstance)
             {
                 return;
             }

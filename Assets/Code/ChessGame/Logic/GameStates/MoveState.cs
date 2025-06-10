@@ -95,7 +95,7 @@ namespace ChessGame.Logic.GameStates
                 {
                     _moveData.MoveType = MoveType.MovePromotion;
                     _moveData.HiddenPawn = piece;
-                    promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
+                    promotedPiece = Game.Board.SpawnPiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                         parsedUci.ToSquare);
                     Turn = new MovePromotion(_moveData.HiddenPawn, parsedUci.FromSquare, parsedUci.ToSquare,
                         promotedPiece);
@@ -124,7 +124,7 @@ namespace ChessGame.Logic.GameStates
                 {
                     _moveData.MoveType = MoveType.CapturePromotion;
                     _moveData.HiddenPawn = piece;
-                    promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
+                    promotedPiece = Game.Board.SpawnPiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                         parsedUci.ToSquare);
                     Turn = new CapturePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece,
                         _moveData.BeatenPiece);

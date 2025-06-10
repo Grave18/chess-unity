@@ -1,5 +1,5 @@
 ﻿using EditorCools;
-using Ui.MainMenu;
+using GameAndScene;
 using UnityEngine;
 
 namespace Initialization
