@@ -67,6 +67,12 @@ sysinfo.txt
 *.unitypackage
 *.app
 
+# MS Blend
+*.user
+*.suo
+*.blend
+Blend/
+
 # Crashlytics generated file
 crashlytics-build.properties
 
