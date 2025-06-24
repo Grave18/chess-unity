@@ -1,0 +1,61 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\dev\\unity\\portfolio\\chess_3d_blend\\chess_3d_blend-blend.csproj": {}
+  },
+  "projects": {
+    "D:\\dev\\unity\\portfolio\\chess_3d_blend\\chess_3d_blend-blend.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\dev\\unity\\portfolio\\chess_3d_blend\\chess_3d_blend-blend.csproj",
+        "projectName": "chess_3d_blend-blend",
+        "projectPath": "D:\\dev\\unity\\portfolio\\chess_3d_blend\\chess_3d_blend-blend.csproj",
+        "packagesPath": "C:\\Users\\grave\\.nuget\\packages\\",
+        "outputPath": "D:\\dev\\unity\\portfolio\\chess_3d_blend\\Blend\\obj\\",
+        "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\grave\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net45"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net45": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net45": {
+          "dependencies": {
+            "Noesis.GUI.Extensions": {
+              "target": "Package",
+              "version": "[3.0.*, )"
+            }
+          }
+        }
+      },
+      "runtimes": {
+        "win": {
+          "#import": []
+        },
+        "win-x64": {
+          "#import": []
+        },
+        "win-x86": {
+          "#import": []
+        }
+      }
+    }
+  }
+}
