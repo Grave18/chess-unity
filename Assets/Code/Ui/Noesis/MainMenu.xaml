@@ -1,36 +1,19 @@
-<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<UserControl x:Class="Ui.Noesis.MainMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions"
              xmlns:local="clr-namespace:Ui.Noesis"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="1280" d:DesignWidth="720"
-             x:Class="Ui.Noesis.MainMenu">
+             d:DesignWidth="1280" d:DesignHeight="720">
 
     <noesis:Xaml.Dependencies>
-        <noesis:Dependency Source="PlayPage.xaml"/>
-        <noesis:Dependency Source="MainPage.xaml"/>
+        <noesis:Dependency Source="MainPage.xaml" />
+        <noesis:Dependency Source="PlayPage.xaml" />
+        <noesis:Dependency Source="VsPlayerPage.xaml" />
     </noesis:Xaml.Dependencies>
 
-    <!--Resources-->
-    <UserControl.Resources>
-        <Style TargetType="Button">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="BorderBrush" Value="White" />
-            <Setter Property="BorderThickness" Value="2" />
-            <Setter Property="FontFamily" Value="Arial" />
-            <Setter Property="FontSize" Value="32" />
-            <Setter Property="Margin" Value="10" />
-            <Setter Property="HorizontalContentAlignment" Value="Center" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="Width" Value="300" />
-            <Setter Property="Height" Value="100" />
-        </Style>
-    </UserControl.Resources>
-
-    <!--Control-->
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*" />
@@ -38,14 +21,14 @@
 
         </Grid.ColumnDefinitions>
 
-        <Border Margin="20, 20, 10, 20" BorderBrush="White" Background="Gray" BorderThickness="2">
+        <Border Margin="20, 20, 10, 20">
             <ContentControl Name="ContentControl" Grid.Column="0" HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch">
                 <local:MainPage />
             </ContentControl>
         </Border>
 
-        <Border Grid.Column="1" Margin="10, 20, 20, 20" BorderBrush="White" Background="Gray" BorderThickness="2">
+        <Border Grid.Column="1" Margin="10, 20, 20, 20">
             <Image Name="image" />
         </Border>
 

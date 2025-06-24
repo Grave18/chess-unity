@@ -32,7 +32,7 @@ namespace Ui.Noesis
         {
             GUI.LoadComponent(this, "Assets/Code/Ui/Noesis/MainMenu.xaml");
 
-            ContentControl = FindName("PageContent") as ContentControl;
+            ContentControl = FindName("ContentControl") as ContentControl;
         }
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)
