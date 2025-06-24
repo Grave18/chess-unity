@@ -1,4 +1,4 @@
-﻿#if UNITY_5_3_OR_NEWER
+#if UNITY_5_3_OR_NEWER
 #define NOESIS
 using Noesis;
 using UnityEngine;
@@ -28,21 +28,9 @@ namespace Ui.Noesis
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)
         {
-            if (eventName == "Click" && handlerName == nameof(VsPlayer_Click))
+            if (eventName == "Click" && handlerName == nameof(StartMatch_Click))
             {
-                ((Button)source).Click += VsPlayer_Click;
-                return true;
-            }
-
-            if (eventName == "Click" && handlerName == nameof(VsComputer_Click))
-            {
-                ((Button)source).Click += VsComputer_Click;
-                return true;
-            }
-
-            if (eventName == "Click" && handlerName == nameof(Online_Click))
-            {
-                ((Button)source).Click += Online_Click;
+                ((Button)source).Click += StartMatch_Click;
                 return true;
             }
 
@@ -61,19 +49,11 @@ namespace Ui.Noesis
             // this.DataContext = new ViewModel();
         }
 
-        public void VsPlayer_Click(object sender, RoutedEventArgs args)
+        public void StartMatch_Click(object sender, RoutedEventArgs args)
         {
-            MainMenu.Instance.ChangePage<VsPlayerPage>();
-        }
-
-        public void VsComputer_Click(object sender, RoutedEventArgs args)
-        {
-            Debug.Log("Vs Computer Clicked");
-        }
-
-        public void Online_Click(object sender, RoutedEventArgs args)
-        {
+            #if NOESIS
             Debug.Log("Online Clicked");
+            #endif
         }
 
         public void Back_Click(object sender, RoutedEventArgs args)

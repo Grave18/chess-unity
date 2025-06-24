@@ -1,4 +1,4 @@
-﻿#if UNITY_5_3_OR_NEWER
+#if UNITY_5_3_OR_NEWER
 #define NOESIS
 using Noesis;
 using UnityEngine;
@@ -62,14 +62,16 @@ namespace Ui.Noesis
 
         public void Settings_Click(object sender, RoutedEventArgs args)
         {
+#if NOESIS
             Debug.Log("Settings Clicked");
+#endif
         }
 
         public void Exit_Click(object sender, RoutedEventArgs args)
         {
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
-#else
+#elif NOESIS
             Application.Quit();
 #endif
         }

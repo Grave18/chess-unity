@@ -1,4 +1,4 @@
-﻿#if UNITY_5_3_OR_NEWER
+#if UNITY_5_3_OR_NEWER
 #define NOESIS
 using Noesis;
 using UnityEngine;
@@ -74,12 +74,16 @@ namespace Ui.Noesis
 
         public void VsComputer_Click(object sender, RoutedEventArgs args)
         {
+            #if NOESIS
             Debug.Log("Vs Computer Clicked");
+            #endif
         }
 
         public void Online_Click(object sender, RoutedEventArgs args)
         {
+            #if NOESIS
             Debug.Log("Online Clicked");
+            #endif
         }
 
         public void Back_Click(object sender, RoutedEventArgs args)

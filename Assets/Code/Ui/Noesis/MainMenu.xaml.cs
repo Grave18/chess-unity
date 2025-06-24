@@ -1,4 +1,4 @@
-﻿#if UNITY_5_3_OR_NEWER
+#if UNITY_5_3_OR_NEWER
 #define NOESIS
 using System;
 using Noesis;
@@ -17,7 +17,7 @@ namespace Ui.Noesis
     public partial class MainMenu : UserControl
     {
         public static MainMenu Instance { get; private set; }
-        private ContentControl ContentControl { get; set; }
+
         public MainMenu()
         {
             Initialized += OnInitialized;
@@ -26,6 +26,8 @@ namespace Ui.Noesis
         }
 
 #if NOESIS
+        private ContentControl ContentControl { get; set; }
+
         private void InitializeComponent()
         {
             GUI.LoadComponent(this, "Assets/Code/Ui/Noesis/MainMenu.xaml");
@@ -57,7 +59,9 @@ namespace Ui.Noesis
 
         public void Play_Click(object sender, RoutedEventArgs args)
         {
+ #if NOESIS
             Debug.Log("Play Clicked");
+ #endif
         }
     }
 }
