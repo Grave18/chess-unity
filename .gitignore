@@ -68,10 +68,8 @@ sysinfo.txt
 *.app
 
 # MS Blend
-*.user
-*.suo
-*.blend
-Blend/
+#*.blend
+#Blend/
 
 # Crashlytics generated file
 crashlytics-build.properties
