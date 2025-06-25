@@ -3,9 +3,12 @@ using System.Globalization;
 using Ai;
 using ChessGame.Logic;
 using Initialization;
-using ParrelSync;
 using UnityEngine;
 using Utils;
+
+#if UNITY_EDITOR
+using ParrelSync;
+#endif
 
 namespace GameAndScene
 {
@@ -21,8 +24,13 @@ namespace GameAndScene
         public GameSettings GameSettings => gameSettings;
 
         // TODO: this is for temporary localhost server. Need to be removed
+#if UNITY_EDITOR
         public static string GameSettingsKey => ClonesManager.IsClone() ? "GameSettingsClone" : "GameSettings";
         private static string localhostServerKey => ClonesManager.IsClone() ? "IsServerClone" : "IsServer";
+#else
+        public static string GameSettingsKey => "GameSettings";
+        private static string localhostServerKey => "IsServer";
+#endif
 
         public static bool IsLocalhostServer
         {

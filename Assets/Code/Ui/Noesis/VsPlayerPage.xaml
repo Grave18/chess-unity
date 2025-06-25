@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignWidth="1280" d:DesignHeight="720">
+    <!--xmlns:loacal="clr-namespace:Blend.DesignTimeViewModels"-->
+    <!--d:DataContext="{d:DesignData IsDesignTimeCreatable=True, Type=loacal:VsPlayerPageViewModelDesign}">-->
 
     <Grid>
         <Grid.RowDefinitions>
@@ -17,8 +19,18 @@
 
         <TextBlock Grid.Row="0" Text="Vs Player" FontSize="48" FontFamily="Arial" Foreground="White"
                    HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <ComboBox Grid.Row="1" Text="Time" />
-        <Button Grid.Row="3" Content="Start Match" Click="StartMatch_Click" />
+
+        <ComboBox Grid.Row="1" Height="100" Width="300" FontSize="24"
+                  Foreground="White"  Background="#FFC92525"
+                  BorderBrush="Green" BorderThickness="2"
+                  HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+                  Name="ComboBox"
+                  SelectionChanged="ComboBox_SelectionChanged"
+                  SelectedItem="{Binding SelectedItem}"
+                  ItemsSource="{Binding Items}">
+        </ComboBox>
+
+        <Button Grid.Row="3" Content="Start Match" Command="{Binding StartMatchCommand}" />
         <Button Grid.Row="4" Content="Back" Click="Back_Click" />
     </Grid>
 

@@ -5,8 +5,9 @@
              xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions"
              xmlns:local="clr-namespace:Ui.Noesis"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d"
-             d:DesignWidth="1280" d:DesignHeight="720">
+             mc:Ignorable="d" 
+             d:DesignWidth="1920" d:DesignHeight="1080"
+             Style="{StaticResource MainMenuStyle}">
 
     <noesis:Xaml.Dependencies>
         <noesis:Dependency Source="MainPage.xaml" />
@@ -14,24 +15,25 @@
         <noesis:Dependency Source="VsPlayerPage.xaml" />
     </noesis:Xaml.Dependencies>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="3*" />
+    <Viewbox Stretch="Uniform">
+        <Grid Width="1920" Height="1080">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="3*" />
+            </Grid.ColumnDefinitions>
 
-        </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Style="{StaticResource MainMenuBorder}" Margin="20, 20, 10, 20">
+                <ContentControl Name="ContentControl"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <local:MainPage />
+                </ContentControl>
+            </Border>
 
-        <Border Margin="20, 20, 10, 20">
-            <ContentControl Name="ContentControl" Grid.Column="0" HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch">
-                <local:MainPage />
-            </ContentControl>
-        </Border>
+            <Border Grid.Column="1" Style="{StaticResource MainMenuBorder}" Margin="10, 20, 20, 20">
+                <Image Name="image" />
+            </Border>
 
-        <Border Grid.Column="1" Margin="10, 20, 20, 20">
-            <Image Name="image" />
-        </Border>
-
-    </Grid>
+        </Grid>
+    </Viewbox>
 
 </UserControl>

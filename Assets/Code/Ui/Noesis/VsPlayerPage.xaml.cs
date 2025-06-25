@@ -5,6 +5,7 @@ using UnityEngine;
 using GUI = Noesis.GUI;
 
 #else
+using Blend.DesignTimeViewModels;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,22 +22,26 @@ namespace Ui.Noesis
         }
 
 #if NOESIS
+        private ComboBox ComboBox { get; set; }
+
         private void InitializeComponent()
         {
             GUI.LoadComponent(this, "Assets/Code/Ui/Noesis/VsPlayerPage.xaml");
+
+            ComboBox = FindName("ComboBox") as ComboBox;
         }
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)
         {
-            if (eventName == "Click" && handlerName == nameof(StartMatch_Click))
-            {
-                ((Button)source).Click += StartMatch_Click;
-                return true;
-            }
-
             if (eventName == "Click" && handlerName == nameof(Back_Click))
             {
                 ((Button)source).Click += Back_Click;
+                return true;
+            }
+
+            if (eventName == "SelectionChanged" && handlerName == nameof(ComboBox_SelectionChanged))
+            {
+                ((ComboBox)source).SelectionChanged += ComboBox_SelectionChanged;
                 return true;
             }
 
@@ -46,19 +51,21 @@ namespace Ui.Noesis
 
         private void OnInitialized(object sender, EventArgs args)
         {
-            // this.DataContext = new ViewModel();
-        }
-
-        public void StartMatch_Click(object sender, RoutedEventArgs args)
-        {
-            #if NOESIS
-            Debug.Log("Online Clicked");
-            #endif
+#if NOESIS
+            DataContext = Object.FindAnyObjectByType<VsPlayerPageViewModel>();
+#else
+            DataContext = new VsPlayerPageViewModelDesign();
+#endif
         }
 
         public void Back_Click(object sender, RoutedEventArgs args)
         {
             MainMenu.Instance.ChangePage<MainPage>();
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Empty
         }
     }
 }

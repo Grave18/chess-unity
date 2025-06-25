@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="1280" d:DesignWidth="720">
+             d:DesignWidth="1280" d:DesignHeight="720">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -15,8 +15,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Vs Player" FontSize="48" FontFamily="Arial" Foreground="White"
-                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <TextBlock Grid.Row="0" Text="Vs Player" Style="{StaticResource Header}" />
         <Button Grid.Row="1" Content="Vs Player" Click="VsPlayer_Click" />
         <Button Grid.Row="2" Content="Vs Computer" Click="VsComputer_Click" />
         <Button Grid.Row="3" Content="Online" Click="Online_Click" />
