@@ -3,15 +3,13 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:local="clr-namespace:chess_3d_blend"
   StartupUri="/chess_3d_blend;component/Assets/Code/Ui/Noesis/MainMenu.xaml">
-    
+
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Noesis.GUI.Extensions;component/Theme/NoesisTheme.DarkBlue.xaml" />
-                <ResourceDictionary Source="/chess_3d_blend;component/Assets/Example/Theme.xaml" />
                 <ResourceDictionary Source="/chess_3d_blend;component/Assets/Code/Ui/Noesis/ApplicationResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
-    
+
 </Application>

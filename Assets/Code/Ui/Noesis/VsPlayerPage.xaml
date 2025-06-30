@@ -10,28 +10,30 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="144*" />
+            <RowDefinition Height="89*" />
+            <RowDefinition Height="56*"/>
+            <RowDefinition Height="144*" />
+            <RowDefinition Height="144*" />
+            <RowDefinition Height="144*" />
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Text="Vs Player" FontSize="48" FontFamily="Arial" Foreground="White"
-                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                   HorizontalAlignment="Center" VerticalAlignment="Center" Margin="537.295,44.401" />
 
-        <ComboBox Grid.Row="1" Height="100" Width="300" FontSize="24"
-                  Foreground="White"  Background="#FFC92525"
-                  BorderBrush="Green" BorderThickness="2"
+        <ComboBox Grid.Row="1" Height="100" Width="400" FontSize="24"
+                  Foreground="White"
+                  BorderBrush="White" BorderThickness="2"
                   HorizontalAlignment="Center" HorizontalContentAlignment="Center"
                   Name="ComboBox"
                   SelectionChanged="ComboBox_SelectionChanged"
                   SelectedItem="{Binding SelectedItem}"
-                  ItemsSource="{Binding Items}">
+                  ItemsSource="{Binding Items}"
+                  Margin="440,22.399" Grid.RowSpan="2">
         </ComboBox>
 
-        <Button Grid.Row="3" Content="Start Match" Command="{Binding StartMatchCommand}" />
-        <Button Grid.Row="4" Content="Back" Click="Back_Click" />
+        <Button Grid.Row="4" Content="Start Match" Command="{Binding StartMatchCommand}" Margin="440,17" />
+        <Button Grid.Row="5" Content="Back" Click="Back_Click" Margin="440,17" />
     </Grid>
 
 </UserControl>

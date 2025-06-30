@@ -6,20 +6,40 @@
              mc:Ignorable="d"
              d:DesignWidth="1280" d:DesignHeight="720">
 
+    <UserControl.Resources>
+        
+    </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="150" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="150" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Vs Player" Style="{StaticResource Header}" />
-        <Button Grid.Row="1" Content="Vs Player" Click="VsPlayer_Click" />
-        <Button Grid.Row="2" Content="Vs Computer" Click="VsComputer_Click" />
-        <Button Grid.Row="3" Content="Online" Click="Online_Click" />
-        <Button Grid.Row="4" Content="Back" Click="Back_Click" />
+        <Label Grid.Row="0"
+               Content="Play"
+               Style="{DynamicResource HeaderLabel}" />
+        <TabControl Grid.Row="1" Style="{DynamicResource TabControlTheme}">
+            <TabItem Header="2 Players"
+                     Style="{DynamicResource TabItemTemplate}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Button Grid.Row="0" Content="Start Match" Click="VsPlayer_Click" />
+                </Grid>
+            </TabItem>
+            <TabItem  Header="Computer"
+                      Style="{DynamicResource TabItemTemplate}">
+                Computer
+            </TabItem>
+            <TabItem Header="Online"
+                     Style="{DynamicResource TabItemTemplate}">
+                Online
+            </TabItem>
+        </TabControl>
+        <Button Grid.Row="2" Content="Back" Click="Back_Click" />
     </Grid>
 
 </UserControl>
