@@ -3,15 +3,18 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using GameAndScene;
-using Noesis;
 using UnityEngine;
 
 namespace Ui.Noesis
 {
-    public sealed class VsPlayerPageViewModel : MonoBehaviour, INotifyPropertyChanged
+    public class PlayPageViewModel : MonoBehaviour, INotifyPropertyChanged
     {
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
         [SerializeField] private SceneLoader sceneLoader;
+
+        public DelegateCommand PlayOfflineCommand { get; private set; }
+        public DelegateCommand PlayWithComputerCommand { get; private set; }
+        public DelegateCommand PlayOnlineCommand { get; private set; }
 
         public ObservableCollection<string> Items { get; private set; }
 
@@ -30,36 +33,47 @@ namespace Ui.Noesis
 
         private void Awake()
         {
-            StartMatchCommand = new DelegateCommand(StartMatch);
-            Items = new ObservableCollection<string> { "1", "3", "5", "10", "20", "30", "40", "50", "60" };
+            PlayOfflineCommand = new DelegateCommand(PlayOffline);
+            PlayWithComputerCommand = new DelegateCommand(PlayWithComputer);
+            PlayOnlineCommand = new DelegateCommand(PlayOnline);
 
             SetTime();
 
-            PropertyChanged += OnSelectedItemChanged;
-        }
-
-        private void StartMatch(object obj)
-        {
-            gameSettingsContainer.SetupGameOffline();
-            sceneLoader.LoadGame();
+            PropertyChanged += OnPropertyChanged;
         }
 
         private void SetTime()
         {
+            Items = new ObservableCollection<string> { "1", "3", "5", "10", "20", "30", "40", "50", "60" };
             string timeString = gameSettingsContainer.GetTimeString();
             SelectedItem = timeString;
         }
 
-        private void OnSelectedItemChanged(object sender, PropertyChangedEventArgs e)
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             gameSettingsContainer.SetTime(SelectedItem);
             Log.Debug($"SelectedItem changed to {SelectedItem}");
         }
 
-        #region ViewModelImplimentation
-        public DelegateCommand StartMatchCommand { get; private set; }
+        private void PlayOffline(object obj)
+        {
+            gameSettingsContainer.SetupGameOffline();
+            sceneLoader.LoadGame();
+        }
 
-        // Property changed implementation
+        private void PlayWithComputer(object obj)
+        {
+            gameSettingsContainer.SetupGameWithComputer();
+            sceneLoader.LoadGame();
+        }
+
+        private void PlayOnline(object obj)
+        {
+            Log.Debug("PlayOnline Clicked");
+        }
+
+        #region ViewModelImplimentation
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -74,6 +88,7 @@ namespace Ui.Noesis
             OnPropertyChanged(propertyName);
             return true;
         }
+
         #endregion Implimentation
     }
 }

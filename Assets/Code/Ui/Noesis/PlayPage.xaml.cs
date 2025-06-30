@@ -28,30 +28,6 @@ namespace Ui.Noesis
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)
         {
-            if (eventName == "Click" && handlerName == nameof(VsPlayer_Click))
-            {
-                ((Button)source).Click += VsPlayer_Click;
-                return true;
-            }
-
-            if (eventName == "Click" && handlerName == nameof(VsComputer_Click))
-            {
-                ((Button)source).Click += VsComputer_Click;
-                return true;
-            }
-
-            if (eventName == "Click" && handlerName == nameof(VsComputer_Click))
-            {
-                ((Button)source).Click += VsComputer_Click;
-                return true;
-            }
-
-            if (eventName == "Click" && handlerName == nameof(Online_Click))
-            {
-                ((Button)source).Click += Online_Click;
-                return true;
-            }
-
             if (eventName == "Click" && handlerName == nameof(Back_Click))
             {
                 ((Button)source).Click += Back_Click;
@@ -64,25 +40,8 @@ namespace Ui.Noesis
 
         private void OnInitialized(object sender, EventArgs args)
         {
-            // this.DataContext = new ViewModel();
-        }
-
-        public void VsPlayer_Click(object sender, RoutedEventArgs args)
-        {
-            MainMenu.Instance.ChangePage<VsPlayerPage>();
-        }
-
-        public void VsComputer_Click(object sender, RoutedEventArgs args)
-        {
-            #if NOESIS
-            Debug.Log("Vs Computer Clicked");
-            #endif
-        }
-
-        public void Online_Click(object sender, RoutedEventArgs args)
-        {
-            #if NOESIS
-            Debug.Log("Online Clicked");
+            #if UNITY_EDITOR
+                DataContext = Object.FindAnyObjectByType<PlayPageViewModel>();
             #endif
         }
 

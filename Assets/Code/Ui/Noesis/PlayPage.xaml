@@ -6,10 +6,6 @@
              mc:Ignorable="d"
              d:DesignWidth="1280" d:DesignHeight="720">
 
-    <UserControl.Resources>
-        
-    </UserControl.Resources>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="150" />
@@ -21,19 +17,50 @@
                Content="Play"
                Style="{DynamicResource HeaderLabel}" />
         <TabControl Grid.Row="1" Style="{DynamicResource TabControlTheme}">
+            <!-- Offline -->
             <TabItem Header="2 Players"
                      Style="{DynamicResource TabItemTemplate}">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <Button Grid.Row="0" Content="Start Match" Click="VsPlayer_Click" />
+                    <!-- Time dropdown -->
+                    <Grid Grid.Row="0"
+                          Width="600" Height="100">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="Time"
+                                   VerticalAlignment="Center"
+                                   Margin="0 0 20 0"/>
+                        <ComboBox Grid.Column="1"
+                                  Margin="10"
+                                  Style="{DynamicResource ComboBoxStyle}"
+                                  SelectedItem="{Binding SelectedItem}"
+                                  ItemsSource="{Binding Items}" />
+                    </Grid>
+                    <Button Grid.Row="2"
+                            Content="Start Match"
+                            Command="{Binding PlayOfflineCommand}" />
                 </Grid>
             </TabItem>
+            <!-- Computer -->
             <TabItem  Header="Computer"
                       Style="{DynamicResource TabItemTemplate}">
-                Computer
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Button Grid.Row="0"
+                            Content="Start Match"
+                            Command="{Binding PlayOfflineCommand}" />
+                </Grid>
             </TabItem>
+            <!-- Online -->
             <TabItem Header="Online"
                      Style="{DynamicResource TabItemTemplate}">
                 Online
