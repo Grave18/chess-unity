@@ -24,9 +24,11 @@
                    HorizontalAlignment="Left"
                    FontSize="30" />
         <Button Grid.Row="0" Grid.Column="1"
+                Margin="0 0 5 5"
                 Content="Reset"
                 Style="{StaticResource FenButtonStyle}" />
         <Button Grid.Row="0" Grid.Column="2"
+                Margin="5 0 0 5"
                 Content="Custom"
                 Style="{StaticResource FenButtonStyle}" />
         <TextBox Grid.Row="1" Grid.Column="0"

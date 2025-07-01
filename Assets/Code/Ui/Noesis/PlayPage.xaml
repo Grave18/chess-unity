@@ -23,7 +23,7 @@
                      Style="{DynamicResource TabItemTemplate}">
                 <DockPanel Margin="30">
                     <!-- Time dropdown -->
-                   <userControls:TimeDropdown DockPanel.Dock="Top" />
+                    <userControls:TimeDropdown DockPanel.Dock="Top" />
                     <!-- Fen Text Box -->
                     <userControls:FenTextBox DockPanel.Dock="Top" />
                     <!-- Back Button -->
@@ -43,7 +43,7 @@
                     <userControls:DifficultyDropdown DockPanel.Dock="Top"/>
                     <!-- Fen Text Box -->
                     <userControls:FenTextBox DockPanel.Dock="Top" />
-                    <!-- Back Button -->
+                    <!-- Start Button -->
                     <Button DockPanel.Dock="Bottom"
                             Content="Start Match"
                             VerticalAlignment="Bottom"
@@ -53,7 +53,30 @@
             <!-- Online -->
             <TabItem Header="Online"
                      Style="{DynamicResource TabItemTemplate}">
-                Online
+                <DockPanel Margin="30">
+                    <!-- Time dropdown -->
+                    <userControls:TimeDropdown DockPanel.Dock="Top" />
+                    <!-- Fen Text Box -->
+                    <userControls:FenTextBox DockPanel.Dock="Top" />
+                    <!-- Debug Localhost Buttons -->
+                    <Grid Height="80" DockPanel.Dock="Top" Margin="0 20 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="220"/>
+                            <ColumnDefinition Width="220"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0"
+                                Content="Host"
+                                Style="{StaticResource FenButtonStyle}" />
+                        <Button Grid.Column="1"
+                                Content="Local"
+                                Style="{StaticResource FenButtonStyle}" />
+                    </Grid>
+                    <!-- Create Lobby Button -->
+                    <Button DockPanel.Dock="Bottom"
+                            Content="Create Lobby"
+                            VerticalAlignment="Bottom"
+                            Command="{Binding CreateLobbyCommand}" />
+                </DockPanel>
             </TabItem>
         </TabControl>
         <Button Grid.Row="2"
