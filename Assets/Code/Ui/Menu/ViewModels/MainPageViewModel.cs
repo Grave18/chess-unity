@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Ui.Noesis
+namespace Ui.Menu.ViewModels
 {
     public class MainPageViewModel : MonoBehaviour
     {

@@ -13,9 +13,9 @@ using System.Windows.Controls;
 
 namespace Ui.Menu.Pages
 {
-    public partial class PlayPage : UserControl
+    public partial class BoardPage : UserControl
     {
-        public PlayPage()
+        public BoardPage()
         {
             Initialized += OnInitialized;
             InitializeComponent();
@@ -24,7 +24,7 @@ namespace Ui.Menu.Pages
 #if NOESIS
         private void InitializeComponent()
         {
-            GUI.LoadComponent(this, "Assets/Code/Ui/Menu/Pages/PlayPage.xaml");
+            GUI.LoadComponent(this, "Assets/Code/Ui/Menu/Pages/BoardPage.xaml");
         }
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)

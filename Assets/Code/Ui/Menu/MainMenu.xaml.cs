@@ -8,7 +8,6 @@ using GUI = Noesis.GUI;
 
 #else
 using System;
-using System.Windows;
 using System.Windows.Controls;
 #endif
 
@@ -20,9 +19,10 @@ namespace Ui.Menu
 
         public MainMenu()
         {
+            Instance = this;
+
             Initialized += OnInitialized;
             InitializeComponent();
-            Instance = this;
         }
 
 #if NOESIS
@@ -34,17 +34,6 @@ namespace Ui.Menu
 
             ContentControl = FindName("ContentControl") as ContentControl;
         }
-
-        protected override bool ConnectEvent(object source, string eventName, string handlerName)
-        {
-            if (eventName == "Click" && handlerName == nameof(Play_Click))
-            {
-                ((Button)source).Click += Play_Click;
-                return true;
-            }
-
-            return false;
-        }
 #endif
 
         public void ChangePage<T>() where T : UserControl
@@ -55,13 +44,6 @@ namespace Ui.Menu
         private void OnInitialized(object sender, EventArgs args)
         {
             // this.DataContext = new ViewModel();
-        }
-
-        public void Play_Click(object sender, RoutedEventArgs args)
-        {
- #if NOESIS
-            Debug.Log("Play Clicked");
- #endif
         }
     }
 }

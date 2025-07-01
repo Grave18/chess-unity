@@ -6,7 +6,7 @@ using GameAndScene;
 using Ui.Menu.Auxiliary;
 using UnityEngine;
 
-namespace Ui.Noesis
+namespace Ui.Menu.ViewModels
 {
     public class PlayPageViewModel : MonoBehaviour, INotifyPropertyChanged
     {
@@ -53,7 +53,7 @@ namespace Ui.Noesis
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             gameSettingsContainer.SetTime(SelectedItem);
-            Log.Debug($"SelectedItem changed to {SelectedItem}");
+            LogUi.Debug($"SelectedItem changed to {SelectedItem}");
         }
 
         private void PlayOffline(object obj)
@@ -70,7 +70,7 @@ namespace Ui.Noesis
 
         private void PlayOnline(object obj)
         {
-            Log.Debug("PlayOnline Clicked");
+            LogUi.Debug("PlayOnline Clicked");
         }
 
         #region ViewModelImplimentation

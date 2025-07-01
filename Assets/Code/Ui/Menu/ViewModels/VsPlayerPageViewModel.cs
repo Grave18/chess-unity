@@ -3,12 +3,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using GameAndScene;
-using Noesis;
 using Ui.Menu.Auxiliary;
 using UnityEngine;
-using Log = Ui.Menu.Auxiliary.Log;
 
-namespace Ui.Noesis
+namespace Ui.Menu.ViewModels
 {
     public sealed class VsPlayerPageViewModel : MonoBehaviour, INotifyPropertyChanged
     {
@@ -57,7 +55,7 @@ namespace Ui.Noesis
         private void OnSelectedItemChanged(object sender, PropertyChangedEventArgs e)
         {
             gameSettingsContainer.SetTime(SelectedItem);
-            Log.Debug($"SelectedItem changed to {SelectedItem}");
+            LogUi.Debug($"SelectedItem changed to {SelectedItem}");
         }
 
         #region ViewModelImplimentation

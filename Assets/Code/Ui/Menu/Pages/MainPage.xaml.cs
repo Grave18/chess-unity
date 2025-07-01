@@ -1,7 +1,6 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
 using Noesis;
-using Ui.Noesis;
 using UnityEngine;
 using GUI = Noesis.GUI;
 
@@ -10,6 +9,8 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 #endif
+
+using Ui.Menu.Auxiliary;
 
 namespace Ui.Menu.Pages
 {
@@ -41,6 +42,12 @@ namespace Ui.Menu.Pages
                 return true;
             }
 
+            if (eventName == "Click" && handlerName == nameof(Board_Click))
+            {
+                ((Button)source).Click += Board_Click;
+                return true;
+            }
+
             if (eventName == "Click" && handlerName == nameof(Exit_Click))
             {
                 ((Button)source).Click += Exit_Click;
@@ -63,9 +70,12 @@ namespace Ui.Menu.Pages
 
         public void Settings_Click(object sender, RoutedEventArgs args)
         {
-#if NOESIS
-            Debug.Log("Settings Clicked");
-#endif
+            Auxiliary.LogUi.Debug("Settings Clicked");
+        }
+
+        private void Board_Click(object sender, RoutedEventArgs e)
+        {
+            MainMenu.Instance.ChangePage<BoardPage>();
         }
 
         public void Exit_Click(object sender, RoutedEventArgs args)
@@ -74,6 +84,8 @@ namespace Ui.Menu.Pages
             UnityEditor.EditorApplication.isPlaying = false;
 #elif NOESIS
             Application.Quit();
+#else
+            Application.Current.Shutdown();
 #endif
         }
     }

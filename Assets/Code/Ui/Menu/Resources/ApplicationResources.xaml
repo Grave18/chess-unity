@@ -17,7 +17,7 @@
     <Style x:Key="MainMenuStyle" TargetType="{x:Type UserControl}">
         <Setter Property="FontFamily" Value="Segoe UI" />
         <Setter Property="FontWeight" Value="Black" />
-        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontSize" Value="32" />
         <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
         <Setter Property="Background" Value="{StaticResource DarkerBackgroundBrush}" />
     </Style>
@@ -384,7 +384,7 @@
                         CornerRadius="15"
                         Background="{DynamicResource LighterBackgroundBrush}">
                     <ScrollViewer x:Name="DropDownScrollViewer"
-                                  Foreground="{TemplateBinding Foreground}"> 
+                                  Foreground="{TemplateBinding Foreground}">
                         <Grid x:Name="grid">
                             <Canvas x:Name="canvas"
                                     HorizontalAlignment="Left"
@@ -450,7 +450,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
                     <ScrollViewer x:Name="PART_ContentHost" Background="Transparent"
-                                  Focusable="false" 
+                                  Focusable="false"
                                   HorizontalScrollBarVisibility="Hidden"
                                   VerticalScrollBarVisibility="Hidden" />
                 </ControlTemplate>

@@ -1,7 +1,6 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
 using Noesis;
-using UnityEngine;
 using GUI = Noesis.GUI;
 
 #else

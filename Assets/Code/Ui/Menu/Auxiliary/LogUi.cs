@@ -6,19 +6,19 @@ using System;
 
 namespace Ui.Menu.Auxiliary
 {
-    public static class Log
+    public static class LogUi
     {
-        public static void Debug(string message)
+        public static void Debug(object message)
         {
             LogBase(message);
         }
 
-        private static void LogBase(string message)
+        private static void LogBase(object message)
         {
 #if NOESIS
             UnityEngine.Debug.Log(message);
 #else
-            Console.WriteLine(message);
+            Console.WriteLine(message.ToString());
 #endif
         }
     }

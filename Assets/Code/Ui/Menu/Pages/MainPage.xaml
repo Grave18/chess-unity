@@ -8,16 +8,18 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="150" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="150" />
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Text="Main Menu" Style="{StaticResource Header}"/>
-        <Button Grid.Row="1" Content="Play" Click="Play_Click" />
-        <Button Grid.Row="2" Content="Settings" Click="Settings_Click" />
-        <Button Grid.Row="3" Content="Exit" Click="Exit_Click" />
+        <StackPanel Grid.Row="1">
+            <Button Content="Play" Click="Play_Click" />
+            <Button Content="Settings" Click="Settings_Click" />
+            <Button Content="Board" Click="Board_Click" />
+        </StackPanel>
+        <Button Grid.Row="2" Content="Exit" Click="Exit_Click" />
     </Grid>
 
 </UserControl>
