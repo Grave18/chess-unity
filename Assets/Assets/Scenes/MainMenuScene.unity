@@ -9540,7 +9540,6 @@ GameObject:
   - component: {fileID: 1637782475}
   - component: {fileID: 1637782478}
   - component: {fileID: 1637782479}
-  - component: {fileID: 1637782480}
   m_Layer: 0
   m_Name: UiCamera
   m_TagString: MainCamera
@@ -9678,10 +9677,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29355477be96127469aed699dd82b4be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _xaml: {fileID: 11400000, guid: fc2f93b7ed20d7a4e9bb935490da4a94, type: 2}
+  _xaml: {fileID: 11400000, guid: eac09e81d941d9345b720a0fcac35737, type: 2}
   _texture: {fileID: 0}
   _isPPAAEnabled: 1
-  _tessellationMaxPixelError: 0.4
+  _tessellationMaxPixelError: 0.2
   _renderFlags: 0
   _continuousRendering: 1
   _enableKeyboard: 1
@@ -9690,19 +9689,6 @@ MonoBehaviour:
   _enableGamepad: 1
   _emulateTouch: 0
   _useRealTimeClock: 0
---- !u!114 &1637782480
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1637782474}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d03a9b6e902d461ab65726ed3d216f8d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  renderTexture: {fileID: 8400000, guid: f3ef78b0b841e9643a1c4eeab135ae56, type: 2}
 --- !u!114 &1639321307 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6960819470116050267, guid: d3a01af0dd4b3034a985831a5cb02615,

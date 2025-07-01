@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32cb0206ed0bc0d4b91a4e54d600f906, type: 3}
   m_Name: NoesisSettings
   m_EditorClassIdentifier: 
-  applicationResources: {fileID: 11400000, guid: b2b5d57b847c7bf4faefffd0ed76060f,
+  applicationResources: {fileID: 11400000, guid: 9c814a25873b56a499d5d42d9e49455b,
     type: 2}
   glyphTextureSize: 2
   colorGlyphTextureSize: 0
