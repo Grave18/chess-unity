@@ -4,13 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignWidth="1280" d:DesignHeight="720">
+             d:DesignWidth="640" d:DesignHeight="1080">
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="150" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="150" />
+            <RowDefinition Height="170" />
         </Grid.RowDefinitions>
 
         <Label Grid.Row="0"
@@ -20,14 +20,9 @@
             <!-- Offline -->
             <TabItem Header="2 Players"
                      Style="{DynamicResource TabItemTemplate}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                <DockPanel Margin="30">
                     <!-- Time dropdown -->
-                    <Grid Grid.Row="0"
+                    <Grid DockPanel.Dock="Top"
                           Width="600" Height="100">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -36,21 +31,49 @@
                         <TextBlock Grid.Column="0"
                                    Text="Time"
                                    VerticalAlignment="Center"
-                                   Margin="0 0 20 0"/>
+                                   Margin="0 0 20 0" />
                         <ComboBox Grid.Column="1"
                                   Margin="10"
                                   Style="{DynamicResource ComboBoxStyle}"
                                   SelectedItem="{Binding SelectedItem}"
                                   ItemsSource="{Binding Items}" />
                     </Grid>
-                    <Button Grid.Row="2"
+                    <!-- Fen Control-->
+                    <Grid DockPanel.Dock="Top"
+                          Margin="0 10 0 10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                   Text="Fen"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   FontSize="30" />
+                        <Button Grid.Row="0" Grid.Column="1"
+                                Content="Reset"
+                                Style="{StaticResource FenButtonStyle}" />
+                        <Button Grid.Row="0" Grid.Column="2"
+                                Content="Custom"
+                                Style="{StaticResource FenButtonStyle}" />
+                        <TextBox Grid.Row="1" Grid.Column="0"
+                                 Grid.ColumnSpan="3"
+                                 Style="{StaticResource FenTextBoxStyle}" />
+                    </Grid>
+                    <Button DockPanel.Dock="Bottom"
                             Content="Start Match"
+                            VerticalAlignment="Bottom"
                             Command="{Binding PlayOfflineCommand}" />
-                </Grid>
+                </DockPanel>
             </TabItem>
             <!-- Computer -->
-            <TabItem  Header="Computer"
-                      Style="{DynamicResource TabItemTemplate}">
+            <TabItem Header="Computer"
+                     Style="{DynamicResource TabItemTemplate}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -66,7 +89,10 @@
                 Online
             </TabItem>
         </TabControl>
-        <Button Grid.Row="2" Content="Back" Click="Back_Click" />
+        <Button Grid.Row="2"
+                Margin="0 0 0 20"
+                Content="Back"
+                Click="Back_Click" />
     </Grid>
 
 </UserControl>
