@@ -3,10 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:userControls="clr-namespace:Ui.Noesis.UserControls"
              mc:Ignorable="d"
              d:DesignWidth="640" d:DesignHeight="1080">
 
-    <Grid>
+    <Grid IsSharedSizeScope="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -22,49 +23,10 @@
                      Style="{DynamicResource TabItemTemplate}">
                 <DockPanel Margin="30">
                     <!-- Time dropdown -->
-                    <Grid DockPanel.Dock="Top"
-                          Width="600" Height="100">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0"
-                                   Text="Time"
-                                   VerticalAlignment="Center"
-                                   Margin="0 0 20 0" />
-                        <ComboBox Grid.Column="1"
-                                  Margin="10"
-                                  Style="{DynamicResource ComboBoxStyle}"
-                                  SelectedItem="{Binding SelectedItem}"
-                                  ItemsSource="{Binding Items}" />
-                    </Grid>
-                    <!-- Fen Control-->
-                    <Grid DockPanel.Dock="Top"
-                          Margin="0 10 0 10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0"
-                                   Text="Fen"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Left"
-                                   FontSize="30" />
-                        <Button Grid.Row="0" Grid.Column="1"
-                                Content="Reset"
-                                Style="{StaticResource FenButtonStyle}" />
-                        <Button Grid.Row="0" Grid.Column="2"
-                                Content="Custom"
-                                Style="{StaticResource FenButtonStyle}" />
-                        <TextBox Grid.Row="1" Grid.Column="0"
-                                 Grid.ColumnSpan="3"
-                                 Style="{StaticResource FenTextBoxStyle}" />
-                    </Grid>
+                   <userControls:TimeDropdown DockPanel.Dock="Top" />
+                    <!-- Fen Text Box -->
+                    <userControls:FenTextBox DockPanel.Dock="Top" />
+                    <!-- Back Button -->
                     <Button DockPanel.Dock="Bottom"
                             Content="Start Match"
                             VerticalAlignment="Bottom"
@@ -74,14 +36,19 @@
             <!-- Computer -->
             <TabItem Header="Computer"
                      Style="{DynamicResource TabItemTemplate}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Button Grid.Row="0"
+                <DockPanel Margin="30">
+                    <!-- Time dropdown -->
+                    <userControls:TimeDropdown DockPanel.Dock="Top"/>
+                    <!-- Difficulty dropdown -->
+                    <userControls:DifficultyDropdown DockPanel.Dock="Top"/>
+                    <!-- Fen Text Box -->
+                    <userControls:FenTextBox DockPanel.Dock="Top" />
+                    <!-- Back Button -->
+                    <Button DockPanel.Dock="Bottom"
                             Content="Start Match"
+                            VerticalAlignment="Bottom"
                             Command="{Binding PlayOfflineCommand}" />
-                </Grid>
+                </DockPanel>
             </TabItem>
             <!-- Online -->
             <TabItem Header="Online"

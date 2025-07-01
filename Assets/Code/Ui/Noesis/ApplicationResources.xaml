@@ -429,6 +429,7 @@
                     </ScrollViewer>
                 </Border>
             </Popup>
+            <!-- Toggle Button Part -->
             <ToggleButton x:Name="toggleButton"
                           BorderThickness="{TemplateBinding BorderThickness}"
                           Background="{TemplateBinding Background}"
@@ -443,7 +444,8 @@
                               Content="{TemplateBinding SelectionBoxItem}"
                               ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                              IsHitTestVisible="false" Margin="{TemplateBinding Padding}"
+                              IsHitTestVisible="false"
+                              Margin="{TemplateBinding Padding}"
                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
         </Grid>
@@ -522,12 +524,15 @@
                           Grid.ColumnSpan="2" Grid.Column="0"
                           IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                           Style="{StaticResource ComboBoxToggleButton}" />
-            <Border Grid.Column="0" x:Name="border" Background="{StaticResource TextBox.Static.Background}"
+            <Border Grid.Column="0"
+                    x:Name="border"
+                    Background="{StaticResource TextBox.Static.Background}"
                     Margin="{TemplateBinding BorderThickness}">
                 <TextBox x:Name="PART_EditableTextBox"
                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                          IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}"
-                         Margin="{TemplateBinding Padding}" Style="{StaticResource ComboBoxEditableTextBox}"
+                         Margin="{TemplateBinding Padding}"
+                         Style="{StaticResource ComboBoxEditableTextBox}"
                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
             </Border>
         </Grid>

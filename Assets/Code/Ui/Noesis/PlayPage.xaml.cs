@@ -49,5 +49,10 @@ namespace Ui.Noesis
         {
             MainMenu.Instance.ChangePage<MainPage>();
         }
+
+        private void TimeDropdown_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
