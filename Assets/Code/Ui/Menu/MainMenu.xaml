@@ -13,6 +13,7 @@
         <noesis:Dependency Source="Pages/MainPage.xaml" />
         <noesis:Dependency Source="Pages/PlayPage.xaml" />
         <noesis:Dependency Source="Pages/BoardPage.xaml" />
+        <noesis:Dependency Source="Pages/SettingsPage.xaml" />
     </noesis:Xaml.Dependencies>
 
     <Viewbox Stretch="Uniform">

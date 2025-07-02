@@ -15,6 +15,20 @@ namespace Ui.Menu.ViewModels
         public ObservableCollection<string> Times { get; set; }
         public ObservableCollection<string> Difficulties { get; set; }
 
+        private string _playerName;
+        public string PlayerName
+        {
+            get => _playerName;
+            set
+            {
+                if (SetField(ref _playerName, value))
+                {
+                    gameSettingsContainer.SetPlayerName(_playerName);
+                    LogUi.Debug($"Name changed to {_playerName}");
+                }
+            }
+        }
+
         private string _selectedTime;
         public string SelectedTime
         {
@@ -45,8 +59,14 @@ namespace Ui.Menu.ViewModels
 
         private void Awake()
         {
+            SetName();
             SetTime();
             SetDifficulty();
+        }
+
+        private void SetName()
+        {
+            PlayerName = gameSettingsContainer.GetPlayerName();
         }
 
         private void SetTime()

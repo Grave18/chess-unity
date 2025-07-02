@@ -8,8 +8,8 @@ namespace Initialization
     {
         public PieceColor PlayerColor = PieceColor.White;
 
-        public PlayerSettings Player1Settings = new();
-        public PlayerSettings Player2Settings = new();
+        public PlayerSettings Player1Settings = new() { Name = "Player1" };
+        public PlayerSettings Player2Settings = new() { Name = "Player2" };
 
         [Header("Game Settings")]
         public Vector2Int Time = new(30, 0);

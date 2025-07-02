@@ -15,44 +15,62 @@
         </Grid.RowDefinitions>
 
         <Label Grid.Row="0"
-               Content="Play"
+               Content="Settings"
                Style="{DynamicResource HeaderLabel}" />
-        <TabControl Grid.Row="1" Style="{DynamicResource TabControlTheme}">
-            <!-- Offline -->
+        <TabControl Grid.Row="1"
+                    Style="{DynamicResource TabControlTheme}">
+
+            <!-- Game Settings -->
             <TabItem Header="Game"
+                     Name="GameSettingsTab"
                      Style="{DynamicResource TabItemStyle}">
                 <DockPanel Margin="30">
+                    <!-- Name TextBox -->
+                    <Grid DockPanel.Dock="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="Name"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"/>
+                        <TextBox Grid.Column="1"
+                                 Margin="0 10 0 10"
+                                 Text="{Binding PlayerName}"
+                                 Style="{StaticResource FenTextBoxStyle}"/>
+                    </Grid>
                     <!-- Time dropdown -->
-                    <userControls:DropdownUserControl DockPanel.Dock="Top" />
+                    <userControls:DropdownUserControl DockPanel.Dock="Top"
+                                                      Text="Time"
+                                                      SelectedItem="{Binding SelectedTime, Mode=TwoWay}"
+                                                      ItemsSource="{Binding Times}" />
                     <!-- Difficulty dropdown -->
-                    <userControls:DifficultyDropdown DockPanel.Dock="Top"/>
-                    <!-- Fen Text Box -->
-                    <userControls:FenTextBox DockPanel.Dock="Top" />
-                    <!-- Back Button -->
-                    <Button DockPanel.Dock="Bottom"
-                            Content="Start Match"
-                            VerticalAlignment="Bottom"
-                            Command="{Binding PlayOfflineCommand}" />
+                    <userControls:DropdownUserControl DockPanel.Dock="Top"
+                                                      Text="Difficulty"
+                                                      SelectedItem="{Binding SelectedDifficulty, Mode=TwoWay}"
+                                                      ItemsSource="{Binding Difficulties}" />
+                    <!-- Fen Text Box --> 
+                    <userControls:FenTextBox VerticalAlignment="Top"/>
                 </DockPanel>
             </TabItem>
-            <!-- Computer -->
+
+            <!-- Graphics Settings -->
             <TabItem Header="Graphics"
+                     Name="GraphicsSettingsTab"
                      Style="{DynamicResource TabItemStyle}">
                 <DockPanel Margin="30">
                     <!-- Time dropdown -->
                     <userControls:DropdownUserControl DockPanel.Dock="Top"/>
-                    
+
                     <!-- Fen Text Box -->
                     <userControls:FenTextBox DockPanel.Dock="Top" />
-                    <!-- Start Button -->
-                    <Button DockPanel.Dock="Bottom"
-                            Content="Start Match"
-                            VerticalAlignment="Bottom"
-                            Command="{Binding PlayOfflineCommand}" />
                 </DockPanel>
             </TabItem>
-            <!-- Online -->
+
+            <!-- Controls Settings -->
             <TabItem Header="Controls"
+                     Name="ControlSettingsTab"
                      Style="{DynamicResource TabItemStyle}">
                 <DockPanel Margin="30">
                     <!-- Time dropdown -->
@@ -72,18 +90,18 @@
                                 Content="Local"
                                 Style="{StaticResource FenButtonStyle}" />
                     </Grid>
-                    <!-- Create Lobby Button -->
-                    <Button DockPanel.Dock="Bottom"
-                            Content="Create Lobby"
-                            VerticalAlignment="Bottom"
-                            Command="{Binding CreateLobbyCommand}" />
                 </DockPanel>
             </TabItem>
+
+            <!-- Audio Settings -->
             <TabItem Header="Audio"
+                     Name="AudioSettingsTab"
                      Style="{DynamicResource TabItemStyle}">
                 Audio
             </TabItem>
+
         </TabControl>
+        <!-- Back Button -->
         <Button Grid.Row="2"
                 Margin="0 0 0 20"
                 Content="Back"

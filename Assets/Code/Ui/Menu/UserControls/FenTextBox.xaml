@@ -8,15 +8,17 @@
              d:DesignHeight="200" d:DesignWidth="640">
 
     <!-- Fen Text Box -->
-    <Grid Margin="0 10 0 10">
+    <Grid Name="Root"
+          Focusable="True"
+          HorizontalAlignment="Stretch">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Grid.Column="0"
                    Text="Fen"
@@ -24,15 +26,21 @@
                    HorizontalAlignment="Left"
                    FontSize="30" />
         <Button Grid.Row="0" Grid.Column="1"
+                Name="ResetButton"
                 Margin="0 0 5 5"
                 Content="Reset"
+                Command="{Binding GetDefaultFenCommand}"
                 Style="{StaticResource FenButtonStyle}" />
         <Button Grid.Row="0" Grid.Column="2"
                 Margin="5 0 0 5"
-                Content="Custom"
+                Content="Saved"
+                Command="{Binding GetSavedFenCommand}"
                 Style="{StaticResource FenButtonStyle}" />
-        <TextBox Grid.Row="1" Grid.Column="0"
-                 Grid.ColumnSpan="3"
-                 Style="{StaticResource FenTextBoxStyle}" />
+        <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                 Name="FenTextBox1"
+                 KeyUp="FenTextBox1_OnKeyUp"
+                 Text="{Binding CurrentFen, Mode=TwoWay}"
+                 Style="{StaticResource FenTextBoxStyle}">
+        </TextBox>
     </Grid>
 </UserControl>

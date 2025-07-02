@@ -105,6 +105,17 @@ namespace GameAndScene
             Save();
         }
 
+        public string GetPlayerName()
+        {
+            return gameSettings.Player1Settings.Name;
+        }
+
+        public void SetPlayerName(string playerName)
+        {
+            gameSettings.Player1Settings.Name = playerName;
+            Save();
+        }
+
         public string GetTimeString()
         {
             Vector2 time = GetTime();

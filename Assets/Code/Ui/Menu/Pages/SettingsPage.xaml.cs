@@ -21,10 +21,27 @@ namespace Ui.Menu.Pages
             InitializeComponent();
         }
 
+        private void OnInitialized(object sender, EventArgs args)
+        {
+            #if NOESIS
+                DataContext = Object.FindAnyObjectByType<SettingsPageViewModel>();
+                GameSettingsTab.DataContext = Object.FindAnyObjectByType<GameSettingsViewModel>();
+            #endif
+        }
+
+        public void Back_Click(object sender, RoutedEventArgs args)
+        {
+            MainMenu.Instance.ChangePage<MainPage>();
+        }
+
 #if NOESIS
+        private TabItem GameSettingsTab { get; set; }
+
         private void InitializeComponent()
         {
             GUI.LoadComponent(this, "Assets/Code/Ui/Menu/Pages/SettingsPage.xaml");
+
+            GameSettingsTab = FindName("GameSettingsTab") as TabItem;
         }
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)
@@ -38,17 +55,5 @@ namespace Ui.Menu.Pages
             return false;
         }
 #endif
-
-        private void OnInitialized(object sender, EventArgs args)
-        {
-            #if NOESIS
-                DataContext = Object.FindAnyObjectByType<PlayPageViewModel>();
-            #endif
-        }
-
-        public void Back_Click(object sender, RoutedEventArgs args)
-        {
-            MainMenu.Instance.ChangePage<MainPage>();
-        }
     }
 }

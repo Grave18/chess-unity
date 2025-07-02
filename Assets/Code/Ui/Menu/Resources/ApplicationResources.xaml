@@ -440,6 +440,7 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
     <SolidColorBrush x:Key="TextBox.Static.Background" Color="#FFFFFFFF" />
+    <!-- Combobox TextBox -->
     <Style x:Key="ComboBoxEditableTextBox" TargetType="{x:Type TextBox}">
         <Setter Property="OverridesDefaultStyle" Value="true" />
         <Setter Property="AllowDrop" Value="true" />
@@ -559,7 +560,7 @@
                 <ControlTemplate TargetType="Button">
                     <Grid>
                         <Border Background="{TemplateBinding Background}"
-                                CornerRadius="10" />
+                                CornerRadius="15" />
                         <ContentPresenter
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                             HorizontalAlignment="{TemplateBinding HorizontalAlignment}" />
@@ -601,8 +602,7 @@
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Background" Value="{StaticResource LighterBackgroundBrush}"/>
         <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
-        <Setter Property="MinWidth" Value="120" />
-        <Setter Property="MinHeight" Value="20" />
+        <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst" />
         <Setter Property="AllowDrop" Value="true" />
         <Setter Property="CaretBrush">
             <Setter.Value>
