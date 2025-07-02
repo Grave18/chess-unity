@@ -70,7 +70,7 @@ namespace Ui.Menu.Pages
 
         public void Settings_Click(object sender, RoutedEventArgs args)
         {
-            Auxiliary.LogUi.Debug("Settings Clicked");
+            MainMenu.Instance.ChangePage<SettingsPage>();
         }
 
         private void Board_Click(object sender, RoutedEventArgs e)

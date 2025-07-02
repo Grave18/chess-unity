@@ -3,7 +3,6 @@
 using Noesis;
 using Ui.Menu.ViewModels;
 using UnityEngine;
-using Grid = Noesis.Grid;
 using GUI = Noesis.GUI;
 
 #else
@@ -14,35 +13,18 @@ using System.Windows.Controls;
 
 namespace Ui.Menu.Pages
 {
-    public partial class PlayPage : UserControl
+    public partial class SettingsPage : UserControl
     {
-        public PlayPage()
+        public SettingsPage()
         {
             Initialized += OnInitialized;
             InitializeComponent();
         }
 
-        private void OnInitialized(object sender, EventArgs args)
-        {
 #if NOESIS
-            DataContext = Object.FindAnyObjectByType<PlayPageViewModel>();
-            Root.DataContext = Object.FindAnyObjectByType<GameSettingsViewModel>();
-#endif
-        }
-
-        public void Back_Click(object sender, RoutedEventArgs args)
-        {
-            MainMenu.Instance.ChangePage<MainPage>();
-        }
-
-#if NOESIS
-        public Grid Root { get; set; }
-
         private void InitializeComponent()
         {
-            GUI.LoadComponent(this, "Assets/Code/Ui/Menu/Pages/PlayPage.xaml");
-
-            Root = FindName("Root") as Grid;
+            GUI.LoadComponent(this, "Assets/Code/Ui/Menu/Pages/SettingsPage.xaml");
         }
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)
@@ -56,5 +38,17 @@ namespace Ui.Menu.Pages
             return false;
         }
 #endif
+
+        private void OnInitialized(object sender, EventArgs args)
+        {
+            #if NOESIS
+                DataContext = Object.FindAnyObjectByType<PlayPageViewModel>();
+            #endif
+        }
+
+        public void Back_Click(object sender, RoutedEventArgs args)
+        {
+            MainMenu.Instance.ChangePage<MainPage>();
+        }
     }
 }

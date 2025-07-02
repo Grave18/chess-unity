@@ -44,10 +44,12 @@ namespace GameAndScene
             }
         }
 
-        public void SetQuality(int quality)
+        public (int width, int height) GetResolution()
         {
-            _quality = quality;
-            _isQualityChanged = true;
+            int width = PlayerPrefs.GetInt(ResolutionWidthKey, 0);
+            int height = PlayerPrefs.GetInt(ResolutionHeightKey, 0);
+
+            return (width, height);
         }
 
         public void SetResolution(int width, int height)
@@ -58,11 +60,27 @@ namespace GameAndScene
             _isResolutionChanged = true;
         }
 
+        public int GetFullScreenMode()
+        {
+            return PlayerPrefs.GetInt(FullScreenModeKey, 0);
+        }
+
         public void SetFullScreenMode(int fullScreenMode)
         {
             _fullScreenMode = fullScreenMode;
 
             _isFullScreenModeChanged = true;
+        }
+
+        public int GetQuality()
+        {
+            return PlayerPrefs.GetInt(QualityKey, 0);
+        }
+
+        public void SetQuality(int quality)
+        {
+            _quality = quality;
+            _isQualityChanged = true;
         }
 
         public void ApplySettings()
@@ -96,24 +114,6 @@ namespace GameAndScene
 
                 _isQualityChanged = false;
             }
-        }
-
-        public (int width, int height) GetResolution()
-        {
-            int width = PlayerPrefs.GetInt(ResolutionWidthKey, 0);
-            int height = PlayerPrefs.GetInt(ResolutionHeightKey, 0);
-
-            return (width, height);
-        }
-
-        public int GetFullScreenMode()
-        {
-            return PlayerPrefs.GetInt(FullScreenModeKey, 0);
-        }
-
-        public int GetQuality()
-        {
-            return PlayerPrefs.GetInt(QualityKey, 0);
         }
     }
 }

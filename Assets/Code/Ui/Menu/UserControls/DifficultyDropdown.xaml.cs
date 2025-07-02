@@ -9,9 +9,6 @@ using System.Windows.Controls;
 
 namespace Ui.Menu.UserControls
 {
-    /// <summary>
-    /// Interaction logic for TimeDropdown.xaml
-    /// </summary>
     public partial class DifficultyDropdown : UserControl
     {
         public DifficultyDropdown()
@@ -19,11 +16,11 @@ namespace Ui.Menu.UserControls
             InitializeComponent();
         }
 
-        #if NOESIS
+#if NOESIS
         private void InitializeComponent()
         {
             GUI.LoadComponent(this, "Assets/Code/Ui/Menu/UserControls/DifficultyDropdown.xaml");
         }
-        #endif
+#endif
     }
 }
