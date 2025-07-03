@@ -18,7 +18,7 @@ namespace Ui.Menu.UserControls
     public partial class DropdownUserControl : UserControl
     {
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
-            "Text", typeof(string), typeof(DropdownUserControl), new PropertyMetadata(default(string)));
+            nameof(Text), typeof(string), typeof(DropdownUserControl), new PropertyMetadata(default(string)));
 
         public string Text
         {
@@ -27,7 +27,7 @@ namespace Ui.Menu.UserControls
         }
 
         public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(
-            "SelectedItem", typeof(object), typeof(DropdownUserControl), new PropertyMetadata(default(object)));
+            nameof(SelectedItem), typeof(object), typeof(DropdownUserControl), new PropertyMetadata(default(object)));
 
         public object SelectedItem
         {
@@ -36,7 +36,7 @@ namespace Ui.Menu.UserControls
         }
 
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
-            "ItemsSource", typeof(IEnumerable), typeof(DropdownUserControl), new PropertyMetadata(default(IEnumerable)));
+            nameof(ItemsSource), typeof(IEnumerable), typeof(DropdownUserControl), new PropertyMetadata(default(IEnumerable)));
 
         public IEnumerable ItemsSource
         {

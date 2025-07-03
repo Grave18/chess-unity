@@ -121,12 +121,13 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Background" Value="{DynamicResource DarkerBackgroundBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
-        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TabControl}">
-                    <Grid x:Name="templateRoot" ClipToBounds="True" SnapsToDevicePixels="True"
-                          KeyboardNavigation.TabNavigation="Local">
+                    <Grid x:Name="templateRoot"
+                          ClipToBounds="True"
+                          SnapsToDevicePixels="True"
+                          KeyboardNavigation.TabNavigation="Contained">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition x:Name="ColumnDefinition0" />
                             <ColumnDefinition x:Name="ColumnDefinition1" Width="0" />
@@ -145,7 +146,6 @@
                         <Border x:Name="contentPanel"
                                 CornerRadius="15"
                                 Margin="10 0 10 0"
-                                BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 Background="{TemplateBinding Background}"
                                 Grid.Column="0"
@@ -199,13 +199,13 @@
 
     <!-- Start TabItem -->
     <Style x:Key="TabItemStyle" TargetType="{x:Type TabItem}">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FontSize" Value="{StaticResource NormalSize>}" />
+        <Setter Property="Padding" Value="20 10 20 10" />
         <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Padding" Value="20 10 20 10" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-        <Setter Property="FontSize" Value="32" />
         <Setter Property="VerticalContentAlignment" Value="Stretch" />
-        <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TabItem}">
@@ -327,8 +327,6 @@
     <!-- Combobox Base -->
     <Style x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
         <Setter Property="OverridesDefaultStyle" Value="True" />
-        <Setter Property="IsTabStop" Value="False" />
-        <Setter Property="Focusable" Value="False" />
         <Setter Property="ClickMode" Value="Press" />
         <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
         <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />

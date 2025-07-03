@@ -1,5 +1,5 @@
 <UserControl x:Class="Ui.Menu.UserControls.DropdownUserControl"
-             Name="ThisControl"
+             Name="UserControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -40,15 +40,15 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Grid.Column="0"
-                   Text="{Binding Text, ElementName=ThisControl}"
+                   Text="{Binding Text, ElementName=UserControl}"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Stretch"
                    Margin="0 0 20 0" />
         <ComboBox Grid.Column="1"
                   Margin="0 10 0 10"
-                  Style="{DynamicResource ComboBoxStyle}"
-                  SelectedItem="{Binding SelectedItem, ElementName=ThisControl, Mode=TwoWay}"
-                  ItemsSource="{Binding ItemsSource, ElementName=ThisControl}" />
+                  Style="{StaticResource ComboBoxStyle}"
+                  SelectedItem="{Binding SelectedItem, ElementName=UserControl, Mode=TwoWay}"
+                  ItemsSource="{Binding ItemsSource, ElementName=UserControl}" />
     </Grid>
 
 </UserControl>

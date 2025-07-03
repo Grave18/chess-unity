@@ -18,6 +18,7 @@
                    Text="Settings"
                    Style="{DynamicResource HeaderTextBlockStyle}" />
         <TabControl Grid.Row="1"
+                    Focusable="True"
                     Style="{DynamicResource TabControlTheme}">
 
             <!-- Game Settings -->
@@ -50,7 +51,7 @@
                     <userControls:DropdownUserControl DockPanel.Dock="Top"
                                                       Text="Difficulty"
                                                       SelectedItem="{Binding SelectedDifficulty, Mode=TwoWay}"
-                                                      ItemsSource="{Binding Difficulty}" />
+                                                      ItemsSource="{Binding Difficulties}" />
                     <!-- Fen Text Box -->
                     <userControls:FenTextBox VerticalAlignment="Top" />
                 </DockPanel>

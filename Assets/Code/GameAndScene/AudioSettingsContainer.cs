@@ -13,23 +13,21 @@ namespace GameAndScene
         private const string MusicVolumeKey = "MusicVolume";
         private const string EffectsVolumeKey = "EffectsVolume";
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
-        private static void BeforeSplashScreen()
+        private void Start()
         {
-            if (!PlayerPrefs.HasKey(MasterVolumeKey))
-            {
-                PlayerPrefs.SetFloat(MasterVolumeKey, 1f);
-            }
+            InitializeAudiomixerVolume();
+        }
 
-            if (!PlayerPrefs.HasKey(MusicVolumeKey))
-            {
-                PlayerPrefs.SetFloat(MusicVolumeKey, 1f);
-            }
+        private void InitializeAudiomixerVolume()
+        {
+            float masterVolume = PlayerPrefs.HasKey(MasterVolumeKey) ? GetMasterVolume() : 1f;
+            SetMasterVolume(masterVolume);
 
-            if (!PlayerPrefs.HasKey(EffectsVolumeKey))
-            {
-                PlayerPrefs.SetFloat(EffectsVolumeKey, 1f);
-            }
+            float musicVolume = PlayerPrefs.HasKey(MusicVolumeKey) ? GetMusicVolume() : 1f;
+            SetMusicVolume(musicVolume);
+
+            float effectsVolume = PlayerPrefs.HasKey(EffectsVolumeKey) ? GetEffectsVolume() : 1f;
+            SetEffectsVolume(effectsVolume);
         }
 
         public float GetMasterVolume()

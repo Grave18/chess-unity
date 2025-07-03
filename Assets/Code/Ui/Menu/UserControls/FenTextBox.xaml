@@ -8,9 +8,7 @@
              d:DesignHeight="200" d:DesignWidth="640">
 
     <!-- Fen Text Box -->
-    <Grid Name="Root"
-          Focusable="True"
-          HorizontalAlignment="Stretch">
+    <Grid HorizontalAlignment="Stretch">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200" />
             <ColumnDefinition Width="*" />
@@ -37,8 +35,6 @@
                 Command="{Binding GetSavedFenCommand}"
                 Style="{StaticResource FenButtonStyle}" />
         <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
-                 Name="FenTextBox1"
-                 KeyUp="FenTextBox1_OnKeyUp"
                  Text="{Binding CurrentFen, Mode=TwoWay}"
                  Style="{StaticResource FenTextBoxStyle}">
         </TextBox>
