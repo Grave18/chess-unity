@@ -4,8 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:userControls="clr-namespace:Ui.Menu.UserControls"
-             xmlns:auxiliary="clr-namespace:Ui.Menu.Auxiliary"
-             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DesignWidth="640" d:DesignHeight="1080">
 
@@ -17,8 +15,8 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0"
-               Text="Settings"
-               Style="{DynamicResource HeaderTextBlockStyle}" />
+                   Text="Settings"
+                   Style="{DynamicResource HeaderTextBlockStyle}" />
         <TabControl Grid.Row="1"
                     Style="{DynamicResource TabControlTheme}">
 
@@ -31,17 +29,17 @@
                     <!-- Name TextBox -->
                     <Grid DockPanel.Dock="Top">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="200"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0"
                                    Text="Name"
                                    VerticalAlignment="Center"
-                                   HorizontalAlignment="Left"/>
+                                   HorizontalAlignment="Left" />
                         <TextBox Grid.Column="1"
                                  Margin="0 10 0 10"
                                  Text="{Binding PlayerName}"
-                                 Style="{StaticResource FenTextBoxStyle}"/>
+                                 Style="{StaticResource FenTextBoxStyle}" />
                     </Grid>
                     <!-- Time dropdown -->
                     <userControls:DropdownUserControl DockPanel.Dock="Top"
@@ -54,7 +52,7 @@
                                                       SelectedItem="{Binding SelectedDifficulty, Mode=TwoWay}"
                                                       ItemsSource="{Binding Difficulty}" />
                     <!-- Fen Text Box -->
-                    <userControls:FenTextBox VerticalAlignment="Top"/>
+                    <userControls:FenTextBox VerticalAlignment="Top" />
                 </DockPanel>
             </TabItem>
 
@@ -101,8 +99,8 @@
                     <!-- Debug Localhost Buttons -->
                     <Grid Height="80" DockPanel.Dock="Top" Margin="0 20 0 0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="220"/>
-                            <ColumnDefinition Width="220"/>
+                            <ColumnDefinition Width="220" />
+                            <ColumnDefinition Width="220" />
                         </Grid.ColumnDefinitions>
                         <Button Grid.Column="0"
                                 Content="Host"
@@ -118,7 +116,59 @@
             <TabItem Header="Audio"
                      Name="AudioSettingsTab"
                      Style="{DynamicResource TabItemStyle}">
-                Audio
+                <DockPanel Margin="30">
+
+                    <DockPanel.Resources>
+                        <!-- Style For Tab's Grids -->
+                        <Style TargetType="Grid">
+                            <Setter Property="Margin" Value="0 20 0 20" />
+                        </Style>
+                    </DockPanel.Resources>
+
+                    <!-- Master -->
+                    <Grid DockPanel.Dock="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="Master"
+                                   Style="{StaticResource NormalTextBlockStyle}" />
+                        <Slider Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource HorizontalSliderStyle}"/>
+                    </Grid>
+
+                    <!-- Music -->
+                    <Grid DockPanel.Dock="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="Music"
+                                   Style="{StaticResource NormalTextBlockStyle}" />
+                        <Slider Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource HorizontalSliderStyle}"/>
+                    </Grid>
+
+                    <!-- Effects -->
+                    <Grid VerticalAlignment="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="Effects"
+                                   Style="{StaticResource NormalTextBlockStyle}" />
+                        <Slider Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource HorizontalSliderStyle}"/>
+                    </Grid>
+
+                </DockPanel>
+
             </TabItem>
 
         </TabControl>
@@ -126,7 +176,7 @@
         <Button Grid.Row="2"
                 Margin="0 0 0 20"
                 Content="Back"
-                Click="Back_Click"/>
+                Click="Back_Click" />
     </Grid>
 
 </UserControl>
