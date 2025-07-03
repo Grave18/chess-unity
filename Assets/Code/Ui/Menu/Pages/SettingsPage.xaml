@@ -135,8 +135,8 @@
                                    Text="Master"
                                    Style="{StaticResource NormalTextBlockStyle}" />
                         <Slider Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource HorizontalSliderStyle}"/>
+                                Value="{Binding MasterVolume}"
+                                Style="{StaticResource HorizontalSliderStyle}" />
                     </Grid>
 
                     <!-- Music -->
@@ -149,7 +149,7 @@
                                    Text="Music"
                                    Style="{StaticResource NormalTextBlockStyle}" />
                         <Slider Grid.Column="1"
-                                VerticalAlignment="Center"
+                                Value="{Binding MusicVolume}"
                                 Style="{StaticResource HorizontalSliderStyle}"/>
                     </Grid>
 
@@ -163,7 +163,7 @@
                                    Text="Effects"
                                    Style="{StaticResource NormalTextBlockStyle}" />
                         <Slider Grid.Column="1"
-                                VerticalAlignment="Center"
+                                Value="{Binding EffectsVolume}"
                                 Style="{StaticResource HorizontalSliderStyle}"/>
                     </Grid>
 

@@ -27,6 +27,7 @@ namespace Ui.Menu.Pages
                 DataContext = Object.FindAnyObjectByType<SettingsPageViewModel>();
                 GameSettingsTab.DataContext = Object.FindAnyObjectByType<GameSettingsViewModel>();
                 GraphicsSettingsTab.DataContext = Object.FindAnyObjectByType<GraphicsSettingsViewModel>();
+                AudioSettingsTab.DataContext = Object.FindAnyObjectByType<AudioSettingsViewModel>();
             #endif
         }
 
@@ -38,6 +39,7 @@ namespace Ui.Menu.Pages
 #if NOESIS
         private TabItem GameSettingsTab { get; set; }
         private TabItem GraphicsSettingsTab { get; set; }
+        private TabItem AudioSettingsTab { get; set; }
 
         private void InitializeComponent()
         {
@@ -45,6 +47,7 @@ namespace Ui.Menu.Pages
 
             GameSettingsTab = FindName("GameSettingsTab") as TabItem;
             GraphicsSettingsTab = FindName("GraphicsSettingsTab") as TabItem;
+            AudioSettingsTab = FindName("AudioSettingsTab") as TabItem;
         }
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)
