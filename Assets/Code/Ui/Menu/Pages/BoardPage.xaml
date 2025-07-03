@@ -16,7 +16,7 @@
 
         <Label Grid.Row="0"
                Content="Board"
-               Style="{DynamicResource HeaderLabel}" />
+               Style="{DynamicResource HeaderLabelStyle}" />
 
         <Border Grid.Row="1"
                 Background="{StaticResource DarkerBackgroundBrush}"

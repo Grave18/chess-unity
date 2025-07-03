@@ -15,9 +15,9 @@
             <RowDefinition Height="170" />
         </Grid.RowDefinitions>
 
-        <Label Grid.Row="0"
-               Content="Play"
-               Style="{DynamicResource HeaderLabel}" />
+        <TextBlock Grid.Row="0"
+               Text="Play"
+               Style="{DynamicResource HeaderTextBlockStyle}" />
         <TabControl Grid.Row="1" Style="{DynamicResource TabControlTheme}">
             <!-- Offline -->
             <TabItem Header="2 Players"

@@ -26,6 +26,7 @@ namespace Ui.Menu.Pages
             #if NOESIS
                 DataContext = Object.FindAnyObjectByType<SettingsPageViewModel>();
                 GameSettingsTab.DataContext = Object.FindAnyObjectByType<GameSettingsViewModel>();
+                GraphicsSettingsTab.DataContext = Object.FindAnyObjectByType<GraphicsSettingsViewModel>();
             #endif
         }
 
@@ -36,12 +37,14 @@ namespace Ui.Menu.Pages
 
 #if NOESIS
         private TabItem GameSettingsTab { get; set; }
+        private TabItem GraphicsSettingsTab { get; set; }
 
         private void InitializeComponent()
         {
             GUI.LoadComponent(this, "Assets/Code/Ui/Menu/Pages/SettingsPage.xaml");
 
             GameSettingsTab = FindName("GameSettingsTab") as TabItem;
+            GraphicsSettingsTab = FindName("GraphicsSettingsTab") as TabItem;
         }
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)

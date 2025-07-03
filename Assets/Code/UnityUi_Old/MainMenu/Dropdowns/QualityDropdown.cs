@@ -12,7 +12,7 @@ namespace Ui.MainMenu.Dropdowns
 
         protected override int SetCurrentOptionInDropdown(List<string> options)
         {
-            return graphicsSettingsContainer.GetQuality();
+            return graphicsSettingsContainer.GetQualityIndex();
         }
 
         protected override List<string> AddOptionsToDropdown()

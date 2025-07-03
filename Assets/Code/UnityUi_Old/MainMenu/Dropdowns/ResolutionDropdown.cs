@@ -26,8 +26,8 @@ namespace Ui.MainMenu.Dropdowns
 
         protected override int SetCurrentOptionInDropdown(List<string> options)
         {
-            (int width, int height) = graphicsSettingsContainer.GetResolution();
-            string resolution = $"{width}x{height}";
+            Resolution selectedResolution = graphicsSettingsContainer.GetResolution();
+            string resolution = $"{selectedResolution.width}x{selectedResolution.height}";
 
             if(options.Contains(resolution))
             {
@@ -46,11 +46,11 @@ namespace Ui.MainMenu.Dropdowns
 
             if (isWidth && isHeight)
             {
-                graphicsSettingsContainer.SetResolution(width, height);
+                graphicsSettingsContainer.SetResolution(new Resolution{width = width, height = height});
             }
             else
             {
-                graphicsSettingsContainer.SetResolution(800, 600);
+                graphicsSettingsContainer.SetResolution(new Resolution{width = 800, height = 600});
             }
         }
     }

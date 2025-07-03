@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 namespace GameAndScene
 {
@@ -16,7 +17,7 @@ namespace GameAndScene
         private int _fullScreenMode;
         private bool _isFullScreenModeChanged;
 
-        private int _quality;
+        private int _qualityIndex;
         private bool _isQualityChanged;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
@@ -44,18 +45,18 @@ namespace GameAndScene
             }
         }
 
-        public (int width, int height) GetResolution()
+        public Resolution GetResolution()
         {
-            int width = PlayerPrefs.GetInt(ResolutionWidthKey, 0);
-            int height = PlayerPrefs.GetInt(ResolutionHeightKey, 0);
+            int width = PlayerPrefs.GetInt(ResolutionWidthKey, 640);
+            int height = PlayerPrefs.GetInt(ResolutionHeightKey, 480);
 
-            return (width, height);
+            return new Resolution{width = width, height = height};
         }
 
-        public void SetResolution(int width, int height)
+        public void SetResolution(Resolution resolution)
         {
-            _width = width;
-            _height = height;
+            _width = resolution.width;
+            _height = resolution.height;
 
             _isResolutionChanged = true;
         }
@@ -72,14 +73,28 @@ namespace GameAndScene
             _isFullScreenModeChanged = true;
         }
 
-        public int GetQuality()
+        public int GetQualityIndex()
         {
-            return PlayerPrefs.GetInt(QualityKey, 0);
+            return _qualityIndex;
         }
 
-        public void SetQuality(int quality)
+        public string GetQualityString()
         {
-            _quality = quality;
+            int quality = PlayerPrefs.GetInt(QualityKey, 0);
+            string qualityName = QualitySettings.names[quality];
+
+            return qualityName;
+        }
+
+        public void SetQuality(string quality)
+        {
+            _qualityIndex = QualitySettings.names.ToList().IndexOf(quality);
+            _isQualityChanged = true;
+        }
+
+        public void SetQuality(int qualityIndex)
+        {
+            _qualityIndex = qualityIndex;
             _isQualityChanged = true;
         }
 
@@ -109,11 +124,16 @@ namespace GameAndScene
 
             if (_isQualityChanged)
             {
-                QualitySettings.SetQualityLevel(_quality);
-                PlayerPrefs.SetInt(QualityKey, _quality);
+                QualitySettings.SetQualityLevel(_qualityIndex);
+                PlayerPrefs.SetInt(QualityKey, _qualityIndex);
 
                 _isQualityChanged = false;
             }
+        }
+
+        public bool IsNeedToApplySettings()
+        {
+            return _isResolutionChanged || _isFullScreenModeChanged || _isQualityChanged;
         }
     }
 }

@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:userControls="clr-namespace:Ui.Menu.UserControls"
+             xmlns:auxiliary="clr-namespace:Ui.Menu.Auxiliary"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DesignWidth="640" d:DesignHeight="1080">
 
@@ -14,9 +16,9 @@
             <RowDefinition Height="170" />
         </Grid.RowDefinitions>
 
-        <Label Grid.Row="0"
-               Content="Settings"
-               Style="{DynamicResource HeaderLabel}" />
+        <TextBlock Grid.Row="0"
+               Text="Settings"
+               Style="{DynamicResource HeaderTextBlockStyle}" />
         <TabControl Grid.Row="1"
                     Style="{DynamicResource TabControlTheme}">
 
@@ -24,6 +26,7 @@
             <TabItem Header="Game"
                      Name="GameSettingsTab"
                      Style="{DynamicResource TabItemStyle}">
+
                 <DockPanel Margin="30">
                     <!-- Name TextBox -->
                     <Grid DockPanel.Dock="Top">
@@ -49,8 +52,8 @@
                     <userControls:DropdownUserControl DockPanel.Dock="Top"
                                                       Text="Difficulty"
                                                       SelectedItem="{Binding SelectedDifficulty, Mode=TwoWay}"
-                                                      ItemsSource="{Binding Difficulties}" />
-                    <!-- Fen Text Box --> 
+                                                      ItemsSource="{Binding Difficulty}" />
+                    <!-- Fen Text Box -->
                     <userControls:FenTextBox VerticalAlignment="Top"/>
                 </DockPanel>
             </TabItem>
@@ -60,16 +63,34 @@
                      Name="GraphicsSettingsTab"
                      Style="{DynamicResource TabItemStyle}">
                 <DockPanel Margin="30">
-                    <!-- Time dropdown -->
-                    <userControls:DropdownUserControl DockPanel.Dock="Top"/>
+                    <!-- Screen dropdown -->
+                    <userControls:DropdownUserControl DockPanel.Dock="Top"
+                                                      Text="Screen"
+                                                      SelectedItem="{Binding SelectedFullscreenMode, Mode=TwoWay}"
+                                                      ItemsSource="{Binding FullscreenModes}" />
+                    <!-- Resolution dropdown -->
+                    <userControls:DropdownUserControl DockPanel.Dock="Top"
+                                                      Text="Resolution"
+                                                      SelectedItem="{Binding SelectedResolution, Mode=TwoWay}"
+                                                      ItemsSource="{Binding Resolutions}">
+                    </userControls:DropdownUserControl>
 
-                    <!-- Fen Text Box -->
-                    <userControls:FenTextBox DockPanel.Dock="Top" />
+                    <!-- Quality dropdown -->
+                    <userControls:DropdownUserControl DockPanel.Dock="Top"
+                                                      Text="Quality"
+                                                      SelectedItem="{Binding SelectedQuality, Mode=TwoWay}"
+                                                      ItemsSource="{Binding Qualities}" />
+
+                    <!-- Apply -->
+                    <Button VerticalAlignment="Bottom"
+                            Content="Apply"
+                            Command="{Binding ApplySettingsCommand}" />
                 </DockPanel>
             </TabItem>
 
             <!-- Controls Settings -->
             <TabItem Header="Controls"
+                     Visibility="Collapsed"
                      Name="ControlSettingsTab"
                      Style="{DynamicResource TabItemStyle}">
                 <DockPanel Margin="30">

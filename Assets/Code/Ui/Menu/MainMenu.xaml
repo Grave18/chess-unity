@@ -36,9 +36,8 @@
             <Border Grid.Column="1"
                     Style="{StaticResource MainMenuBorder}"
                     Margin="10, 20, 20, 20">
-                <Image Name="image" />
+                <Image Name="Image" />
             </Border>
-
         </Grid>
     </Viewbox>
 

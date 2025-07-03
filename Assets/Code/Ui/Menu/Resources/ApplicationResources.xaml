@@ -1,5 +1,6 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <!-- Color Pallet -->
     <Color x:Key="American River">#636e72</Color>
@@ -22,16 +23,23 @@
         <Setter Property="Background" Value="{StaticResource DarkerBackgroundBrush}" />
     </Style>
 
+    <system:Double x:Key="HeaderSize>">72</system:Double>
+    <system:Double x:Key="NormalSize>">32</system:Double>
+    <system:Double x:Key="SmallSize>">18</system:Double>
+
     <!-- Header -->
-    <Style x:Key="Header" TargetType="{x:Type TextBlock}">
-        <Setter Property="FontSize" Value="48" />
+    <Style x:Key="HeaderTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource HeaderSize>}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <Style x:Key="HeaderLabel" TargetType="{x:Type Label}">
-        <Setter Property="FontSize" Value="72" />
-        <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+    <Style x:Key="NormalTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource NormalSize>}" />
+    </Style>
+
+    <Style x:Key="HeaderLabelStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="{StaticResource HeaderSize>}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
@@ -327,29 +335,29 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
-                        <Border x:Name="templateRoot"
+                    <Border x:Name="templateRoot"
                                 SnapsToDevicePixels="true"
                                 CornerRadius="15"
                                 Background="{TemplateBinding Background}">
-                            <!-- Combobox Arrow -->
-                            <Border x:Name="splitBorder"
+                        <!-- Combobox Arrow -->
+                        <Border x:Name="splitBorder"
                                     Width="30"
                                     SnapsToDevicePixels="true"
                                     Margin="0"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center">
-                                <Path x:Name="arrow"
+                            <Path x:Name="arrow"
                                       VerticalAlignment="Center"
                                       Margin="0"
                                       HorizontalAlignment="Center"
                                       Fill="{StaticResource DarkerBackgroundBrush}"
                                       Data="F1 M 0,0 L 2.667,2.66665 L 5.3334,0 L 5.3334,-1.78168 L 2.6667,0.88501 L0,-1.78168 L0,0 Z" >
-                                    <Path.LayoutTransform>
-                                        <ScaleTransform ScaleX="3" ScaleY="3" />
-                                    </Path.LayoutTransform>
-                                </Path>
-                            </Border>
+                                <Path.LayoutTransform>
+                                    <ScaleTransform ScaleX="3" ScaleY="3" />
+                                </Path.LayoutTransform>
+                            </Path>
                         </Border>
+                    </Border>
                     <ControlTemplate.Triggers>
                         <!-- Is Mouse Over -->
                         <Trigger Property="IsMouseOver" Value="true">

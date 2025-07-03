@@ -13,7 +13,9 @@
             <RowDefinition Height="150" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Main Menu" Style="{StaticResource Header}"/>
+        <TextBlock Grid.Row="0"
+                   Text="Main Menu"
+                   Style="{StaticResource HeaderTextBlockStyle}" />
         <StackPanel Grid.Row="1">
             <Button Content="Play" Click="Play_Click" />
             <Button Content="Settings" Click="Settings_Click" />
