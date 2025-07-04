@@ -44,16 +44,25 @@ namespace Ui.Menu.UserControls
             set => SetValue(ItemsSourceProperty, value);
         }
 
+        public static readonly DependencyProperty ItemTemplateProperty = DependencyProperty.Register(
+            nameof(ItemTemplate), typeof(DataTemplate), typeof(DropdownUserControl), new PropertyMetadata(default(DataTemplate)));
+
+        public DataTemplate ItemTemplate
+        {
+            get => (DataTemplate)GetValue(ItemTemplateProperty);
+            set => SetValue(ItemTemplateProperty, value);
+        }
+
         public DropdownUserControl()
         {
             InitializeComponent();
         }
 
-        #if NOESIS
+#if NOESIS
         private void InitializeComponent()
         {
             GUI.LoadComponent(this, "Assets/Code/Ui/Menu/UserControls/DropdownUserControl.xaml");
         }
-        #endif
+#endif
     }
 }

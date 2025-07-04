@@ -45,8 +45,9 @@
                     <!-- Time dropdown -->
                     <userControls:DropdownUserControl DockPanel.Dock="Top"
                                                       Text="Time"
+                                                      ItemTemplate="{StaticResource TimeDataTemplate}"
                                                       SelectedItem="{Binding SelectedTime, Mode=TwoWay}"
-                                                      ItemsSource="{Binding Times}" />
+                                                      ItemsSource="{Binding Times}"/>
                     <!-- Difficulty dropdown -->
                     <userControls:DropdownUserControl DockPanel.Dock="Top"
                                                       Text="Difficulty"

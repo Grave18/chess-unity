@@ -19,8 +19,6 @@ namespace GameAndScene
         [SerializeField] private bool isInitialized;
         [SerializeField] private GameSettings gameSettings;
 
-        private ComputerSkillLevel _computerSkillLevel;
-
         public GameSettings GameSettings => gameSettings;
 
         // TODO: this is for temporary localhost server. Need to be removed
@@ -72,7 +70,6 @@ namespace GameAndScene
             PlayerSettings computerPlayerSettings = gameSettings.Player2Settings;
             computerPlayerSettings.Name = "Computer";
             computerPlayerSettings.PlayerType = PlayerType.Computer;
-            computerPlayerSettings.ComputerSkillLevel = _computerSkillLevel;
 
             Save();
         }
@@ -147,18 +144,18 @@ namespace GameAndScene
             }
         }
 
+        public string GetDifficulty()
+        {
+            return gameSettings.Player2Settings.ComputerSkillLevel.ToString();
+        }
+
         public void SetDifficulty(string optionText)
         {
             if (Enum.TryParse(optionText, out ComputerSkillLevel computerSkillLevel))
             {
-                 _computerSkillLevel = computerSkillLevel;
+                 gameSettings.Player2Settings.ComputerSkillLevel = computerSkillLevel;
                  Save();
             }
-        }
-
-        public string GetDifficulty()
-        {
-            return gameSettings.Player2Settings.ComputerSkillLevel.ToString();
         }
 
         public void SetCurrentFen(string value)

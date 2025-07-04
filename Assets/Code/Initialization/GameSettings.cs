@@ -1,4 +1,5 @@
-﻿using ChessGame.Logic;
+﻿using Ai;
+using ChessGame.Logic;
 using UnityEngine;
 
 namespace Initialization
@@ -8,8 +9,8 @@ namespace Initialization
     {
         public PieceColor PlayerColor = PieceColor.White;
 
-        public PlayerSettings Player1Settings = new() { Name = "Player1" };
-        public PlayerSettings Player2Settings = new() { Name = "Player2" };
+        public PlayerSettings Player1Settings = new() { Name = "Player 1" };
+        public PlayerSettings Player2Settings = new() { Name = "Player 2" };
 
         [Header("Game Settings")]
         public Vector2Int Time = new(30, 0);

@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Ai;
 using GameAndScene;
 using Ui.Menu.Auxiliary;
 using UnityEngine;
@@ -77,7 +79,8 @@ namespace Ui.Menu.ViewModels
 
         private void SetDifficulty()
         {
-            Difficulties = new ObservableCollection<string> { "Easy", "Medium", "Hard" };
+            var difficulties = Enum.GetNames(typeof(ComputerSkillLevel));
+            Difficulties = new ObservableCollection<string>(difficulties);
             SelectedDifficulty = gameSettingsContainer.GetDifficulty();
         }
 

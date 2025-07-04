@@ -740,4 +740,18 @@
     </Style>
     <!-- End Slider -->
 
+    <!-- Time Data Template -->
+    <DataTemplate x:Key="TimeDataTemplate" DataType="{x:Type system:String}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0"
+                       Text="{Binding .}"
+                       Style="{StaticResource NormalTextBlockStyle}" />
+            <TextBlock Grid.Column="1">, min</TextBlock>
+        </Grid>
+    </DataTemplate>
+
 </ResourceDictionary>
