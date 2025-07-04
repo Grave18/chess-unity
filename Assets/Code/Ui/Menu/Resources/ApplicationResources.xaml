@@ -47,7 +47,9 @@
 
     <!-- Start Button -->
     <ControlTemplate x:Key="ButtonTemplate" TargetType="Button">
-        <Grid>
+        <Grid Name="Root"
+              Width="{TemplateBinding Width}"
+              Height="{TemplateBinding Height}">
             <Border x:Name="Border"
                     BorderBrush="{TemplateBinding BorderBrush}"
                     Background="{TemplateBinding Background}"
@@ -60,51 +62,93 @@
         </Grid>
         <ControlTemplate.Triggers>
 
-            <Trigger Property="IsMouseOver" Value="True">
-                <Trigger.EnterActions>
+            <!-- Is Mouse Over -->
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver" Value="True" />
+                    <Condition Property="IsEnabled" Value="True" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
                             <ColorAnimation Duration="0:0:0.15" To="{StaticResource Darker Mint Leaf}"
                                             Storyboard.TargetProperty="Background.Color" />
                             <DoubleAnimation Storyboard.TargetProperty="Width"
                                              Duration="0:0:0.15"
-                                             By="10" />
+                                             From="300" By="30" />
                             <DoubleAnimation Storyboard.TargetProperty="Height"
                                              Duration="0:0:0.15"
-                                             By="5" />
+                                             From="80" By="5" />
                         </Storyboard>
                     </BeginStoryboard>
-                </Trigger.EnterActions>
-
-                <Trigger.ExitActions>
+                </MultiTrigger.EnterActions>
+                <MultiTrigger.ExitActions>
                     <BeginStoryboard>
                         <Storyboard>
                             <ColorAnimation Duration="0:0:0.15" To="{StaticResource Mint Leaf}"
                                             Storyboard.TargetProperty="Background.Color" />
                             <DoubleAnimation Storyboard.TargetProperty="Width"
                                              Duration="0:0:0.15"
-                                             By="-10" />
+                                             To="300" />
                             <DoubleAnimation Storyboard.TargetProperty="Height"
                                              Duration="0:0:0.15"
-                                             By="-5" />
+                                             To="80" />
                         </Storyboard>
                     </BeginStoryboard>
-                </Trigger.ExitActions>
+                </MultiTrigger.ExitActions>
+            </MultiTrigger>
 
+            <!-- Is Disabled -->
+            <Trigger Property="IsEnabled" Value="False">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Duration="0:0:0.15" To="Gray"
+                                            Storyboard.TargetProperty="Background.Color" />
+                            <DoubleAnimation Storyboard.TargetProperty="Width"
+                                             Duration="0:0:0.15"
+                                             To="300" />
+                            <DoubleAnimation Storyboard.TargetProperty="Height"
+                                             Duration="0:0:0.15"
+                                             To="80" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
             </Trigger>
+
+            <!-- Is Enabled -->
+            <Trigger Property="IsEnabled" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Duration="0:0:0.15" To="{StaticResource 'Mint Leaf'}"
+                                            Storyboard.TargetProperty="Background.Color" />
+                            <DoubleAnimation Storyboard.TargetProperty="Width"
+                                             Duration="0:0:0.15"
+                                             To="300" />
+                            <DoubleAnimation Storyboard.TargetProperty="Height"
+                                             Duration="0:0:0.15"
+                                             To="80" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+            </Trigger>
+
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <Style TargetType="{x:Type Button}">
-        <Setter Property="Template" Value="{StaticResource ButtonTemplate}" />
+    <Style x:Key="GeneralButton" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
         <Setter Property="FontSize" Value="48" />
         <Setter Property="Margin" Value="10" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Width" Value="400" />
-        <Setter Property="Height" Value="110" />
+        <Setter Property="Width" Value="300" />
+        <Setter Property="Height" Value="80" />
+        <Setter Property="Template" Value="{StaticResource ButtonTemplate}" />
     </Style>
+
+    <Style TargetType="Button" BasedOn="{StaticResource GeneralButton}" />
     <!-- End Button -->
 
     <!-- Border -->
@@ -160,37 +204,6 @@
                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                         </Border>
                     </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="TabStripPlacement" Value="Bottom">
-                            <Setter Property="Grid.Row" TargetName="headerPanel" Value="1" />
-                            <Setter Property="Grid.Row" TargetName="contentPanel" Value="0" />
-                            <Setter Property="Height" TargetName="RowDefinition0" Value="*" />
-                            <Setter Property="Height" TargetName="RowDefinition1" Value="Auto" />
-                            <Setter Property="Margin" TargetName="headerPanel" Value="2,0,2,2" />
-                        </Trigger>
-                        <Trigger Property="TabStripPlacement" Value="Left">
-                            <Setter Property="Grid.Row" TargetName="headerPanel" Value="0" />
-                            <Setter Property="Grid.Row" TargetName="contentPanel" Value="0" />
-                            <Setter Property="Grid.Column" TargetName="headerPanel" Value="0" />
-                            <Setter Property="Grid.Column" TargetName="contentPanel" Value="1" />
-                            <Setter Property="Width" TargetName="ColumnDefinition0" Value="Auto" />
-                            <Setter Property="Width" TargetName="ColumnDefinition1" Value="*" />
-                            <Setter Property="Height" TargetName="RowDefinition0" Value="*" />
-                            <Setter Property="Height" TargetName="RowDefinition1" Value="0" />
-                            <Setter Property="Margin" TargetName="headerPanel" Value="2,2,0,2" />
-                        </Trigger>
-                        <Trigger Property="TabStripPlacement" Value="Right">
-                            <Setter Property="Grid.Row" TargetName="headerPanel" Value="0" />
-                            <Setter Property="Grid.Row" TargetName="contentPanel" Value="0" />
-                            <Setter Property="Grid.Column" TargetName="headerPanel" Value="1" />
-                            <Setter Property="Grid.Column" TargetName="contentPanel" Value="0" />
-                            <Setter Property="Width" TargetName="ColumnDefinition0" Value="*" />
-                            <Setter Property="Width" TargetName="ColumnDefinition1" Value="Auto" />
-                            <Setter Property="Height" TargetName="RowDefinition0" Value="*" />
-                            <Setter Property="Height" TargetName="RowDefinition1" Value="0" />
-                            <Setter Property="Margin" TargetName="headerPanel" Value="0,2,2,2" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -224,56 +237,72 @@
                                           VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <!-- Is Mouse Over -->
+                        <!-- Selected False, Mouse False -->
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}"
-                                           Value="true" />
-                                <Condition
-                                    Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}"
-                                    Value="Top" />
+                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="False" />
+                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="False" />
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="Background" TargetName="mainBorder"
-                                    Value="{StaticResource MouseOverButtonBrush}" />
-                            <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,1,1,0" />
+                            <MultiDataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="mainBorder"
+                                                        Duration="0:0:0.25"
+                                                        To="Transparent" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
                         </MultiDataTrigger>
-                        <!-- Is Not Enabled -->
+                        <!-- Selected True,  Mouse False -->
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}"
-                                           Value="false" />
-                                <Condition
-                                    Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}"
-                                    Value="Top" />
+                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True" />
+                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="False" />
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="Opacity" TargetName="contentPresenter" Value="0.56" />
-                            <Setter Property="Background" TargetName="mainBorder"
-                                    Value="{StaticResource MouseOverButtonBrush}" />
-                            <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,1,1,0" />
+                            <MultiDataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="mainBorder"
+                                                        Duration="0:0:0.15"
+                                                        To="{StaticResource 'Mint Leaf'}"/> 
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
                         </MultiDataTrigger>
-                        <!-- Is Not Selected -->
+                        <!-- Selected False, Mouse True  -->
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}"
-                                           Value="false" />
-                                <Condition
-                                    Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}"
-                                    Value="Top" />
+                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="False" />
+                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="BorderThickness" TargetName="mainBorder" Value="0" />
+                            <MultiDataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="mainBorder"
+                                                        Duration="0:0:0.15"
+                                                        To="{StaticResource 'Darker Mint Leaf'}"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
                         </MultiDataTrigger>
-                        <!-- Is Selected -->
+
+                        <!-- Selected True,  Mouse True  -->
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}"
-                                           Value="true" />
-                                <Condition
-                                    Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}"
-                                    Value="Top" />
+                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True"/>
+                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="Panel.ZIndex" Value="1" />
-                            <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
+                            <MultiDataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="mainBorder"
+                                                        Duration="0:0:0.15"
+                                                        To="{StaticResource 'Darker Mint Leaf'}"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
                         </MultiDataTrigger>
+
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -607,9 +636,6 @@
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Background" Value="{StaticResource LighterBackgroundBrush}"/>
-        <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
-        <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst" />
-        <Setter Property="AllowDrop" Value="true" />
         <Setter Property="CaretBrush">
             <Setter.Value>
                 <SolidColorBrush Color="{StaticResource 'Dracula Orchid'}" />

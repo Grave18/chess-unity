@@ -23,11 +23,10 @@ namespace Ui.Menu.ViewModels
             {
                 if (FenValidator.IsValid(value, out string message) && SetField(ref _currentFen, value))
                 {
-
                     gameSettingsContainer.SetCurrentFen(_currentFen);
                     LogUi.Debug($"Current Fen changed to {_currentFen}");
                 }
-                else
+                else if(message is not {Length: 0})
                 {
                     LogUi.Debug(message);
                 }
@@ -39,7 +38,12 @@ namespace Ui.Menu.ViewModels
             GetSavedFenCommand = new DelegateCommand(GetSavedFen);
             GetDefaultFenCommand = new DelegateCommand(GetDefaultFen);
 
-            CurrentFen = gameSettingsContainer.GetCurrentFen();
+            InitFen();
+        }
+
+        private void GetDefaultFen(object obj)
+        {
+            CurrentFen = gameSettingsContainer.GetDefaultFen();
         }
 
         private void GetSavedFen(object obj)
@@ -47,9 +51,9 @@ namespace Ui.Menu.ViewModels
             CurrentFen = gameSettingsContainer.GetSavedFen();
         }
 
-        private void GetDefaultFen(object obj)
+        private void InitFen()
         {
-            CurrentFen = gameSettingsContainer.GetDefaultFen();
+            _currentFen = gameSettingsContainer.GetCurrentFen();
         }
 
         #region ViewModelImplimentation

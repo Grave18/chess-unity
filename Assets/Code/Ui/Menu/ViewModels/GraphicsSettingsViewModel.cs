@@ -28,6 +28,7 @@ namespace Ui.Menu.ViewModels
                 if (SetField(ref _selectedFullscreenMode, value))
                 {
                     graphicsSettingsContainer.SetFullScreenMode(_selectedFullscreenMode.Index);
+                    ApplySettingsCommand.RaiseCanExecuteChanged();
                     LogUi.Debug($"Fullscreen mode changed to {_selectedFullscreenMode}");
                 }
             }
@@ -42,6 +43,7 @@ namespace Ui.Menu.ViewModels
                 if (SetField(ref _selectedResolution, value))
                 {
                     graphicsSettingsContainer.SetResolution(_selectedResolution);
+                    ApplySettingsCommand.RaiseCanExecuteChanged();
                     LogUi.Debug($"Resolution changed to {_selectedResolution}");
                 }
             }
@@ -56,6 +58,7 @@ namespace Ui.Menu.ViewModels
                 if (SetField(ref _selectedQuality, value))
                 {
                     graphicsSettingsContainer.SetQuality(_selectedQuality);
+                    ApplySettingsCommand.RaiseCanExecuteChanged();
                     LogUi.Debug($"Quality changed to {_selectedQuality}");
                 }
             }
@@ -65,38 +68,40 @@ namespace Ui.Menu.ViewModels
         {
             ApplySettingsCommand = new DelegateCommand(CanExecuteApply, ApplySettings);
 
-            SetFullScreenMode();
-            SetResolution();
-            SetQuality();
+            InitFullScreenMode();
+            InitResolution();
+            InitQuality();
         }
 
         private bool CanExecuteApply(object arg)
         {
-            return graphicsSettingsContainer.IsNeedToApplySettings();
+            bool isNeedToApplySettings = graphicsSettingsContainer.IsNeedToApplySettings();
+            return isNeedToApplySettings;
         }
 
         private void ApplySettings(object obj)
         {
             graphicsSettingsContainer.ApplySettings();
+            ApplySettingsCommand.RaiseCanExecuteChanged();
             LogUi.Debug("Settings applied");
         }
 
-        private void SetFullScreenMode()
+        private void InitFullScreenMode()
         {
             FullscreenModes = new ObservableCollection<FullscreenModeUi>
             {
                 new("Fullscreen", 0),
                 new("Borderless", 1),
-                new("Windowed", 3)
+                new("Windowed", 3),
             };
 
-            SelectedFullscreenMode = FullscreenModes.FirstOrDefault(IndexMatch) ;
+            _selectedFullscreenMode = FullscreenModes.FirstOrDefault(IsIndexMatch);
             return;
 
-            bool IndexMatch(FullscreenModeUi x) => x.Index == graphicsSettingsContainer.GetFullScreenMode();
+            bool IsIndexMatch(FullscreenModeUi x) => x.Index == graphicsSettingsContainer.GetFullScreenMode();
         }
 
-        private void SetResolution()
+        private void InitResolution()
         {
             var availableResolutions = Screen.resolutions.
                 Select(res => new ResolutionUi(res.width, res.height)).
@@ -104,14 +109,14 @@ namespace Ui.Menu.ViewModels
                 Reverse();
 
             Resolutions = new ObservableCollection<ResolutionUi>(availableResolutions);
-            SelectedResolution = graphicsSettingsContainer.GetResolution();
+            _selectedResolution = graphicsSettingsContainer.GetResolution();
         }
 
-        private void SetQuality()
+        private void InitQuality()
         {
             string[] levelsForPlatform = QualitySettings.names;
             Qualities = new ObservableCollection<string>(levelsForPlatform);
-            SelectedQuality = graphicsSettingsContainer.GetQualityString();
+            _selectedQuality = graphicsSettingsContainer.GetQualityString();
         }
 
         #region ViewModelImplimentation

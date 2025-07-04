@@ -5,6 +5,7 @@ using Utils.Mathematics;
 
 namespace GameAndScene
 {
+    [DefaultExecutionOrder(-1)]
     public class AudioSettingsContainer : MonoBehaviour
     {
         [SerializeField] private AudioMixer audioMixer;
@@ -13,21 +14,39 @@ namespace GameAndScene
         private const string MusicVolumeKey = "MusicVolume";
         private const string EffectsVolumeKey = "EffectsVolume";
 
-        private void Start()
+        private void Awake()
         {
-            InitializeAudiomixerVolume();
+            FirstTimeInitVolumes();
         }
 
-        private void InitializeAudiomixerVolume()
+        private void FirstTimeInitVolumes()
         {
-            float masterVolume = PlayerPrefs.HasKey(MasterVolumeKey) ? GetMasterVolume() : 1f;
-            SetMasterVolume(masterVolume);
+            if(!PlayerPrefs.HasKey(MasterVolumeKey))
+            {
+                PlayerPrefs.SetFloat(MasterVolumeKey, 1f);
+            }
 
-            float musicVolume = PlayerPrefs.HasKey(MusicVolumeKey) ? GetMusicVolume() : 1f;
-            SetMusicVolume(musicVolume);
+            if(!PlayerPrefs.HasKey(MusicVolumeKey))
+            {
+                PlayerPrefs.SetFloat(MusicVolumeKey, 1f);
+            }
 
-            float effectsVolume = PlayerPrefs.HasKey(EffectsVolumeKey) ? GetEffectsVolume() : 1f;
-            SetEffectsVolume(effectsVolume);
+            if(!PlayerPrefs.HasKey(EffectsVolumeKey))
+            {
+                PlayerPrefs.SetFloat(EffectsVolumeKey, 1f);
+            }
+        }
+
+        private void Start()
+        {
+            InitAudiomixerVolumes();
+        }
+
+        private void InitAudiomixerVolumes()
+        {
+            SetMasterVolume(GetMasterVolume());
+            SetMusicVolume(GetMusicVolume());
+            SetEffectsVolume(GetEffectsVolume());
         }
 
         public float GetMasterVolume()

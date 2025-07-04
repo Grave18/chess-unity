@@ -57,9 +57,14 @@ namespace Ui.Menu.ViewModels
 
         private void Awake()
         {
-            MasterVolume = audioSettingsContainer.GetMasterVolume();
-            MusicVolume = audioSettingsContainer.GetMusicVolume();
-            EffectsVolume = audioSettingsContainer.GetEffectsVolume();
+            InitVolumes();
+        }
+
+        private void InitVolumes()
+        {
+            _masterVolume = audioSettingsContainer.GetMasterVolume();
+            _musicVolume = audioSettingsContainer.GetMusicVolume();
+            _effectsVolume = audioSettingsContainer.GetEffectsVolume();
         }
 
         #region ViewModelImplimentation

@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace GameAndScene
 {
+    [DefaultExecutionOrder(-1)]
     public class GraphicsSettingsContainer : MonoBehaviour
     {
         private const string QualityKey = "Quality";
@@ -20,8 +21,13 @@ namespace GameAndScene
         private int _qualityIndex;
         private bool _isQualityChanged;
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
-        private static void BeforeSplashScreen()
+
+        private void Awake()
+        {
+            FirstTimeInitGameSettings();
+        }
+
+        private static void FirstTimeInitGameSettings()
         {
             if (!PlayerPrefs.HasKey(QualityKey))
             {

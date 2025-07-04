@@ -61,27 +61,27 @@ namespace Ui.Menu.ViewModels
 
         private void Awake()
         {
-            SetName();
-            SetTime();
-            SetDifficulty();
+            InitName();
+            IntiTime();
+            InitDifficulty();
         }
 
-        private void SetName()
+        private void InitName()
         {
-            PlayerName = gameSettingsContainer.GetPlayerName();
+            _playerName = gameSettingsContainer.GetPlayerName();
         }
 
-        private void SetTime()
+        private void IntiTime()
         {
             Times = new ObservableCollection<string> { "1", "3", "5", "10", "20", "30", "40", "50", "60" };
-            SelectedTime = gameSettingsContainer.GetTimeString();
+            _selectedTime = gameSettingsContainer.GetTimeString();
         }
 
-        private void SetDifficulty()
+        private void InitDifficulty()
         {
             var difficulties = Enum.GetNames(typeof(ComputerSkillLevel));
             Difficulties = new ObservableCollection<string>(difficulties);
-            SelectedDifficulty = gameSettingsContainer.GetDifficulty();
+            _selectedDifficulty = gameSettingsContainer.GetDifficulty();
         }
 
         #region ViewModelImplimentation

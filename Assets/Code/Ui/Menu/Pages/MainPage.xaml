@@ -16,7 +16,15 @@
         <TextBlock Grid.Row="0"
                    Text="Main Menu"
                    Style="{StaticResource HeaderTextBlockStyle}" />
-        <StackPanel Grid.Row="1">
+        <StackPanel Grid.Row="1" Margin="0 50 0 0">
+
+            <!-- Special style for Main page screen -->
+            <StackPanel.Resources>
+                <Style TargetType="Button" BasedOn="{StaticResource GeneralButton}">
+                    <Setter Property="Margin" Value="0 20 0 20" />
+                </Style>
+            </StackPanel.Resources>
+
             <Button Content="Play" Click="Play_Click" />
             <Button Content="Settings" Click="Settings_Click" />
             <Button Content="Board" Click="Board_Click" />
