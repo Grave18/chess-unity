@@ -1,7 +1,6 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
 using Noesis;
-using UnityEngine;
 using GUI = Noesis.GUI;
 
 #else
@@ -10,16 +9,39 @@ using System.Windows;
 using System.Windows.Controls;
 #endif
 
-using Ui.Menu.Auxiliary;
-
 namespace Ui.Menu.Pages
 {
     public partial class MainPage : UserControl
     {
         public MainPage()
         {
-            Initialized += OnInitialized;
             InitializeComponent();
+        }
+
+        public void Play_Click(object sender, RoutedEventArgs args)
+        {
+            MainMenu.Instance.ChangePage<PlayPage>();
+        }
+
+        public void Settings_Click(object sender, RoutedEventArgs args)
+        {
+            MainMenu.Instance.ChangePage<SettingsPage>();
+        }
+
+        private void Board_Click(object sender, RoutedEventArgs e)
+        {
+            MainMenu.Instance.ChangePage<BoardPage>();
+        }
+
+        public void Exit_Click(object sender, RoutedEventArgs args)
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#elif NOESIS
+            Application.Quit();
+#else
+            Application.Current.Shutdown();
+#endif
         }
 
 #if NOESIS
@@ -57,36 +79,5 @@ namespace Ui.Menu.Pages
             return false;
         }
 #endif
-
-        private void OnInitialized(object sender, EventArgs args)
-        {
-            // this.DataContext = new ViewModel();
-        }
-
-        public void Play_Click(object sender, RoutedEventArgs args)
-        {
-            MainMenu.Instance.ChangePage<PlayPage>();
-        }
-
-        public void Settings_Click(object sender, RoutedEventArgs args)
-        {
-            MainMenu.Instance.ChangePage<SettingsPage>(); 
-        }
-
-        private void Board_Click(object sender, RoutedEventArgs e)
-        {
-            MainMenu.Instance.ChangePage<BoardPage>();
-        }
-
-        public void Exit_Click(object sender, RoutedEventArgs args)
-        {
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#elif NOESIS
-            Application.Quit();
-#else
-            Application.Current.Shutdown();
-#endif
-        }
     }
 }
