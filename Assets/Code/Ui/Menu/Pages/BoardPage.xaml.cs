@@ -21,6 +21,18 @@ namespace Ui.Menu.Pages
             InitializeComponent();
         }
 
+        private void OnInitialized(object sender, EventArgs args)
+        {
+#if NOESIS
+            DataContext = Object.FindAnyObjectByType<BoardPageViewModel>();
+#endif
+        }
+
+        public void Back_Click(object sender, RoutedEventArgs args)
+        {
+            MainMenu.Instance.ChangePage<MainPage>();
+        }
+
 #if NOESIS
         private void InitializeComponent()
         {
@@ -38,17 +50,5 @@ namespace Ui.Menu.Pages
             return false;
         }
 #endif
-
-        private void OnInitialized(object sender, EventArgs args)
-        {
-            #if NOESIS
-                DataContext = Object.FindAnyObjectByType<PlayPageViewModel>();
-            #endif
-        }
-
-        public void Back_Click(object sender, RoutedEventArgs args)
-        {
-            MainMenu.Instance.ChangePage<MainPage>();
-        }
     }
 }

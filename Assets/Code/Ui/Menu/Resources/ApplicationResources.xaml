@@ -156,11 +156,19 @@
     <Style TargetType="Button" BasedOn="{StaticResource GeneralButton}" />
     <!-- End Button -->
 
-    <!-- Border -->
+    <!-- Start. Border -->
     <Style x:Key="MainMenuBorder" TargetType="{x:Type Border}">
         <Setter Property="Background" Value="{StaticResource LighterBackgroundBrush}" />
         <Setter Property="CornerRadius" Value="15" />
     </Style>
+
+    <Style x:Key="SettingsControlsBorder" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="{StaticResource DarkerBackgroundBrush}" />
+        <Setter Property="CornerRadius" Value="15" />
+        <Setter Property="Margin" Value="30" />
+        <Setter Property="Padding" Value="30" />
+    </Style>
+    <!-- End. Border -->
 
     <!-- Start Tab Control -->
     <Style x:Key="TabControlTheme" TargetType="{x:Type TabControl}">
@@ -636,7 +644,7 @@
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <ColorAnimation To="{StaticResource MouseOverForegroundColor}"
-                                                        Duration="0:0:0.075" 
+                                                        Duration="0:0:0.075"
                                                         Storyboard.TargetProperty="Foreground.Color" >
                                         </ColorAnimation>
                                     </Storyboard>
@@ -645,7 +653,7 @@
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation To="{StaticResource ForegroundColor}" 
+                                        <ColorAnimation To="{StaticResource ForegroundColor}"
                                                         Duration="0:0:0.075"
                                                         Storyboard.TargetProperty="Foreground.Color" >
                                         </ColorAnimation>

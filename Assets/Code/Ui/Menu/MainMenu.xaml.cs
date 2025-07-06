@@ -2,9 +2,10 @@
 #define NOESIS
 using System;
 using Noesis;
-using UnityEngine;
+using Ui.Menu.ViewModels;
 using EventArgs = Noesis.EventArgs;
 using GUI = Noesis.GUI;
+using Object = UnityEngine.Object;
 
 #else
 using System;
@@ -25,6 +26,18 @@ namespace Ui.Menu
             InitializeComponent();
         }
 
+        public void ChangePage<T>() where T : UserControl
+        {
+            ContentControl.Content = Activator.CreateInstance(typeof(T));
+        }
+
+        private void OnInitialized(object sender, EventArgs args)
+        {
+#if NOESIS
+            DataContext = Object.FindAnyObjectByType<MainMenuViewModel>();
+#endif
+        }
+
 #if NOESIS
         private ContentControl ContentControl { get; set; }
 
@@ -35,15 +48,5 @@ namespace Ui.Menu
             ContentControl = FindName("ContentControl") as ContentControl;
         }
 #endif
-
-        public void ChangePage<T>() where T : UserControl
-        {
-            ContentControl.Content = Activator.CreateInstance(typeof(T));
-        }
-
-        private void OnInitialized(object sender, EventArgs args)
-        {
-            // this.DataContext = new ViewModel();
-        }
     }
 }

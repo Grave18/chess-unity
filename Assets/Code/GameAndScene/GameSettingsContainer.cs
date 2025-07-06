@@ -13,7 +13,7 @@ using ParrelSync;
 namespace GameAndScene
 {
     [DefaultExecutionOrder(-1)]
-    public class GameSettingsContainer: SingletonBehaviour<GameSettingsContainer>
+    public class GameSettingsContainer : SingletonBehaviour<GameSettingsContainer>
     {
         [Tooltip("Use it if no need to load settings")]
         [SerializeField] private bool isInitialized;
@@ -52,17 +52,44 @@ namespace GameAndScene
 
             if (PlayerPrefs.HasKey(GameSettingsKey))
             {
-                string jsonString = PlayerPrefs.GetString(GameSettingsKey);
-                gameSettings = JsonUtility.FromJson<GameSettings>(jsonString);
+                LoadGameSettings();
             }
             else
             {
-                Debug.Log("GameSettings is not presented. Adding new");
-                gameSettings = new GameSettings();
-                Save();
+                FirstTimeInitGameSettings();
             }
 
             isInitialized = true;
+        }
+
+        private void LoadGameSettings()
+        {
+            string jsonString = PlayerPrefs.GetString(GameSettingsKey);
+            gameSettings = JsonUtility.FromJson<GameSettings>(jsonString);
+        }
+
+        private void FirstTimeInitGameSettings()
+        {
+            Debug.Log("GameSettings is not presented. Adding new");
+            gameSettings = new GameSettings
+            {
+                BoardModelAddress = "Day4 Board",
+                PiecesModelAddress = "Day4 Pieces"
+            };
+
+            Save();
+        }
+
+        /// Two hotseat players
+        public void SetupGameOffline()
+        {
+            PlayerSettings player1Settings = gameSettings.Player1Settings;
+            player1Settings.PlayerType = PlayerType.Human;
+
+            PlayerSettings player2Settings = gameSettings.Player2Settings;
+            player2Settings.PlayerType = PlayerType.Human;
+
+            Save();
         }
 
         public void SetupGameWithComputer()
@@ -74,29 +101,14 @@ namespace GameAndScene
             Save();
         }
 
-        public void SetupGameOffline()
-        {
-            PlayerSettings player1Settings = gameSettings.Player1Settings;
-            player1Settings.Name = "Player White";
-            player1Settings.PlayerType = PlayerType.Human;
-
-            PlayerSettings player2Settings = gameSettings.Player2Settings;
-            player2Settings.Name = "Player Black";
-            player2Settings.PlayerType = PlayerType.Human;
-
-            Save();
-        }
-
         public void SetupGameOnline(PieceColor playerColor)
         {
             gameSettings.PlayerColor = playerColor;
 
             PlayerSettings player1Settings = gameSettings.Player1Settings;
-            player1Settings.Name = "Player White";
             player1Settings.PlayerType = PlayerType.Online;
 
             PlayerSettings player2Settings = gameSettings.Player2Settings;
-            player2Settings.Name = "Player Black";
             player2Settings.PlayerType = PlayerType.Online;
 
             Save();
@@ -153,8 +165,8 @@ namespace GameAndScene
         {
             if (Enum.TryParse(optionText, out ComputerSkillLevel computerSkillLevel))
             {
-                 gameSettings.Player2Settings.ComputerSkillLevel = computerSkillLevel;
-                 Save();
+                gameSettings.Player2Settings.ComputerSkillLevel = computerSkillLevel;
+                Save();
             }
         }
 
@@ -218,12 +230,6 @@ namespace GameAndScene
         {
             string piecesModelAddress = gameSettings.PiecesModelAddress;
 
-            if(string.IsNullOrEmpty(piecesModelAddress))
-            {
-                piecesModelAddress = "Day4 Pieces";
-                SetPieceModelAddress(piecesModelAddress);
-            }
-
             return piecesModelAddress;
         }
 
@@ -236,12 +242,6 @@ namespace GameAndScene
         public string GetBoardModelAddress()
         {
             string boardModelAddress = gameSettings.BoardModelAddress;
-
-            if(string.IsNullOrEmpty(boardModelAddress))
-            {
-                boardModelAddress = "Day4 Board";
-                SetBoardModelAddress(boardModelAddress);
-            }
 
             return boardModelAddress;
         }

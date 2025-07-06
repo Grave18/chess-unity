@@ -19,48 +19,18 @@
                Style="{DynamicResource HeaderLabelStyle}" />
 
         <Border Grid.Row="1"
-                Background="{StaticResource DarkerBackgroundBrush}"
-                CornerRadius="15"
-                Margin="20"
-                Padding="20">
-            <StackPanel>
-                <Grid HorizontalAlignment="Stretch" Height="80">
+                Style="{StaticResource SettingsControlsBorder}">
+            <DockPanel>
+                <userControls:DropdownUserControl DockPanel.Dock="Top"
+                                                  Text="Pieces"
+                                                  SelectedItem="{Binding SelectedPiece, Mode=TwoWay}"
+                                                  ItemsSource="{Binding Pieces}" />
 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200"/>
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <TextBlock Grid.Column="0"
-                           Text="Pieces"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Stretch"
-                           Margin="0 0 20 0" />
-                    <ComboBox Grid.Column="1"
-                          Margin="0 10 0 10"
-                          Style="{DynamicResource ComboBoxStyle}"
-                          SelectedItem="{Binding SelectedItem}"
-                          ItemsSource="{Binding Items}" />
-                </Grid>
-                <Grid HorizontalAlignment="Stretch" Height="80">
-
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200"/>
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <TextBlock Grid.Column="0"
-                           Text="Board"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Stretch"
-                           Margin="0 0 20 0" />
-                    <ComboBox Grid.Column="1"
-                          Margin="0 10 0 10"
-                          Style="{DynamicResource ComboBoxStyle}"
-                          SelectedItem="{Binding SelectedItem}"
-                          ItemsSource="{Binding Items}" />
-                </Grid>
-            </StackPanel>
+                <userControls:DropdownUserControl VerticalAlignment="Top"
+                                                  Text="Board"
+                                                  SelectedItem="{Binding SelectedBoard, Mode=TwoWay}"
+                                                  ItemsSource="{Binding Boards}" />
+            </DockPanel>
         </Border>
 
         <Button Grid.Row="2"
