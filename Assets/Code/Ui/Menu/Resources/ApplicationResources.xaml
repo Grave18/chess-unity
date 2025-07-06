@@ -57,6 +57,11 @@
     </Style>
 
     <!-- Start Button -->
+    <system:Double x:Key="ButtonWidth">350</system:Double>
+    <system:Double x:Key="ButtonWidthExtended">380</system:Double>
+    <system:Double x:Key="ButtonHeight">80</system:Double>
+    <system:Double x:Key="ButtonHeightExtended">85</system:Double>
+
     <ControlTemplate x:Key="ButtonTemplate" TargetType="Button">
         <Grid Name="Root"
               Width="{TemplateBinding Width}"
@@ -86,10 +91,10 @@
                                             Storyboard.TargetProperty="Background.Color" />
                             <DoubleAnimation Storyboard.TargetProperty="Width"
                                              Duration="0:0:0.15"
-                                             From="300" By="30" />
-                            <DoubleAnimation Storyboard.TargetProperty="Height"
-                                             Duration="0:0:0.15"
-                                             From="80" By="5" />
+                                             To="{StaticResource ButtonWidthExtended}" />
+                            <!-- <DoubleAnimation Storyboard.TargetProperty="Height" -->
+                            <!--                  Duration="0:0:0.15" -->
+                            <!--                  To="{StaticResource ButtonHeightExtended}" /> -->
                         </Storyboard>
                     </BeginStoryboard>
                 </MultiTrigger.EnterActions>
@@ -100,10 +105,10 @@
                                             Storyboard.TargetProperty="Background.Color" />
                             <DoubleAnimation Storyboard.TargetProperty="Width"
                                              Duration="0:0:0.15"
-                                             To="300" />
-                            <DoubleAnimation Storyboard.TargetProperty="Height"
-                                             Duration="0:0:0.15"
-                                             To="80" />
+                                             To="{StaticResource ButtonWidth}" />
+                            <!-- <DoubleAnimation Storyboard.TargetProperty="Height" -->
+                            <!--                  Duration="0:0:0.15" -->
+                            <!--                  To="{StaticResource ButtonHeight}" /> -->
                         </Storyboard>
                     </BeginStoryboard>
                 </MultiTrigger.ExitActions>
@@ -118,10 +123,10 @@
                                             Storyboard.TargetProperty="Background.Color" />
                             <DoubleAnimation Storyboard.TargetProperty="Width"
                                              Duration="0:0:0.15"
-                                             To="300" />
-                            <DoubleAnimation Storyboard.TargetProperty="Height"
-                                             Duration="0:0:0.15"
-                                             To="80" />
+                                             To="{StaticResource ButtonWidth}" />
+                            <!-- <DoubleAnimation Storyboard.TargetProperty="Height" -->
+                            <!--                  Duration="0:0:0.15" -->
+                            <!--                  To="{StaticResource ButtonHeight}" /> -->
                         </Storyboard>
                     </BeginStoryboard>
                 </Trigger.EnterActions>
@@ -132,7 +137,8 @@
                 <Trigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
-                            <ColorAnimation Duration="0:0:0.15" To="{StaticResource ButtonColor}"
+                            <ColorAnimation Duration="0:0:0.15"
+                                            To="{StaticResource ButtonColor}"
                                             Storyboard.TargetProperty="Background.Color" />
                         </Storyboard>
                     </BeginStoryboard>
@@ -148,8 +154,8 @@
         <Setter Property="Margin" Value="10" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Width" Value="300" />
-        <Setter Property="Height" Value="80" />
+        <Setter Property="Width" Value="{StaticResource ButtonWidth}" />
+        <Setter Property="Height" Value="{StaticResource ButtonHeight}" />
         <Setter Property="Template" Value="{StaticResource ButtonTemplate}" />
     </Style>
 
