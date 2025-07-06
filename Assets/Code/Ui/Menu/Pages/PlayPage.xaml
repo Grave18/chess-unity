@@ -19,6 +19,14 @@
                Text="Play"
                Style="{DynamicResource HeaderTextBlockStyle}" />
         <TabControl Grid.Row="1" Style="{DynamicResource TabControlTheme}">
+
+            <!-- Common Time Dropdown style-->
+            <TabControl.Resources>
+                <Style TargetType="userControls:DropdownUserControl">
+                    <Setter Property="ItemTemplate" Value="{StaticResource TimeDataTemplate}" />
+                </Style>
+            </TabControl.Resources>
+
             <!-- Offline -->
             <TabItem Header="2 Players"
                      Style="{DynamicResource TabItemStyle}">
