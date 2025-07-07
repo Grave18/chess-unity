@@ -66,7 +66,7 @@ namespace Ui.Menu.ViewModels
             _effectsVolume = audioSettingsContainer.GetEffectsVolume();
         }
 
-        #region ViewModelImplimentation
+#region ViewModelImplimentation
 
         public event PropertyChangedEventHandler PropertyChanged;
 

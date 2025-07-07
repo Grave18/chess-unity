@@ -797,4 +797,57 @@
         </Grid>
     </DataTemplate>
 
+    <!-- Start Sandwich Button -->
+    <Style x:Key="SandwichButtonStyle" TargetType="Button">
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="Height" Value="Auto" />
+        <Setter Property="Name" Value="Root" />
+        <Setter Property="Background" Value="{StaticResource ForegroundBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <StackPanel>
+                        <StackPanel.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="Height" Value="10" />
+                                <Setter Property="Width" Value="50" />
+                                <Setter Property="Margin" Value="0 0 0 5" />
+                                <Setter Property="CornerRadius" Value="3" />
+                                <Setter Property="Background" Value="{Binding Background, RelativeSource={RelativeSource TemplatedParent}}" />
+                            </Style>
+                        </StackPanel.Resources>
+                        <Border />
+                        <Border />
+                        <Border />
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard >
+                            <ColorAnimation Storyboard.TargetProperty="Background.Color"
+                                            Duration="0:0:0.15"
+                                            To="{StaticResource MouseOverForegroundColor}" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="Background.Color"
+                                            Duration="0:0:0.15"
+                                            To="{StaticResource ForegroundColor}" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!-- End Sandwich Button -->
+
 </ResourceDictionary>

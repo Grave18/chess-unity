@@ -3,16 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions"
-             xmlns:pages="clr-namespace:Ui.Menu.Pages"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:pages="clr-namespace:Ui.InGame.Pages"
              xmlns:auxiliary="clr-namespace:Ui.Auxiliary"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignWidth="1920" d:DesignHeight="1080"
-             Style="{StaticResource MainMenuStyle}">
+             Style="{StaticResource MainMenuStyle}"
+             Background="Transparent">
+
+    <auxiliary:GameMenuBase.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </auxiliary:GameMenuBase.Resources>
 
     <noesis:Xaml.Dependencies>
-        <noesis:Dependency Source="../Menu/Pages/PlayPage.xaml" />
-        <noesis:Dependency Source="../Menu/Pages/BoardPage.xaml" />
+        <noesis:Dependency Source="../InGame/Pages/InGamePage.xaml" />
         <noesis:Dependency Source="../Menu/Pages/SettingsPage.xaml" />
     </noesis:Xaml.Dependencies>
 
@@ -24,19 +28,26 @@
             </Grid.ColumnDefinitions>
 
             <Border Grid.Column="0"
+                    Visibility="{Binding IsOpened, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Style="{StaticResource MainMenuBorder}"
                     Margin="20, 20, 10, 20">
                 <ContentControl Name="ContentControl"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch">
-                    <pages:MainPage />
+                    <!-- Side Page -->
+                    <pages:InGamePage />
                 </ContentControl>
             </Border>
 
             <Border Grid.Column="1"
+                    Background="Transparent"
                     Style="{StaticResource MainMenuBorder}"
                     Margin="10, 20, 20, 20">
-                <Image Source="{Binding ImageSource}" />
+                <!-- Sandwich menu -->
+                <Grid Margin="30">
+                    <Button Command="{Binding OpenCloseCommand}"
+                            Style="{StaticResource SandwichButtonStyle}" />
+                </Grid>
             </Border>
         </Grid>
     </Viewbox>
