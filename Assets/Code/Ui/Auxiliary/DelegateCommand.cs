@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace Ui.Menu.Auxiliary
+namespace Ui.Auxiliary
 {
     public class DelegateCommand: ICommand
     {

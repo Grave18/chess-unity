@@ -1,5 +1,5 @@
 ﻿using GameAndScene;
-using Ui.Menu.Auxiliary;
+using Ui.Auxiliary;
 using UnityEngine;
 
 namespace Ui.Menu.ViewModels

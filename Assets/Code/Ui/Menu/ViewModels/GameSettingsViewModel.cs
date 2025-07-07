@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Ai;
 using GameAndScene;
-using Ui.Menu.Auxiliary;
+using Ui.Auxiliary;
 using UnityEngine;
 
 namespace Ui.Menu.ViewModels

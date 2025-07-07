@@ -1,4 +1,4 @@
-﻿namespace Ui.Menu.Auxiliary
+﻿namespace Ui.Auxiliary
 {
     public class FullscreenModeUi
     {

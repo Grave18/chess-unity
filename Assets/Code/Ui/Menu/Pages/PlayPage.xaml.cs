@@ -12,6 +12,8 @@ using System.Windows;
 using System.Windows.Controls;
 #endif
 
+using Ui.Auxiliary;
+
 namespace Ui.Menu.Pages
 {
     public partial class PlayPage : UserControl
@@ -32,7 +34,7 @@ namespace Ui.Menu.Pages
 
         public void Back_Click(object sender, RoutedEventArgs args)
         {
-            MainMenu.Instance.ChangePage<MainPage>();
+            Auxiliary.GameMenuBase.Instance.ChangePage<MainPage>();
         }
 
 #if NOESIS

@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using GameAndScene;
 using Notation;
-using Ui.Menu.Auxiliary;
+using Ui.Auxiliary;
 using UnityEngine;
 
 namespace Ui.Menu.ViewModels

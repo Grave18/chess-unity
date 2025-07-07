@@ -1,10 +1,4 @@
-#if UNITY_5_3_OR_NEWER
-#define NOESIS
-#else
-using System;
-#endif
-
-namespace Ui.Menu.Auxiliary
+namespace Ui.Auxiliary
 {
     public static class LogUi
     {
@@ -15,10 +9,10 @@ namespace Ui.Menu.Auxiliary
 
         private static void LogBase(object message)
         {
-#if NOESIS
+#if UNITY_5_3_OR_NEWER
             UnityEngine.Debug.Log(message);
 #else
-            Console.WriteLine(message.ToString());
+            System.Console.WriteLine(message.ToString());
 #endif
         }
     }

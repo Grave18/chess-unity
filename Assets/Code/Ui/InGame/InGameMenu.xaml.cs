@@ -1,9 +1,7 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
-using System;
 using Noesis;
 using Ui.InGame.ViewModels;
-using Ui.Menu.ViewModels;
 using EventArgs = Noesis.EventArgs;
 using GUI = Noesis.GUI;
 using Object = UnityEngine.Object;
@@ -13,23 +11,21 @@ using System;
 using System.Windows.Controls;
 #endif
 
+using Ui.Auxiliary;
+
 namespace Ui.InGame
 {
-    public partial class InGameMenu : UserControl
+    public partial class InGameMenu : GameMenuBase
     {
-        public static InGameMenu Instance { get; private set; }
-
         public InGameMenu()
         {
-            Instance = this;
-
             Initialized += OnInitialized;
             InitializeComponent();
         }
 
-        public void ChangePage<T>() where T : UserControl
+        protected override void ChangePage(UserControl page)
         {
-            ContentControl.Content = Activator.CreateInstance(typeof(T));
+            ContentControl.Content = page;
         }
 
         private void OnInitialized(object sender, EventArgs args)
@@ -44,7 +40,7 @@ namespace Ui.InGame
 
         private void InitializeComponent()
         {
-            GUI.LoadComponent(this, "Assets/Code/Ui/InGame/InGameMenu.xaml");
+            GUI.LoadComponent(this, "Assets/Code/Ui/InGame/InGameGameMenuBase.xaml");
 
             ContentControl = FindName("ContentControl") as ContentControl;
         }

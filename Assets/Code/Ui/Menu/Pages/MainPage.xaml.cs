@@ -9,6 +9,8 @@ using System.Windows;
 using System.Windows.Controls;
 #endif
 
+using Ui.Auxiliary;
+
 namespace Ui.Menu.Pages
 {
     public partial class MainPage : UserControl
@@ -20,17 +22,17 @@ namespace Ui.Menu.Pages
 
         public void Play_Click(object sender, RoutedEventArgs args)
         {
-            MainMenu.Instance.ChangePage<PlayPage>();
+            GameMenuBase.Instance.ChangePage<PlayPage>();
         }
 
         public void Settings_Click(object sender, RoutedEventArgs args)
         {
-            MainMenu.Instance.ChangePage<SettingsPage>();
+            GameMenuBase.Instance.ChangePage<SettingsPage>();
         }
 
         private void Board_Click(object sender, RoutedEventArgs e)
         {
-            MainMenu.Instance.ChangePage<BoardPage>();
+            GameMenuBase.Instance.ChangePage<BoardPage>();
         }
 
         public void Exit_Click(object sender, RoutedEventArgs args)
