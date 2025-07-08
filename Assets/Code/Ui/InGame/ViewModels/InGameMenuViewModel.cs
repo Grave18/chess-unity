@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using ChessGame;
 using Ui.Auxiliary;
 using UnityEngine;
 
@@ -27,13 +28,21 @@ namespace Ui.InGame.ViewModels
 
         private void OnOpenClosed(bool value)
         {
-            gameCanvas.SetActive(!value);
-            Debug.Log($"{nameof(IsOpened)} is changed to  {value}");
+            EnableProtection(value);
+
+            Debug.Log($"{nameof(IsOpened)} is changed to {value}");
         }
 
         private void Awake()
         {
+            EnableProtection(false);
             OpenCloseCommand = new DelegateCommand(OpenClose);
+        }
+
+        private void EnableProtection(bool value)
+        {
+            GInput.IsEnabled = !value;
+            gameCanvas.SetActive(!value);
         }
 
         private void Update()

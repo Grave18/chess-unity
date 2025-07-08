@@ -2,6 +2,7 @@
 #define NOESIS
 using Noesis;
 using GUI = Noesis.GUI;
+using UnityEngine; // Do not remove
 
 #else
 using System;

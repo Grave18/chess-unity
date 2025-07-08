@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:auxiliary="clr-namespace:Ui.Auxiliary"
              mc:Ignorable="d"
              d:DesignWidth="640" d:DesignHeight="1080">
 
@@ -14,23 +15,79 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0"
-                   Text="Main Menu"
+                   Text="Menu"
                    Style="{StaticResource HeaderTextBlockStyle}" />
         <StackPanel Grid.Row="1"
                     Margin="0 50 0 0">
 
             <!-- Special style for Main page screen -->
             <StackPanel.Resources>
-                <Style TargetType="Button" BasedOn="{StaticResource GeneralButton}">
+                <Style TargetType="Button"
+                       BasedOn="{StaticResource GeneralButton}">
                     <Setter Property="Margin" Value="0 20 0 20" />
                 </Style>
             </StackPanel.Resources>
 
-            <Button Content="Resume"/>
-            <Button Content="Settings" Click="Settings_Click" />
+            <Button Content="Resume"
+                    Name="ResumeButton"
+                    Command="{Binding OpenCloseCommand}" />
+            <Button Content="Rematch"
+                    IsEnabled="{Binding IsRematchButtonEnabled}"
+                    Command="{Binding RematchCommand}" />
+            <Button Content="Draw"
+                    IsEnabled="{Binding IsDrawButtonEnabled}"
+                    Command="{Binding DrawCommand}" />
+            <Button Content="Resign"
+                    IsEnabled="{Binding IsResignButtonEnabled}"
+                    Command="{Binding ResignCommand}"/>
+            <Button Content="Settings"
+                    Click="Settings_Click" />
         </StackPanel>
+
+        <!-- Exit Button -->
         <Button Grid.Row="2" Content="Exit"
-                Command="{Binding ExitToMainMenuCommand}"/>
+                Click="Exit_Click"/>
+        <!-- Command="{Binding ExitToMainMenuCommand}" -->
+
+        <!-- Exit Popup -->
+        <Popup Grid.Row="0"
+               x:Name="ExitPopup"
+               AllowsTransparency="True"
+               Placement="Center"
+               PlacementTarget="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=auxiliary:GameMenuBase}}"
+               StaysOpen="False">
+            <Viewbox Stretch="Uniform">
+                <Grid Width="1920" Height="1080">
+                    <Border MinWidth="500" MinHeight="300"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                        Background="{StaticResource DarkerBackgroundBrush}"
+                        CornerRadius="15">
+                        <DockPanel Margin="30">
+                            <TextBlock DockPanel.Dock="Top"
+                                       Text="Are you sure you want to exit?"
+                                       Style="{StaticResource Header2TextBlockStyle}" />
+                            <Grid DockPanel.Dock="Bottom"
+                                  VerticalAlignment="Bottom">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0"
+                                        Content="Cancel"
+                                        IsCancel="True"
+                                        Click="ClosePopup_Click"/>
+                                <Button Grid.Column="1"
+                                        Content="Exit"
+                                        IsDefault="True"
+                                        Command="{Binding ExitToMainMenuCommand}" />
+                            </Grid>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+            </Viewbox>
+        </Popup>
+
     </Grid>
 
 </UserControl>

@@ -12,7 +12,6 @@ using System.Windows.Controls;
 #endif
 
 using Ui.Auxiliary;
-using Ui.Menu.Pages;
 
 namespace Ui.InGame.Pages
 {
@@ -28,58 +27,48 @@ namespace Ui.InGame.Pages
         {
 #if NOESIS
             DataContext = Object.FindAnyObjectByType<InGamePageViewModel>();
+            ResumeButton.DataContext = Object.FindAnyObjectByType<InGameMenuViewModel>();
 #endif
-        }
-
-        public void Play_Click(object sender, RoutedEventArgs args)
-        {
-            GameMenuBase.Instance.ChangePage<PlayPage>();
         }
 
         public void Settings_Click(object sender, RoutedEventArgs args)
         {
-            GameMenuBase.Instance.ChangePage<SettingsPage>();
+            GameMenuBase.Instance.ChangePage<InGameSettingsPage>();
         }
 
-        private void Board_Click(object sender, RoutedEventArgs e)
+        private void ClosePopup_Click(object sender, RoutedEventArgs e)
         {
-            GameMenuBase.Instance.ChangePage<BoardPage>();
+            ExitPopup.IsOpen = false;
         }
 
-        public void Exit_Click(object sender, RoutedEventArgs args)
+        private void Exit_Click(object sender, RoutedEventArgs e)
         {
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#elif NOESIS
-            Application.Quit();
-#else
-            Application.Current.Shutdown();
-#endif
+            ExitPopup.IsOpen = true;
         }
 
 #if NOESIS
+        private Popup ExitPopup { get; set; }
+        private Button ResumeButton { get; set; }
+
         private void InitializeComponent()
         {
             GUI.LoadComponent(this, "Assets/Code/Ui/InGame/Pages/InGamePage.xaml");
+
+            ResumeButton = FindName("ResumeButton") as Button;
+            ExitPopup = FindName("ExitPopup") as Popup;
         }
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)
         {
-            if (eventName == "Click" && handlerName == nameof(Play_Click))
-            {
-                ((Button)source).Click += Play_Click;
-                return true;
-            }
-
             if (eventName == "Click" && handlerName == nameof(Settings_Click))
             {
                 ((Button)source).Click += Settings_Click;
                 return true;
             }
 
-            if (eventName == "Click" && handlerName == nameof(Board_Click))
+            if (eventName == "Click" && handlerName == nameof(ClosePopup_Click))
             {
-                ((Button)source).Click += Board_Click;
+                ((Button)source).Click += ClosePopup_Click;
                 return true;
             }
 

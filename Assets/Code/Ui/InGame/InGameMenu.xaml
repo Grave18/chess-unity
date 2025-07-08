@@ -13,11 +13,45 @@
 
     <auxiliary:GameMenuBase.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <Style x:Key="AnimatedBorderStyle"
+               TargetType="Border"
+               BasedOn="{StaticResource MainMenuBorder}">
+            <Style.Triggers>
+                <Trigger Property="Visibility" Value="Collapsed">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation Storyboard.TargetProperty="Background.Color"
+                                                Duration="0:0:0.2"
+                                                To="Transparent" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                </Trigger>
+                <Trigger Property="Visibility" Value="Visible">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation Storyboard.TargetProperty="Background.Color"
+                                                Duration="0:0:0.2"
+                                                From="Transparent">
+                                    <ColorAnimation.EasingFunction>
+                                        <QuadraticEase EasingMode="EaseInOut" />
+                                    </ColorAnimation.EasingFunction>
+                                </ColorAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
     </auxiliary:GameMenuBase.Resources>
 
     <noesis:Xaml.Dependencies>
         <noesis:Dependency Source="../InGame/Pages/InGamePage.xaml" />
-        <noesis:Dependency Source="../Menu/Pages/SettingsPage.xaml" />
+        <noesis:Dependency Source="../InGame/Pages/InGameSettingsPage.xaml" />
     </noesis:Xaml.Dependencies>
 
     <Viewbox Stretch="Uniform">
@@ -28,13 +62,16 @@
             </Grid.ColumnDefinitions>
 
             <Border Grid.Column="0"
+                    Name="Border"
+                    d:Visibility="Visible"
                     Visibility="{Binding IsOpened, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Style="{StaticResource MainMenuBorder}"
+                    Style="{StaticResource AnimatedBorderStyle}"
                     Margin="20, 20, 10, 20">
+
                 <ContentControl Name="ContentControl"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch">
-                    <!-- Side Page -->
+                    <!-- Left Side Page -->
                     <pages:InGamePage />
                 </ContentControl>
             </Border>
@@ -43,11 +80,13 @@
                     Background="Transparent"
                     Style="{StaticResource MainMenuBorder}"
                     Margin="10, 20, 20, 20">
+
                 <!-- Sandwich menu -->
                 <Grid Margin="30">
                     <Button Command="{Binding OpenCloseCommand}"
                             Style="{StaticResource SandwichButtonStyle}" />
                 </Grid>
+
             </Border>
         </Grid>
     </Viewbox>
