@@ -8,6 +8,7 @@ using ChessGame.Logic.MovesBuffer;
 using ChessGame.Logic.Players;
 using GameAndScene;
 using MainCamera;
+using Network;
 using UnityEngine;
 using UnityEngine.Events;
 using Utils;
@@ -147,6 +148,40 @@ namespace ChessGame.Logic
 
             Machine.SetState(new EndGameState(this));
         }
+
+        public void Rematch()
+        {
+            if (OnlineInstanceHandler.IsOffline)
+            {
+                RematchOffline();
+            }
+            else
+            {
+                RematchOnline();
+            }
+        }
+
+        private void RematchOffline()
+        {
+            RestartGame();
+        }
+
+        private void RematchOnline()
+        {
+            // PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
+            // RequestRematchTarget(otherPlayerID);
+        }
+
+        // [ObserversRpc]
+        // private void RequestRematchTarget(PlayerID playerId)
+        // {
+        //      if(playerId.id != localPlayer?.id)
+        //      {
+        //          return;
+        //      }
+        //
+        //      EffectsPlayer.Instance.PlayNotifySound();
+        // }
 
         public void Resign()
         {

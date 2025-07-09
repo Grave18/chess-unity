@@ -21,16 +21,11 @@ namespace Ui.InGame.ViewModels
             {
                 if (SetField(ref _isOpened, value))
                 {
-                    OnOpenClosed(value);
+                    EnableProtection(value);
+
+                    Debug.Log($"{nameof(IsOpened)} is changed to {value}");
                 }
             }
-        }
-
-        private void OnOpenClosed(bool value)
-        {
-            EnableProtection(value);
-
-            Debug.Log($"{nameof(IsOpened)} is changed to {value}");
         }
 
         private void Awake()
@@ -43,14 +38,6 @@ namespace Ui.InGame.ViewModels
         {
             GInput.IsEnabled = !value;
             gameCanvas.SetActive(!value);
-        }
-
-        private void Update()
-        {
-            if(Input.GetKeyUp(KeyCode.Escape))
-            {
-                OpenClose(null);
-            }
         }
 
         private void OpenClose(object obj)

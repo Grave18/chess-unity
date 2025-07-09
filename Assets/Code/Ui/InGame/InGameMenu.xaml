@@ -64,7 +64,7 @@
             <Border Grid.Column="0"
                     Name="Border"
                     d:Visibility="Visible"
-                    Visibility="{Binding IsOpened, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Visibility="{Binding IsOpened, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Style="{StaticResource AnimatedBorderStyle}"
                     Margin="20, 20, 10, 20">
 
@@ -83,7 +83,8 @@
 
                 <!-- Sandwich menu -->
                 <Grid Margin="30">
-                    <Button Command="{Binding OpenCloseCommand}"
+                    <Button Name="SandwichButton"
+                            Command="{Binding OpenCloseCommand}"
                             Style="{StaticResource SandwichButtonStyle}" />
                 </Grid>
 

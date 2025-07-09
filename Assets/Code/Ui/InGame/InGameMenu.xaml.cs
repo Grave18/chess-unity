@@ -9,6 +9,8 @@ using Object = UnityEngine.Object;
 #else
 using System;
 using System.Windows.Controls;
+using System.Windows;
+using System.Windows.Input;
 #endif
 
 using Ui.Auxiliary;
@@ -20,6 +22,7 @@ namespace Ui.InGame
         public InGameMenu()
         {
             Initialized += OnInitialized;
+            Loaded += OnLoaded;
             InitializeComponent();
         }
 
@@ -35,15 +38,44 @@ namespace Ui.InGame
 #endif
         }
 
+        private void OnLoaded(object sender, RoutedEventArgs args)
+        {
+            // Focus on Menu and listen for key events
+            this.Focusable = true;
+            this.Focus();
+            this.KeyUp += OnKeyUp;
+        }
+
+        private void OnKeyUp(object sender, KeyEventArgs args)
+        {
+            if (args.Key == Key.Escape)
+            {
+                OpenOrCloseMenu();
+
+                args.Handled = true;
+            }
+        }
+
+        private void OpenOrCloseMenu()
+        {
+            Border.Visibility = Border.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+        }
+
 #if NOESIS
+
         private ContentControl ContentControl { get; set; }
+        private Border Border { get; set; }
+        private Button SandwichButton { get; set; }
 
         private void InitializeComponent()
         {
             GUI.LoadComponent(this, "Assets/Code/Ui/InGame/InGameGameMenuBase.xaml");
 
             ContentControl = FindName("ContentControl") as ContentControl;
+            Border = FindName("Border") as Border;
+            SandwichButton = FindName("SandwichButton") as Button;
         }
+
 #endif
     }
 }

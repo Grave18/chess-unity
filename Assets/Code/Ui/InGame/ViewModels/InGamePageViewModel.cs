@@ -22,7 +22,6 @@ namespace Ui.InGame.ViewModels
         public bool IsDrawButtonEnabled => OnlineInstanceHandler.IsOnline && !game.IsGameOver && game.IsMyTurn;
         public bool IsResignButtonEnabled => !game.IsGameOver && game.IsMyTurn;
 
-
         private void Awake()
         {
             RematchCommand = new DelegateCommand(Rematch);
@@ -33,17 +32,17 @@ namespace Ui.InGame.ViewModels
 
         private void Rematch(object obj)
         {
-
+            game.Rematch();
         }
 
         private void Draw(object obj)
         {
-
+            game.DrawByAgreement();
         }
 
         private void Resign(object obj)
         {
-
+            game.Resign();
         }
 
         private void ExitToMainMenu(object obj)
