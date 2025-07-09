@@ -51,31 +51,50 @@ namespace Ui.InGame
             if (args.Key == Key.Escape)
             {
                 OpenOrCloseMenu();
-
                 args.Handled = true;
             }
         }
 
         private void OpenOrCloseMenu()
         {
-            Border.Visibility = Border.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+            bool isOpened = Attached.GetShow(SlidingPanel);
+            isOpened = !isOpened;
+            Attached.SetShow(SlidingPanel, isOpened);
+
+            LogUi.Debug($"Menu opened: {isOpened}");
         }
 
 #if NOESIS
 
         private ContentControl ContentControl { get; set; }
-        private Border Border { get; set; }
+        private UIElement SlidingPanel { get; set; }
         private Button SandwichButton { get; set; }
 
         private void InitializeComponent()
         {
-            GUI.LoadComponent(this, "Assets/Code/Ui/InGame/InGameGameMenuBase.xaml");
+            GUI.LoadComponent(this, "Assets/Code/Ui/InGame/InGameMenu.xaml");
 
             ContentControl = FindName("ContentControl") as ContentControl;
-            Border = FindName("Border") as Border;
+            SlidingPanel = FindName("SlidingPanel") as UIElement;
             SandwichButton = FindName("SandwichButton") as Button;
         }
 
 #endif
+    }
+
+    public static class Attached
+    {
+        public static readonly DependencyProperty ShowProperty =
+            DependencyProperty.RegisterAttached("Show", typeof(bool), typeof(Attached), new PropertyMetadata(false));
+
+        public static bool GetShow(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(ShowProperty);
+        }
+
+        public static void SetShow(DependencyObject obj, bool value)
+        {
+            obj.SetValue(ShowProperty, value);
+        }
     }
 }

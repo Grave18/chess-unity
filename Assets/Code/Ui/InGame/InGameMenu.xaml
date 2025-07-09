@@ -5,6 +5,7 @@
              xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions"
              xmlns:pages="clr-namespace:Ui.InGame.Pages"
              xmlns:auxiliary="clr-namespace:Ui.Auxiliary"
+             xmlns:local="clr-namespace:Ui.InGame"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignWidth="1920" d:DesignHeight="1080"
@@ -12,34 +13,44 @@
              Background="Transparent">
 
     <auxiliary:GameMenuBase.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
+        <!-- Animated Sliding Panel Border -->
         <Style x:Key="AnimatedBorderStyle"
                TargetType="Border"
                BasedOn="{StaticResource MainMenuBorder}">
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform X="-1000" Y="0"/>
+                </Setter.Value>
+            </Setter>
+
             <Style.Triggers>
-                <Trigger Property="Visibility" Value="Collapsed">
+                <Trigger Property="local:Attached.Show" Value="False">
                     <Trigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <ColorAnimation Storyboard.TargetProperty="Background.Color"
-                                                Duration="0:0:0.2"
-                                                To="Transparent" />
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                                                 Duration="0:0:0.1"
+                                                 To="-1000">
+                                    <DoubleAnimation.EasingFunction>
+                                        <QuadraticEase EasingMode="EaseInOut" />
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.EnterActions>
                 </Trigger>
-                <Trigger Property="Visibility" Value="Visible">
+                <Trigger Property="local:Attached.Show" Value="True">
                     <Trigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <ColorAnimation Storyboard.TargetProperty="Background.Color"
-                                                Duration="0:0:0.2"
-                                                From="Transparent">
-                                    <ColorAnimation.EasingFunction>
-                                        <QuadraticEase EasingMode="EaseInOut" />
-                                    </ColorAnimation.EasingFunction>
-                                </ColorAnimation>
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                                                Duration="0:0:0.3"
+                                                To="0">
+                                    <DoubleAnimation.EasingFunction>
+                                        <PowerEase Power="5" EasingMode="EaseOut" />
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.EnterActions>
@@ -61,17 +72,17 @@
                 <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
 
+            <!-- Sliding Panel -->
             <Border Grid.Column="0"
-                    Name="Border"
-                    d:Visibility="Visible"
-                    Visibility="{Binding IsOpened, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Name="SlidingPanel"
+                    local:Attached.Show="{Binding IsOpened, Mode=TwoWay}"
                     Style="{StaticResource AnimatedBorderStyle}"
                     Margin="20, 20, 10, 20">
 
                 <ContentControl Name="ContentControl"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch">
-                    <!-- Left Side Page -->
+                    <!-- Changeable Page -->
                     <pages:InGamePage />
                 </ContentControl>
             </Border>

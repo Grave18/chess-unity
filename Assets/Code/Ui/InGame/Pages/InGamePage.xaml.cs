@@ -76,9 +76,9 @@ namespace Ui.InGame.Pages
 
         private void CloseMenu()
         {
-            if (FindName("Border") is UIElement border)
+            if (FindName("SlidingPanel") is UIElement panel)
             {
-                border.Visibility = Visibility.Collapsed;
+                Attached.SetShow(panel, false);
             }
         }
 
