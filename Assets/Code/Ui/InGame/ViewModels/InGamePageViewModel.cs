@@ -30,6 +30,25 @@ namespace Ui.InGame.ViewModels
             ExitToMainMenuCommand = new DelegateCommand(ExitToMainMenu);
         }
 
+        private void OnEnable()
+        {
+            game.OnStart += UpdateButtonsIsEnabled;
+            game.OnEnd += UpdateButtonsIsEnabled;
+        }
+
+        private void OnDisable()
+        {
+            game.OnStart -= UpdateButtonsIsEnabled;
+            game.OnEnd -= UpdateButtonsIsEnabled;
+        }
+
+        private void UpdateButtonsIsEnabled()
+        {
+            OnPropertyChanged(nameof(IsRematchButtonEnabled));
+            OnPropertyChanged(nameof(IsDrawButtonEnabled));
+            OnPropertyChanged(nameof(IsResignButtonEnabled));
+        }
+
         private void Rematch(object obj)
         {
             game.Rematch();
