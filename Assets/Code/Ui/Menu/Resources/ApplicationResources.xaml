@@ -70,16 +70,12 @@
     </Style>
 
     <!-- Start Button -->
-    <system:Double x:Key="ButtonWidth">350</system:Double>
-    <system:Double x:Key="ButtonWidthExtended">380</system:Double>
-    <system:Double x:Key="ButtonHeight">80</system:Double>
-    <system:Double x:Key="ButtonHeightExtended">85</system:Double>
-
     <ControlTemplate x:Key="GeneralButtonTemplate" TargetType="Button">
         <Grid Name="Root">
             <Border x:Name="Border"
                     HorizontalAlignment="Center"
                     Width="{TemplateBinding Width}"
+                    MinWidth="{TemplateBinding MinWidth}"
                     Height="{TemplateBinding Height}"
                     BorderBrush="{TemplateBinding BorderBrush}"
                     Background="{TemplateBinding Background}"
@@ -97,7 +93,7 @@
         </Grid>
         <ControlTemplate.Triggers>
 
-            <!-- Is Mouse Over -->
+            <!-- Animate Is Mouse Over -->
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="IsMouseOver" Value="True" />
@@ -145,50 +141,177 @@
                 </MultiTrigger.ExitActions>
             </MultiTrigger>
 
-            <!-- Is Disabled -->
+            <!-- Animate Is Disabled -->
             <Trigger Property="IsEnabled" Value="False">
                 <Trigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
-                            <ColorAnimation Duration="0:0:0.15" To="Gray"
-                            Storyboard.TargetProperty="Background.Color" />
-                            <DoubleAnimation Storyboard.TargetProperty="Width"
-                             Duration="0:0:0.15"
-                             To="{StaticResource ButtonWidth}" />
+                            <ColorAnimation Duration="0:0:0.15"
+                                            Storyboard.TargetProperty="Background.Color"
+                                            To="Gray" >
+                            </ColorAnimation>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                             Duration="0:0:0.15"
+                                             To="1">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut" />
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                             Duration="0:0:0.15"
+                                             To="1">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut" />
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
                         </Storyboard>
                     </BeginStoryboard>
                 </Trigger.EnterActions>
             </Trigger>
 
-            <!-- Is Enabled -->
+            <!-- Animate Is Enabled -->
             <Trigger Property="IsEnabled" Value="True">
                 <Trigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
                             <ColorAnimation Duration="0:0:0.15"
-                            To="{StaticResource ButtonColor}"
-                            Storyboard.TargetProperty="Background.Color" />
+                                            Storyboard.TargetProperty="Background.Color" 
+                                            To="{StaticResource ButtonColor}">
+                            </ColorAnimation>
                         </Storyboard>
                     </BeginStoryboard>
                 </Trigger.EnterActions>
             </Trigger>
 
+            <!-- Animate Is Pressed -->
+            <Trigger Property="IsPressed" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="Border"
+                                             Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                             Duration="0:0:0.1"
+                                             To="0.9">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseIn" />
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <DoubleAnimation Storyboard.TargetName="Border"
+                                             Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                             Duration="0:0:0.1"
+                                             To="0.5">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseIn" />
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+            </Trigger>
+
+            <!-- Animate Is Not Pressed -->
+            <Trigger Property="IsPressed" Value="False">
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="Border"
+                                             Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                             Duration="0:0:0.1"
+                                             To="1">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut" />
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <DoubleAnimation Storyboard.TargetName="Border"
+                                             Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                             Duration="0:0:0.1"
+                                             To="1">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut" />
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+
         </ControlTemplate.Triggers>
     </ControlTemplate>
-
+    <!-- General Button Style -->
     <Style x:Key="GeneralButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
         <Setter Property="FontSize" Value="{StaticResource Header2FontSize}" />
         <Setter Property="Margin" Value="10" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Width" Value="{StaticResource ButtonWidth}" />
-        <Setter Property="Height" Value="{StaticResource ButtonHeight}" />
+        <Setter Property="Width" Value="350" />
+        <Setter Property="Height" Value="80" />
         <Setter Property="Template" Value="{StaticResource GeneralButtonTemplate}" />
     </Style>
 
     <Style TargetType="Button" BasedOn="{StaticResource GeneralButtonStyle}" />
     <!-- End Button -->
+
+    <!-- Start Fen Button -->
+    <Style x:Key="FenButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
+        <Setter Property="FontSize" Value="{StaticResource NormalFontSize}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="MinWidth" Value="200" />
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="Height" Value="50" />
+        <Setter Property="Template" Value="{StaticResource GeneralButtonTemplate}" />
+    </Style>
+
+    <Style x:Key="FenButtonStyle_Back"  TargetType="Button">
+        <Setter Property="FontSize" Value="30" />
+        <Setter Property="Width" Value="200" />
+        <Setter Property="Height" Value="50" />
+        <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border Background="{TemplateBinding Background}"
+                            CornerRadius="15" />
+                        <ContentPresenter
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <!-- Is Mouse Over -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource MouseOverButtonColor}"
+                                                    Duration="0:0:0.15"
+                                                    Storyboard.TargetProperty="Background.Color" >
+                                        </ColorAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource ButtonColor}"
+                                                    Duration="0:0:0.15"
+                                                    Storyboard.TargetProperty="Background.Color" >
+                                        </ColorAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!-- End Fen Button -->
 
     <!-- Start CheckBox -->
     <Style TargetType="CheckBox" x:Key="CheckboxStyle">
@@ -364,7 +487,7 @@
     <!-- End TabControl -->
 
     <!-- Start TabItem -->
-    <Style x:Key="TabItemStyle" TargetType="{x:Type TabItem}">
+    <Style x:Key="TabItemStyle" TargetType="TabItem">
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="FontSize" Value="{StaticResource NormalFontSize}" />
         <Setter Property="Padding" Value="20 10 20 10" />
@@ -385,12 +508,12 @@
                                           ContentSource="Header"
                                           Focusable="False"
                                           HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+                                          VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
                                           Margin="{TemplateBinding Padding}"
-                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                          VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <!-- Selected False, Mouse False -->
+                        <!-- Animate Selected False, Mouse False -->
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="False" />
@@ -406,7 +529,7 @@
                                 </BeginStoryboard>
                             </MultiDataTrigger.EnterActions>
                         </MultiDataTrigger>
-                        <!-- Selected True,  Mouse False -->
+                        <!-- Animate Selected True,  Mouse False -->
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True" />
@@ -422,7 +545,7 @@
                                 </BeginStoryboard>
                             </MultiDataTrigger.EnterActions>
                         </MultiDataTrigger>
-                        <!-- Selected False, Mouse True  -->
+                        <!-- Animate Selected False, Mouse True  -->
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="False" />
@@ -439,7 +562,7 @@
                             </MultiDataTrigger.EnterActions>
                         </MultiDataTrigger>
 
-                        <!-- Selected True,  Mouse True  -->
+                        <!-- Animate Selected True,  Mouse True  -->
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True"/>
@@ -514,7 +637,7 @@
                         <EventTrigger RoutedEvent="Unchecked">
                             <BeginStoryboard>
                                 <Storyboard TargetName="arrow" TargetProperty="RenderTransform.(RotateTransform.Angle)">
-                                    <DoubleAnimation To="0" Duration="0:0:0.15">
+                                    <DoubleAnimation To="0" Duration="0:0:0.15" BeginTime="0:0:0.14">
                                         <DoubleAnimation.EasingFunction>
                                             <QuadraticEase EasingMode="EaseOut" />
                                         </DoubleAnimation.EasingFunction>
@@ -659,7 +782,7 @@
                                                         Duration="0:0:0.2"
                                                         To="{StaticResource DarkerBackgroundColor}">
                                             <ColorAnimation.EasingFunction>
-                                                <CubicEase EasingMode="EaseOut" />
+                                                <QuadraticEase EasingMode="EaseOut" />
                                             </ColorAnimation.EasingFunction>
                                         </ColorAnimation>
                                     </Storyboard>
@@ -679,7 +802,7 @@
                                                         Duration="0:0:0.2"
                                                         To="{StaticResource DarkerBackgroundColor}">
                                             <ColorAnimation.EasingFunction>
-                                                <CubicEase EasingMode="EaseOut" />
+                                                <QuadraticEase EasingMode="EaseOut" />
                                             </ColorAnimation.EasingFunction>
                                         </ColorAnimation>
                                     </Storyboard>
@@ -699,7 +822,7 @@
                                                         Duration="0:0:0.2"
                                                         To="{StaticResource DarkerBackgroundColor}">
                                             <ColorAnimation.EasingFunction>
-                                                <CubicEase EasingMode="EaseOut" />
+                                                <QuadraticEase EasingMode="EaseOut" />
                                             </ColorAnimation.EasingFunction>
                                         </ColorAnimation>
                                     </Storyboard>
@@ -719,7 +842,7 @@
                                                         Duration="0:0:0.2"
                                                         To="{StaticResource LighterBackgroundColor}">
                                             <ColorAnimation.EasingFunction>
-                                                <CubicEase EasingMode="EaseOut" />
+                                                <QuadraticEase EasingMode="EaseOut" />
                                             </ColorAnimation.EasingFunction>
                                         </ColorAnimation>
                                     </Storyboard>
@@ -736,9 +859,9 @@
                 <Trigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard TargetProperty="MaxDropDownHeight">
-                            <DoubleAnimation Duration="0:0:0.15" To="200">
+                            <DoubleAnimation Duration="0:0:0.3" To="200">
                                 <DoubleAnimation.EasingFunction>
-                                    <CubicEase EasingMode="EaseOut" />
+                                    <QuadraticEase EasingMode="EaseOut" />
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
                         </Storyboard>
@@ -750,9 +873,9 @@
                 <Trigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard TargetProperty="MaxDropDownHeight">
-                            <DoubleAnimation Duration="0:0:0.075" To="0">
+                            <DoubleAnimation Duration="0:0:0.15" To="0">
                                 <DoubleAnimation.EasingFunction>
-                                    <CubicEase EasingMode="EaseOut" />
+                                    <QuadraticEase EasingMode="EaseOut" />
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
                         </Storyboard>
@@ -762,56 +885,6 @@
         </Style.Triggers>
     </Style>
     <!-- End Combobox -->
-
-    <!-- Start Fen Button -->
-    <Style x:Key="FenButtonStyle"  TargetType="Button">
-        <Setter Property="FontSize" Value="30" />
-        <Setter Property="Width" Value="200" />
-        <Setter Property="Height" Value="50" />
-        <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
-        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <Border Background="{TemplateBinding Background}"
-                                CornerRadius="15" />
-                        <ContentPresenter
-                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                            HorizontalAlignment="{TemplateBinding HorizontalAlignment}" />
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <!-- Is Mouse Over -->
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Trigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <ColorAnimation To="{StaticResource MouseOverButtonColor}"
-                                                        Duration="0:0:0.15"
-                                                        Storyboard.TargetProperty="Background.Color" >
-                                        </ColorAnimation>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.EnterActions>
-                            <Trigger.ExitActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <ColorAnimation To="{StaticResource ButtonColor}"
-                                                        Duration="0:0:0.15"
-                                                        Storyboard.TargetProperty="Background.Color" >
-                                        </ColorAnimation>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.ExitActions>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-    <!-- End fen button -->
 
     <!-- Start Fen Text Box -->
     <Style x:Key="FenTextBoxStyle" TargetType="TextBox">

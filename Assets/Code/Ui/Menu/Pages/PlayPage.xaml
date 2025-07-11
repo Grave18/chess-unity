@@ -48,7 +48,7 @@
             </TabItem>
             <!-- Computer -->
             <TabItem Header="Computer"
-                     Style="{DynamicResource TabItemStyle}" HorizontalAlignment="Left" Margin="0,0,0,0.5" Width="202">
+                      Style="{DynamicResource TabItemStyle}">
                 <DockPanel Margin="30">
                     <!-- Time dropdown -->
                     <userControls:DropdownUserControl DockPanel.Dock="Top"
