@@ -40,30 +40,30 @@
         <Setter Property="Background" Value="{StaticResource DarkerBackgroundBrush}" />
     </Style>
 
-    <system:Double x:Key="HeaderSize>">72</system:Double>
-    <system:Double x:Key="Header2Size>">52</system:Double>
-    <system:Double x:Key="NormalTextSize">32</system:Double>
-    <system:Double x:Key="SmallSize>">18</system:Double>
+    <system:Double x:Key="HeaderFontSize">72</system:Double>
+    <system:Double x:Key="Header2FontSize">52</system:Double>
+    <system:Double x:Key="NormalFontSize">32</system:Double>
+    <system:Double x:Key="SmallFontSize>">18</system:Double>
 
     <!-- Header -->
     <Style x:Key="HeaderTextBlockStyle" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="{StaticResource HeaderSize>}" />
+        <Setter Property="FontSize" Value="{StaticResource HeaderFontSize}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style x:Key="Header2TextBlockStyle" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="{StaticResource Header2Size>}" />
+        <Setter Property="FontSize" Value="{StaticResource Header2FontSize}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style x:Key="NormalTextBlockStyle" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="{StaticResource NormalTextSize}" />
+        <Setter Property="FontSize" Value="{StaticResource NormalFontSize}" />
     </Style>
 
     <Style x:Key="HeaderLabelStyle" TargetType="Label">
-        <Setter Property="FontSize" Value="{StaticResource HeaderSize>}" />
+        <Setter Property="FontSize" Value="{StaticResource HeaderFontSize}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
@@ -75,14 +75,20 @@
     <system:Double x:Key="ButtonHeight">80</system:Double>
     <system:Double x:Key="ButtonHeightExtended">85</system:Double>
 
-    <ControlTemplate x:Key="ButtonTemplate" TargetType="Button">
-        <Grid Name="Root"
-              Width="{TemplateBinding Width}"
-              Height="{TemplateBinding Height}">
+    <ControlTemplate x:Key="GeneralButtonTemplate" TargetType="Button">
+        <Grid Name="Root">
             <Border x:Name="Border"
+                    HorizontalAlignment="Center"
+                    Width="{TemplateBinding Width}"
+                    Height="{TemplateBinding Height}"
                     BorderBrush="{TemplateBinding BorderBrush}"
                     Background="{TemplateBinding Background}"
-                    CornerRadius="15" />
+                    CornerRadius="15"
+                    RenderTransformOrigin="0.5,0.5">
+                <Border.RenderTransform>
+                    <ScaleTransform ScaleX="1" ScaleY="1" />
+                </Border.RenderTransform>
+            </Border>
             <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                               Content="{TemplateBinding Content}"
@@ -100,28 +106,40 @@
                 <MultiTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
-                            <ColorAnimation Duration="0:0:0.15" To="{StaticResource MouseOverButtonColor}"
-                                            Storyboard.TargetProperty="Background.Color" />
-                            <DoubleAnimation Storyboard.TargetProperty="Width"
-                                             Duration="0:0:0.15"
-                                             To="{StaticResource ButtonWidthExtended}" />
-                            <!-- <DoubleAnimation Storyboard.TargetProperty="Height" -->
-                            <!--                  Duration="0:0:0.15" -->
-                            <!--                  To="{StaticResource ButtonHeightExtended}" /> -->
+                            <ColorAnimation Storyboard.TargetProperty="Background.Color"
+                                            Duration="0:0:0.15"
+                                            To="{StaticResource MouseOverButtonColor}">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut" />
+                                </DoubleAnimation.EasingFunction>
+                            </ColorAnimation>
+                            <DoubleAnimation Storyboard.TargetName="Border" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                     Duration="0:0:0.3"
+                                     To="1.05">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut" />
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
                         </Storyboard>
                     </BeginStoryboard>
                 </MultiTrigger.EnterActions>
                 <MultiTrigger.ExitActions>
                     <BeginStoryboard>
                         <Storyboard>
-                            <ColorAnimation Duration="0:0:0.15" To="{StaticResource ButtonColor}"
-                                            Storyboard.TargetProperty="Background.Color" />
-                            <DoubleAnimation Storyboard.TargetProperty="Width"
+                            <ColorAnimation Duration="0:0:0.15"
+                                            To="{StaticResource ButtonColor}"
+                                            Storyboard.TargetProperty="Background.Color">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut" />
+                                </DoubleAnimation.EasingFunction>
+                            </ColorAnimation>
+                            <DoubleAnimation Storyboard.TargetName="Border" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
                                              Duration="0:0:0.15"
-                                             To="{StaticResource ButtonWidth}" />
-                            <!-- <DoubleAnimation Storyboard.TargetProperty="Height" -->
-                            <!--                  Duration="0:0:0.15" -->
-                            <!--                  To="{StaticResource ButtonHeight}" /> -->
+                                             To="1">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut" />
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
                         </Storyboard>
                     </BeginStoryboard>
                 </MultiTrigger.ExitActions>
@@ -133,13 +151,10 @@
                     <BeginStoryboard>
                         <Storyboard>
                             <ColorAnimation Duration="0:0:0.15" To="Gray"
-                                            Storyboard.TargetProperty="Background.Color" />
+                            Storyboard.TargetProperty="Background.Color" />
                             <DoubleAnimation Storyboard.TargetProperty="Width"
-                                             Duration="0:0:0.15"
-                                             To="{StaticResource ButtonWidth}" />
-                            <!-- <DoubleAnimation Storyboard.TargetProperty="Height" -->
-                            <!--                  Duration="0:0:0.15" -->
-                            <!--                  To="{StaticResource ButtonHeight}" /> -->
+                             Duration="0:0:0.15"
+                             To="{StaticResource ButtonWidth}" />
                         </Storyboard>
                     </BeginStoryboard>
                 </Trigger.EnterActions>
@@ -151,8 +166,8 @@
                     <BeginStoryboard>
                         <Storyboard>
                             <ColorAnimation Duration="0:0:0.15"
-                                            To="{StaticResource ButtonColor}"
-                                            Storyboard.TargetProperty="Background.Color" />
+                            To="{StaticResource ButtonColor}"
+                            Storyboard.TargetProperty="Background.Color" />
                         </Storyboard>
                     </BeginStoryboard>
                 </Trigger.EnterActions>
@@ -161,18 +176,18 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <Style x:Key="GeneralButton" TargetType="{x:Type Button}">
+    <Style x:Key="GeneralButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
-        <Setter Property="FontSize" Value="48" />
+        <Setter Property="FontSize" Value="{StaticResource Header2FontSize}" />
         <Setter Property="Margin" Value="10" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Width" Value="{StaticResource ButtonWidth}" />
         <Setter Property="Height" Value="{StaticResource ButtonHeight}" />
-        <Setter Property="Template" Value="{StaticResource ButtonTemplate}" />
+        <Setter Property="Template" Value="{StaticResource GeneralButtonTemplate}" />
     </Style>
 
-    <Style TargetType="Button" BasedOn="{StaticResource GeneralButton}" />
+    <Style TargetType="Button" BasedOn="{StaticResource GeneralButtonStyle}" />
     <!-- End Button -->
 
     <!-- Start CheckBox -->
@@ -351,7 +366,7 @@
     <!-- Start TabItem -->
     <Style x:Key="TabItemStyle" TargetType="{x:Type TabItem}">
         <Setter Property="SnapsToDevicePixels" Value="True" />
-        <Setter Property="FontSize" Value="{StaticResource NormalTextSize}" />
+        <Setter Property="FontSize" Value="{StaticResource NormalFontSize}" />
         <Setter Property="Padding" Value="20 10 20 10" />
         <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
         <Setter Property="Background" Value="Transparent" />

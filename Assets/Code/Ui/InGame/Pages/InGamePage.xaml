@@ -31,7 +31,7 @@
             </Style>
 
             <Style x:Key="PopupButtonStyle" TargetType="Button"
-                   BasedOn="{StaticResource GeneralButton}">
+                   BasedOn="{StaticResource GeneralButtonStyle}">
             </Style>
 
         </Grid.Resources>
@@ -50,7 +50,7 @@
             <!-- Special style for Main page screen -->
             <StackPanel.Resources>
                 <Style TargetType="Button"
-                       BasedOn="{StaticResource GeneralButton}">
+                       BasedOn="{StaticResource GeneralButtonStyle}">
                     <Setter Property="Margin" Value="0 20 0 20" />
                 </Style>
             </StackPanel.Resources>

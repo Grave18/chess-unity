@@ -20,7 +20,7 @@
 
             <!-- Special style for Main page screen -->
             <StackPanel.Resources>
-                <Style TargetType="Button" BasedOn="{StaticResource GeneralButton}">
+                <Style TargetType="Button" BasedOn="{StaticResource GeneralButtonStyle}">
                     <Setter Property="Margin" Value="0 20 0 20" />
                 </Style>
             </StackPanel.Resources>
