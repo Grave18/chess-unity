@@ -11,12 +11,18 @@
     <!-- Darker City Lights  #B8BDBF -->
     <!-- Lighter City Lights #C4CACC -->
 
-    <Color x:Key="DarkerBackgroundColor">#2d3436</Color> <!-- Dracula Orchid -->
-    <Color x:Key="LighterBackgroundColor">#636e72</Color> <!-- American River -->
-    <Color x:Key="ButtonColor">#00b894</Color> <!-- Mint Leaf -->
-    <Color x:Key="MouseOverButtonColor">#FF009C7D</Color> <!-- Darker Mint Leaf -->
-    <Color x:Key="ForegroundColor">#dfe6e9</Color> <!-- City Lights -->
-    <Color x:Key="MouseOverForegroundColor">#C4CACC</Color> <!-- Darker City Lights -->
+    <!-- Dracula Orchid -->
+    <Color x:Key="DarkerBackgroundColor">#2d3436</Color>
+    <!-- American River -->
+    <Color x:Key="LighterBackgroundColor">#636e72</Color>
+    <!-- Mint Leaf -->
+    <Color x:Key="ButtonColor">#00b894</Color>
+    <!-- Darker Mint Leaf -->
+    <Color x:Key="MouseOverButtonColor">#FF009C7D</Color>
+    <!-- City Lights -->
+    <Color x:Key="ForegroundColor">#dfe6e9</Color>
+    <!-- Darker City Lights -->
+    <Color x:Key="MouseOverForegroundColor">#C4CACC</Color>
 
     <SolidColorBrush x:Key="DarkerBackgroundBrush" Color="{StaticResource DarkerBackgroundColor}" />
     <SolidColorBrush x:Key="LighterBackgroundBrush" Color="{StaticResource LighterBackgroundColor}" />
@@ -169,7 +175,7 @@
     <Style TargetType="Button" BasedOn="{StaticResource GeneralButton}" />
     <!-- End Button -->
 
-    <!-- Start. Border -->
+    <!-- Start Main menu Border -->
     <Style x:Key="MainMenuBorder" TargetType="{x:Type Border}">
         <Setter Property="Background" Value="{StaticResource LighterBackgroundBrush}" />
         <Setter Property="CornerRadius" Value="15" />
@@ -181,7 +187,7 @@
         <Setter Property="Margin" Value="30" />
         <Setter Property="Padding" Value="30" />
     </Style>
-    <!-- End. Border -->
+    <!-- End Main menu Border -->
 
     <!-- Start Tab Control -->
     <Style x:Key="TabControlTheme" TargetType="{x:Type TabControl}">
@@ -334,8 +340,10 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <!-- End TabItem -->
 
-    <!-- Start Combobox -->
+    <!-- Start Combobox Control -->
+    <!-- Combobox's ToggleButton Style and Template -->
     <Style x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="ClickMode" Value="Press" />
@@ -345,30 +353,55 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
                     <Border x:Name="templateRoot"
-                                SnapsToDevicePixels="true"
-                                CornerRadius="15"
-                                Background="{TemplateBinding Background}">
-                        <!-- Combobox Arrow -->
+                            SnapsToDevicePixels="true"
+                            CornerRadius="15"
+                            Background="{TemplateBinding Background}">
+                        <!-- Combobox's Arrow -->
                         <Border x:Name="splitBorder"
-                                    Width="30"
-                                    SnapsToDevicePixels="true"
-                                    Margin="0"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Center">
+                                Width="30"
+                                SnapsToDevicePixels="true"
+                                Margin="0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
                             <Path x:Name="arrow"
-                                      VerticalAlignment="Center"
-                                      Margin="0"
-                                      HorizontalAlignment="Center"
-                                      Fill="{StaticResource DarkerBackgroundBrush}"
-                                      Data="F1 M 0,0 L 2.667,2.66665 L 5.3334,0 L 5.3334,-1.78168 L 2.6667,0.88501 L0,-1.78168 L0,0 Z" >
-                                <Path.LayoutTransform>
-                                    <ScaleTransform ScaleX="3" ScaleY="3" />
-                                </Path.LayoutTransform>
+                                  VerticalAlignment="Center"
+                                  Margin="0"
+                                  HorizontalAlignment="Center"
+                                  Fill="{StaticResource DarkerBackgroundBrush}"
+                                  RenderTransformOrigin="0.5,0.5"
+                                  Data="F1 M 0,0 L 8.001,7.99995 L 15.9999,0 L 15.9999,-5.34504 L 8.0001,2.65503 L0,-5.34504 L0,0 Z">
+                                <Path.RenderTransform>
+                                    <RotateTransform Angle="0" />
+                                </Path.RenderTransform>
                             </Path>
                         </Border>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <!-- Is Mouse Over -->
+                        <!-- Animate Is Checked -->
+                        <EventTrigger RoutedEvent="Checked">
+                            <BeginStoryboard>
+                                <Storyboard TargetName="arrow" TargetProperty="RenderTransform.(RotateTransform.Angle)">
+                                    <DoubleAnimation To="-180" Duration="0:0:0.15">
+                                        <DoubleAnimation.EasingFunction>
+                                            <QuadraticEase EasingMode="EaseOut" />
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <!-- Animate Is Unchecked -->
+                        <EventTrigger RoutedEvent="Unchecked">
+                            <BeginStoryboard>
+                                <Storyboard TargetName="arrow" TargetProperty="RenderTransform.(RotateTransform.Angle)">
+                                    <DoubleAnimation To="0" Duration="0:0:0.15">
+                                        <DoubleAnimation.EasingFunction>
+                                            <QuadraticEase EasingMode="EaseOut" />
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <!-- Animate Is Mouse Over -->
                         <Trigger Property="IsMouseOver" Value="true">
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
@@ -398,7 +431,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <!-- Combobox Popup -->
+    <!-- Combobox Template -->
     <ControlTemplate x:Key="ComboBoxTemplate" TargetType="{x:Type ComboBox}">
         <Grid x:Name="templateRoot"
               SnapsToDevicePixels="true">
@@ -406,10 +439,11 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="0" />
             </Grid.ColumnDefinitions>
+            <!-- Combobox's Dropdown Popup -->
             <Popup x:Name="PART_Popup"
                    AllowsTransparency="true"
                    Grid.ColumnSpan="2" Grid.Column="0"
-                   IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                   IsOpen="True"
                    Margin="1"
                    Placement="Bottom">
                 <Border x:Name="dropDownBorder"
@@ -421,20 +455,8 @@
                     <ScrollViewer x:Name="DropDownScrollViewer"
                                   Foreground="{TemplateBinding Foreground}">
                         <Grid x:Name="grid">
-                            <Canvas x:Name="canvas"
-                                    HorizontalAlignment="Left"
-                                    Height="0"
-                                    VerticalAlignment="Top"
-                                    Width="0">
-                                <Rectangle x:Name="opaqueRect"
-                                           RadiusX="15"
-                                           RadiusY="15"
-                                           Fill="{Binding Background, ElementName=dropDownBorder}"
-                                           Height="{Binding ActualHeight, ElementName=dropDownBorder}"
-                                           Width="{Binding ActualWidth, ElementName=dropDownBorder}" />
-                            </Canvas>
                             <ItemsPresenter x:Name="ItemsPresenter"
-                                            Margin="20 2 20 2"
+                                            Margin="10 5 10 5"
                                             HorizontalAlignment="Stretch"
                                             VerticalAlignment="Center"
                                             KeyboardNavigation.DirectionalNavigation="Contained"
@@ -443,7 +465,7 @@
                     </ScrollViewer>
                 </Border>
             </Popup>
-            <!-- Toggle Button Part -->
+            <!-- Combobox's Toggle Button -->
             <ToggleButton x:Name="toggleButton"
                           BorderThickness="{TemplateBinding BorderThickness}"
                           Background="{TemplateBinding Background}"
@@ -453,129 +475,168 @@
                           Style="{StaticResource ComboBoxToggleButton}" />
             <ContentPresenter Grid.Column="0"
                               x:Name="contentPresenter"
+                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                              Margin="{TemplateBinding Padding}"
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                               ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                               ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                               Content="{TemplateBinding SelectionBoxItem}"
-                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                              IsHitTestVisible="false"
-                              Margin="{TemplateBinding Padding}"
-                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                              IsHitTestVisible="false" />
         </Grid>
         <ControlTemplate.Triggers>
+            <!-- Set DropDown Height when there are no items in the dropdown -->
             <Trigger Property="HasItems" Value="false">
                 <Setter Property="Height" TargetName="dropDownBorder" Value="95" />
             </Trigger>
-            <Trigger Property="ScrollViewer.CanContentScroll" SourceName="DropDownScrollViewer" Value="false">
-                <Setter Property="Canvas.Top" TargetName="opaqueRect"
-                        Value="{Binding VerticalOffset, ElementName=DropDownScrollViewer}" />
-                <Setter Property="Canvas.Left" TargetName="opaqueRect"
-                        Value="{Binding HorizontalOffset, ElementName=DropDownScrollViewer}" />
-            </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    <SolidColorBrush x:Key="TextBox.Static.Background" Color="#FFFFFFFF" />
-    <!-- Combobox TextBox -->
-    <Style x:Key="ComboBoxEditableTextBox" TargetType="{x:Type TextBox}">
-        <Setter Property="OverridesDefaultStyle" Value="true" />
-        <Setter Property="AllowDrop" Value="true" />
-        <Setter Property="MinWidth" Value="0" />
-        <Setter Property="MinHeight" Value="0" />
-        <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type TextBox}">
-                    <ScrollViewer x:Name="PART_ContentHost" Background="Transparent"
-                                  Focusable="false"
-                                  HorizontalScrollBarVisibility="Hidden"
-                                  VerticalScrollBarVisibility="Hidden" />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-    <!-- Combobox Template -->
-    <ControlTemplate x:Key="ComboBoxEditableTemplate" TargetType="{x:Type ComboBox}">
-        <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="0" />
-            </Grid.ColumnDefinitions>
-            <Popup x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" Grid.Column="0"
-                   IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                   Placement="Bottom">
-                <Border x:Name="dropDownBorder"
-                            Background="{DynamicResource LighterBackgroundBrush}">
-                    <ScrollViewer x:Name="DropDownScrollViewer">
-                        <Grid x:Name="grid">
-                            <Canvas x:Name="canvas"
-                                    HorizontalAlignment="Left"
-                                    Height="0"
-                                    VerticalAlignment="Top"
-                                    Width="0">
-                                <Rectangle x:Name="opaqueRect"
-                                           Fill="{Binding Background, ElementName=dropDownBorder}"
-                                           Height="{Binding ActualHeight, ElementName=dropDownBorder}"
-                                           Width="{Binding ActualWidth, ElementName=dropDownBorder}" />
-                            </Canvas>
-                            <ItemsPresenter x:Name="ItemsPresenter"
-                                                KeyboardNavigation.DirectionalNavigation="Contained"
-                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                        </Grid>
-                    </ScrollViewer>
-                </Border>
-            </Popup>
-            <ToggleButton x:Name="toggleButton" BorderBrush="{TemplateBinding BorderBrush}"
-                          BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}"
-                          Grid.ColumnSpan="2" Grid.Column="0"
-                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                          Style="{StaticResource ComboBoxToggleButton}" />
-            <Border Grid.Column="0"
-                    x:Name="border"
-                    Background="{StaticResource TextBox.Static.Background}"
-                    Margin="{TemplateBinding BorderThickness}">
-                <TextBox x:Name="PART_EditableTextBox"
-                         HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                         IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}"
-                         Margin="{TemplateBinding Padding}"
-                         Style="{StaticResource ComboBoxEditableTextBox}"
-                         VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-            </Border>
-        </Grid>
-        <ControlTemplate.Triggers>
-            <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="Opacity" TargetName="border" Value="0.56" />
-            </Trigger>
-            <Trigger Property="IsKeyboardFocusWithin" Value="true">
-                <Setter Property="Foreground" Value="Black" />
-            </Trigger>
-            <Trigger Property="HasItems" Value="false">
-                <Setter Property="Height" TargetName="dropDownBorder" Value="95" />
-            </Trigger>
-            <Trigger Property="ScrollViewer.CanContentScroll" SourceName="DropDownScrollViewer" Value="false">
-                <Setter Property="Canvas.Top" TargetName="opaqueRect"
-                        Value="{Binding VerticalOffset, ElementName=DropDownScrollViewer}" />
-                <Setter Property="Canvas.Left" TargetName="opaqueRect"
-                        Value="{Binding HorizontalOffset, ElementName=DropDownScrollViewer}" />
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
-
+    <!-- Combobox Style -->
     <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
         <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
         <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
-        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
-        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
         <Setter Property="Padding" Value="20,2,20,2" />
         <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
-        <Setter Property="ScrollViewer.PanningMode" Value="Both" />
+        <Setter Property="ScrollViewer.PanningMode" Value="VerticalOnly" />
+        <Setter Property="MaxDropDownHeight" Value="0" />
         <Setter Property="Template" Value="{StaticResource ComboBoxTemplate}" />
+        <Setter Property="ItemContainerStyle">
+            <!-- ComboBox's ComboBoxItem Style -->
+            <Setter.Value>
+                <Style TargetType="ComboBoxItem">
+                    <!-- ComboBox's ComboboxItem Template -->
+                    <Setter Property="Background" Value="{StaticResource LighterBackgroundBrush}" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ComboBoxItem">
+                                <Border
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="15"
+                                    Margin="0 5 0 5"
+                                    Padding="10 5 10 5">
+                                    <ContentPresenter
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <!-- Animate IsMouseOver True, Selected True -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="IsSelected" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="Background.Color"
+                                                        Duration="0:0:0.2"
+                                                        To="{StaticResource DarkerBackgroundColor}">
+                                            <ColorAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut" />
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiTrigger.EnterActions>
+                        </MultiTrigger>
+                        <!-- Animate IsMouseOver True, IsSelected False -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="IsSelected" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="Background.Color"
+                                                        Duration="0:0:0.2"
+                                                        To="{StaticResource DarkerBackgroundColor}">
+                                            <ColorAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut" />
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiTrigger.EnterActions>
+                        </MultiTrigger>
+                        <!-- Animate IsMouseOver False, IsSelected True -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="False" />
+                                <Condition Property="IsSelected" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="Background.Color"
+                                                        Duration="0:0:0.2"
+                                                        To="{StaticResource DarkerBackgroundColor}">
+                                            <ColorAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut" />
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiTrigger.EnterActions>
+                        </MultiTrigger>
+                        <!-- Animate IsMouseOver False, IsSelected False -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="False" />
+                                <Condition Property="IsSelected" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="Background.Color"
+                                                        Duration="0:0:0.2"
+                                                        To="{StaticResource LighterBackgroundColor}">
+                                            <ColorAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut" />
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiTrigger.EnterActions>
+                        </MultiTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Setter.Value>
+        </Setter>
         <Style.Triggers>
-            <Trigger Property="IsEditable" Value="true">
-                <Setter Property="IsTabStop" Value="false" />
-                <Setter Property="Padding" Value="2" />
-                <Setter Property="Template" Value="{StaticResource ComboBoxEditableTemplate}" />
+            <!-- Animate Dropdown Open -->
+            <Trigger Property="IsDropDownOpen" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard TargetProperty="MaxDropDownHeight">
+                            <DoubleAnimation Duration="0:0:0.15" To="200">
+                                <DoubleAnimation.EasingFunction>
+                                    <CubicEase EasingMode="EaseOut" />
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+            </Trigger>
+            <!-- Animate Dropdown Close -->
+            <Trigger Property="IsDropDownOpen" Value="False">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard TargetProperty="MaxDropDownHeight">
+                            <DoubleAnimation Duration="0:0:0.075" To="0">
+                                <DoubleAnimation.EasingFunction>
+                                    <CubicEase EasingMode="EaseOut" />
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
             </Trigger>
         </Style.Triggers>
     </Style>
