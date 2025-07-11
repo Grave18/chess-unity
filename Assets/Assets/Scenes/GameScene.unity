@@ -1373,6 +1373,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneLoader: {fileID: 850497300}
   game: {fileID: 1216111693}
+  gameSettingsContainer: {fileID: 1470752476}
+  fenFromBoard: {fileID: 1300988198}
 --- !u!1 &129982294 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3134483344102738262, guid: abbfba2ec56ddee408cabc6f67711dd8,
@@ -2352,7 +2354,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 177198597}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -12024,7 +12026,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 949107595}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.3852895
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

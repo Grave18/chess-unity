@@ -220,7 +220,7 @@ namespace GameAndScene
             return gameSettings.SavedFen;
         }
 
-        public void SaveFen(string fen)
+        public void SetSavedFen(string fen)
         {
             gameSettings.SavedFen = fen;
             Save();

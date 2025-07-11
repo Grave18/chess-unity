@@ -83,7 +83,8 @@
             <Viewbox Stretch="Uniform">
                 <Grid Style="{StaticResource UniformGridStyle}">
                     <Border Style="{StaticResource PopupBorderStyle}">
-                        <DockPanel Margin="30">
+                        <DockPanel Name="PopupDockPanel"
+                                   Margin="30">
                             <TextBlock DockPanel.Dock="Top"
                                        Name="PopupText"
                                        Style="{StaticResource Header2TextBlockStyle}" />

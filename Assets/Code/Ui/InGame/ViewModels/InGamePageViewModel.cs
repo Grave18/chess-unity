@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using GameAndScene;
 using Network;
+using Notation;
 using Ui.Auxiliary;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ namespace Ui.InGame.ViewModels
     {
         [SerializeField] private SceneLoader sceneLoader;
         [SerializeField] private ChessGame.Logic.Game game;
+        [SerializeField] private GameSettingsContainer gameSettingsContainer;
+        [SerializeField] private FenFromBoard fenFromBoard;
 
         public DelegateCommand RematchCommand { get; set; }
         public DelegateCommand DrawCommand { get; set; }
@@ -21,6 +24,19 @@ namespace Ui.InGame.ViewModels
         public bool IsRematchButtonEnabled => OnlineInstanceHandler.IsOffline || (OnlineInstanceHandler.IsOnline && game.IsGameOver);
         public bool IsDrawButtonEnabled => OnlineInstanceHandler.IsOnline && !game.IsGameOver && game.IsMyTurn;
         public bool IsResignButtonEnabled => !game.IsGameOver && game.IsMyTurn;
+
+        private bool _isSaveBoard;
+        public bool IsSaveBoard
+        {
+            get => _isSaveBoard;
+            set
+            {
+                if (SetField(ref _isSaveBoard, value))
+                {
+                    LogUi.Debug($"{nameof(IsSaveBoard)} changed to {value}");
+                }
+            }
+        }
 
         private void Awake()
         {
@@ -66,7 +82,18 @@ namespace Ui.InGame.ViewModels
 
         private void ExitToMainMenu(object obj)
         {
+            SaveBoard();
             sceneLoader.LoadMainMenu();
+        }
+
+        private void SaveBoard()
+        {
+            if (IsSaveBoard)
+            {
+                string fen = fenFromBoard.Get();
+                gameSettingsContainer.SetSavedFen(fen);
+                LogUi.Debug($"Board saved with: {fen}");
+            }
         }
 
         #region ViewModelImplimentation

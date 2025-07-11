@@ -34,7 +34,7 @@ namespace Ui.Game.Popups
             if (saveBoardToggle.isOn)
             {
                 string fen = fenFromBoard.Get();
-                gameSettingsContainer.SaveFen(fen);
+                gameSettingsContainer.SetSavedFen(fen);
             }
 
             sceneLoader.LoadMainMenu();

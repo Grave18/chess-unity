@@ -20,6 +20,8 @@ namespace Ui.InGame.Pages
 {
     public partial class InGamePage : UserControl
     {
+        private CheckBox _saveCheckBox;
+
         public InGamePage()
         {
             Initialized += OnInitialized;
@@ -35,12 +37,14 @@ namespace Ui.InGame.Pages
 
             // Add to InGame Page ability to handle keyboard Esc and Enter
             this.KeyUp += OnKeyUp;
+
+            CreateSaveCheckBox();
         }
 
         /// Handle popup buttons handling by code
         private void OnKeyUp(object sender, KeyEventArgs e)
         {
-            if(!Popup.IsOpen)
+            if (!Popup.IsOpen)
             {
                 return;
             }
@@ -56,6 +60,42 @@ namespace Ui.InGame.Pages
                 PopupYes_Click(null, null);
                 e.Handled = true;
             }
+        }
+
+        private void CreateSaveCheckBox()
+        {
+            const string styleName = "CheckboxStyle";
+#if NOESIS
+            var style = TryFindResource(styleName) as Style;
+
+            if (style == null)
+            {
+                LogUi.Debug($"CheckBoxStyle not found");
+            }
+#else
+            ResourceDictionary appResources = Application.Current.Resources;
+
+            if (!appResources.Contains(styleName))
+            {
+                return;
+            }
+
+            var style = appResources[styleName] as Style;
+#endif
+
+            _saveCheckBox = new CheckBox
+            {
+                IsChecked = false,
+                Content = "Do you want to save the game?",
+                Style = style
+            };
+
+            var binding = new Binding("IsSaveBoard")
+            {
+                Mode = BindingMode.TwoWay
+            };
+
+            _saveCheckBox.SetBinding(ToggleButton.IsCheckedProperty, binding);
         }
 
         private void PopupClose_Click(object sender, RoutedEventArgs e)
@@ -105,6 +145,7 @@ namespace Ui.InGame.Pages
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             SetupPopup("Are you sure you want to Exit?", "Exit", "ExitToMainMenuCommand");
+            AddCheckBox();
         }
 
         private void SetupPopup(string header, string buttonText, string commandName)
@@ -117,9 +158,18 @@ namespace Ui.InGame.Pages
             PopupButton.Content = buttonText;
         }
 
+        private void AddCheckBox()
+        {
+            if (!PopupDockPanel.Children.Contains(_saveCheckBox))
+            {
+                PopupDockPanel.Children.Add(_saveCheckBox);
+            }
+        }
+
 #if NOESIS
 
         private Popup Popup { get; set; }
+        private DockPanel PopupDockPanel { get; set; }
         private Button PopupButton { get; set; }
         private TextBlock PopupText { get; set; }
 
@@ -132,6 +182,7 @@ namespace Ui.InGame.Pages
             ResumeButton = FindName("ResumeButton") as Button;
 
             Popup = FindName("Popup") as Popup;
+            PopupDockPanel = FindName("PopupDockPanel") as DockPanel;
             PopupButton = FindName("PopupButton") as Button;
             PopupText = FindName("PopupText") as TextBlock;
         }

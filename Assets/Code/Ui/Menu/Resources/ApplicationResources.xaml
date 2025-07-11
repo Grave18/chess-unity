@@ -42,7 +42,7 @@
 
     <system:Double x:Key="HeaderSize>">72</system:Double>
     <system:Double x:Key="Header2Size>">52</system:Double>
-    <system:Double x:Key="NormalSize>">32</system:Double>
+    <system:Double x:Key="NormalTextSize">32</system:Double>
     <system:Double x:Key="SmallSize>">18</system:Double>
 
     <!-- Header -->
@@ -59,7 +59,7 @@
     </Style>
 
     <Style x:Key="NormalTextBlockStyle" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="{StaticResource NormalSize>}" />
+        <Setter Property="FontSize" Value="{StaticResource NormalTextSize}" />
     </Style>
 
     <Style x:Key="HeaderLabelStyle" TargetType="Label">
@@ -175,6 +175,112 @@
     <Style TargetType="Button" BasedOn="{StaticResource GeneralButton}" />
     <!-- End Button -->
 
+    <!-- Start CheckBox -->
+    <Style TargetType="CheckBox" x:Key="CheckboxStyle">
+        <Setter Property="Focusable" Value="True" />
+        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Grid Margin="0, 60, 0, 60"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <!-- Checkbox square -->
+                        <Border Grid.Column="0"
+                                x:Name="CheckBorder"
+                                Width="40"
+                                Height="40"
+                                Background="Transparent"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Margin="0,0,20,0"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center">
+                            <!-- Pawn icon -->
+                            <Viewbox x:Name="PawnIcon"
+                                     Width="32" Height="32"
+                                     Visibility="Collapsed"
+                                     Stretch="Uniform"
+                                     VerticalAlignment="Center"
+                                     HorizontalAlignment="Center">
+                                <Canvas Width="24" Height="24">
+                                    <Path Fill="{TemplateBinding Foreground}" Data="F1 M 12,2 C 10,2 9,4 10,6 C 9,7 8,8 8,10 L 16,10 C 16,8 15,7 14,6 C 15,4 14,2 12,2 Z M 8,11 L 16,11 L 16,13 L 8,13 Z M 6,14 L 18,14 L 18,16 L 6,16 Z M 5,17 L 19,17 L 19,20 L 5,20 Z" />
+                                </Canvas>
+                            </Viewbox>
+                        </Border>
+                        <!-- Text label -->
+                        <TextBlock Grid.Column="1"
+                                   VerticalAlignment="Center"
+                                   Text="{TemplateBinding Content}"
+                                   Foreground="{TemplateBinding Foreground}" />
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="PawnIcon" Property="Visibility" Value="Visible" />
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="Background.Color"
+                                                        Storyboard.TargetName="CheckBorder"
+                                                        Duration="0:0:0.15"
+                                                        To="{StaticResource ButtonColor}" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="Background.Color"
+                                                        Storyboard.TargetName="CheckBorder"
+                                                        Duration="0:0:0.15"
+                                                        To="Transparent" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="BorderBrush.Color"
+                                                        Storyboard.TargetName="CheckBorder"
+                                                        Duration="0:0:0.15"
+                                                        To="{StaticResource MouseOverForegroundColor}" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="BorderBrush.Color"
+                                                        Storyboard.TargetName="CheckBorder"
+                                                        Duration="0:0:0.15"
+                                                        To="Gray" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="CheckBorder" Property="Opacity" Value="0.4" />
+                            <Setter Property="Foreground" Value="#888" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!-- End CheckBox -->
+
     <!-- Start Main menu Border -->
     <Style x:Key="MainMenuBorder" TargetType="{x:Type Border}">
         <Setter Property="Background" Value="{StaticResource LighterBackgroundBrush}" />
@@ -245,7 +351,7 @@
     <!-- Start TabItem -->
     <Style x:Key="TabItemStyle" TargetType="{x:Type TabItem}">
         <Setter Property="SnapsToDevicePixels" Value="True" />
-        <Setter Property="FontSize" Value="{StaticResource NormalSize>}" />
+        <Setter Property="FontSize" Value="{StaticResource NormalTextSize}" />
         <Setter Property="Padding" Value="20 10 20 10" />
         <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
         <Setter Property="Background" Value="Transparent" />
