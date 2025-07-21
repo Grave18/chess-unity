@@ -106,9 +106,9 @@
                             <ColorAnimation Storyboard.TargetProperty="Background.Color"
                                             Duration="0:0:0.15"
                                             To="{StaticResource MouseOverButtonColor}">
-                                <DoubleAnimation.EasingFunction>
+                                <ColorAnimation.EasingFunction>
                                     <QuadraticEase EasingMode="EaseOut" />
-                                </DoubleAnimation.EasingFunction>
+                                </ColorAnimation.EasingFunction>
                             </ColorAnimation>
                             <DoubleAnimation Storyboard.TargetName="Border" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
                                      Duration="0:0:0.3"
@@ -126,13 +126,61 @@
                             <ColorAnimation Duration="0:0:0.15"
                                             To="{StaticResource ButtonColor}"
                                             Storyboard.TargetProperty="Background.Color">
-                                <DoubleAnimation.EasingFunction>
+                                <ColorAnimation.EasingFunction>
                                     <QuadraticEase EasingMode="EaseOut" />
-                                </DoubleAnimation.EasingFunction>
+                                </ColorAnimation.EasingFunction>
                             </ColorAnimation>
                             <DoubleAnimation Storyboard.TargetName="Border" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
                                              Duration="0:0:0.15"
                                              To="1">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut" />
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </MultiTrigger.ExitActions>
+            </MultiTrigger>
+
+            <!-- Animate Is Keyboard Focused -->
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsKeyboardFocused" Value="True" />
+                    <Condition Property="IsEnabled" Value="True" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="Background.Color"
+                                Duration="0:0:0.15"
+                                To="{StaticResource MouseOverButtonColor}">
+                                <ColorAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut" />
+                                </ColorAnimation.EasingFunction>
+                            </ColorAnimation>
+                            <DoubleAnimation Storyboard.TargetName="Border" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                         Duration="0:0:0.3"
+                         To="1.05">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut" />
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </MultiTrigger.EnterActions>
+                <MultiTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Duration="0:0:0.15"
+                                To="{StaticResource ButtonColor}"
+                                Storyboard.TargetProperty="Background.Color">
+                                <ColorAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut" />
+                                </ColorAnimation.EasingFunction>
+                            </ColorAnimation>
+                            <DoubleAnimation Storyboard.TargetName="Border" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                 Duration="0:0:0.15"
+                                 To="1">
                                 <DoubleAnimation.EasingFunction>
                                     <QuadraticEase EasingMode="EaseOut" />
                                 </DoubleAnimation.EasingFunction>
@@ -151,14 +199,14 @@
                                             Storyboard.TargetProperty="Background.Color"
                                             To="Gray" >
                             </ColorAnimation>
-                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
                                              Duration="0:0:0.15"
                                              To="1">
                                 <DoubleAnimation.EasingFunction>
                                     <QuadraticEase EasingMode="EaseOut" />
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
-                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY"
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
                                              Duration="0:0:0.15"
                                              To="1">
                                 <DoubleAnimation.EasingFunction>
@@ -190,7 +238,7 @@
                     <BeginStoryboard>
                         <Storyboard>
                             <DoubleAnimation Storyboard.TargetName="Border"
-                                             Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
                                              Duration="0:0:0.1"
                                              To="0.9">
                                 <DoubleAnimation.EasingFunction>
@@ -198,7 +246,7 @@
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
                             <DoubleAnimation Storyboard.TargetName="Border"
-                                             Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
                                              Duration="0:0:0.1"
                                              To="0.5">
                                 <DoubleAnimation.EasingFunction>
@@ -216,7 +264,7 @@
                     <BeginStoryboard>
                         <Storyboard>
                             <DoubleAnimation Storyboard.TargetName="Border"
-                                             Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
                                              Duration="0:0:0.1"
                                              To="1">
                                 <DoubleAnimation.EasingFunction>
@@ -224,7 +272,7 @@
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
                             <DoubleAnimation Storyboard.TargetName="Border"
-                                             Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
                                              Duration="0:0:0.1"
                                              To="1">
                                 <DoubleAnimation.EasingFunction>
@@ -435,7 +483,7 @@
     <!-- End Main menu Border -->
 
     <!-- Start Tab Control -->
-    <Style x:Key="TabControlTheme" TargetType="{x:Type TabControl}">
+    <Style x:Key="TabControlStyle" TargetType="{x:Type TabControl}">
         <Setter Property="Padding" Value="2" />
         <Setter Property="Margin" Value="20" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -447,8 +495,7 @@
                 <ControlTemplate TargetType="{x:Type TabControl}">
                     <Grid x:Name="templateRoot"
                           ClipToBounds="True"
-                          SnapsToDevicePixels="True"
-                          KeyboardNavigation.TabNavigation="Contained">
+                          SnapsToDevicePixels="True">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition x:Name="ColumnDefinition0" />
                             <ColumnDefinition x:Name="ColumnDefinition1" Width="0" />
@@ -461,7 +508,6 @@
                                   Background="Transparent"
                                   Grid.Column="0"
                                   IsItemsHost="True"
-                                  KeyboardNavigation.TabIndex="1"
                                   Grid.Row="0"
                                   Panel.ZIndex="1" />
                         <Border x:Name="contentPanel"
@@ -470,14 +516,12 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 Background="{TemplateBinding Background}"
                                 Grid.Column="0"
-                                KeyboardNavigation.DirectionalNavigation="Contained"
-                                Grid.Row="1"
-                                KeyboardNavigation.TabIndex="2"
-                                KeyboardNavigation.TabNavigation="Local">
+                                Grid.Row="1">
                             <ContentPresenter x:Name="PART_SelectedContentHost"
                                               ContentTemplate="{TemplateBinding SelectedContentTemplate}"
                                               Content="{TemplateBinding SelectedContent}"
-                                              ContentSource="SelectedContent" Margin="{TemplateBinding Padding}"
+                                              ContentSource="SelectedContent"
+                                              Margin="{TemplateBinding Padding}"
                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                         </Border>
                     </Grid>

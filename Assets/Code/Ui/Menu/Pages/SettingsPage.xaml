@@ -5,7 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:userControls="clr-namespace:Ui.Menu.UserControls"
              mc:Ignorable="d"
-             d:DesignWidth="640" d:DesignHeight="1080">
+             d:DesignWidth="640" d:DesignHeight="1080"
+             Focusable="True"
+             IsTabStop="False">
 
     <Grid IsSharedSizeScope="True">
         <Grid.RowDefinitions>
@@ -19,7 +21,7 @@
                    Style="{DynamicResource HeaderTextBlockStyle}" />
         <TabControl Grid.Row="1"
                     Focusable="True"
-                    Style="{DynamicResource TabControlTheme}">
+                    Style="{DynamicResource TabControlStyle}">
 
             <!-- Game Settings -->
             <TabItem Header="Game"
@@ -174,6 +176,7 @@
             </TabItem>
 
         </TabControl>
+
         <!-- Back Button -->
         <Button Grid.Row="2"
                 Margin="0 0 0 20"

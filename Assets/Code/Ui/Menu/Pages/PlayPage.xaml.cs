@@ -10,8 +10,10 @@ using GUI = Noesis.GUI;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 #endif
 
+using System.Collections.Generic;
 using Ui.Auxiliary;
 
 namespace Ui.Menu.Pages
@@ -21,6 +23,7 @@ namespace Ui.Menu.Pages
         public PlayPage()
         {
             Initialized += OnInitialized;
+            Loaded += OnLoaded;
             InitializeComponent();
         }
 
@@ -32,19 +35,78 @@ namespace Ui.Menu.Pages
 #endif
         }
 
+        private void OnLoaded(object sender, RoutedEventArgs args)
+        {
+            SetupInputPlayPage();
+            SetupInputTabControl();
+        }
+
+        private void SetupInputPlayPage()
+        {
+            TabControl.Focus();
+            this.KeyDown += PlayPage_OnKeyDown;
+        }
+
+        private void SetupInputTabControl()
+        {
+            // AddHandler(PreviewKeyDownEvent, new KeyEventHandler(TabControl_PreviewKeyDown));
+            TabControl.KeyDown += TabControl_PreviewKeyDown;
+        }
+
+        private void PlayPage_OnKeyDown(object sender, KeyEventArgs args)
+        {
+            if (args.Key == Key.Escape)
+            {
+                GameMenuBase.Instance.ChangePage<MainPage>();
+                args.Handled = true;
+            }
+        }
+
         public void Back_Click(object sender, RoutedEventArgs args)
         {
-            Auxiliary.GameMenuBase.Instance.ChangePage<MainPage>();
+            GameMenuBase.Instance.ChangePage<MainPage>();
+        }
+
+        private void TabControl_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            // Only handle arrow navigation
+            if (Keyboard.FocusedElement is { } focusedElement)
+            {
+                if (e.Key == Key.Down)
+                {
+                    // Try to move focus down
+                    var request = new TraversalRequest(FocusNavigationDirection.Down);
+                    if (focusedElement.MoveFocus(request))
+                    {
+                        e.Handled = true;
+                    }
+                }
+                else if (e.Key == Key.Up)
+                {
+                    TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Up);
+                    if (focusedElement.MoveFocus(request))
+                    {
+                        e.Handled = true;
+                    }
+                }
+                else if (e.Key is Key.Left or Key.Right)
+                {
+                    // Let TabControl handle Left/Right for tab switching
+                    e.Handled = false;
+                }
+            }
         }
 
 #if NOESIS
         public Grid Root { get; set; }
+        private TabControl TabControl { get; set; }
 
         private void InitializeComponent()
         {
             GUI.LoadComponent(this, "Assets/Code/Ui/Menu/Pages/PlayPage.xaml");
 
             Root = FindName("Root") as Grid;
+            TabControl = FindName("TabControl") as TabControl;
         }
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)

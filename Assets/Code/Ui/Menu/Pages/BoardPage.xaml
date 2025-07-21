@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:userControls="clr-namespace:Ui.Menu.UserControls"
              mc:Ignorable="d"
-             d:DesignWidth="640" d:DesignHeight="1080">
+             d:DesignWidth="640" d:DesignHeight="1080"
+             Focusable="True">
 
     <Grid IsSharedSizeScope="True">
         <Grid.RowDefinitions>

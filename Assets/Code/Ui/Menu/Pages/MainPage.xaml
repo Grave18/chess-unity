@@ -4,7 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignWidth="640" d:DesignHeight="1080">
+             d:DesignWidth="640" d:DesignHeight="1080"
+             Focusable="True"
+             IsTabStop="False">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -18,7 +20,7 @@
                    Style="{StaticResource HeaderTextBlockStyle}" />
         <StackPanel Grid.Row="1" Margin="0 50 0 0">
 
-            <!-- Special style for Main page screen -->
+            <!-- Special style for Main page Buttons screen -->
             <StackPanel.Resources>
                 <Style TargetType="Button" BasedOn="{StaticResource GeneralButtonStyle}">
                     <Setter Property="Margin" Value="0 20 0 20" />
@@ -29,21 +31,27 @@
             <Button Content="Settings" Click="Settings_Click" />
             <Button Content="Board" Click="Board_Click" />
         </StackPanel>
+
+        <!-- Exit Button -->
         <Button Grid.Row="2"
+                Name="ExitButton"
                 Content="Exit"
-                KeyUp="UIElement_OnKeyUp"
+                KeyDown="ExitButton_OnKeyDown"
                 Click="Exit_Click" />
 
 
         <!-- Popup -->
         <Popup Grid.Row="0"
                x:Name="Popup"
+               Focusable="True"
                Style="{StaticResource PopupStyle}">
             <Viewbox Stretch="Uniform">
                 <Grid Style="{StaticResource UniformGridStyle}">
                     <Border Style="{StaticResource PopupBorderStyle}">
                         <DockPanel Name="PopupDockPanel"
-                                   Margin="30">
+                                   Margin="30"
+                                   KeyboardNavigation.TabNavigation="Contained"
+                                   KeyboardNavigation.DirectionalNavigation="Contained">
                             <TextBlock DockPanel.Dock="Top"
                                        Name="PopupText"
                                        Style="{StaticResource Header2TextBlockStyle}" />
@@ -55,6 +63,7 @@
                                 </Grid.ColumnDefinitions>
                                 <!-- Cancel Button -->
                                 <Button Grid.Column="0"
+                                        Name="PopupCancelButton"
                                         Content="Cancel"
                                         Click="PopupClose_Click"
                                         Style="{StaticResource PopupButtonStyle}"/>

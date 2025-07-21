@@ -23,7 +23,7 @@
                    Style="{DynamicResource HeaderTextBlockStyle}" />
         <TabControl Grid.Row="1"
                     Focusable="True"
-                    Style="{DynamicResource TabControlTheme}">
+                    Style="{DynamicResource TabControlStyle}">
 
             <!-- Graphics Settings -->
             <TabItem Header="Graphics"

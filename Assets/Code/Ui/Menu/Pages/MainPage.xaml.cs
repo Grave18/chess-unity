@@ -20,22 +20,30 @@ namespace Ui.Menu.Pages
         public MainPage()
         {
             Initialized += OnInitialized;
+            Loaded += OnLoaded;
             InitializeComponent();
         }
 
         private void OnInitialized(object sender, EventArgs e)
         {
-            SetupKeyBindingToClosePopup();
+            SetupPopup();
         }
 
-        private void SetupKeyBindingToClosePopup()
+        private void SetupPopup()
         {
-            this.Focusable = true;
-            this.Focus();
-            this.KeyUp += OnKeyUp;
+            PopupText.Text = "Are you sure you want to Exit?";
+            PopupYesButton.Content = "Exit";
+            PopupYesButton.Click += PopupYes_Click;
         }
 
-        private void OnKeyUp(object sender, KeyEventArgs e)
+        private void OnLoaded(object sender, RoutedEventArgs args)
+        {
+            this.Focus();
+            this.KeyDown += MainPage_OnKeyDown;
+
+        }
+
+        private void MainPage_OnKeyDown(object sender, KeyEventArgs e)
         {
             if (!Popup.IsOpen)
             {
@@ -64,7 +72,6 @@ namespace Ui.Menu.Pages
             GameMenuBase.Instance.ChangePage<SettingsPage>();
         }
 
-
         private void Board_Click(object sender, RoutedEventArgs e)
         {
             GameMenuBase.Instance.ChangePage<BoardPage>();
@@ -73,10 +80,9 @@ namespace Ui.Menu.Pages
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             OpenPopup();
-            SetupPopup();
         }
 
-        private void UIElement_OnKeyUp(object sender, KeyEventArgs e)
+        private void ExitButton_OnKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
@@ -88,13 +94,7 @@ namespace Ui.Menu.Pages
         private void OpenPopup()
         {
             Popup.IsOpen = true;
-        }
-
-        private void SetupPopup()
-        {
-            PopupText.Text = "Are you sure you want to Exit?";
-            PopupYesButton.Content = "Exit";
-            PopupYesButton.Click += PopupYes_Click;
+            PopupCancelButton.Focus();
         }
 
         private void PopupClose_Click(object sender, RoutedEventArgs e)
@@ -105,6 +105,7 @@ namespace Ui.Menu.Pages
         private void ClosePopup()
         {
             Popup.IsOpen = false;
+            ExitButton.Focus();
         }
 
         private void PopupYes_Click(object sender, RoutedEventArgs e)
@@ -127,6 +128,8 @@ namespace Ui.Menu.Pages
         private Popup Popup { get; set; }
         private TextBlock PopupText { get; set; }
         private Button PopupYesButton { get; set; }
+        private Button PopupCancelButton { get; set; }
+        private Button ExitButton { get; set; }
 
         private void InitializeComponent()
         {
@@ -135,6 +138,8 @@ namespace Ui.Menu.Pages
             Popup = FindName("Popup") as Popup;
             PopupText = FindName("PopupText") as TextBlock;
             PopupYesButton = FindName("PopupYesButton") as Button;
+            PopupCancelButton = FindName("PopupCancelButton") as Button;
+            ExitButton = FindName("ExitButton") as Button;
         }
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)
@@ -175,9 +180,9 @@ namespace Ui.Menu.Pages
                 return true;
             }
 
-            if (eventName == "KeyUp" && handlerName == nameof(UIElement_OnKeyUp))
+            if (eventName == "KeyDown" && handlerName == nameof(ExitButton_OnKeyDown))
             {
-                ((UIElement)source).KeyUp += UIElement_OnKeyUp;
+                ((UIElement)source).KeyDown += ExitButton_OnKeyDown;
                 return true;
             }
 

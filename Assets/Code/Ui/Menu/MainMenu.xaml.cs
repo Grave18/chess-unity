@@ -15,7 +15,7 @@ using Ui.Auxiliary;
 
 namespace Ui.Menu
 {
-    public partial class MainMenu : Auxiliary.GameMenuBase
+    public partial class MainMenu : GameMenuBase
     {
         public MainMenu()
         {

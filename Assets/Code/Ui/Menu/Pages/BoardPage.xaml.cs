@@ -9,6 +9,7 @@ using GUI = Noesis.GUI;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 #endif
 
 using Ui.Auxiliary;
@@ -20,6 +21,7 @@ namespace Ui.Menu.Pages
         public BoardPage()
         {
             Initialized += OnInitialized;
+            Loaded += OnLoaded;
             InitializeComponent();
         }
 
@@ -28,6 +30,21 @@ namespace Ui.Menu.Pages
 #if NOESIS
             DataContext = Object.FindAnyObjectByType<BoardPageViewModel>();
 #endif
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs args)
+        {
+            this.Focus();
+            this.KeyDown += OnKeyDown;
+        }
+
+        private void OnKeyDown(object sender, KeyEventArgs args)
+        {
+            if (args.Key == Key.Escape)
+            {
+                GameMenuBase.Instance.ChangePage<MainPage>();
+                args.Handled = true;
+            }
         }
 
         public void Back_Click(object sender, RoutedEventArgs args)

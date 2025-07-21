@@ -6,7 +6,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:userControls="clr-namespace:Ui.Menu.UserControls"
              mc:Ignorable="d"
-             d:DesignWidth="640" d:DesignHeight="1080">
+             d:DesignWidth="640" d:DesignHeight="1080"
+             Focusable="True"
+             IsTabStop="False">
 
     <Grid Name="Root">
         <Grid.RowDefinitions>
@@ -18,7 +20,11 @@
         <TextBlock Grid.Row="0"
                Text="Play"
                Style="{DynamicResource HeaderTextBlockStyle}" />
-        <TabControl Grid.Row="1" Style="{DynamicResource TabControlTheme}">
+
+        <!-- Tab Control -->
+        <TabControl Grid.Row="1"
+                    Name="TabControl"
+                    Style="{DynamicResource TabControlStyle}">
 
             <!-- Common Time Dropdown style-->
             <TabControl.Resources>
@@ -27,28 +33,35 @@
                 </Style>
             </TabControl.Resources>
 
-            <!-- Offline -->
+            <!-- Offline Tab -->
             <TabItem Header="2 Players"
+                     TabIndex="1"
+                     KeyboardNavigation.TabNavigation="Continue"
                      Style="{DynamicResource TabItemStyle}">
                 <DockPanel Margin="30">
                     <!-- Time dropdown -->
                     <userControls:DropdownUserControl DockPanel.Dock="Top"
                                                       Text="Time"
+                                                      Focusable="True"
                                                       SelectedItem="{Binding SelectedTime, Mode=TwoWay}"
                                                       ItemsSource="{Binding Times}" />
                     <!-- Fen Text Box -->
-                    <userControls:FenTextBox DockPanel.Dock="Top" />
-                    <!-- Back Button -->
+                    <userControls:FenTextBox DockPanel.Dock="Top"
+                                             Focusable="True"/>
+                    <!-- Start match Button -->
                     <Button DockPanel.Dock="Bottom"
+                            Focusable="True"
                             Content="Start Match"
                             VerticalAlignment="Bottom"
                             DataContext="{Binding DataContext, ElementName=ThisControl}"
                             Command="{Binding PlayOfflineCommand}" />
                 </DockPanel>
             </TabItem>
-            <!-- Computer -->
+
+            <!-- Computer Tab -->
             <TabItem Header="Computer"
-                      Style="{DynamicResource TabItemStyle}">
+                     TabIndex="2"
+                     Style="{DynamicResource TabItemStyle}">
                 <DockPanel Margin="30">
                     <!-- Time dropdown -->
                     <userControls:DropdownUserControl DockPanel.Dock="Top"
@@ -70,9 +83,12 @@
                             Command="{Binding PlayWithComputerCommand}" />
                 </DockPanel>
             </TabItem>
-            <!-- Online -->
+
+            <!-- Online Tab -->
             <TabItem Header="Online"
-                     Style="{DynamicResource TabItemStyle}">
+                     TabIndex="3"
+                     Style="{DynamicResource TabItemStyle}"
+                     KeyboardNavigation.TabNavigation="Continue">
                 <DockPanel Margin="30">
                     <!-- Time dropdown -->
                     <userControls:DropdownUserControl DockPanel.Dock="Top"
@@ -102,9 +118,12 @@
                             Command="{Binding CreateLobbyCommand}" />
                 </DockPanel>
             </TabItem>
+
         </TabControl>
+
         <!-- Back Button -->
         <Button Grid.Row="2"
+                TabIndex="4"
                 Margin="0 0 0 20"
                 Content="Back"
                 DataContext="{Binding DataContext, ElementName=ThisControl}"
