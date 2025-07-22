@@ -21,8 +21,11 @@ namespace Ui.Game.AlgebraicNotation
         [Header("Settings")]
         [SerializeField] private int numOfVisibleItems = 5;
 
-        private int _index = -1;
+        /// Zero based full move index
+        private int _fullMoveIndex = -1;
         private readonly List<NotationItem> _notationItems = new();
+
+        private int FullMoveCounter => uciBuffer.FullMoveCounter;
 
         private void OnEnable()
         {
@@ -51,7 +54,7 @@ namespace Ui.Game.AlgebraicNotation
                 Destroy(notationItem.gameObject);
             }
 
-            _index = 0;
+            _fullMoveIndex = 0;
             _notationItems.Clear();
         }
 
@@ -81,9 +84,10 @@ namespace Ui.Game.AlgebraicNotation
             string algebraicNotation = moveData.AlgebraicNotation;
             if (moveData.TurnColor == PieceColor.White)
             {
-                _index += 1;
+                _fullMoveIndex += 1;
                 NotationItem notationItem = GetNotationItem();
-                notationItem.AddWhite(algebraicNotation, _notationItems.Count);
+                int fullMoveCounter = moveData.FullMoveCounter;
+                notationItem.AddWhite(algebraicNotation, fullMoveCounter);
             }
             else if (moveData.TurnColor == PieceColor.Black)
             {
@@ -91,7 +95,10 @@ namespace Ui.Game.AlgebraicNotation
                 if (!notationItem)
                 {
                     notationItem = GetNotationItem();
-                    notationItem.AddBlack(algebraicNotation, _notationItems.Count);
+                    // Minus one because full move counter is updated after black move
+                    // Factical second technically first move
+                    int fullMoveCounter = moveData.FullMoveCounter - 1;
+                    notationItem.AddBlack(algebraicNotation, fullMoveCounter);
                 }
                 else
                 {
@@ -139,16 +146,16 @@ namespace Ui.Game.AlgebraicNotation
 
         private void OnUndo(MoveData moveData)
         {
-            if (_index < 0 || _index >= _notationItems.Count)
+            if (_fullMoveIndex - 1 < 0 || _fullMoveIndex - 1 >= _notationItems.Count)
             {
                 return;
             }
 
-            NotationItem notationItem = _notationItems[_index];
+            NotationItem notationItem = _notationItems[_fullMoveIndex - 1];
 
             if (moveData.TurnColor == PieceColor.White)
             {
-                _index -= 1;
+                _fullMoveIndex -= 1;
                 notationItem.FadeWhite();
             }
             else if (moveData.TurnColor == PieceColor.Black)
@@ -167,18 +174,18 @@ namespace Ui.Game.AlgebraicNotation
         {
             if (moveData.TurnColor == PieceColor.White)
             {
-                _index += 1;
-                if (_index >= 0 && _index < _notationItems.Count)
+                _fullMoveIndex += 1;
+                if (_fullMoveIndex - 1 >= 0 && _fullMoveIndex - 1 < _notationItems.Count)
                 {
-                    NotationItem notationItem = _notationItems[_index];
+                    NotationItem notationItem = _notationItems[_fullMoveIndex - 1];
                     notationItem.UnFadeWhite();
                 }
             }
             else if (moveData.TurnColor == PieceColor.Black)
             {
-                if (_index >= 0 && _index < _notationItems.Count)
+                if (_fullMoveIndex - 1 >= 0 && _fullMoveIndex - 1 < _notationItems.Count)
                 {
-                    NotationItem notationItem = _notationItems[_index];
+                    NotationItem notationItem = _notationItems[_fullMoveIndex - 1];
                     notationItem.UnFadeBlack();
                 }
             }
@@ -204,10 +211,10 @@ namespace Ui.Game.AlgebraicNotation
 
         private float GetPositionFromIndex()
         {
-            if (_index >= numOfVisibleItems)
+            if (_fullMoveIndex >= numOfVisibleItems)
             {
                 // Do not count indices what already on screen
-                float verticalNormalizedPosition = 1f - (_index + 1 - numOfVisibleItems)/(float)( _notationItems.Count - numOfVisibleItems);
+                float verticalNormalizedPosition = 1f - (_fullMoveIndex + 1f - numOfVisibleItems)/(_notationItems.Count - numOfVisibleItems);
                 return verticalNormalizedPosition;
             }
 

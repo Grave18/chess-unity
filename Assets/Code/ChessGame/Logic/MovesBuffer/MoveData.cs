@@ -9,7 +9,8 @@ namespace ChessGame.Logic.MovesBuffer
         public MoveType MoveType;
         public bool IsFirstMove;
         public string ThreefoldShortFen;
-        public int Rule50Count;
+        public int HalfMoveClock;
+        public int FullMoveCounter = 1;
         public string EpSquareAddress = "-";
         public string AlgebraicNotation;
         public PieceColor TurnColor;

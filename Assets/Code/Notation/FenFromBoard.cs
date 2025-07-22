@@ -3,6 +3,7 @@ using ChessGame.ChessBoard;
 using ChessGame.ChessBoard.Info;
 using ChessGame.ChessBoard.Pieces;
 using ChessGame.Logic;
+using ChessGame.Logic.MovesBuffer;
 using UnityEngine;
 using Utils;
 
@@ -16,14 +17,16 @@ namespace Notation
     {
         private Game _game;
         private Board _board;
+        private UciBuffer _uciBuffer;
         private string _fen;
 
         private readonly StringBuilder _uciStringBuilder = new();
 
-        public void Init(Game game, Board board, string fen)
+        public void Init(Game game, Board board, UciBuffer uciBuffer, string fen)
         {
             _game = game;
             _board = board;
+            _uciBuffer = uciBuffer;
             _fen = fen;
         }
 
@@ -171,12 +174,16 @@ namespace Notation
 
         private void AppendHalfMove()
         {
-            _uciStringBuilder.Append(" 0");
+            int halfMoveClock = _uciBuffer.HalfMoveClock;
+
+            _uciStringBuilder.Append($" {halfMoveClock}");
         }
 
         private void AppendFullMove()
         {
-            _uciStringBuilder.Append(" 1");
+            int fullMoveCounter = _uciBuffer.FullMoveCounter;
+
+            _uciStringBuilder.Append($" {fullMoveCounter}");
         }
 
 #if UNITY_EDITOR

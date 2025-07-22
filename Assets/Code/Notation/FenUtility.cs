@@ -19,5 +19,17 @@
 
             return parsedPreset;
         }
+
+        public static int GetHalfMoveClock(string fen)
+        {
+            string[] splitPreset = fen.Split(' ');
+            return int.TryParse(splitPreset[4], out int halfMoveClock) ? halfMoveClock : 0;
+        }
+
+        public static int GetFullMoveCounter(string fen)
+        {
+            string[] splitPreset = fen.Split(' ');
+            return int.TryParse(splitPreset[5], out int fullMoveCounter) ? fullMoveCounter : 1;
+        }
     }
 }

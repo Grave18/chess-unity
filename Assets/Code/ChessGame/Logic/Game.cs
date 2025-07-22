@@ -342,7 +342,7 @@ namespace ChessGame.Logic
 
         private bool IsRule50()
         {
-            return UciBuffer.Rule50Count == rule50Count * 2;
+            return UciBuffer.HalfMoveClock == rule50Count * 2;
         }
 
         private bool IsInsufficientPieces()

@@ -70,17 +70,16 @@ namespace ChessGame.Logic.GameStates
         private bool ValidateMove(ParsedUci parsedUci)
         {
             Piece piece = parsedUci.FromSquare.GetPiece();
-
             _moveData = new MoveData
             {
                 Uci = _uci,
                 IsFirstMove = piece.IsFirstMove,
-                Rule50Count = GetRule50Count(),
+                HalfMoveClock = GetHalfMoves(),
+                FullMoveCounter = GetFullMoveCounter(piece.GetPieceColor()),
             };
-
             bool isValid = false;
-
             Piece promotedPiece = null;
+
             // Move
             if (piece.CanMoveTo(parsedUci.ToSquare, out MoveInfo moveInfo))
             {
@@ -104,7 +103,7 @@ namespace ChessGame.Logic.GameStates
                 // Reset rule 50 if pawn move
                 if (piece is Pawn)
                 {
-                    ResetRule50();
+                    ResetHalfMoveClock();
                 }
 
                 isValid = true;
@@ -131,7 +130,7 @@ namespace ChessGame.Logic.GameStates
                 }
 
                 // Reset rule 50 if capture move
-                ResetRule50();
+                ResetHalfMoveClock();
 
                 isValid = true;
             }
@@ -150,14 +149,26 @@ namespace ChessGame.Logic.GameStates
             return isValid;
         }
 
-        private int GetRule50Count()
+        private int GetHalfMoves()
         {
-            return Game.UciBuffer.Rule50Count + 1;
+            return Game.UciBuffer.HalfMoveClock + 1;
         }
 
-        private void ResetRule50()
+        private void ResetHalfMoveClock()
         {
-            _moveData.Rule50Count = 0;
+            _moveData.HalfMoveClock = 0;
+        }
+
+        private int GetFullMoveCounter(PieceColor pieceColor)
+        {
+            int counter = Game.UciBuffer.FullMoveCounter;
+
+            if (pieceColor == PieceColor.Black)
+            {
+                return counter + 1;
+            }
+
+            return counter;
         }
 
         private void Run()

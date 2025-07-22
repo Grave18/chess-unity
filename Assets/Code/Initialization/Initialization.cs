@@ -74,6 +74,8 @@ namespace Initialization
             FenSplit fenSplit = FenUtility.GetFenSplit(_gameSettings.CurrentFen);
             _turnColor = Assets.GetTurnColorFromPreset(fenSplit);
 
+            InitUciBuffer();
+
             game.Init(board, competitors, cameraController,uciBuffer, _turnColor);
 
             InitClock();
@@ -84,10 +86,17 @@ namespace Initialization
 
             (GameObject boardPrefab, IList<GameObject> piecePrefabs) = await assets.LoadPrefabs();
             board.Init(game, uciBuffer, fenSplit, boardPrefab, piecePrefabs, _turnColor);
-            fenFromBoard.Init(game, board, _gameSettings.CurrentFen);
+            fenFromBoard.Init(game, board, uciBuffer, _gameSettings.CurrentFen);
 
             InitAi();
             InitPlayers();
+        }
+
+        private void InitUciBuffer()
+        {
+            int halfMoveClock = FenUtility.GetHalfMoveClock(_gameSettings.CurrentFen);
+            int fullMoveCounter = FenUtility.GetFullMoveCounter(_gameSettings.CurrentFen);
+            uciBuffer.Init(halfMoveClock, fullMoveCounter);
         }
 
         private void InitClock()

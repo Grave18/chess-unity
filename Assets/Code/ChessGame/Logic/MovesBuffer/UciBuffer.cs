@@ -19,11 +19,21 @@ namespace ChessGame.Logic.MovesBuffer
         public event UnityAction<MoveData> OnRedo;
         public event UnityAction<MoveData> OnDelete;
 
-        /// Returns half moves of the rule
-        public int Rule50Count => _head != null ? _head.Value.Rule50Count : 0;
+        private int _initialHalfMoveClock = 0;
+        private int _initialFullMoveCounter = 1;
+
+        /// Returns half moves of the 50 moves rule
+        public int HalfMoveClock => _head != null ? _head.Value.HalfMoveClock : _initialHalfMoveClock;
+        public int FullMoveCounter => _head != null ? _head.Value.FullMoveCounter : _initialFullMoveCounter;
 
         /// Returns max repetition of the same position
         public int ThreefoldRepetitionCount => _threefoldRepetition.Values.Count > 0 ? _threefoldRepetition.Values.Max() : 0;
+
+        public void Init(int initialHalfMoveClock, int initialFullMoveCounter)
+        {
+            _initialHalfMoveClock = initialHalfMoveClock;
+            _initialFullMoveCounter = initialFullMoveCounter;
+        }
 
         public void Add(MoveData moveData)
         {

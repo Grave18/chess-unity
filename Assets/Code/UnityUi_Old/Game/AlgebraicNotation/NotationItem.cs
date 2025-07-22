@@ -19,9 +19,9 @@ namespace Ui.Game.AlgebraicNotation
             AddWhite(endGameResult, -1);
         }
 
-        public void AddWhite(string algebraicNotation, int panelCount)
+        public void AddWhite(string algebraicNotation, int fullMoveCounter)
         {
-            countText.text = panelCount == -1 ? string.Empty : panelCount.ToString();
+            countText.text = fullMoveCounter == -1 ? string.Empty : fullMoveCounter.ToString();
             whiteText.text = algebraicNotation;
             whiteText.color = normalColor;
         }
