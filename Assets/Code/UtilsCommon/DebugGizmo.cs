@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Tools
+namespace UtilsCommon
 {
     public class DebugGizmo : MonoBehaviour
     {

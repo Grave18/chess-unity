@@ -3,7 +3,7 @@ using ChessGame.Logic.Players;
 using GameAndScene;
 using PurrNet;
 using UnityEngine;
-using Utils;
+using UtilsCommon.Singleton;
 
 namespace Network
 {

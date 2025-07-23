@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.Assertions;
-using Utils;
+using UtilsCommon.Singleton;
 
 [RequireComponent(typeof(AudioSource))]
 public class EffectsPlayer : SingletonBehaviour<EffectsPlayer>

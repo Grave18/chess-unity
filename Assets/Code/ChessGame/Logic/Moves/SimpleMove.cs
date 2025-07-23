@@ -1,7 +1,7 @@
 ﻿using ChessGame.ChessBoard;
 using ChessGame.ChessBoard.Pieces;
 using UnityEngine;
-using Utils.Mathematics;
+using UtilsCommon.Mathematics;
 
 namespace ChessGame.Logic.Moves
 {

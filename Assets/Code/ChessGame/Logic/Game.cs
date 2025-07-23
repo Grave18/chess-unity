@@ -11,7 +11,7 @@ using MainCamera;
 using Network;
 using UnityEngine;
 using UnityEngine.Events;
-using Utils;
+using UtilsCommon.Singleton;
 
 namespace ChessGame.Logic
 {

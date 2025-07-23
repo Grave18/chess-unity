@@ -4,7 +4,7 @@ using ChessGame.Logic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
-using Utils.Mathematics;
+using UtilsCommon.Mathematics;
 
 #if UNITY_EDITOR
 using EditorCools;

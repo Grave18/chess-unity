@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using Utils;
+using UtilsCommon;
 
 namespace Ui.Common.Buttons
 {

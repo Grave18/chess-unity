@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Tools.SceneTool
+namespace UtilsCommon.SceneTool
 {
     /// <summary>
     /// Display a Scene Reference object in the editor.

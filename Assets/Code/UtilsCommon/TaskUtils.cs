@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Utils
+namespace UtilsCommon
 {
     /// <summary>
     /// Utility methods for working with tasks

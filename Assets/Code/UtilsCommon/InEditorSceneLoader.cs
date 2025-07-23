@@ -3,7 +3,7 @@
 using UnityEditor;
 using UnityEditor.SceneManagement;
 
-namespace Tools
+namespace UtilsCommon
 {
     public static class InEditorSceneLoader
     {

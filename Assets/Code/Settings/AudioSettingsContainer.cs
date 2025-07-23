@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Audio;
-using Utils.Mathematics;
+using UtilsCommon.Mathematics;
 
 namespace GameAndScene
 {

@@ -1,7 +1,7 @@
 ﻿using Ui.Common.Classes;
 using UnityEngine;
 
-namespace Utils
+namespace UtilsCommon
 {
     public static class RectTransformExtensions
     {

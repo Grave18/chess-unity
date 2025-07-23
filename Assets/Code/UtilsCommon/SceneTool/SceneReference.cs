@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Tools.SceneTool
+namespace UtilsCommon.SceneTool
 {
     /// <summary>
     /// A wrapper that provides the means to safely serialize Scene Asset References.

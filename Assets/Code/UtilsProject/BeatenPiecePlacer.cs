@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Tools
+namespace UtilsProject
 {
     public class BeatenPiecePlacer : MonoBehaviour
     {

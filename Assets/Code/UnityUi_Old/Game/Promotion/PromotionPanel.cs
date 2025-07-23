@@ -5,7 +5,7 @@ using ChessGame.ChessBoard;
 using ChessGame.ChessBoard.Info;
 using ChessGame.Logic;
 using UnityEngine;
-using Utils.Mathematics;
+using UtilsCommon.Mathematics;
 
 namespace Ui.Game.Promotion
 {

@@ -5,7 +5,7 @@ using ChessGame.ChessBoard.Pieces;
 using ChessGame.Logic;
 using ChessGame.Logic.MovesBuffer;
 using UnityEngine;
-using Utils;
+using UtilsCommon.Singleton;
 
 #if UNITY_EDITOR
 using EditorCools;

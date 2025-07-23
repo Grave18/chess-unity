@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.Build;
+using UnityEngine;
 
-namespace Utils
+namespace UtilsProject
 {
     public class PlatformHelper
     {

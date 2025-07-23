@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.AddressableAssets.Settings;
 
-namespace Tools.BuildTool
+namespace UtilsCommon.BuildTool
 {
     public static class PlayerBuilder
     {

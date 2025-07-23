@@ -1,12 +1,8 @@
-﻿using ChessGame;
-using ChessGame.ChessBoard;
+﻿using ChessGame.ChessBoard;
+using UnityEditor;
 using UnityEngine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
-namespace Tools
+namespace UtilsProject
 {
     public class TransferSquares : MonoBehaviour
     {

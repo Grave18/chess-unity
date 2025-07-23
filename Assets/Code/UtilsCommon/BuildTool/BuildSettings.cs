@@ -1,12 +1,11 @@
 ﻿#if UNITY_EDITOR
 
-using System;
 using System.IO;
 using EditorCools;
 using UnityEditor;
 using UnityEngine;
 
-namespace Tools.BuildTool
+namespace UtilsCommon.BuildTool
 {
     [CreateAssetMenu(menuName = "Build/Build Settings", fileName = "BuildSettings")]
     public class BuildSettings : ScriptableObject

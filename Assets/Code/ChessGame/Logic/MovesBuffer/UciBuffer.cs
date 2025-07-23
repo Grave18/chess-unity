@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using Notation;
 using UnityEngine.Events;
-using Utils;
+using UtilsCommon.Singleton;
 
 namespace ChessGame.Logic.MovesBuffer
 {

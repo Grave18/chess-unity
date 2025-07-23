@@ -4,7 +4,7 @@ using Ai;
 using ChessGame.Logic;
 using Initialization;
 using UnityEngine;
-using Utils;
+using UtilsCommon.Singleton;
 
 #if UNITY_EDITOR
 using ParrelSync;
