@@ -11,20 +11,13 @@ using MainCamera;
 using Network;
 using UnityEngine;
 using UnityEngine.Events;
-using UtilsCommon.Singleton;
 
 namespace ChessGame.Logic
 {
-    public class Game : SingletonBehaviour<Game>
+    public class Game : MonoBehaviour
     {
-        [field: Header("References")]
-        [field:SerializeField] public MachineManager Machine { get; set; }
-        [field:SerializeField] public Competitors Competitors { get; set; }
-
-        [Header("Settings")]
-        [SerializeField] private int rule50Count = 50;
-        [SerializeField] private int ruleThreefoldCount = 3;
-
+        public MachineManager Machine { get; private set; }
+        public Competitors Competitors { get; private set; }
         public Board Board { get; private set; }
         public UciBuffer UciBuffer { get; private set; }
 
@@ -37,10 +30,14 @@ namespace ChessGame.Logic
 
         public ISelectable Selected { get; private set; }
 
+        [Header("Settings")]
+        [SerializeField] private int rule50Count = 50;
+        [SerializeField] private int ruleThreefoldCount = 3;
+
         private PieceColor _startingColor;
-        private Competitors _competitors;
         private CameraController _cameraController;
         private PieceColor _winnerColor;
+        private GameSettingsContainer _gameSettingsContainer;
 
         // Board shortcuts
         public HashSet<Piece> WhitePieces => Board.WhitePieces;
@@ -58,7 +55,7 @@ namespace ChessGame.Logic
         public bool IsGameOver => CheckType is not CheckType.None and not CheckType.Check and not CheckType.DoubleCheck;
 
         /// Is it turn of current player
-        public bool IsMyTurn => CurrentTurnColor == GameSettingsContainer.Instance.GameSettings.PlayerColor;
+        public bool IsMyTurn => CurrentTurnColor == _gameSettingsContainer.GameSettings.PlayerColor;
         public bool IsWhiteTurn => CurrentTurnColor == PieceColor.White;
         public bool IsBlackTurn => CurrentTurnColor == PieceColor.Black;
 
@@ -68,32 +65,35 @@ namespace ChessGame.Logic
         // Events and invokers
         public event UnityAction OnWarmup;
         public event UnityAction OnStart;
-        public event UnityAction<PieceColor> OnStartColor;
+        public event UnityAction<PieceColor> OnStartWithColor;
         public event UnityAction OnEnd;
         public event UnityAction OnEndMove;
-        public event UnityAction<PieceColor> OnEndMoveColor;
+        public event UnityAction<PieceColor> OnEndMoveWithColor;
         public event UnityAction OnPlay;
         public event UnityAction OnPause;
 
         public void FireWarmup() => OnWarmup?.Invoke();
-        public void FireStart() { OnStart?.Invoke(); OnStartColor?.Invoke(CurrentTurnColor); }
+        public void FireStart() { OnStart?.Invoke(); OnStartWithColor?.Invoke(CurrentTurnColor); }
         public void FireEnd() => OnEnd?.Invoke();
-        public void FireEndMove() { OnEndMove?.Invoke(); OnEndMoveColor?.Invoke(CurrentTurnColor); }
+        public void FireEndMove() { OnEndMove?.Invoke(); OnEndMoveWithColor?.Invoke(CurrentTurnColor); }
         public void FirePlay() => OnPlay?.Invoke();
         public void FirePause() => OnPause?.Invoke();
 
-        public void Init(Board board, Competitors competitors, CameraController cameraController, UciBuffer commandUciBuffer, PieceColor color)
+        public void Init(Board board, Competitors competitors, CameraController cameraController, UciBuffer commandUciBuffer,
+            PieceColor color, GameSettingsContainer gameSettingsContainer, MachineManager machine)
         {
             Board = board;
-            _competitors = competitors;
+            Competitors = competitors;
             _cameraController = cameraController;
             UciBuffer = commandUciBuffer;
             _startingColor = color;
+            _gameSettingsContainer = gameSettingsContainer;
+            Machine = machine;
         }
 
         public void RestartGame()
         {
-            _competitors.Restart();
+            Competitors.Restart();
             Board.Build();
             StartGame();
         }

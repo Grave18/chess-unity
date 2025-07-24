@@ -20,71 +20,72 @@ namespace Ui.Game
         [SerializeField] private Color normalColor;
         [SerializeField] private Color alertColor;
 
-        private IEnumerator Start()
+        private IClock _clock;
+
+        public void Init(IClock clock)
+        {
+            _clock = clock;
+
+            StartCoroutine(TickClock());
+        }
+
+        private IEnumerator TickClock()
         {
             var wait = new WaitForSeconds(updateIntervalSec);
-            IClock clock = initialization.Clock;
-
-            yield return WaitForClockInit(clock);
 
             while (Application.isPlaying)
             {
-                FormatAndApplyTime(clock);
-                PlayTenSecondsSoundAndChangeColor(clock);
+                FormatAndApplyTime();
+                PlayTenSecondsSoundAndChangeColor();
 
                 yield return wait;
             }
         }
 
         private void OnEnable()
-        {
-            game.OnWarmup += ResetColors;
-        }
-
-        private void OnDisable()
-        {
-            game.OnWarmup -= ResetColors;
-        }
-
-        private void ResetColors()
-        {
-            whiteText.color = normalColor;
-            blackText.color = normalColor;
-        }
-
-        private static WaitWhile WaitForClockInit(IClock clock)
-        {
-            return new WaitWhile (() => clock == null);
-        }
-
-        private void FormatAndApplyTime(IClock clock)
-        {
-            int wMin = (int)clock.WhiteTime.TotalMinutes;
-            int wSec = clock.WhiteTime.Seconds;
-            int bMin = (int)clock.BlackTime.TotalMinutes;
-            int bSec = clock.BlackTime.Seconds;
-
-            whiteText.text = $"{wMin:00}:{wSec:00}";
-            blackText.text = $"{bMin:00}:{bSec:00}";
-        }
-
-        private  void PlayTenSecondsSoundAndChangeColor(IClock clock)
-        {
-            double wSec = clock.WhiteTime.TotalSeconds;
-            double bSec = clock.BlackTime.TotalSeconds;
-            const float time = 10f;
-            float halfDt = updateIntervalSec * 0.525f;
-
-            if (wSec > time - halfDt && wSec < time + halfDt)
             {
-                whiteText.color = alertColor;
-                EffectsPlayer.Instance.PlayTenSecondsSound();
+                game.OnWarmup += ResetColors;
             }
-            else if (bSec > time - halfDt && bSec < time + halfDt)
+
+            private void OnDisable()
             {
-                blackText.color = alertColor;
-                EffectsPlayer.Instance.PlayTenSecondsSound();
+                game.OnWarmup -= ResetColors;
             }
-        }
+
+            private void ResetColors()
+            {
+                whiteText.color = normalColor;
+                blackText.color = normalColor;
+            }
+
+            private void FormatAndApplyTime()
+            {
+                int wMin = (int)_clock.WhiteTime.TotalMinutes;
+                int wSec = _clock.WhiteTime.Seconds;
+                int bMin = (int)_clock.BlackTime.TotalMinutes;
+                int bSec = _clock.BlackTime.Seconds;
+
+                whiteText.text = $"{wMin:00}:{wSec:00}";
+                blackText.text = $"{bMin:00}:{bSec:00}";
+            }
+
+            private void PlayTenSecondsSoundAndChangeColor()
+            {
+                double wSec = _clock.WhiteTime.TotalSeconds;
+                double bSec = _clock.BlackTime.TotalSeconds;
+                const float time = 10f;
+                float halfDt = updateIntervalSec * 0.525f;
+
+                if (wSec > time - halfDt && wSec < time + halfDt)
+                {
+                    whiteText.color = alertColor;
+                    EffectsPlayer.Instance.PlayTenSecondsSound();
+                }
+                else if (bSec > time - halfDt && bSec < time + halfDt)
+                {
+                    blackText.color = alertColor;
+                    EffectsPlayer.Instance.PlayTenSecondsSound();
+                }
+            }
     }
 }

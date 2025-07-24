@@ -6761,7 +6761,9 @@ MonoBehaviour:
   competitors: {fileID: 1739655008}
   highlighter: {fileID: 1544682202}
   uciBuffer: {fileID: 2060320542}
+  machineManager: {fileID: 231309765}
   promotionPanel: {fileID: 59947144}
+  clockPanel: {fileID: 49431645}
   cameraController: {fileID: 330585549}
   mainCamera: {fileID: 330585545}
 --- !u!4 &853249565
@@ -8484,8 +8486,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d985ebac851bf4daa48ef5e8e8b15d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <Machine>k__BackingField: {fileID: 231309765}
-  <Competitors>k__BackingField: {fileID: 1739655008}
   rule50Count: 50
   ruleThreefoldCount: 3
 --- !u!1 &1227854461

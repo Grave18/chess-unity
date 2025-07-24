@@ -88,7 +88,7 @@ namespace ChessGame.Logic.GameStates
                 if (parsedUci.PromotedPieceType == PieceType.None)
                 {
                     _moveData.MoveType = MoveType.Move;
-                    Turn = new SimpleMove(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
+                    Turn = new SimpleMove(Game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
                 }
                 else
                 {
@@ -96,7 +96,7 @@ namespace ChessGame.Logic.GameStates
                     _moveData.HiddenPawn = piece;
                     promotedPiece = Game.Board.SpawnPiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                         parsedUci.ToSquare);
-                    Turn = new MovePromotion(_moveData.HiddenPawn, parsedUci.FromSquare, parsedUci.ToSquare,
+                    Turn = new MovePromotion(Game,_moveData.HiddenPawn, parsedUci.FromSquare, parsedUci.ToSquare,
                         promotedPiece);
                 }
 
@@ -116,7 +116,7 @@ namespace ChessGame.Logic.GameStates
                 if (parsedUci.PromotedPieceType == PieceType.None)
                 {
                     _moveData.MoveType = captureInfo.MoveType;
-                    Turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
+                    Turn = new Capture(Game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
                         _moveData.IsFirstMove);
                 }
                 else
@@ -125,7 +125,7 @@ namespace ChessGame.Logic.GameStates
                     _moveData.HiddenPawn = piece;
                     promotedPiece = Game.Board.SpawnPiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                         parsedUci.ToSquare);
-                    Turn = new CapturePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece,
+                    Turn = new CapturePromotion(Game, piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece,
                         _moveData.BeatenPiece);
                 }
 
@@ -140,7 +140,7 @@ namespace ChessGame.Logic.GameStates
             {
                 _moveData.MoveType = castlingInfo.MoveType;
                 _moveData.CastlingInfo = castlingInfo;
-                Turn = new Castling(_moveData.CastlingInfo, _moveData.IsFirstMove);
+                Turn = new Castling(Game,_moveData.CastlingInfo, _moveData.IsFirstMove);
                 isValid = true;
             }
 

@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Text;
 using Notation;
+using UnityEngine;
 using UnityEngine.Events;
-using UtilsCommon.Singleton;
 
 namespace ChessGame.Logic.MovesBuffer
 {
-    public class UciBuffer : SingletonBehaviour<UciBuffer>
+    public class UciBuffer : MonoBehaviour
     {
         // State be cleared
         private LinkedListNode<MoveData> _head;
@@ -21,6 +21,7 @@ namespace ChessGame.Logic.MovesBuffer
 
         private int _initialHalfMoveClock = 0;
         private int _initialFullMoveCounter = 1;
+        private FenFromBoard _fenFromBoard;
 
         /// Returns half moves of the 50 moves rule
         public int HalfMoveClock => _head != null ? _head.Value.HalfMoveClock : _initialHalfMoveClock;
@@ -29,8 +30,9 @@ namespace ChessGame.Logic.MovesBuffer
         /// Returns max repetition of the same position
         public int ThreefoldRepetitionCount => _threefoldRepetition.Values.Count > 0 ? _threefoldRepetition.Values.Max() : 0;
 
-        public void Init(int initialHalfMoveClock, int initialFullMoveCounter)
+        public void Init(FenFromBoard fenFromBoard, int initialHalfMoveClock, int initialFullMoveCounter)
         {
+            _fenFromBoard = fenFromBoard;
             _initialHalfMoveClock = initialHalfMoveClock;
             _initialFullMoveCounter = initialFullMoveCounter;
         }
@@ -68,7 +70,7 @@ namespace ChessGame.Logic.MovesBuffer
         private void AddTreefoldRule(MoveData moveData)
         {
             // Threefold repetition
-            string shortFen = FenFromBoard.Instance.GetShort();
+            string shortFen = _fenFromBoard.GetShort();
             moveData.ThreefoldShortFen = shortFen;
 
             if (!_threefoldRepetition.TryAdd(shortFen, 1))
@@ -188,7 +190,7 @@ namespace ChessGame.Logic.MovesBuffer
 
         private void ResetThreefoldRule()
         {
-            string shortFen = FenFromBoard.Instance.GetShort();
+            string shortFen = _fenFromBoard.GetShort();
 
             _threefoldRepetition.Clear();
             _threefoldRepetition.Add(shortFen, 1);

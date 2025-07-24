@@ -950,7 +950,7 @@ MonoBehaviour:
   playerOnlineWhite: {fileID: 313843066}
   playerOnlineBlack: {fileID: 721045146}
   clockOnline: {fileID: 1240364636}
-  gameSettingsContainer: {fileID: 0}
+  gameSettingsContainer: {fileID: 2013615972}
 --- !u!1 &1816012518
 GameObject:
   m_ObjectHideFlags: 0
@@ -1055,6 +1055,9 @@ MonoBehaviour:
     SavedFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     CustomFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     IsAutoPromoteToQueen: 0
+    IsAutorotateCamera: 1
+    PiecesModelAddress: 
+    BoardModelAddress: 
 --- !u!4 &2013615973
 Transform:
   m_ObjectHideFlags: 0

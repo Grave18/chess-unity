@@ -8,9 +8,9 @@ namespace ChessGame.Logic.Moves
         private readonly Capture _capture;
         private readonly Promotion _promotion;
 
-        public CapturePromotion(Piece piece, Square fromSquare, Square toSquare, Piece otherPiece, Piece beatenPiece)
+        public CapturePromotion(Game game, Piece piece, Square fromSquare, Square toSquare, Piece otherPiece, Piece beatenPiece)
         {
-            _capture = new Capture(piece, fromSquare, toSquare, beatenPiece, isFirstMove: false);
+            _capture = new Capture(game, piece, fromSquare, toSquare, beatenPiece, isFirstMove: false);
             _promotion = new Promotion(piece, fromSquare, toSquare, otherPiece);
         }
 

@@ -4,7 +4,6 @@ using Ai;
 using ChessGame.Logic;
 using Initialization;
 using UnityEngine;
-using UtilsCommon.Singleton;
 
 #if UNITY_EDITOR
 using ParrelSync;
@@ -13,7 +12,7 @@ using ParrelSync;
 namespace GameAndScene
 {
     [DefaultExecutionOrder(-1)]
-    public class GameSettingsContainer : SingletonBehaviour<GameSettingsContainer>
+    public class GameSettingsContainer : MonoBehaviour
     {
         [Tooltip("Use it if no need to load settings")]
         [SerializeField] private bool isInitialized;
@@ -37,9 +36,8 @@ namespace GameAndScene
         }
         // end todo
 
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
             Init();
         }
 

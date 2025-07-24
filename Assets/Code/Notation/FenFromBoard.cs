@@ -5,7 +5,6 @@ using ChessGame.ChessBoard.Pieces;
 using ChessGame.Logic;
 using ChessGame.Logic.MovesBuffer;
 using UnityEngine;
-using UtilsCommon.Singleton;
 
 #if UNITY_EDITOR
 using EditorCools;
@@ -13,7 +12,7 @@ using EditorCools;
 
 namespace Notation
 {
-    public class FenFromBoard : SingletonBehaviour<FenFromBoard>
+    public class FenFromBoard : MonoBehaviour
     {
         private Game _game;
         private Board _board;
@@ -81,7 +80,7 @@ namespace Notation
                 if(piece != null)
                 {
                     AppendAndResetCounterIfPossible(ref counter);
-                    AppendLetter(letter, piece);
+                    AppendPieceLetter(letter, piece);
                 }
 
                 if (IsLastColumnFile(square))
@@ -114,7 +113,7 @@ namespace Notation
             }
         }
 
-        private void AppendLetter(char letter, Piece piece)
+        private void AppendPieceLetter(char letter, Piece piece)
         {
             if (piece.GetPieceColor() == PieceColor.White)
             {

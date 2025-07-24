@@ -71,7 +71,7 @@ namespace ChessGame.Logic.GameStates
 
             if (_moveData.MoveType == MoveType.Move)
             {
-                Turn = new SimpleMove(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
+                Turn = new SimpleMove(Game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
                 return true;
             }
 
@@ -79,14 +79,14 @@ namespace ChessGame.Logic.GameStates
             {
                 Piece promotedPiece = Game.Board.SpawnPiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                     parsedUci.ToSquare);
-                Turn = new MovePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece);
+                Turn = new MovePromotion(Game, piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece);
                 return true;
             }
 
             if (_moveData.MoveType is MoveType.Capture)
             {
                 _moveData.BeatenPiece = parsedUci.ToSquare.GetPiece();
-                Turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
+                Turn = new Capture(Game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
                     _moveData.IsFirstMove);
                 return true;
             }
@@ -94,7 +94,7 @@ namespace ChessGame.Logic.GameStates
             if (_moveData.MoveType is MoveType.EnPassant)
             {
                 // No need to update _moveData.BeatenPiece because it cannot be promoted piece
-                Turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
+                Turn = new Capture(Game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
                     _moveData.IsFirstMove);
                 return true;
             }
@@ -105,14 +105,14 @@ namespace ChessGame.Logic.GameStates
                 _moveData.BeatenPiece = parsedUci.ToSquare.GetPiece();
                 Piece promotedPiece = Game.Board.SpawnPiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                     parsedUci.ToSquare);
-                Turn = new CapturePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare,
+                Turn = new CapturePromotion(Game, piece, parsedUci.FromSquare, parsedUci.ToSquare,
                     promotedPiece, _moveData.BeatenPiece);
                 return true;
             }
 
             if (_moveData.MoveType is MoveType.CastlingShort or MoveType.CastlingLong)
             {
-                Turn = new Castling(_moveData.CastlingInfo, _moveData.IsFirstMove);
+                Turn = new Castling(Game, _moveData.CastlingInfo, _moveData.IsFirstMove);
                 return true;
             }
 

@@ -96,7 +96,7 @@ namespace MainCamera
 
             if (_isAutoRotationOn)
             {
-                _game.OnEndMoveColor += AutoRotate;
+                _game.OnEndMoveWithColor += AutoRotate;
                 _game.OnEnd += StopAutoRotate;
             }
         }
@@ -105,7 +105,7 @@ namespace MainCamera
         {
             if (_game != null && _isAutoRotationOn)
             {
-                _game.OnEndMoveColor -= AutoRotate;
+                _game.OnEndMoveWithColor -= AutoRotate;
                 _game.OnEnd -= StopAutoRotate;
             }
         }

@@ -48,8 +48,8 @@ namespace Ui.Game
         {
             game.OnPlay += OnPlay;
             game.OnPause += OnPause;
-            game.OnEndMoveColor += DisablePauseIfOnlineAndNotMoving;
-            game.OnStartColor += DisablePauseIfOnlineAndNotMoving;
+            game.OnEndMoveWithColor += DisablePauseIfOnlineAndNotMoving;
+            game.OnStartWithColor += DisablePauseIfOnlineAndNotMoving;
             undo.onClick.AddListener(OnUndoPressed);
             redo.onClick.AddListener(OnRedoPressed);
             pause.onClick.AddListener(OnPlayPausePressed);
@@ -59,8 +59,8 @@ namespace Ui.Game
         {
             game.OnPlay -= OnPlay;
             game.OnPause -= OnPause;
-            game.OnEndMoveColor -= DisablePauseIfOnlineAndNotMoving;
-            game.OnStartColor -= DisablePauseIfOnlineAndNotMoving;
+            game.OnEndMoveWithColor -= DisablePauseIfOnlineAndNotMoving;
+            game.OnStartWithColor -= DisablePauseIfOnlineAndNotMoving;
             undo.onClick.RemoveListener(OnUndoPressed);
             redo.onClick.RemoveListener(OnRedoPressed);
             pause.onClick.RemoveListener(OnPlayPausePressed);

@@ -11,6 +11,7 @@ using Highlighting;
 using MainCamera;
 using Network;
 using Notation;
+using Ui.Game;
 using Ui.Game.Promotion;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -37,9 +38,11 @@ namespace Initialization
         [SerializeField] private Competitors competitors;
         [SerializeField] private Highlighter highlighter;
         [SerializeField] private UciBuffer uciBuffer;
+        [SerializeField] private MachineManager machineManager;
 
         [Header("Ui")]
         [SerializeField] private PromotionPanel promotionPanel;
+        [SerializeField] private ClockPanel clockPanel;
 
         [Header("Camera")]
         [SerializeField] private CameraController cameraController;
@@ -48,8 +51,8 @@ namespace Initialization
         private Stockfish _stockfish;
         private GameSettings _gameSettings;
         private PieceColor _turnColor;
-
-        public IClock Clock { get; private set; }
+        private FenSplit _fenSplit;
+        private IClock _clock;
 
         private bool IsOffline => _gameSettings.Player1Settings.PlayerType != PlayerType.Online
                                   && _gameSettings.Player2Settings.PlayerType != PlayerType.Online;
@@ -59,52 +62,60 @@ namespace Initialization
 
         private async void Awake()
         {
-            await Init();
+            await InitAsync();
 
             board.Build();
             game.StartGame();
         }
 
-        private async Task Init()
+        private async Task InitAsync()
+        {
+            InitSettingsContainer();
+            InitUciBuffer();
+            InitGame();
+            InitClock();
+            InitCamera();
+            InitHighlighter();
+            await InitBoardAsync();
+            InitFenGenerator();
+            InitAi();
+            InitPlayers();
+        }
+
+        private void InitSettingsContainer()
         {
             // For whatever reason, the initialization can't be done in the Awake
             gameSettingsContainer.Init();
 
             _gameSettings = gameSettingsContainer.GameSettings;
-            FenSplit fenSplit = FenUtility.GetFenSplit(_gameSettings.CurrentFen);
-            _turnColor = Assets.GetTurnColorFromPreset(fenSplit);
-
-            InitUciBuffer();
-
-            game.Init(board, competitors, cameraController,uciBuffer, _turnColor);
-
-            InitClock();
-
-            InitCamera();
-
-            highlighter.Init(game);
-
-            (GameObject boardPrefab, IList<GameObject> piecePrefabs) = await assets.LoadPrefabs();
-            board.Init(game, uciBuffer, fenSplit, boardPrefab, piecePrefabs, _turnColor);
-            fenFromBoard.Init(game, board, uciBuffer, _gameSettings.CurrentFen);
-
-            InitAi();
-            InitPlayers();
+            _fenSplit = FenUtility.GetFenSplit(_gameSettings.CurrentFen);
+            _turnColor = Assets.GetTurnColorFromPreset(_fenSplit);
         }
 
         private void InitUciBuffer()
         {
             int halfMoveClock = FenUtility.GetHalfMoveClock(_gameSettings.CurrentFen);
             int fullMoveCounter = FenUtility.GetFullMoveCounter(_gameSettings.CurrentFen);
-            uciBuffer.Init(halfMoveClock, fullMoveCounter);
+            uciBuffer.Init(fenFromBoard, halfMoveClock, fullMoveCounter);
+        }
+
+        private void InitGame()
+        {
+            game.Init(board, competitors, cameraController, uciBuffer, _turnColor, gameSettingsContainer, machineManager);
+        }
+
+        private void InitHighlighter()
+        {
+            highlighter.Init(game);
         }
 
         private void InitClock()
         {
-            Clock = IsOffline ? clockOffline : OnlineInstanceHandler.Clock;
-            Assert.IsNotNull(Clock, $"{nameof(Initialization)}: Clock is null");
+            _clock = IsOffline ? clockOffline : OnlineInstanceHandler.Clock;
+            Assert.IsNotNull(_clock, $"{nameof(Initialization)}: Clock is null");
 
-            Clock.Init(game, gameSettingsContainer.GetTime());
+            _clock.Init(game, gameSettingsContainer.GetTime());
+            clockPanel.Init(_clock);
         }
 
         private void InitCamera()
@@ -112,6 +123,17 @@ namespace Initialization
             // Rotate camera to side in fen string only if 2 players
             PieceColor rotateCameraToColor = IsVsPlayer ? _turnColor : _gameSettings.PlayerColor;
             cameraController.Init(game, rotateCameraToColor, IsVsPlayer);
+        }
+
+        private async Task InitBoardAsync()
+        {
+            (GameObject boardPrefab, IList<GameObject> piecePrefabs) = await assets.LoadPrefabs();
+            board.Init(game, uciBuffer, _fenSplit, boardPrefab, piecePrefabs, _turnColor);
+        }
+
+        private void InitFenGenerator()
+        {
+            fenFromBoard.Init(game, board, uciBuffer, _gameSettings.CurrentFen);
         }
 
         private void InitPlayers()
@@ -187,17 +209,6 @@ namespace Initialization
 #if UNITY_EDITOR
 
         [Button(space: 10)]
-        private void UpdatePlayers()
-        {
-            InitAi();
-
-            IPlayer playerWhite = GetPlayer(_gameSettings.Player1Settings, PieceColor.White);
-            IPlayer playerBlack = GetPlayer(_gameSettings.Player2Settings, PieceColor.Black);
-
-            competitors.SubstitutePlayers(playerWhite, playerBlack);
-        }
-
-        [Button(space: 10)]
         private void ShowStockfishState()
         {
             _ = _stockfish?.ShowInternalBoardState();
@@ -207,23 +218,6 @@ namespace Initialization
         private void ShowStockfishOutput()
         {
             _stockfish?.ShowProcessOutput();
-        }
-
-#endif
-
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-                _ = Init();
-            }
-            else if (Input.GetKeyDown(KeyCode.U))
-            {
-                board.DestroyBoardAndPieces();
-                assets.ReleaseAssets();
-            }
         }
 
 #endif

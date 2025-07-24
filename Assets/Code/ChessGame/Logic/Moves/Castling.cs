@@ -7,10 +7,10 @@ namespace ChessGame.Logic.Moves
         private readonly SimpleMove _kingMove;
         private readonly SimpleMove _rookMove;
 
-        public Castling(CastlingInfo castlingInfo, bool isFirstMove)
+        public Castling(Game game, CastlingInfo castlingInfo, bool isFirstMove)
         {
-            _kingMove = new SimpleMove(castlingInfo.King, castlingInfo.KingFromSquare, castlingInfo.KingToSquare, isFirstMove);
-            _rookMove = new SimpleMove(castlingInfo.Rook, castlingInfo.RookFromSquare, castlingInfo.RookToSquare, isFirstMove);
+            _kingMove = new SimpleMove(game, castlingInfo.King, castlingInfo.KingFromSquare, castlingInfo.KingToSquare, isFirstMove);
+            _rookMove = new SimpleMove(game, castlingInfo.Rook, castlingInfo.RookFromSquare, castlingInfo.RookToSquare, isFirstMove);
         }
 
         public override void Progress(float t, bool isUndo = false)
