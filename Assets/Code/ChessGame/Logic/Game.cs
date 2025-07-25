@@ -100,20 +100,16 @@ namespace ChessGame.Logic
 
         public void StartGame()
         {
-            bool isCameraSet = false;
-            _cameraController.RotateToStartPosition(() => isCameraSet = true);
+            _cameraController.RotateToStartPosition(StartGameContinuation);
 
             ResetGameState();
             PreformCalculations();
-            StartCoroutine(StartGameRoutine());
             Machine.SetState(new WarmUpState(this));
 
             return;
 
-            IEnumerator StartGameRoutine()
+            void StartGameContinuation()
             {
-                yield return new WaitUntil(() => isCameraSet);
-
                 Machine.SetState(new IdleState(this));
                 FireStart();
             }
