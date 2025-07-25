@@ -1,4 +1,5 @@
-﻿using GameAndScene;
+﻿using ChessGame.Logic;
+using GameAndScene;
 using Ui.Auxiliary;
 using UnityEngine;
 
@@ -13,11 +14,17 @@ namespace Ui.Menu.ViewModels
         public DelegateCommand PlayWithComputerCommand { get; private set; }
         public DelegateCommand PlayOnlineCommand { get; private set; }
 
+        public DelegateCommand StartLocalServerCommand { get; private set; }
+        public DelegateCommand StartLocalClientCommand { get; private set; }
+
         private void Awake()
         {
             PlayOfflineCommand = new DelegateCommand(PlayOffline);
             PlayWithComputerCommand = new DelegateCommand(PlayWithComputer);
             PlayOnlineCommand = new DelegateCommand(PlayOnline);
+
+            StartLocalServerCommand = new DelegateCommand(StartLocalServer);
+            StartLocalClientCommand = new DelegateCommand(StartLocalClient);
         }
 
         private void PlayOffline(object obj)
@@ -35,6 +42,24 @@ namespace Ui.Menu.ViewModels
         private void PlayOnline(object obj)
         {
             LogUi.Debug("PlayOnline Clicked");
+        }
+
+        private void StartLocalServer(object obj)
+        {
+            StartLocal(PieceColor.White, true);
+        }
+
+        private void StartLocalClient(object obj)
+        {
+            StartLocal(PieceColor.Black, false);
+        }
+
+        private void StartLocal(PieceColor playerColor, bool isLocalhostServer)
+        {
+            gameSettingsContainer.SetupGameOnline(playerColor);
+            GameSettingsContainer.IsLocalhostServer = isLocalhostServer;
+
+            sceneLoader.LoadOnlineLocalhost();
         }
     }
 }

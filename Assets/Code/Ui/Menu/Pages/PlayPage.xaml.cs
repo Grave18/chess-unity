@@ -13,7 +13,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 #endif
 
-using System.Collections.Generic;
 using Ui.Auxiliary;
 
 namespace Ui.Menu.Pages
@@ -38,19 +37,12 @@ namespace Ui.Menu.Pages
         private void OnLoaded(object sender, RoutedEventArgs args)
         {
             SetupInputPlayPage();
-            SetupInputTabControl();
         }
 
         private void SetupInputPlayPage()
         {
             TabControl.Focus();
             this.KeyDown += PlayPage_OnKeyDown;
-        }
-
-        private void SetupInputTabControl()
-        {
-            // AddHandler(PreviewKeyDownEvent, new KeyEventHandler(TabControl_PreviewKeyDown));
-            TabControl.KeyDown += TabControl_PreviewKeyDown;
         }
 
         private void PlayPage_OnKeyDown(object sender, KeyEventArgs args)
@@ -65,36 +57,6 @@ namespace Ui.Menu.Pages
         public void Back_Click(object sender, RoutedEventArgs args)
         {
             GameMenuBase.Instance.ChangePage<MainPage>();
-        }
-
-        private void TabControl_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            // Only handle arrow navigation
-            if (Keyboard.FocusedElement is { } focusedElement)
-            {
-                if (e.Key == Key.Down)
-                {
-                    // Try to move focus down
-                    var request = new TraversalRequest(FocusNavigationDirection.Down);
-                    if (focusedElement.MoveFocus(request))
-                    {
-                        e.Handled = true;
-                    }
-                }
-                else if (e.Key == Key.Up)
-                {
-                    TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Up);
-                    if (focusedElement.MoveFocus(request))
-                    {
-                        e.Handled = true;
-                    }
-                }
-                else if (e.Key is Key.Left or Key.Right)
-                {
-                    // Let TabControl handle Left/Right for tab switching
-                    e.Handled = false;
-                }
-            }
         }
 
 #if NOESIS

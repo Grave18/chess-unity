@@ -47,7 +47,7 @@
                                                       ItemsSource="{Binding Times}" />
                     <!-- Fen Text Box -->
                     <userControls:FenTextBox DockPanel.Dock="Top"
-                                             Focusable="True"/>
+                                             Focusable="True" />
                     <!-- Start match Button -->
                     <Button DockPanel.Dock="Bottom"
                             Focusable="True"
@@ -104,11 +104,15 @@
                             <ColumnDefinition Width="220" />
                         </Grid.ColumnDefinitions>
                         <Button Grid.Column="0"
-                                Content="Host"
-                                Style="{StaticResource FenButtonStyle}" />
+                                Content="Server"
+                                Style="{StaticResource FenButtonStyle}"
+                                DataContext="{Binding DataContext, ElementName=ThisControl}"
+                                Command="{Binding StartLocalServerCommand}" />
                         <Button Grid.Column="1"
                                 Content="Local"
-                                Style="{StaticResource FenButtonStyle}" />
+                                Style="{StaticResource FenButtonStyle}"
+                                DataContext="{Binding DataContext, ElementName=ThisControl}"
+                                Command="{Binding StartLocalClientCommand}" />
                     </Grid>
                     <!-- Create Lobby Button -->
                     <Button DockPanel.Dock="Bottom"
