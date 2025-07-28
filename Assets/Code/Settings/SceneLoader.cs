@@ -30,7 +30,15 @@ namespace GameAndScene
 
         public void LoadOnlineLocalhost()
         {
-            LoadScene(onlineLocalhostScene);
+            SceneManager
+                .LoadSceneAsync(onlineLocalhostScene, LoadSceneMode.Additive)!
+                .completed += OnOnlineSceneLoadCompleted;
+
+            return;
+            void OnOnlineSceneLoadCompleted(AsyncOperation op)
+            {
+                SceneManager.UnloadSceneAsync(mainMenuScene);
+            }
         }
 
         public void ReloadCurrentScene()
