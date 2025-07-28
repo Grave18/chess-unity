@@ -8,9 +8,9 @@ namespace ChessGame.Logic.Moves
         private readonly SimpleMove _simpleMove;
         private readonly Promotion _promotion;
 
-        public MovePromotion(Piece piece, Square fromSquare, Square toSquare, Piece otherPiece)
+        public MovePromotion(Game game, Piece piece, Square fromSquare, Square toSquare, Piece otherPiece)
         {
-            _simpleMove = new SimpleMove(piece, fromSquare, toSquare, isFirstMove: false);
+            _simpleMove = new SimpleMove(game, piece, fromSquare, toSquare, isFirstMove: false);
             _promotion = new Promotion(piece, fromSquare, toSquare, otherPiece);
         }
 

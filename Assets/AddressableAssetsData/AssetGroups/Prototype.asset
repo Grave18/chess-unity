@@ -18,10 +18,16 @@ MonoBehaviour:
   m_GUID: 214f07ddc17c7c54b9d387bb21c5b8ae
   m_SerializeEntries:
   - m_GUID: 04856a27cc369c849ab6a53a1487a042
-    m_Address: Assets/Assets/Board/Prototype/Pieces
+    m_Address: Prototype Pieces
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Prototype
+    - Prototype Pieces
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac98afb240e3f20439906d6657acd603
+    m_Address: Prototipe Board
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prototype Board
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: ba951b888230aaf418b5f85de7354dca, type: 2}

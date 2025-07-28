@@ -8,10 +8,10 @@ namespace ChessGame.Logic.Moves
         private readonly Piece _beatenPiece;
         private readonly Turn _simpleMove;
 
-        public Capture(Piece movedPiece, Square fromSquare, Square toSquare, Piece beatenPiece, bool isFirstMove)
+        public Capture(Game game, Piece movedPiece, Square fromSquare, Square toSquare, Piece beatenPiece, bool isFirstMove)
         {
             _beatenPiece = beatenPiece;
-            _simpleMove = new SimpleMove(movedPiece, fromSquare,toSquare, isFirstMove, isComposite: true);
+            _simpleMove = new SimpleMove(game,movedPiece, fromSquare,toSquare, isFirstMove, isComposite: true);
         }
 
         public override void Progress(float t, bool isUndo = false)

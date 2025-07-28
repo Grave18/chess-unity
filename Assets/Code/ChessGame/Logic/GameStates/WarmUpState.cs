@@ -11,7 +11,7 @@
 
         public override void Enter()
         {
-            // Empty
+            Game.FireWarmup();
         }
 
         public override void Exit(string nextState)

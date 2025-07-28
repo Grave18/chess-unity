@@ -11,7 +11,7 @@ PrefabInstance:
     - target: {fileID: 2578507242317448615, guid: 179f56526adaca0448b80a8d5908486c,
         type: 3}
       propertyPath: m_text
-      value: Time
+      value: Time, min
       objectReference: {fileID: 0}
     - target: {fileID: 2578507242317448615, guid: 179f56526adaca0448b80a8d5908486c,
         type: 3}
@@ -26,7 +26,7 @@ PrefabInstance:
     - target: {fileID: 4449133465048980332, guid: 179f56526adaca0448b80a8d5908486c,
         type: 3}
       propertyPath: m_Name
-      value: TimeDropdown Variant
+      value: TimeDropdown
       objectReference: {fileID: 0}
     - target: {fileID: 6094054920436614200, guid: 179f56526adaca0448b80a8d5908486c,
         type: 3}
@@ -219,7 +219,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30bed24ee6284009bec5f3f557f9949e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  graphicsSettingsContainer: {fileID: 0}
   gameSettingsContainer: {fileID: 0}
   timesInMinutes:
   - 1

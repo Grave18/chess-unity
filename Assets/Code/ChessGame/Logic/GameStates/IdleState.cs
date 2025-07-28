@@ -14,20 +14,8 @@ namespace ChessGame.Logic.GameStates
 
         public override void Enter()
         {
-            if(IsGameOver())
-            {
-                Game.FireEnd();
-            }
-            else
-            {
-                _isRunning = true;
-                Game.Competitors.StartPlayer();
-            }
-        }
-
-        private bool IsGameOver()
-        {
-            return Game.CheckType is CheckType.CheckMate or CheckType.Draw || IsTimeOut();
+            _isRunning = true;
+            Game.Competitors.StartPlayer();
         }
 
         public override void Exit(string nextState)
@@ -37,14 +25,14 @@ namespace ChessGame.Logic.GameStates
 
         public override void Move(string uci)
         {
-            Game.SetState(new MoveState(Game, uci));
+            Game.Machine.SetState(new MoveState(Game, uci));
         }
 
         public override void Undo()
         {
             if (Game.UciBuffer.CanUndo(out MoveData moveData))
             {
-                Game.SetState(new UndoState(Game, moveData));
+                Game.Machine.SetState(new UndoState(Game, moveData));
             }
         }
 
@@ -52,7 +40,7 @@ namespace ChessGame.Logic.GameStates
         {
             if (Game.UciBuffer.CanRedo(out MoveData moveData))
             {
-                Game.SetState(new RedoState(Game, moveData));
+                Game.Machine.SetState(new RedoState(Game, moveData));
             }
         }
 
@@ -63,27 +51,23 @@ namespace ChessGame.Logic.GameStates
 
         public override void Pause()
         {
-            Game.SetState(new PauseState(Game));
+            Game.Machine.SetState(new PauseState(Game));
         }
 
         public override void Update()
         {
+            if (Game.IsCheckMate)
+            {
+                Game.Checkmate();
+                return;
+            }
+
             if (!_isRunning)
             {
                 return;
             }
 
-            if (IsTimeOut())
-            {
-                _isRunning = false;
-            }
-
             Game.Competitors.UpdatePlayer();
-        }
-
-        private bool IsTimeOut()
-        {
-            return Game.CheckType is CheckType.TimeOutWhite or CheckType.TimeOutBlack;
         }
     }
 }

@@ -4,7 +4,7 @@ using ChessGame.Logic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
-using Utils.Mathematics;
+using UtilsCommon.Mathematics;
 
 #if UNITY_EDITOR
 using EditorCools;
@@ -96,7 +96,7 @@ namespace MainCamera
 
             if (_isAutoRotationOn)
             {
-                _game.OnEndMoveColor += AutoRotate;
+                _game.OnEndMoveWithColor += AutoRotate;
                 _game.OnEnd += StopAutoRotate;
             }
         }
@@ -105,7 +105,7 @@ namespace MainCamera
         {
             if (_game != null && _isAutoRotationOn)
             {
-                _game.OnEndMoveColor -= AutoRotate;
+                _game.OnEndMoveWithColor -= AutoRotate;
                 _game.OnEnd -= StopAutoRotate;
             }
         }

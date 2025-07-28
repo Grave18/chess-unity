@@ -1,0 +1,137 @@
+<UserControl x:Class="Ui.Menu.Pages.PlayPage"
+             Name="ThisControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:userControls="clr-namespace:Ui.Menu.UserControls"
+             mc:Ignorable="d"
+             d:DesignWidth="640" d:DesignHeight="1080"
+             Focusable="True"
+             IsTabStop="False">
+
+    <Grid Name="Root">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="170" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0"
+               Text="Play"
+               Style="{DynamicResource HeaderTextBlockStyle}" />
+
+        <!-- Tab Control -->
+        <TabControl Grid.Row="1"
+                    Name="TabControl"
+                    Style="{DynamicResource TabControlStyle}">
+
+            <!-- Common Time Dropdown style-->
+            <TabControl.Resources>
+                <Style TargetType="userControls:DropdownUserControl">
+                    <Setter Property="ItemTemplate" Value="{StaticResource TimeDataTemplate}" />
+                </Style>
+            </TabControl.Resources>
+
+            <!-- Offline Tab -->
+            <TabItem Header="2 Players"
+                     TabIndex="1"
+                     KeyboardNavigation.TabNavigation="Continue"
+                     Style="{DynamicResource TabItemStyle}">
+                <DockPanel Margin="30">
+                    <!-- Time dropdown -->
+                    <userControls:DropdownUserControl DockPanel.Dock="Top"
+                                                      Text="Time"
+                                                      Focusable="True"
+                                                      SelectedItem="{Binding SelectedTime, Mode=TwoWay}"
+                                                      ItemsSource="{Binding Times}" />
+                    <!-- Fen Text Box -->
+                    <userControls:FenTextBox DockPanel.Dock="Top"
+                                             Focusable="True" />
+                    <!-- Start match Button -->
+                    <Button DockPanel.Dock="Bottom"
+                            Focusable="True"
+                            Content="Start Match"
+                            VerticalAlignment="Bottom"
+                            DataContext="{Binding DataContext, ElementName=ThisControl}"
+                            Command="{Binding PlayOfflineCommand}" />
+                </DockPanel>
+            </TabItem>
+
+            <!-- Computer Tab -->
+            <TabItem Header="Computer"
+                     TabIndex="2"
+                     Style="{DynamicResource TabItemStyle}">
+                <DockPanel Margin="30">
+                    <!-- Time dropdown -->
+                    <userControls:DropdownUserControl DockPanel.Dock="Top"
+                                                      Text="Time"
+                                                      SelectedItem="{Binding SelectedTime, Mode=TwoWay}"
+                                                      ItemsSource="{Binding Times}" />
+                    <!-- Difficulty dropdown -->
+                    <userControls:DropdownUserControl DockPanel.Dock="Top"
+                                                      Text="Difficulty"
+                                                      SelectedItem="{Binding SelectedDifficulty, Mode=TwoWay}"
+                                                      ItemsSource="{Binding Difficulties}" />
+                    <!-- Fen Text Box -->
+                    <userControls:FenTextBox DockPanel.Dock="Top" />
+                    <!-- Start Button -->
+                    <Button DockPanel.Dock="Bottom"
+                            Content="Start Match"
+                            VerticalAlignment="Bottom"
+                            DataContext="{Binding DataContext, ElementName=ThisControl}"
+                            Command="{Binding PlayWithComputerCommand}" />
+                </DockPanel>
+            </TabItem>
+
+            <!-- Online Tab -->
+            <TabItem Header="Online"
+                     TabIndex="3"
+                     Style="{DynamicResource TabItemStyle}"
+                     KeyboardNavigation.TabNavigation="Continue">
+                <DockPanel Margin="30">
+                    <!-- Time dropdown -->
+                    <userControls:DropdownUserControl DockPanel.Dock="Top"
+                                                      Text="Time"
+                                                      SelectedItem="{Binding SelectedTime, Mode=TwoWay}"
+                                                      ItemsSource="{Binding Times}" />
+                    <!-- Fen Text Box -->
+                    <userControls:FenTextBox DockPanel.Dock="Top" />
+                    <!-- Debug Localhost Buttons -->
+                    <Grid Height="80" DockPanel.Dock="Top" Margin="0 20 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="220" />
+                            <ColumnDefinition Width="220" />
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0"
+                                Content="Server"
+                                Style="{StaticResource FenButtonStyle}"
+                                DataContext="{Binding DataContext, ElementName=ThisControl}"
+                                Command="{Binding StartLocalServerCommand}" />
+                        <Button Grid.Column="1"
+                                Content="Local"
+                                Style="{StaticResource FenButtonStyle}"
+                                DataContext="{Binding DataContext, ElementName=ThisControl}"
+                                Command="{Binding StartLocalClientCommand}" />
+                    </Grid>
+                    <!-- Create Lobby Button -->
+                    <Button DockPanel.Dock="Bottom"
+                            Content="Create Lobby"
+                            VerticalAlignment="Bottom"
+                            DataContext="{Binding DataContext, ElementName=ThisControl}"
+                            Command="{Binding CreateLobbyCommand}" />
+                </DockPanel>
+            </TabItem>
+
+        </TabControl>
+
+        <!-- Back Button -->
+        <Button Grid.Row="2"
+                TabIndex="4"
+                Margin="0 0 0 20"
+                Content="Back"
+                DataContext="{Binding DataContext, ElementName=ThisControl}"
+                Click="Back_Click" />
+    </Grid>
+
+</UserControl>

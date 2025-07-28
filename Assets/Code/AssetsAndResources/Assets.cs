@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ChessGame.Logic;
+using GameAndScene;
 using Notation;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -11,19 +11,23 @@ namespace AssetsAndResources
 {
     public class Assets : MonoBehaviour
     {
-        [Header("Assets")]
-        [SerializeField] private AssetLabelReference assetLabel;
+        [Header("References")]
+        [SerializeField] private GameSettingsContainer gameSettingsContainer;
 
-        private GameObject[] _prefabs;
-        private AsyncOperationHandle<IList<GameObject>> _asyncOperationHandle;
+        private AsyncOperationHandle<GameObject> _boardHandle;
+        private AsyncOperationHandle<IList<GameObject>> _piecesHandle;
 
-        public async Task<GameObject[]> LoadPrefabs()
+        public async Task<(GameObject, IList<GameObject>)> LoadPrefabs()
         {
-            _asyncOperationHandle =  Addressables.LoadAssetsAsync<GameObject>(assetLabel, _ => { });
-            var prefabs = await _asyncOperationHandle.Task;
-            _prefabs = prefabs.ToArray();
+            string boardModelAddress = gameSettingsContainer.GetBoardModelAddress();
+            _boardHandle = Addressables.LoadAssetAsync<GameObject>(boardModelAddress);
+            GameObject boardPrefab = await _boardHandle.Task;
 
-            return _prefabs;
+            string piecesModelAddress = gameSettingsContainer.GetPieceModelAddress();
+            _piecesHandle =  Addressables.LoadAssetsAsync<GameObject>(piecesModelAddress, _ => { });
+            IList<GameObject> piecePrefabs = await _piecesHandle.Task;
+
+            return (boardPrefab, piecePrefabs);
         }
 
         public static PieceColor GetTurnColorFromPreset(FenSplit fenSplit)
@@ -45,9 +49,14 @@ namespace AssetsAndResources
 
         public void ReleaseAssets()
         {
-            if (_asyncOperationHandle.IsValid())
+            if (_piecesHandle.IsValid())
             {
-                Addressables.Release(_asyncOperationHandle);
+                Addressables.Release(_piecesHandle);
+            }
+
+            if (_boardHandle.IsValid())
+            {
+                Addressables.Release(_boardHandle);
             }
         }
     }

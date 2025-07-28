@@ -21,7 +21,7 @@ namespace ChessGame.Logic
         public TimeSpan WhiteTime => _whiteTime.value;
         public TimeSpan BlackTime => _blackTime.value;
 
-        public void Init(Game game, GameSettings gameSettings)
+        public void Init(Game game, Vector2Int time)
         {
             if (_isInitialized)
             {
@@ -30,8 +30,7 @@ namespace ChessGame.Logic
             }
 
             _game = game;
-            _initialWhiteTime = TimeSpan.FromMinutes(gameSettings.Time.x)
-                                + TimeSpan.FromSeconds(gameSettings.Time.y);
+            _initialWhiteTime = TimeSpan.FromMinutes(time.x) + TimeSpan.FromSeconds(time.y);
             _initialBlackTime = _initialWhiteTime;
 
             _game.OnWarmup += InitTime;
@@ -95,7 +94,7 @@ namespace ChessGame.Logic
 
         private void Update()
         {
-            if (!_isPlaying || _game == null)
+            if (!_isPlaying || !_game)
             {
                 return;
             }
@@ -124,8 +123,14 @@ namespace ChessGame.Logic
             {
                 _isPlaying = false;
                 time.value = TimeSpan.Zero;
-                _game.SetTimeOut(pieceColor);
+                SetTimeoutAll(pieceColor);
             }
+        }
+
+        [ObserversRpc]
+        private void SetTimeoutAll(PieceColor pieceColor)
+        {
+            _game.SetTimeOut(pieceColor);
         }
     }
 }

@@ -1,11 +1,14 @@
 using System.Text;
-using ChessGame;
 using ChessGame.ChessBoard;
 using ChessGame.ChessBoard.Info;
 using ChessGame.ChessBoard.Pieces;
 using ChessGame.Logic;
-using EditorCools;
+using ChessGame.Logic.MovesBuffer;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using EditorCools;
+#endif
 
 namespace Notation
 {
@@ -13,24 +16,17 @@ namespace Notation
     {
         private Game _game;
         private Board _board;
+        private UciBuffer _uciBuffer;
         private string _fen;
 
         private readonly StringBuilder _uciStringBuilder = new();
 
-        public void Init(Game game, Board board, string fen)
+        public void Init(Game game, Board board, UciBuffer uciBuffer, string fen)
         {
             _game = game;
             _board = board;
+            _uciBuffer = uciBuffer;
             _fen = fen;
-        }
-
-        [Button(space: 10)]
-        public void ShowUci()
-        {
-            string uci = Get();
-
-            Debug.Log($"<color=gray>{uci}</color>");
-            Debug.Log($"Is identical with preset: {uci == _fen}");
         }
 
         public string Get()
@@ -43,6 +39,19 @@ namespace Notation
             AppendEnPassantSquare();
             AppendHalfMove();
             AppendFullMove();
+
+            return _uciStringBuilder.ToString();
+        }
+
+        /// Don't contain a half move and full move
+        public string GetShort()
+        {
+            _uciStringBuilder.Clear();
+
+            AppendLetters();
+            AppendColor();
+            AppendCastling();
+            AppendEnPassantSquare();
 
             return _uciStringBuilder.ToString();
         }
@@ -71,7 +80,7 @@ namespace Notation
                 if(piece != null)
                 {
                     AppendAndResetCounterIfPossible(ref counter);
-                    AppendLetter(letter, piece);
+                    AppendPieceLetter(letter, piece);
                 }
 
                 if (IsLastColumnFile(square))
@@ -104,7 +113,7 @@ namespace Notation
             }
         }
 
-        private void AppendLetter(char letter, Piece piece)
+        private void AppendPieceLetter(char letter, Piece piece)
         {
             if (piece.GetPieceColor() == PieceColor.White)
             {
@@ -164,12 +173,32 @@ namespace Notation
 
         private void AppendHalfMove()
         {
-            _uciStringBuilder.Append(" 0");
+            int halfMoveClock = _uciBuffer.HalfMoveClock;
+
+            _uciStringBuilder.Append($" {halfMoveClock}");
         }
 
         private void AppendFullMove()
         {
-            _uciStringBuilder.Append(" 1");
+            int fullMoveCounter = _uciBuffer.FullMoveCounter;
+
+            _uciStringBuilder.Append($" {fullMoveCounter}");
         }
+
+#if UNITY_EDITOR
+
+        [Button(space: 10)]
+        public void ShowAndCopyToClipboard()
+        {
+            string uci = Get();
+
+            GUIUtility.systemCopyBuffer = uci;
+
+            Debug.Log($"<color=gray>{uci}</color>");
+            Debug.Log($"Is identical with preset: {uci == _fen}");
+        }
+
+#endif
+
     }
 }

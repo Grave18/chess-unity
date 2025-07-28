@@ -1,5 +1,6 @@
 ﻿using System;
 using Initialization;
+using UnityEngine;
 
 namespace ChessGame.Logic
 {
@@ -8,6 +9,6 @@ namespace ChessGame.Logic
         public TimeSpan WhiteTime {get;}
         public TimeSpan BlackTime {get;}
 
-        public void Init(Game game, GameSettings gameSettings);
+        public void Init(Game game, Vector2Int time);
     }
 }

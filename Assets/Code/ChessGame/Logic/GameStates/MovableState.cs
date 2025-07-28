@@ -29,10 +29,6 @@ namespace ChessGame.Logic.GameStates
             {
                 EffectsPlayer.Instance.PlayCheckSound();
             }
-            if(Game.IsCheckMate)
-            {
-                EffectsPlayer.Instance.PlayGameEndSound();
-            }
         }
     }
 }

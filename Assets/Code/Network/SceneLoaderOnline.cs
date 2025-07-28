@@ -1,16 +1,18 @@
 using System.Collections;
+using GameAndScene;
 using Network.Localhost;
 using PurrNet;
 using TMPro;
-using Ui.MainMenu;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Network
 {
     public class SceneLoaderOnline : NetworkBehaviour
     {
         [Header("References")]
-        [SerializeField] [PurrScene] private string gameScene;
+        [PurrScene] [SerializeField] private string gameScene;
+
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
 
         [Header("Debug Ui")]
@@ -64,7 +66,8 @@ namespace Network
         private IEnumerator LoadGame()
         {
             yield return new WaitForSecondsRealtime(0.5f);
-            InstanceHandler.NetworkManager.sceneModule.LoadSceneAsync(gameScene);
+
+            InstanceHandler.NetworkManager.sceneModule.LoadSceneAsync(gameScene, LoadSceneMode.Additive);
         }
 
         [TargetRpc]

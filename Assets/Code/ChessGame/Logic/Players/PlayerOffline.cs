@@ -107,10 +107,10 @@ namespace ChessGame.Logic.Players
                     return;
                 }
 
-                _game.Pause();
+                _game.Machine.Pause();
                 _promotionPanel.RequestPromotedPiece(_game.CurrentTurnColor, pieceLetter =>
                 {
-                    _game.Play();
+                    _game.Machine.Play();
                     uci += pieceLetter;
                     Move(uci);
                 });
@@ -123,7 +123,7 @@ namespace ChessGame.Logic.Players
 
         private void Move(string uci)
         {
-            _game.Move(uci);
+            _game.Machine.Move(uci);
             _game.Deselect();
         }
 

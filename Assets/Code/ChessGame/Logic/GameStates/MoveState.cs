@@ -70,16 +70,16 @@ namespace ChessGame.Logic.GameStates
         private bool ValidateMove(ParsedUci parsedUci)
         {
             Piece piece = parsedUci.FromSquare.GetPiece();
-
             _moveData = new MoveData
             {
                 Uci = _uci,
                 IsFirstMove = piece.IsFirstMove,
+                HalfMoveClock = GetHalfMoves(),
+                FullMoveCounter = GetFullMoveCounter(piece.GetPieceColor()),
             };
-
             bool isValid = false;
-
             Piece promotedPiece = null;
+
             // Move
             if (piece.CanMoveTo(parsedUci.ToSquare, out MoveInfo moveInfo))
             {
@@ -88,16 +88,22 @@ namespace ChessGame.Logic.GameStates
                 if (parsedUci.PromotedPieceType == PieceType.None)
                 {
                     _moveData.MoveType = MoveType.Move;
-                    Turn = new SimpleMove(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
+                    Turn = new SimpleMove(Game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
                 }
                 else
                 {
                     _moveData.MoveType = MoveType.MovePromotion;
                     _moveData.HiddenPawn = piece;
-                    promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
+                    promotedPiece = Game.Board.SpawnPiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                         parsedUci.ToSquare);
-                    Turn = new MovePromotion(_moveData.HiddenPawn, parsedUci.FromSquare, parsedUci.ToSquare,
+                    Turn = new MovePromotion(Game,_moveData.HiddenPawn, parsedUci.FromSquare, parsedUci.ToSquare,
                         promotedPiece);
+                }
+
+                // Reset rule 50 if pawn move
+                if (piece is Pawn)
+                {
+                    ResetHalfMoveClock();
                 }
 
                 isValid = true;
@@ -110,18 +116,21 @@ namespace ChessGame.Logic.GameStates
                 if (parsedUci.PromotedPieceType == PieceType.None)
                 {
                     _moveData.MoveType = captureInfo.MoveType;
-                    Turn = new Capture(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
+                    Turn = new Capture(Game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
                         _moveData.IsFirstMove);
                 }
                 else
                 {
                     _moveData.MoveType = MoveType.CapturePromotion;
                     _moveData.HiddenPawn = piece;
-                    promotedPiece = Game.Board.CreatePiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
+                    promotedPiece = Game.Board.SpawnPiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                         parsedUci.ToSquare);
-                    Turn = new CapturePromotion(piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece,
+                    Turn = new CapturePromotion(Game, piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece,
                         _moveData.BeatenPiece);
                 }
+
+                // Reset rule 50 if capture move
+                ResetHalfMoveClock();
 
                 isValid = true;
             }
@@ -131,13 +140,35 @@ namespace ChessGame.Logic.GameStates
             {
                 _moveData.MoveType = castlingInfo.MoveType;
                 _moveData.CastlingInfo = castlingInfo;
-                Turn = new Castling(_moveData.CastlingInfo, _moveData.IsFirstMove);
+                Turn = new Castling(Game,_moveData.CastlingInfo, _moveData.IsFirstMove);
                 isValid = true;
             }
 
             _moveData.TurnColor = Game.CurrentTurnColor;
             _moveData.AlgebraicNotation = Algebraic.Get(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.MoveType, promotedPiece);
             return isValid;
+        }
+
+        private int GetHalfMoves()
+        {
+            return Game.UciBuffer.HalfMoveClock + 1;
+        }
+
+        private void ResetHalfMoveClock()
+        {
+            _moveData.HalfMoveClock = 0;
+        }
+
+        private int GetFullMoveCounter(PieceColor pieceColor)
+        {
+            int counter = Game.UciBuffer.FullMoveCounter;
+
+            if (pieceColor == PieceColor.Black)
+            {
+                return counter + 1;
+            }
+
+            return counter;
         }
 
         private void Run()
@@ -148,7 +179,7 @@ namespace ChessGame.Logic.GameStates
         private void Abort(string uci)
         {
             Debug.Log($"{uci}: invalid move");
-            Game.SetState(new IdleState(Game));
+            Game.Machine.SetState(new IdleState(Game));
         }
 
         public override void Exit(string nextState)
@@ -221,7 +252,7 @@ namespace ChessGame.Logic.GameStates
             Game.PreformCalculations();
             UpdateAlgebraicNotation();
             Game.FireEndMove();
-            Game.SetState(new IdleState(Game));
+            Game.Machine.SetState(new IdleState(Game));
             PlayCheckSound();
         }
 

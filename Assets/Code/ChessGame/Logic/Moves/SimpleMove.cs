@@ -1,20 +1,22 @@
 ﻿using ChessGame.ChessBoard;
 using ChessGame.ChessBoard.Pieces;
 using UnityEngine;
-using Utils.Mathematics;
+using UtilsCommon.Mathematics;
 
 namespace ChessGame.Logic.Moves
 {
     public class SimpleMove : Turn
     {
+        private readonly Game _game;
         private readonly Piece _movedPiece;
         private readonly Square _fromSquare;
         private readonly Square _toSquare;
         private readonly bool _isFirstMove;
         private readonly bool _isComposite;
 
-        public SimpleMove(Piece movedPiece, Square fromSquare, Square toSquare, bool isFirstMove, bool isComposite = false)
+        public SimpleMove(Game game, Piece movedPiece, Square fromSquare, Square toSquare, bool isFirstMove, bool isComposite = false)
         {
+            _game = game;
             _movedPiece = movedPiece;
             _fromSquare = fromSquare;
             _toSquare = toSquare;
@@ -55,7 +57,7 @@ namespace ChessGame.Logic.Moves
         {
             if (!_isComposite)
             {
-                if (Game.Instance.CurrentTurnColor == PieceColor.White)
+                if (_game.CurrentTurnColor == PieceColor.White)
                 {
                     EffectsPlayer.Instance.PlayMoveSound();
                 }

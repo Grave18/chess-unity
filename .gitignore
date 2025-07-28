@@ -67,11 +67,21 @@ sysinfo.txt
 *.unitypackage
 *.app
 
+# MS Blend
+#*.blend
+#Blend/
+/Blend/obj/
+/Blend/bin/
+
 # Crashlytics generated file
 crashlytics-build.properties
 
 # Packed Addressables
 /[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+
+# Auto-generated Addressables linker file
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/link.xml
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/link.xml.meta
 
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
