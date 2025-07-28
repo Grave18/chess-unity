@@ -44,12 +44,12 @@ namespace Ui.Menu.ViewModels
             LogUi.Debug("PlayOnline Clicked");
         }
 
-        private void StartLocalServer(object obj)
+        public void StartLocalServer(object obj)
         {
             StartLocal(PieceColor.White, true);
         }
 
-        private void StartLocalClient(object obj)
+        public void StartLocalClient(object obj)
         {
             StartLocal(PieceColor.Black, false);
         }
