@@ -1,5 +1,5 @@
 ﻿using GameAndScene;
-using Ui.Common;
+using Settings;
 using Ui.Common.Buttons;
 using UnityEngine;
 

@@ -3,13 +3,10 @@ using System.Globalization;
 using Ai;
 using ChessGame.Logic;
 using Initialization;
+using ParrelSync;
 using UnityEngine;
 
-#if UNITY_EDITOR
-using ParrelSync;
-#endif
-
-namespace GameAndScene
+namespace Settings
 {
     [DefaultExecutionOrder(-1)]
     public class GameSettingsContainer : MonoBehaviour
@@ -23,7 +20,7 @@ namespace GameAndScene
         // TODO: this is for temporary localhost server. Need to be removed
 #if UNITY_EDITOR
         public static string GameSettingsKey => ClonesManager.IsClone() ? "GameSettingsClone" : "GameSettings";
-        private static string localhostServerKey => ClonesManager.IsClone() ? "IsServerClone" : "IsServer";
+        private static string LocalhostServerKey => ClonesManager.IsClone() ? "IsServerClone" : "IsServer";
 #else
         public static string GameSettingsKey => "GameSettings";
         private static string localhostServerKey => "IsServer";
@@ -31,8 +28,8 @@ namespace GameAndScene
 
         public static bool IsLocalhostServer
         {
-            get => PlayerPrefs.GetInt(localhostServerKey, 0) == 1;
-            set => PlayerPrefs.SetInt(localhostServerKey, value ? 1 : 0);
+            get => PlayerPrefs.GetInt(LocalhostServerKey, 0) == 1;
+            set => PlayerPrefs.SetInt(LocalhostServerKey, value ? 1 : 0);
         }
         // end todo
 

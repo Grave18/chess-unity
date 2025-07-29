@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Ai;
-using GameAndScene;
+using Settings;
 using Ui.Auxiliary;
 using UnityEngine;
 

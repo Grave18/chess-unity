@@ -1,7 +1,7 @@
 using GameAndScene;
 using Notation;
+using Settings;
 using Ui.Common.Buttons;
-using Ui.MainMenu;
 using UnityEngine;
 using UnityEngine.UI;
 

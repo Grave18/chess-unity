@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using BoardEditor;
-using GameAndScene;
+using Settings;
 using Ui.Common;
 using UnityEngine;
 

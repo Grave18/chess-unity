@@ -1,6 +1,6 @@
 ﻿using ChessGame.Logic;
-using GameAndScene;
 using Network;
+using Settings;
 using UnityEngine;
 using UnityEngine.UI;
 

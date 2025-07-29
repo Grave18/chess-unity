@@ -1,5 +1,6 @@
 ﻿using ChessGame.Logic;
 using GameAndScene;
+using Settings;
 using Ui.Auxiliary;
 using UnityEngine;
 

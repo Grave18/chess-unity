@@ -1,4 +1,5 @@
 ﻿using GameAndScene;
+using Settings;
 using Ui.Common;
 using Ui.Common.Buttons;
 using UnityEngine;

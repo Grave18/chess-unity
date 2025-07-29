@@ -1,6 +1,6 @@
 using System.Collections;
-using GameAndScene;
 using PurrNet;
+using Settings;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -9,19 +9,19 @@ namespace Network.Localhost
     [RequireComponent(typeof(NetworkManager))]
     public class ConnectionStarterLocalhost : MonoBehaviour
     {
-        private NetworkManager networkManager;
+        private NetworkManager _networkManager;
 
         private void Awake()
         {
-            networkManager = GetComponent<NetworkManager>();
-            Assert.IsNotNull(networkManager);
+            _networkManager = GetComponent<NetworkManager>();
+            Assert.IsNotNull(_networkManager);
         }
 
         private void Start()
         {
             if (GameSettingsContainer.IsLocalhostServer)
             {
-                networkManager.StartServer();
+                _networkManager.StartServer();
             }
 
             StartCoroutine(StartClient());
@@ -31,7 +31,7 @@ namespace Network.Localhost
         {
             yield return new WaitForSeconds(1f);
 
-            networkManager.StartClient();
+            _networkManager.StartClient();
         }
     }
 }

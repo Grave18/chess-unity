@@ -6,9 +6,9 @@ using ChessGame.ChessBoard.Pieces;
 using ChessGame.Logic.GameStates;
 using ChessGame.Logic.MovesBuffer;
 using ChessGame.Logic.Players;
-using GameAndScene;
 using MainCamera;
 using Network;
+using Settings;
 using UnityEngine;
 using UnityEngine.Events;
 

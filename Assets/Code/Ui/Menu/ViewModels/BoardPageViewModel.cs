@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using BoardEditor;
-using GameAndScene;
+using Settings;
 using Ui.Auxiliary;
 using UnityEngine;
 

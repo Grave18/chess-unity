@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Ai;
-using GameAndScene;
+using Settings;
 using Ui.Common;
 using UnityEngine;
 

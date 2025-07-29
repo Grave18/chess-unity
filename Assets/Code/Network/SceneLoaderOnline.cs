@@ -1,7 +1,7 @@
 using System.Collections;
-using GameAndScene;
 using Network.Localhost;
 using PurrNet;
+using Settings;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;

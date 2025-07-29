@@ -1,5 +1,5 @@
 ﻿using EditorCools;
-using GameAndScene;
+using Settings;
 using UnityEngine;
 
 namespace Initialization
