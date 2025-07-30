@@ -16,7 +16,7 @@ namespace Network
         {
             if (InstanceHandler.NetworkManager != null)
             {
-                InstanceHandler.NetworkManager.onPlayerJoined += OnConnected;
+                InstanceHandler.NetworkManager.onPlayerJoined += OnPlayerJoined;
             }
         }
 
@@ -24,11 +24,11 @@ namespace Network
         {
             if (InstanceHandler.NetworkManager != null)
             {
-                InstanceHandler.NetworkManager.onPlayerJoined -= OnConnected;
+                InstanceHandler.NetworkManager.onPlayerJoined -= OnPlayerJoined;
             }
         }
 
-        private void OnConnected(PlayerID player, bool isReconnect, bool asServer)
+        private void OnPlayerJoined(PlayerID player, bool isReconnect, bool asServer)
         {
             if (asServer)
             {
