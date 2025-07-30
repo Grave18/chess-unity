@@ -14,6 +14,7 @@ using System.Windows.Controls;
 using EventArgs = System.EventArgs;
 #endif
 
+using System.Windows.Input;
 using Ui.Auxiliary;
 
 namespace Ui.InGame.Pages
@@ -23,7 +24,10 @@ namespace Ui.InGame.Pages
         public InGameSettingsPage()
         {
             Initialized += OnInitialized;
+            Loaded += OnLoaded;
             InitializeComponent();
+
+            this.KeyUp += OnKeyUp;
         }
 
         private void OnInitialized(object sender, EventArgs args)
@@ -33,6 +37,21 @@ namespace Ui.InGame.Pages
                 GraphicsSettingsTab.DataContext = Object.FindAnyObjectByType<GraphicsSettingsViewModel>();
                 AudioSettingsTab.DataContext = Object.FindAnyObjectByType<AudioSettingsViewModel>();
             #endif
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            this.Focusable = true;
+            this.Focus();
+        }
+
+        private void OnKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                Back_Click(null, null);
+                e.Handled = true;
+            }
         }
 
         public void Back_Click(object sender, RoutedEventArgs args)

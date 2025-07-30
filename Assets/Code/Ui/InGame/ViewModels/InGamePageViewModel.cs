@@ -22,13 +22,6 @@ namespace Ui.InGame.ViewModels
         public bool IsDrawButtonEnabled => OnlineInstanceHandler.IsOnline && !game.IsGameOver && game.IsMyTurn;
         public bool IsResignButtonEnabled => !game.IsGameOver && game.IsMyTurn;
 
-        private bool _isSaveBoard;
-        public bool IsSaveBoard
-        {
-            get => _isSaveBoard;
-            set => SetField(ref _isSaveBoard, value);
-        }
-
         // Popup
         public DelegateCommand OpenResignPopupCommand { get; set; }
         public DelegateCommand OpenRematchPopupCommand { get; set; }
@@ -73,6 +66,21 @@ namespace Ui.InGame.ViewModels
             set => SetField(ref _isPopupNoButtonEnabled, value);
         }
 
+        // Popup save checkbox
+        private bool _isSaveCheckBoxEnabled;
+        public bool IsSaveCheckBoxEnabled
+        {
+            get => _isSaveCheckBoxEnabled;
+            set => SetField(ref _isSaveCheckBoxEnabled, value);
+        }
+
+        private bool _isSaveCheckBoxChecked;
+        public bool IsSaveCheckBoxChecked
+        {
+            get => _isSaveCheckBoxChecked;
+            set => SetField(ref _isSaveCheckBoxChecked, value);
+        }
+
         private void Awake()
         {
             OpenResignPopupCommand = new DelegateCommand(OpenResignPopup);
@@ -107,6 +115,7 @@ namespace Ui.InGame.ViewModels
         {
             IsPopupOpen = true;
             IsPopupNoButtonEnabled = true;
+            IsSaveCheckBoxEnabled = false;
             PopupText = "Are you want to Rematch?";
             PopupYesButtonText = "Yes";
             PopupNoButtonText = "No";
@@ -120,6 +129,7 @@ namespace Ui.InGame.ViewModels
         {
             IsPopupOpen = true;
             IsPopupNoButtonEnabled = true;
+            IsSaveCheckBoxEnabled = false;
             PopupText = "Are you want to Draw?";
             PopupYesButtonText = "Yes";
             PopupNoButtonText = "No";
@@ -133,6 +143,7 @@ namespace Ui.InGame.ViewModels
         {
             IsPopupOpen = true;
             IsPopupNoButtonEnabled = true;
+            IsSaveCheckBoxEnabled = false;
             PopupText = "Are you want to Resign?";
             PopupYesButtonText = "Yes";
             PopupNoButtonText = "No";
@@ -146,6 +157,7 @@ namespace Ui.InGame.ViewModels
         {
             IsPopupOpen = true;
             IsPopupNoButtonEnabled = true;
+            IsSaveCheckBoxEnabled = true;
             PopupText = "Are you want to Exit?";
             PopupYesButtonText = "Yes";
             PopupNoButtonText = "No";
@@ -184,14 +196,13 @@ namespace Ui.InGame.ViewModels
 
         private void ExitToMainMenu(object obj)
         {
-            IsPopupOpen = false;
             SaveBoard();
             sceneLoader.LoadMainMenu();
         }
 
         private void SaveBoard()
         {
-            if (IsSaveBoard)
+            if (IsSaveCheckBoxChecked)
             {
                 string fen = fenFromBoard.Get();
                 gameSettingsContainer.SetSavedFen(fen);

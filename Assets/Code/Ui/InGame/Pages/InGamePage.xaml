@@ -60,10 +60,18 @@
                     <Border Style="{StaticResource PopupBorderStyle}">
                         <DockPanel Name="PopupDockPanel"
                                    Margin="30">
+                            <!-- Popup Text -->
                             <TextBlock DockPanel.Dock="Top"
                                        Name="PopupText"
                                        Text="{Binding PopupText}"
                                        Style="{StaticResource Header2TextBlockStyle}" />
+                            <!-- Save Checkbox -->
+                            <CheckBox Name="SaveCheckBox"
+                                      DockPanel.Dock="Top"
+                                      Visibility="{Binding IsSaveCheckBoxEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                      Content="Do you want to save game?"
+                                      IsChecked="{Binding IsSaveCheckBoxChecked}"
+                                      Style="{StaticResource CheckboxStyle}" />
                             <Grid DockPanel.Dock="Bottom"
                                   VerticalAlignment="Bottom">
                                 <Grid.ColumnDefinitions>

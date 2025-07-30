@@ -32,6 +32,9 @@
     <SolidColorBrush x:Key="ForegroundBrush" Color="{StaticResource ForegroundColor}" />
     <SolidColorBrush x:Key="MouseOverForegroundBrush" Color="{StaticResource MouseOverForegroundColor}" />
 
+    <!-- Converters -->
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
     <!-- Main Style-->
     <Style x:Key="MainMenuStyle" TargetType="{x:Type UserControl}">
         <Setter Property="FontFamily" Value="Segoe UI" />
@@ -224,7 +227,7 @@
                     <BeginStoryboard>
                         <Storyboard>
                             <ColorAnimation Duration="0:0:0.15"
-                                            Storyboard.TargetProperty="Background.Color" 
+                                            Storyboard.TargetProperty="Background.Color"
                                             To="{StaticResource ButtonColor}">
                             </ColorAnimation>
                         </Storyboard>
