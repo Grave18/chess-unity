@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using ChessGame.Logic.MenuStates;
 using GameAndScene;
 using Network;
 using Notation;
@@ -17,11 +18,6 @@ namespace Ui.InGame.ViewModels
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
         [SerializeField] private FenFromBoard fenFromBoard;
 
-        public DelegateCommand RematchCommand { get; set; }
-        public DelegateCommand DrawCommand { get; set; }
-        public DelegateCommand ResignCommand { get; set; }
-        public DelegateCommand ExitToMainMenuCommand { get; set; }
-
         public bool IsRematchButtonEnabled => OnlineInstanceHandler.IsOffline || (OnlineInstanceHandler.IsOnline && game.IsGameOver);
         public bool IsDrawButtonEnabled => OnlineInstanceHandler.IsOnline && !game.IsGameOver && game.IsMyTurn;
         public bool IsResignButtonEnabled => !game.IsGameOver && game.IsMyTurn;
@@ -30,21 +26,62 @@ namespace Ui.InGame.ViewModels
         public bool IsSaveBoard
         {
             get => _isSaveBoard;
-            set
-            {
-                if (SetField(ref _isSaveBoard, value))
-                {
-                    LogUi.Debug($"{nameof(IsSaveBoard)} changed to {value}");
-                }
-            }
+            set => SetField(ref _isSaveBoard, value);
+        }
+
+        // Popup
+        public DelegateCommand OpenResignPopupCommand { get; set; }
+        public DelegateCommand OpenRematchPopupCommand { get; set; }
+        public DelegateCommand OpenDrawPopupCommand { get; set; }
+        public DelegateCommand OpenExitPopupCommand { get; set; }
+
+        public DelegateCommand PopupYesCommand { get; set; }
+        public DelegateCommand PopupNoCommand { get; set; }
+
+        private bool _isPopupOpen;
+        public bool IsPopupOpen
+        {
+            get => _isPopupOpen;
+            set => SetField(ref _isPopupOpen, value);
+        }
+
+        private string _popupText;
+        public string PopupText
+        {
+            get => _popupText;
+            set => SetField(ref _popupText, value);
+        }
+
+        private string _popupYesButtonText;
+        public string PopupYesButtonText
+        {
+            get => _popupYesButtonText;
+            set => SetField(ref _popupYesButtonText, value);
+        }
+
+        private string _popupNoButtonText;
+        public string PopupNoButtonText
+        {
+            get => _popupNoButtonText;
+            set => SetField(ref _popupNoButtonText, value);
+        }
+
+        private bool _isPopupNoButtonEnabled;
+        public bool IsPopupNoButtonEnabled
+        {
+            get => _isPopupNoButtonEnabled;
+            set => SetField(ref _isPopupNoButtonEnabled, value);
         }
 
         private void Awake()
         {
-            RematchCommand = new DelegateCommand(Rematch);
-            DrawCommand = new DelegateCommand(Draw);
-            ResignCommand = new DelegateCommand(Resign);
-            ExitToMainMenuCommand = new DelegateCommand(ExitToMainMenu);
+            OpenResignPopupCommand = new DelegateCommand(OpenResignPopup);
+            OpenRematchPopupCommand = new DelegateCommand(OpenRematchPopup);
+            OpenDrawPopupCommand = new DelegateCommand(OpenDrawPopup);
+            OpenExitPopupCommand = new DelegateCommand(OpenExitPopup);
+
+            PopupYesCommand = new DelegateCommand();
+            PopupNoCommand = new DelegateCommand();
         }
 
         private void OnEnable()
@@ -66,23 +103,88 @@ namespace Ui.InGame.ViewModels
             OnPropertyChanged(nameof(IsResignButtonEnabled));
         }
 
+        public void OpenRematchPopup(object obj)
+        {
+            IsPopupOpen = true;
+            IsPopupNoButtonEnabled = true;
+            PopupText = "Are you want to Rematch?";
+            PopupYesButtonText = "Yes";
+            PopupNoButtonText = "No";
+            PopupYesCommand.ReplaceCommand(Rematch);
+            PopupNoCommand.ReplaceCommand(ClosePopupToPause);
+
+            MenuStateMachine.Instance.OpenPopup();
+        }
+
+        public void OpenDrawPopup(object obj)
+        {
+            IsPopupOpen = true;
+            IsPopupNoButtonEnabled = true;
+            PopupText = "Are you want to Draw?";
+            PopupYesButtonText = "Yes";
+            PopupNoButtonText = "No";
+            PopupYesCommand.ReplaceCommand(Draw);
+            PopupNoCommand.ReplaceCommand(ClosePopupToPause);
+
+            MenuStateMachine.Instance.OpenPopup();
+        }
+
+        public void OpenResignPopup(object obj)
+        {
+            IsPopupOpen = true;
+            IsPopupNoButtonEnabled = true;
+            PopupText = "Are you want to Resign?";
+            PopupYesButtonText = "Yes";
+            PopupNoButtonText = "No";
+            PopupYesCommand.ReplaceCommand(Resign);
+            PopupNoCommand.ReplaceCommand(ClosePopupToPause);
+
+            MenuStateMachine.Instance.OpenPopup();
+        }
+
+        public void OpenExitPopup(object obj)
+        {
+            IsPopupOpen = true;
+            IsPopupNoButtonEnabled = true;
+            PopupText = "Are you want to Exit?";
+            PopupYesButtonText = "Yes";
+            PopupNoButtonText = "No";
+            PopupYesCommand.ReplaceCommand(ExitToMainMenu);
+            PopupNoCommand.ReplaceCommand(ClosePopupToPause);
+
+            MenuStateMachine.Instance.OpenPopup();
+        }
+
+        public void ClosePopupToPause(object obj)
+        {
+            IsPopupOpen = false;
+            MenuStateMachine.Instance.ClosePopupToPause();
+        }
+
         private void Rematch(object obj)
         {
+            IsPopupOpen = false;
             game.Rematch();
+            MenuStateMachine.Instance.ClosePopupToGame();
         }
 
         private void Draw(object obj)
         {
+            IsPopupOpen = false;
             game.DrawByAgreement();
+            MenuStateMachine.Instance.ClosePopupToGame();
         }
 
         private void Resign(object obj)
         {
+            IsPopupOpen = false;
             game.Resign();
+            MenuStateMachine.Instance.ClosePopupToGame();
         }
 
         private void ExitToMainMenu(object obj)
         {
+            IsPopupOpen = false;
             SaveBoard();
             sceneLoader.LoadMainMenu();
         }

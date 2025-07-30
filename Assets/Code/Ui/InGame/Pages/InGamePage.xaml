@@ -16,6 +16,7 @@
         <TextBlock Grid.Row="0"
                    Text="Menu"
                    Style="{StaticResource HeaderTextBlockStyle}" />
+
         <StackPanel Grid.Row="1"
                     Margin="0 50 0 0">
 
@@ -32,25 +33,27 @@
                     Command="{Binding OpenCloseCommand}" />
             <Button Content="Rematch"
                     IsEnabled="{Binding IsRematchButtonEnabled}"
-                    Click="Rematch_Click" />
+                    Command="{Binding OpenRematchPopupCommand}" />
             <Button Content="Draw"
                     IsEnabled="{Binding IsDrawButtonEnabled}"
-                    Click="Draw_Click" />
+                    Command="{Binding OpenDrawPopupCommand}" />
             <Button Content="Resign"
                     IsEnabled="{Binding IsResignButtonEnabled}"
-                    Click="Resign_Click"/>
+                    Command="{Binding OpenResignPopupCommand}" />
             <Button Content="Settings"
                     Click="Settings_Click" />
         </StackPanel>
 
         <!-- Exit Button -->
-        <Button Grid.Row="2" Content="Exit"
-                Click="Exit_Click"/>
-        <!-- Command="{Binding ExitToMainMenuCommand}" -->
+        <Button Grid.Row="2"
+                Content="Exit"
+                Command="{Binding OpenExitPopupCommand}" />
 
         <!-- Popup -->
         <Popup Grid.Row="0"
                x:Name="Popup"
+               IsOpen="{Binding IsPopupOpen}"
+               StaysOpen="True"
                Style="{StaticResource PopupStyle}">
             <Viewbox Stretch="Uniform">
                 <Grid Style="{StaticResource UniformGridStyle}">
@@ -59,6 +62,7 @@
                                    Margin="30">
                             <TextBlock DockPanel.Dock="Top"
                                        Name="PopupText"
+                                       Text="{Binding PopupText}"
                                        Style="{StaticResource Header2TextBlockStyle}" />
                             <Grid DockPanel.Dock="Bottom"
                                   VerticalAlignment="Bottom">
@@ -66,16 +70,19 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <!-- Cancel Button -->
+                                <!-- No Button -->
                                 <Button Grid.Column="0"
-                                        Content="Cancel"
-                                        Click="PopupClose_Click"
-                                        Style="{StaticResource PopupButtonStyle}"/>
+                                        Name="PopupNoButton"
+                                        IsEnabled="{Binding IsPopupNoButtonEnabled}"
+                                        Content="{Binding PopupNoButtonText}"
+                                        Command="{Binding PopupNoCommand}"
+                                        Style="{StaticResource PopupButtonStyle}" />
                                 <!-- Yes Button -->
                                 <Button Grid.Column="1"
-                                        Name="PopupButton"
-                                        Click="PopupYes_Click"
-                                        Style="{StaticResource PopupButtonStyle}"/>
+                                        Name="PopupYesButton"
+                                        Content="{Binding PopupYesButtonText}"
+                                        Command="{Binding PopupYesCommand}"
+                                        Style="{StaticResource PopupButtonStyle}" />
                             </Grid>
                         </DockPanel>
                     </Border>

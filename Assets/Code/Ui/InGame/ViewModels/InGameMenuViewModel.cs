@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using ChessGame;
+using ChessGame.Logic.MenuStates;
 using Ui.Auxiliary;
 using UnityEngine;
 
@@ -9,8 +9,6 @@ namespace Ui.InGame.ViewModels
 {
     public class InGameMenuViewModel : MonoBehaviour, INotifyPropertyChanged
     {
-        [SerializeField] private GameObject gameCanvas;
-
         public DelegateCommand OpenCloseCommand { get; set; }
 
         private bool _isOpened;
@@ -21,8 +19,6 @@ namespace Ui.InGame.ViewModels
             {
                 if (SetField(ref _isOpened, value))
                 {
-                    EnableProtection(value);
-
                     Debug.Log($"{nameof(IsOpened)} is changed to {value}");
                 }
             }
@@ -30,19 +26,19 @@ namespace Ui.InGame.ViewModels
 
         private void Awake()
         {
-            EnableProtection(false);
-            OpenCloseCommand = new DelegateCommand(OpenClose);
+            OpenCloseCommand = new DelegateCommand(OpenCloseLeftPanel);
         }
 
-        private void EnableProtection(bool value)
+        private void OpenCloseLeftPanel(object obj)
         {
-            GInput.IsEnabled = !value;
-            gameCanvas.SetActive(!value);
-        }
-
-        private void OpenClose(object obj)
-        {
-            IsOpened = !IsOpened;
+            if (IsOpened)
+            {
+                MenuStateMachine.Instance.ClosePause();
+            }
+            else
+            {
+                MenuStateMachine.Instance.OpenPause();
+            }
         }
 
         #region ViewModelImplimentation

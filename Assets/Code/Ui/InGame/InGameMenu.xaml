@@ -14,8 +14,8 @@
 
     <auxiliary:GameMenuBase.Resources>
 
-        <!-- Animated Sliding Panel Border -->
-        <Style x:Key="AnimatedBorderStyle"
+        <!-- Animated Sliding Panel Border Style -->
+        <Style x:Key="HorLeftAnimatedBorderStyle"
                TargetType="Border"
                BasedOn="{StaticResource MainMenuBorder}">
             <Setter Property="RenderTransform">
@@ -76,7 +76,7 @@
             <Border Grid.Column="0"
                     Name="SlidingPanel"
                     local:Attached.Show="{Binding IsOpened, Mode=TwoWay}"
-                    Style="{StaticResource AnimatedBorderStyle}"
+                    Style="{StaticResource HorLeftAnimatedBorderStyle}"
                     Margin="20, 20, 10, 20">
 
                 <ContentControl Name="ContentControl"

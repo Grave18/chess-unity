@@ -57,11 +57,7 @@ namespace Ui.InGame
 
         private void OpenOrCloseMenu()
         {
-            bool isOpened = Attached.GetShow(SlidingPanel);
-            isOpened = !isOpened;
-            Attached.SetShow(SlidingPanel, isOpened);
-
-            LogUi.Debug($"Menu opened: {isOpened}");
+            SandwichButton.Command.Execute(null);
         }
 
 #if NOESIS

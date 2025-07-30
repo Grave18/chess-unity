@@ -5,32 +5,23 @@ namespace Ui.Auxiliary
 {
     public class DelegateCommand: ICommand
     {
+        public event EventHandler CanExecuteChanged;
+
+        private Func<object, bool> _canExecute;
+        private Action<object> _execute;
+
+        public DelegateCommand() { }
+
         public DelegateCommand(Action<object> execute)
         {
-            if (execute == null)
-            {
-                throw new ArgumentNullException("execute");
-            }
-
-            _execute = execute;
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
         }
 
         public DelegateCommand(Func<object, bool> canExecute, Action<object> execute)
         {
-            if (canExecute == null)
-            {
-                throw new ArgumentNullException("canExecute");
-            }
-            if (execute == null)
-            {
-                throw new ArgumentNullException("execute");
-            }
-
-            _canExecute = canExecute;
-            _execute = execute;
+            _canExecute = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
         }
-
-        public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameter)
         {
@@ -42,16 +33,21 @@ namespace Ui.Auxiliary
             _execute(parameter);
         }
 
-        public void RaiseCanExecuteChanged()
+        public void ReplaceCommand(Action<object> execute)
         {
-            var handler = CanExecuteChanged;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
         }
 
-        private Func<object, bool> _canExecute;
-        private Action<object> _execute;
+        public void ReplaceCanExecuteAndCommand(Func<object, bool> canExecute, Action<object> execute)
+        {
+            _canExecute = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+        }
+
+        public void RaiseCanExecuteChanged()
+        {
+            EventHandler handler = CanExecuteChanged;
+            handler?.Invoke(this, EventArgs.Empty);
+        }
     }
 }

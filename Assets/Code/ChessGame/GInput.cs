@@ -6,6 +6,12 @@ namespace ChessGame
     {
         public static bool IsEnabled { get; set; } = true;
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ClearStatics()
+        {
+            IsEnabled = true;
+        }
+
         public static bool Lmb()
         {
             if (!IsEnabled) return false;
