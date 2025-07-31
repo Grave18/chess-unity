@@ -2,27 +2,18 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using ChessGame.Logic.MenuStates;
+using MvvmTool;
 using Ui.Auxiliary;
 using UnityEngine;
 
 namespace Ui.InGame.ViewModels
 {
-    public class InGameMenuViewModel : MonoBehaviour, INotifyPropertyChanged
+    public partial class InGameMenuViewModel : MonoBehaviour, INotifyPropertyChanged
     {
         public DelegateCommand OpenCloseCommand { get; set; }
 
+        [ObservableProperty]
         private bool _isOpened;
-        public bool IsOpened
-        {
-            get => _isOpened;
-            set
-            {
-                if (SetField(ref _isOpened, value))
-                {
-                    Debug.Log($"{nameof(IsOpened)} is changed to {value}");
-                }
-            }
-        }
 
         private void Awake()
         {
