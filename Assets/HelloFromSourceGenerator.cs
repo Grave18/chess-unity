@@ -1,10 +1,9 @@
-using MvvmTool;
 using UnityEngine;
 
 public class HelloFromSourceGenerator : MonoBehaviour
 {
-    [ObservableProperty]
     private int lol;
+
     private static string GetStringFromSourceGenerator()
     {
         return "Hello from unity";

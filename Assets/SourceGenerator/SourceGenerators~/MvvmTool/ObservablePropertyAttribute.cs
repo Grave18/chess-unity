@@ -1,7 +1,5 @@
-﻿using System;
-
-namespace MvvmTool
+﻿namespace MvvmTool
 {
-    [AttributeUsage(AttributeTargets.Field)]
-    public class ObservablePropertyAttribute : Attribute { }
+    [System.AttributeUsage(System.AttributeTargets.Field)]
+    public class ObservablePropertyAttribute : System.Attribute { }
 }
