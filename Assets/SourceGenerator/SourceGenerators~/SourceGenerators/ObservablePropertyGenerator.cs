@@ -10,13 +10,15 @@ namespace SourceGenerators;
 public class ObservablePropertyGenerator : ISourceGenerator
 {
     private const string Namespace = "MvvmTool";
-    private const string ObservablePropertyAttributeSource = $$"""
-                                                         namespace {{Namespace}}
-                                                         {
-                                                             [System.AttributeUsage(System.AttributeTargets.Field)]
-                                                             public class ObservablePropertyAttribute : System.Attribute { }
-                                                         }
-                                                         """;
+
+    private const string ObservablePropertyAttributeSource =
+        $$"""
+          namespace {{Namespace}}
+          {
+              [System.AttributeUsage(System.AttributeTargets.Field)]
+              public class ObservablePropertyAttribute : System.Attribute { }
+          }
+          """;
 
     public void Initialize(GeneratorInitializationContext context)
     {
