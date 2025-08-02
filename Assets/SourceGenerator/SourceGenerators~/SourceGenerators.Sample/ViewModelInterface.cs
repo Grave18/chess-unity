@@ -10,7 +10,8 @@ public partial class ViewModelInterface : INotifyPropertyChanged
     [ObservableProperty]
     private int _lol;
 
-    private void Test()
+    [RelayCommand]
+    private void Test(object obj)
     {
         Lol++;
         Console.WriteLine(Lol);

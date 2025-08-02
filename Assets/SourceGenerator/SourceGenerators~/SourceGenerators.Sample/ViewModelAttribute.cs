@@ -8,7 +8,8 @@ public partial class ViewModelAttribute
     [ObservableProperty]
     private int _g;
 
-    private void Test()
+    [RelayCommand]
+    private void Test(object obj)
     {
         G++;
         Console.WriteLine(G);

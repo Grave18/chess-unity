@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using Notation;
 using Settings;
 using Ui.Auxiliary;
+using MvvmTool;
 using UnityEngine;
 
 namespace Ui.Menu.ViewModels

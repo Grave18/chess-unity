@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace SourceGenerators;
 
 [Generator]
-public class ObservablePropertyGenerator : ISourceGenerator
+public class MvvmToolGenerator : ISourceGenerator
 {
     private const string Namespace = "MvvmTool";
 
@@ -26,6 +26,55 @@ public class ObservablePropertyGenerator : ISourceGenerator
 
               [System.AttributeUsage(System.AttributeTargets.Method)]
               public class RelayCommandAttribute : System.Attribute { }
+
+              public class DelegateCommand: System.Windows.Input.ICommand
+              {
+                  public event System.EventHandler CanExecuteChanged;
+
+                  private System.Func<object, bool> _canExecute;
+                  private System.Action<object> _execute;
+
+                  public DelegateCommand() { }
+
+                  public DelegateCommand(System.Action<object> execute)
+                  {
+                      _execute = execute ?? throw new System.ArgumentNullException(nameof(execute));
+                  }
+
+                  public DelegateCommand(System.Func<object, bool> canExecute, System.Action<object> execute)
+                  {
+                      _canExecute = canExecute ?? throw new System.ArgumentNullException(nameof(canExecute));
+                      _execute = execute ?? throw new System.ArgumentNullException(nameof(execute));
+                  }
+
+                  public bool CanExecute(object parameter)
+                  {
+                      return _canExecute == null || _canExecute(parameter);
+                  }
+
+                  public void Execute(object parameter)
+                  {
+                      _execute(parameter);
+                  }
+
+                  public void ReplaceCommand(System.Action<object> execute)
+                  {
+                      _execute = execute ?? throw new System.ArgumentNullException(nameof(execute));
+                  }
+
+                  public void ReplaceCanExecuteAndCommand(System.Func<object, bool> canExecute, System.Action<object> execute)
+                  {
+                      _canExecute = canExecute ?? throw new System.ArgumentNullException(nameof(canExecute));
+                      _execute = execute ?? throw new System.ArgumentNullException(nameof(execute));
+                  }
+
+                  public void RaiseCanExecuteChanged()
+                  {
+                      System.EventHandler handler = CanExecuteChanged;
+                      handler?.Invoke(this, System.EventArgs.Empty);
+                  }
+              }
+
           }
           """;
 
@@ -36,6 +85,18 @@ public class ObservablePropertyGenerator : ISourceGenerator
 
     public void Execute(GeneratorExecutionContext context)
     {
+        Compilation compilation = context.Compilation;
+
+        // Hack to avoid generating code for non Assembly-CSharp assemblies
+        bool isUnity = context.Compilation.ReferencedAssemblyNames
+            .Any(a => a.Name == "UnityEngine");
+        bool isAssemblyCsharp = compilation.AssemblyName != "Assembly-CSharp";
+
+        if (isUnity && isAssemblyCsharp)
+        {
+            return;
+        }
+
         GenerateAttributes(context);
 
         if (context.SyntaxReceiver is not SyntaxReceiver receiver)
@@ -43,22 +104,74 @@ public class ObservablePropertyGenerator : ISourceGenerator
             return;
         }
 
-        Compilation compilation = context.Compilation;
-
         // Attributes
         Dictionary<INamedTypeSymbol, List<IFieldSymbol>> classFieldPairs = GetClassFieldsPairs(receiver.ClassesWithAttribute, compilation);
         foreach (KeyValuePair<INamedTypeSymbol, List<IFieldSymbol>> classFieldPair in classFieldPairs)
         {
-            string source = GetSourceForAttributes(classFieldPair.Key, classFieldPair.Value);
-            context.AddSource($"{classFieldPair.Key.Name}.g.cs", SourceText.From(source, Encoding.UTF8));
+            string source = GetSourceForPropertiesAttributes(classFieldPair.Key, classFieldPair.Value);
+            context.AddSource($"{classFieldPair.Key.Name}.Properties.g.cs", SourceText.From(source, Encoding.UTF8));
         }
 
         // Interfaces
         classFieldPairs = GetClassFieldsPairs(receiver.ClassesWithInterface, compilation);
         foreach (KeyValuePair<INamedTypeSymbol, List<IFieldSymbol>> classFieldsPair in classFieldPairs)
         {
-            string source = GetSourceForInterfaces(classFieldsPair.Key, classFieldsPair.Value);
-            context.AddSource($"{classFieldsPair.Key.Name}.g.cs", SourceText.From(source, Encoding.UTF8));
+            string source = GetSourceForPropertiesWithInterfaces(classFieldsPair.Key, classFieldsPair.Value);
+            context.AddSource($"{classFieldsPair.Key.Name}.Properties.g.cs", SourceText.From(source, Encoding.UTF8));
+        }
+
+        AddSourceForCommands(context);
+    }
+
+    private static void AddSourceForCommands(GeneratorExecutionContext context)
+    {
+        Compilation compilation = context.Compilation;
+        if(context.SyntaxReceiver is not SyntaxReceiver receiver)
+        {
+            return;
+        }
+
+        foreach(ClassDeclarationSyntax classDeclarationSyntax in receiver.ClassesWithAttribute.Union(receiver.ClassesWithInterface))
+        {
+            SemanticModel semanticModel = compilation.GetSemanticModel(classDeclarationSyntax.SyntaxTree);
+            if (semanticModel.GetDeclaredSymbol(classDeclarationSyntax) is not INamedTypeSymbol classSymbol)
+            {
+                continue;
+            }
+
+            var methods = classDeclarationSyntax.Members
+                .OfType<MethodDeclarationSyntax>()
+                .Where(m => m.AttributeLists
+                    .SelectMany(al => al.Attributes)
+                    .Any(a => a.Name.ToString() == "RelayCommand"));
+
+            foreach (MethodDeclarationSyntax method in methods)
+            {
+                if (semanticModel.GetDeclaredSymbol(method) is not IMethodSymbol methodSymbol)
+                {
+                    continue;
+                }
+
+                string ns = classSymbol.ContainingNamespace?.ToDisplayString() ?? "DefaultNamespace";
+                string className = classSymbol.Name;
+                string methodName = methodSymbol.Name;
+                string propertyName = methodSymbol.Name + "Command";
+                string fieldName = "_" + char.ToLower(propertyName[0]) + propertyName.Substring(1);
+                string source = $$"""
+                                  // <auto-generated/>
+
+                                  namespace {{ns}}
+                                  {
+                                      public partial class {{className}}
+                                      {
+                                           private MvvmTool.DelegateCommand {{fieldName}};
+                                           public System.Windows.Input.ICommand {{propertyName}} => {{fieldName}} ??= new MvvmTool.DelegateCommand({{methodName}});
+                                      }
+                                  }
+                                  """;
+
+                context.AddSource($"{className}.Commands.g.cs", SourceText.From(source, Encoding.UTF8));
+            }
         }
     }
 
@@ -105,17 +218,17 @@ public class ObservablePropertyGenerator : ISourceGenerator
         context.AddSource("GeneratedAttributes.g.cs", SourceText.From(AttributesSource, Encoding.UTF8));
     }
 
-    private static string GetSourceForAttributes(INamedTypeSymbol classSymbol, List<IFieldSymbol> fields)
+    private static string GetSourceForPropertiesAttributes(INamedTypeSymbol classSymbol, List<IFieldSymbol> fields)
     {
-        return GetSource(classSymbol, fields, true);
+        return GetSourceForProperties(classSymbol, fields, true);
     }
 
-    private static string GetSourceForInterfaces(INamedTypeSymbol classSymbol, List<IFieldSymbol> fields)
+    private static string GetSourceForPropertiesWithInterfaces(INamedTypeSymbol classSymbol, List<IFieldSymbol> fields)
     {
-        return GetSource(classSymbol, fields, false);
+        return GetSourceForProperties(classSymbol, fields, false);
     }
 
-    private static string GetSource(INamedTypeSymbol classSymbol, List<IFieldSymbol> fields, bool isAttribute)
+    private static string GetSourceForProperties(INamedTypeSymbol classSymbol, List<IFieldSymbol> fields, bool isAttribute)
     {
         var sb = new StringBuilder();
 

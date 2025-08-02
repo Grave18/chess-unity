@@ -2,6 +2,7 @@
 using GameAndScene;
 using Settings;
 using Ui.Auxiliary;
+using MvvmTool;
 using UnityEngine;
 
 namespace Ui.Menu.ViewModels

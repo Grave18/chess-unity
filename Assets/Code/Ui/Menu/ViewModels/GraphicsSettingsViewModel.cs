@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using GameAndScene;
 using Ui.Auxiliary;
+using MvvmTool;
 using UnityEngine;
 
 namespace Ui.Menu.ViewModels
