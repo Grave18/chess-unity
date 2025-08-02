@@ -7,8 +7,8 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace SourceGenerators;
 
-[Generator]
-public class ObservablePropertyGenerator : ISourceGenerator
+// [Generator]
+public class ObservablePropertyGenerator2 : ISourceGenerator
 {
     private const string Namespace = "MvvmTool";
 
@@ -46,25 +46,26 @@ public class ObservablePropertyGenerator : ISourceGenerator
         Compilation compilation = context.Compilation;
 
         // Attributes
-        Dictionary<INamedTypeSymbol, List<IFieldSymbol>> classFieldPairs = GetClassFieldsPairs(receiver.ClassesWithAttribute, compilation);
-        foreach (KeyValuePair<INamedTypeSymbol, List<IFieldSymbol>> classFieldPair in classFieldPairs)
+        var classFieldPairs = GetClassFieldsMethodsPairs(receiver.ClassesWithAttribute, compilation);
+        foreach (KeyValuePair<INamedTypeSymbol, (List<IFieldSymbol>, List<IMethodSymbol>)> classFieldPair in classFieldPairs)
         {
-            string source = GetSourceForAttributes(classFieldPair.Key, classFieldPair.Value);
+            string source = GetSourceForAttributes(classFieldPair.Key, classFieldPair.Value.Item1, classFieldPair.Value.Item2);
             context.AddSource($"{classFieldPair.Key.Name}.g.cs", SourceText.From(source, Encoding.UTF8));
         }
 
         // Interfaces
-        classFieldPairs = GetClassFieldsPairs(receiver.ClassesWithInterface, compilation);
-        foreach (KeyValuePair<INamedTypeSymbol, List<IFieldSymbol>> classFieldsPair in classFieldPairs)
+        classFieldPairs = GetClassFieldsMethodsPairs(receiver.ClassesWithInterface, compilation);
+        foreach (KeyValuePair<INamedTypeSymbol, (List<IFieldSymbol>, List<IMethodSymbol>)> classFieldsPair in classFieldPairs)
         {
-            string source = GetSourceForInterfaces(classFieldsPair.Key, classFieldsPair.Value);
+            string source = GetSourceForInterfaces(classFieldsPair.Key, classFieldsPair.Value.Item1, classFieldsPair.Value.Item2);
             context.AddSource($"{classFieldsPair.Key.Name}.g.cs", SourceText.From(source, Encoding.UTF8));
         }
     }
 
-    private static Dictionary<INamedTypeSymbol, List<IFieldSymbol>> GetClassFieldsPairs(List<ClassDeclarationSyntax> classesWithAttribute, Compilation compilation)
+    private static Dictionary<INamedTypeSymbol, (List<IFieldSymbol>, List<IMethodSymbol>)> GetClassFieldsMethodsPairs(List<ClassDeclarationSyntax> classesWithAttribute, Compilation compilation)
     {
-        Dictionary<INamedTypeSymbol, List<IFieldSymbol>> classFieldPairs = [];
+        Dictionary<INamedTypeSymbol, (List<IFieldSymbol>, List<IMethodSymbol>)> classFieldPairs = [];
+
         foreach (ClassDeclarationSyntax classWithAttribute in classesWithAttribute)
         {
             SemanticModel semanticModel = compilation.GetSemanticModel(classWithAttribute.SyntaxTree);
@@ -92,9 +93,27 @@ public class ObservablePropertyGenerator : ISourceGenerator
                     }
 
                     fieldsWithAttribute.Add(fieldSymbol);
-                    classFieldPairs.Add(classWithAttributeSymbol, fieldsWithAttribute);
                 }
             }
+
+            var methods = classWithAttribute.Members
+                .OfType<MethodDeclarationSyntax>()
+                .Where(m => m.AttributeLists
+                    .SelectMany(al => al.Attributes)
+                    .Any(a => a.Name.ToString() == "RelayCommand"));
+
+            List<IMethodSymbol> methodsWithAttribute = [];
+            foreach (MethodDeclarationSyntax method in methods)
+            {
+                if (semanticModel.GetDeclaredSymbol(method) is not IMethodSymbol methodSymbol)
+                {
+                    continue;
+                }
+
+                methodsWithAttribute.Add(methodSymbol);
+            }
+
+            classFieldPairs.Add(classWithAttributeSymbol, (fieldsWithAttribute, methodsWithAttribute));
         }
 
         return classFieldPairs;
@@ -105,17 +124,20 @@ public class ObservablePropertyGenerator : ISourceGenerator
         context.AddSource("GeneratedAttributes.g.cs", SourceText.From(AttributesSource, Encoding.UTF8));
     }
 
-    private static string GetSourceForAttributes(INamedTypeSymbol classSymbol, List<IFieldSymbol> fields)
+    private static string GetSourceForAttributes(INamedTypeSymbol classSymbol, List<IFieldSymbol> fields,
+        List<IMethodSymbol> methods)
     {
-        return GetSource(classSymbol, fields, true);
+        return GetSource(classSymbol, fields, methods, true);
     }
 
-    private static string GetSourceForInterfaces(INamedTypeSymbol classSymbol, List<IFieldSymbol> fields)
+    private static string GetSourceForInterfaces(INamedTypeSymbol classSymbol, List<IFieldSymbol> fields,
+        List<IMethodSymbol> methods)
     {
-        return GetSource(classSymbol, fields, false);
+        return GetSource(classSymbol, fields, methods, false);
     }
 
-    private static string GetSource(INamedTypeSymbol classSymbol, List<IFieldSymbol> fields, bool isAttribute)
+    private static string GetSource(INamedTypeSymbol classSymbol, List<IFieldSymbol> fields,
+        List<IMethodSymbol> methods, bool isAttribute)
     {
         var sb = new StringBuilder();
 
@@ -127,6 +149,7 @@ public class ObservablePropertyGenerator : ISourceGenerator
 
         if (hasNamespace)
         {
+            // Namespace start
             sb.AppendLine($"namespace {ns}");
             sb.AppendLine("{");
         }
@@ -138,6 +161,7 @@ public class ObservablePropertyGenerator : ISourceGenerator
             sb.AppendLine("    : System.ComponentModel.INotifyPropertyChanged");
         }
 
+        // Class start
         sb.AppendLine("{");
 
         if (isAttribute)
@@ -169,10 +193,25 @@ public class ObservablePropertyGenerator : ISourceGenerator
                             """);
         }
 
+        foreach (IMethodSymbol method in methods)
+        {
+            var methodName = method.Name;
+            var propertyName = methodName + "Command";
+            var fieldName = "_" + char.ToLower(propertyName[0]) + propertyName.Substring(1);
+
+//              sb.AppendLine($"""
+//                                  private DelegateCommand {fieldName};
+//                                  public System.Windows.Input.ICommand {propertyName} => {fieldName} ??= new DelegateCommand({methodName});
+//
+//                              """);
+        }
+
+        // Class
         sb.AppendLine("}");
 
         if (hasNamespace)
         {
+            // Namespace
             sb.AppendLine("}");
         }
 
