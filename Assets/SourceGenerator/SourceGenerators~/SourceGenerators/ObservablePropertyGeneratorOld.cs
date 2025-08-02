@@ -46,7 +46,6 @@ public class ObservablePropertyGeneratorOld : ISourceGenerator
                     .SelectMany(a => a.Attributes)
                     .Any(attr => attr.Name.ToString().Contains("ObservableProperty")));
 
-            var sb = new StringBuilder();
             foreach (FieldDeclarationSyntax field in fieldsWithAttribute)
             {
                 VariableDeclaratorSyntax variable = field.Declaration.Variables.First();
