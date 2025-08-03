@@ -8,8 +8,8 @@ public partial class ViewModelAttr
     [ObservableProperty]
     private int _testPropAttr0;
 
-    // [ObservableProperty]
-    // private int _testPropAttr1;
+    [ObservableProperty]
+    private int _testPropAttr1;
 
     [RelayCommand]
     private void TestMethodAttr0(object obj)

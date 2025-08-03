@@ -84,29 +84,12 @@ public class TypesGenerator : ISourceGenerator
     {
         Compilation compilation = context.Compilation;
 
-        if (IsUnityAndNotAssemblyCsharp(compilation))
+        if (compilation.IsUnityAndNotAssemblyCsharp())
         {
             return;
         }
 
         AddTypesSource(context);
-    }
-
-    private static bool IsUnityAndNotAssemblyCsharp(Compilation compilation)
-    {
-        // Hack to avoid generating code for non Assembly-CSharp assemblies
-        bool isUnity = IsUnity(compilation);
-        bool isNotAssemblyCsharp = compilation.AssemblyName != "Assembly-CSharp";
-
-        return isUnity && isNotAssemblyCsharp;
-    }
-
-    private static bool IsUnity(Compilation compilation)
-    {
-        bool isUnity = compilation.ReferencedAssemblyNames
-            .Any(a => a.Name == "UnityEngine");
-
-        return isUnity;
     }
 
     private static void AddTypesSource(GeneratorExecutionContext context)
