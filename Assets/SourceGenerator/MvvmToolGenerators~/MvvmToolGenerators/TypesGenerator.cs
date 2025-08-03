@@ -84,21 +84,21 @@ public class TypesGenerator : ISourceGenerator
     {
         Compilation compilation = context.Compilation;
 
-        if (IsAssemblyCsharp(compilation))
+        if (IsUnityAndNotAssemblyCsharp(compilation))
         {
             return;
         }
 
-        GenerateTypes(context);
+        AddTypesSource(context);
     }
 
-    private static bool IsAssemblyCsharp(Compilation compilation)
+    private static bool IsUnityAndNotAssemblyCsharp(Compilation compilation)
     {
         // Hack to avoid generating code for non Assembly-CSharp assemblies
         bool isUnity = IsUnity(compilation);
-        bool isAssemblyCsharp = compilation.AssemblyName != "Assembly-CSharp";
+        bool isNotAssemblyCsharp = compilation.AssemblyName != "Assembly-CSharp";
 
-        return isUnity && isAssemblyCsharp;
+        return isUnity && isNotAssemblyCsharp;
     }
 
     private static bool IsUnity(Compilation compilation)
@@ -109,7 +109,7 @@ public class TypesGenerator : ISourceGenerator
         return isUnity;
     }
 
-    private static void GenerateTypes(GeneratorExecutionContext context)
+    private static void AddTypesSource(GeneratorExecutionContext context)
     {
         context.AddSource("GeneratedMvvmToolTypes.g.cs", SourceText.From(Types, Encoding.UTF8));
     }
