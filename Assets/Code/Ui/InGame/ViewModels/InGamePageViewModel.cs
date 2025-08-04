@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using System.ComponentModel;
 using GameAndScene;
 using Network;
 using Notation;
@@ -10,7 +8,7 @@ using UnityEngine;
 
 namespace Ui.InGame.ViewModels
 {
-    public class InGamePageViewModel : MonoBehaviour, INotifyPropertyChanged
+    public partial class InGamePageViewModel : MonoBehaviour, INotifyPropertyChanged
     {
         [SerializeField] private SceneLoader sceneLoader;
         [SerializeField] private ChessGame.Logic.Game game;
@@ -18,41 +16,17 @@ namespace Ui.InGame.ViewModels
         [SerializeField] private FenFromBoard fenFromBoard;
         [SerializeField] private PopupViewModel popupViewModel;
 
-        public bool IsRematchButtonEnabled => OnlineInstanceHandler.IsOffline || (OnlineInstanceHandler.IsOnline && game.IsGameOver);
-        public bool IsDrawButtonEnabled => OnlineInstanceHandler.IsOnline && !game.IsGameOver && game.IsMyTurn;
-        public bool IsResignButtonEnabled => !game.IsGameOver && game.IsMyTurn;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        // Popup Buttons
-        public DelegateCommand OpenResignPopupCommand { get; set; }
         public DelegateCommand OpenRematchPopupCommand { get; set; }
         public DelegateCommand OpenDrawPopupCommand { get; set; }
-        public DelegateCommand OpenExitPopupCommand { get; set; }
+        public DelegateCommand OpenResignPopupCommand { get; set; }
 
         private void Awake()
         {
-            OpenResignPopupCommand = new DelegateCommand(OpenResignPopup);
-            OpenRematchPopupCommand = new DelegateCommand(OpenRematchPopup);
-            OpenDrawPopupCommand = new DelegateCommand(OpenDrawPopup);
-            OpenExitPopupCommand = new DelegateCommand(OpenExitPopup);
-        }
-
-        private void OnEnable()
-        {
-            game.OnStart += UpdateButtonsIsEnabled;
-            game.OnEnd += UpdateButtonsIsEnabled;
-        }
-
-        private void OnDisable()
-        {
-            game.OnStart -= UpdateButtonsIsEnabled;
-            game.OnEnd -= UpdateButtonsIsEnabled;
-        }
-
-        private void UpdateButtonsIsEnabled()
-        {
-            OnPropertyChanged(nameof(IsRematchButtonEnabled));
-            OnPropertyChanged(nameof(IsDrawButtonEnabled));
-            OnPropertyChanged(nameof(IsResignButtonEnabled));
+            OpenRematchPopupCommand = new DelegateCommand(OpenRematchPopup_CanExecute, OpenRematchPopup);
+            OpenDrawPopupCommand = new DelegateCommand(OpenDrawPopup_CanExecute, OpenDrawPopup);
+            OpenResignPopupCommand = new DelegateCommand(OpenResignPopup_CanExecute, OpenResignPopup);
         }
 
         public void OpenRematchPopup(object obj)
@@ -70,33 +44,25 @@ namespace Ui.InGame.ViewModels
             popupViewModel.OpenResignPopup(obj);
         }
 
+        [RelayCommand]
         public void OpenExitPopup(object obj)
         {
             popupViewModel.OpenExitPopup(obj);
         }
 
-        public void ClosePopupToPause(object obj)
+        public bool OpenRematchPopup_CanExecute(object obj)
         {
-            popupViewModel.ClosePopupToPause(obj);
+            return OnlineInstanceHandler.IsOffline || (OnlineInstanceHandler.IsOnline && game.IsGameOver);
         }
 
-        #region ViewModelImplimentation
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public bool OpenDrawPopup_CanExecute(object obj)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            return OnlineInstanceHandler.IsOnline && !game.IsGameOver && game.IsMyTurn;
         }
 
-        private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+        public bool OpenResignPopup_CanExecute(object obj)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
+            return !game.IsGameOver && game.IsMyTurn;
         }
-
-        #endregion Implimentation
     }
 }
