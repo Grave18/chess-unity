@@ -24,6 +24,8 @@ namespace Ui.InGame.ViewModels
             OpenRematchPopupCommand = new DelegateCommand(OpenRematchPopup_CanExecute, OpenRematchPopup);
             OpenDrawPopupCommand = new DelegateCommand(OpenDrawPopup_CanExecute, OpenDrawPopup);
             OpenResignPopupCommand = new DelegateCommand(OpenResignPopup_CanExecute, OpenResignPopup);
+
+            OpenRematchPopupCommand.RaiseCanExecuteChanged();
         }
 
         public void OpenRematchPopup(object obj)

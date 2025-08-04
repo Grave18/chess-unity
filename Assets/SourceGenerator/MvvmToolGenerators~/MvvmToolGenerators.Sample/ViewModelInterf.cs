@@ -13,8 +13,13 @@ public partial class ViewModelInterf : INotifyPropertyChanged
     [ObservableProperty]
     private int _testPropInterf1;
 
+    partial void OnTestPropInterf0Changed(int value)
+    {
+        Console.WriteLine($"TestPropInterf0 changed to: {value}");
+    }
+
     [RelayCommand]
-    private void TestMethodInterf0(object obj)
+    public void TestMethodInterf0(object obj = null)
     {
         TestPropInterf0++;
         TestPropInterf1++;

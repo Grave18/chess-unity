@@ -121,11 +121,18 @@ public class PropertyGenerator : ISourceGenerator
                                     {
                                         if (!System.Collections.Generic.EqualityComparer<{{typeName}}>.Default.Equals({{fieldName}}, value))
                                         {
+                                            {{typeName}} oldValue = {{fieldName}};
                                             {{fieldName}} = value;
+                                            On{{propertyName}}Changed(value);
+                                            On{{propertyName}}Changed(oldValue, value);
                                             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof({{propertyName}})));
                                         }
                                     }
                                 }
+
+
+                                partial void On{{propertyName}}Changed({{typeName}} value);
+                                partial void On{{propertyName}}Changed({{typeName}} oldValue, {{typeName}} newValue);
 
                             """);
         }
