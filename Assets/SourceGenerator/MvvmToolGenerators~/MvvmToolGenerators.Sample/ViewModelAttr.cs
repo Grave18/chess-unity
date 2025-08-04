@@ -15,13 +15,13 @@ public partial class ViewModelAttr
     private void TestMethodAttr0(object obj)
     {
         TestPropAttr0++;
-        // TestPropAttr1++;
+        TestPropAttr1++;
     }
 
-    // [RelayCommand]
-    // private void TestMethodAttr1(object obj)
-    // {
-    //     TestPropAttr0++;
-    //     TestPropAttr1++;
-    // }
+    [RelayCommand]
+    private void TestMethodAttr1(object obj)
+    {
+        TestPropAttr0++;
+        TestPropAttr1++;
+    }
 }
