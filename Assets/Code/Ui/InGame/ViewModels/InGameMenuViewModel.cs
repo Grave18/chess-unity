@@ -7,8 +7,12 @@ namespace Ui.InGame.ViewModels
     [INotifyPropertyChanged]
     public partial class InGameMenuViewModel : MonoBehaviour
     {
-        [ObservableProperty]
-        private bool _isOpened;
+        [SerializeField] private PopupViewModel popupViewModel;
+
+        [ObservableProperty] private bool _isOpened;
+
+        // For Game Popup needs
+        public PopupViewModel Popup => popupViewModel;
 
         [RelayCommand]
         private void OpenClose(object obj)

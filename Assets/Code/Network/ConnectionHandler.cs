@@ -1,6 +1,6 @@
-﻿using ChessGame.Logic.MenuStates;
-using PurrNet;
+﻿using PurrNet;
 using PurrNet.Transports;
+using Ui.InGame.ViewModels;
 using UnityEngine;
 
 namespace Network
@@ -31,7 +31,7 @@ namespace Network
 
                 if (isReconnect)
                 {
-                    MenuStateMachine.Instance.ClosePopup();
+                    PopupViewModel.Instance.ClosePopupToGame();
                 }
             }
         }
@@ -41,7 +41,7 @@ namespace Network
             if (asServer)
             {
                 Debug.Log($"Player {player} left. Wait for reconnect");
-                MenuStateMachine.Instance.OpenPopup();
+                PopupViewModel.Instance.OpenReconnectPopup(null);
             }
         }
 

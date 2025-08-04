@@ -6,6 +6,7 @@
              xmlns:pages="clr-namespace:Ui.InGame.Pages"
              xmlns:auxiliary="clr-namespace:Ui.Auxiliary"
              xmlns:local="clr-namespace:Ui.InGame"
+             xmlns:userControls="clr-namespace:Ui.InGame.UserControls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignWidth="1920" d:DesignHeight="1080"
@@ -100,6 +101,11 @@
                 </Grid>
 
             </Border>
+
+            <!-- Popup -->
+            <ContentControl Grid.Column="0">
+                <userControls:InGamePopup />
+            </ContentControl>
         </Grid>
     </Viewbox>
 

@@ -42,19 +42,19 @@ namespace Ui.InGame.Pages
         /// Handle popup buttons handling by code
         private void OnKeyUp(object sender, KeyEventArgs e)
         {
-            if (Popup.IsOpen)
-            {
-                if (e.Key == Key.Escape)
-                {
-                    PopupNoButton.Command.Execute(null);
-                    e.Handled = true;
-                }
-                else if (e.Key == Key.Enter)
-                {
-                    PopupYesButton.Command.Execute(null);
-                    e.Handled = true;
-                }
-            }
+            // if (Popup.IsOpen)
+            // {
+            //     if (e.Key == Key.Escape)
+            //     {
+            //         PopupNoButton.Command.Execute(null);
+            //         e.Handled = true;
+            //     }
+            //     else if (e.Key == Key.Enter)
+            //     {
+            //         PopupYesButton.Command.Execute(null);
+            //         e.Handled = true;
+            //     }
+            // }
         }
 
         public void Settings_Click(object sender, RoutedEventArgs args)

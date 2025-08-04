@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:userControls="clr-namespace:Ui.Menu.UserControls"
              mc:Ignorable="d"
              d:DesignWidth="640" d:DesignHeight="1080">
 
@@ -48,56 +49,6 @@
         <Button Grid.Row="2"
                 Content="Exit"
                 Command="{Binding OpenExitPopupCommand}" />
-
-        <!-- Popup -->
-        <Popup Grid.Row="0"
-               x:Name="Popup"
-               IsOpen="{Binding IsPopupOpen}"
-               StaysOpen="True"
-               Style="{StaticResource PopupStyle}">
-            <Viewbox Stretch="Uniform">
-                <Grid Style="{StaticResource UniformGridStyle}">
-                    <Border Style="{StaticResource PopupBorderStyle}">
-                        <DockPanel Name="PopupDockPanel"
-                                   Margin="30">
-                            <!-- Popup Text -->
-                            <TextBlock DockPanel.Dock="Top"
-                                       Name="PopupText"
-                                       Text="{Binding PopupText}"
-                                       Style="{StaticResource Header2TextBlockStyle}" />
-                            <!-- Save Checkbox -->
-                            <CheckBox Name="SaveCheckBox"
-                                      DockPanel.Dock="Top"
-                                      Visibility="{Binding IsSaveCheckBoxEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                      Content="Do you want to save game?"
-                                      IsChecked="{Binding IsSaveCheckBoxChecked}"
-                                      Style="{StaticResource CheckboxStyle}" />
-                            <Grid DockPanel.Dock="Bottom"
-                                  VerticalAlignment="Bottom">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <!-- No Button -->
-                                <Button Grid.Column="0"
-                                        Name="PopupNoButton"
-                                        IsEnabled="{Binding IsPopupNoButtonEnabled}"
-                                        Content="{Binding PopupNoButtonText}"
-                                        Command="{Binding PopupNoCommand}"
-                                        Style="{StaticResource PopupButtonStyle}" />
-                                <!-- Yes Button -->
-                                <Button Grid.Column="1"
-                                        Name="PopupYesButton"
-                                        Content="{Binding PopupYesButtonText}"
-                                        Command="{Binding PopupYesCommand}"
-                                        Style="{StaticResource PopupButtonStyle}" />
-                            </Grid>
-                        </DockPanel>
-                    </Border>
-                </Grid>
-            </Viewbox>
-        </Popup>
-
     </Grid>
 
 </UserControl>
