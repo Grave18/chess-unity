@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using GameAndScene;
+﻿using GameAndScene;
 using Network;
 using Notation;
 using Settings;
@@ -8,15 +7,13 @@ using UnityEngine;
 
 namespace Ui.InGame.ViewModels
 {
-    public partial class InGamePageViewModel : MonoBehaviour, INotifyPropertyChanged
+    public partial class InGamePageViewModel : MonoBehaviour
     {
         [SerializeField] private SceneLoader sceneLoader;
         [SerializeField] private ChessGame.Logic.Game game;
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
         [SerializeField] private FenFromBoard fenFromBoard;
         [SerializeField] private PopupViewModel popupViewModel;
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public DelegateCommand OpenRematchPopupCommand { get; set; }
         public DelegateCommand OpenDrawPopupCommand { get; set; }

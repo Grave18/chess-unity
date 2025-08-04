@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using System.Text;
+﻿using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using MvvmToolGenerators.Tools;
 
-namespace SourceGenerators;
+namespace MvvmToolGenerators.Generators;
 
 [Generator]
 public class TypesGenerator : ISourceGenerator

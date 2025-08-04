@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace SourceGenerators;
+namespace MvvmToolGenerators.Tools;
 
 public static class Extensions
 {

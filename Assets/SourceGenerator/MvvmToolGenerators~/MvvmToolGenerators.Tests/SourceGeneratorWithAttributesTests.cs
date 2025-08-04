@@ -1,7 +1,7 @@
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using SourceGenerators;
+using MvvmToolGenerators.Generators;
 using Xunit;
 
 namespace MvvmToolGenerators.Tests;
@@ -63,7 +63,7 @@ public class MvvmToolGeneratorsTests
     {
         // 1) Arrange
         // Create an instance of the source generator.
-        var generator = new PropertyAndCommandGenerator();
+        var generator = new PropertyGenerator();
 
         // Source generators should be tested using 'GeneratorDriver'.
         var driver = CSharpGeneratorDriver.Create(generator);
