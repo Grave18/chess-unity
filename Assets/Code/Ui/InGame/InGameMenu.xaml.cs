@@ -24,6 +24,8 @@ namespace Ui.InGame
             Initialized += OnInitialized;
             Loaded += OnLoaded;
             InitializeComponent();
+
+            this.KeyDown += OnKeyDown;
         }
 
         protected override void ChangePage(UserControl page)
@@ -43,15 +45,14 @@ namespace Ui.InGame
             // Focus on Menu and listen for key events
             this.Focusable = true;
             this.Focus();
-            this.KeyUp += OnKeyUp;
         }
 
-        private void OnKeyUp(object sender, KeyEventArgs args)
+        private void OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (args.Key == Key.Escape)
+            if (e.Key == Key.Escape)
             {
                 OpenOrCloseMenu();
-                args.Handled = true;
+                e.Handled = true;
             }
         }
 

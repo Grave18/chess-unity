@@ -2,11 +2,9 @@
 #define NOESIS
 using Noesis;
 using Ui.Menu.ViewModels;
-using UnityEngine;
 using GUI = Noesis.GUI;
 using Object = UnityEngine.Object;
 using EventArgs = Noesis.EventArgs;
-
 #else
 using System;
 using System.Windows;
@@ -27,16 +25,16 @@ namespace Ui.InGame.Pages
             Loaded += OnLoaded;
             InitializeComponent();
 
-            this.KeyUp += OnKeyUp;
+            this.KeyDown += OnKeyDown;
         }
 
         private void OnInitialized(object sender, EventArgs args)
         {
-            #if NOESIS
-                DataContext = Object.FindAnyObjectByType<SettingsPageViewModel>();
-                GraphicsSettingsTab.DataContext = Object.FindAnyObjectByType<GraphicsSettingsViewModel>();
-                AudioSettingsTab.DataContext = Object.FindAnyObjectByType<AudioSettingsViewModel>();
-            #endif
+#if NOESIS
+            DataContext = Object.FindAnyObjectByType<SettingsPageViewModel>();
+            GraphicsSettingsTab.DataContext = Object.FindAnyObjectByType<GraphicsSettingsViewModel>();
+            AudioSettingsTab.DataContext = Object.FindAnyObjectByType<AudioSettingsViewModel>();
+#endif
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -45,16 +43,17 @@ namespace Ui.InGame.Pages
             this.Focus();
         }
 
-        private void OnKeyUp(object sender, KeyEventArgs e)
+        private void OnKeyDown(object sender, KeyEventArgs e)
         {
+            // Back to main page
             if (e.Key == Key.Escape)
             {
-                Back_Click(null, null);
+                Back_Click();
                 e.Handled = true;
             }
         }
 
-        public void Back_Click(object sender, RoutedEventArgs args)
+        public void Back_Click(object sender = null, RoutedEventArgs args = null)
         {
             GameMenuBase.Instance.ChangePage<InGamePage>();
         }
