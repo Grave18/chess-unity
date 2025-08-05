@@ -8,6 +8,7 @@ namespace Ui.InGame.ViewModels
     public partial class InGameMenuViewModel : MonoBehaviour
     {
         [SerializeField] private PopupViewModel popupViewModel;
+        [SerializeField] private MenuStateMachine menuStateMachine;
 
         [ObservableProperty] private bool _isOpened;
 
@@ -15,15 +16,15 @@ namespace Ui.InGame.ViewModels
         public PopupViewModel Popup => popupViewModel;
 
         [RelayCommand]
-        private void OpenClose(object obj)
+        private void OpenClose()
         {
             if (IsOpened)
             {
-                MenuStateMachine.Instance.ClosePause();
+                menuStateMachine.ClosePause();
             }
             else
             {
-                MenuStateMachine.Instance.OpenPause();
+                menuStateMachine.OpenPause();
             }
         }
     }

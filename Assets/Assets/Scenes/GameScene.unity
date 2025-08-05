@@ -2354,7 +2354,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 177198598}
   m_HandleRect: {fileID: 177198597}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -11257,6 +11257,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popupViewModel: {fileID: 1759059227}
+  menuStateMachine: {fileID: 2146145379}
 --- !u!1 &1544682200
 GameObject:
   m_ObjectHideFlags: 0
@@ -12088,7 +12089,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 949107596}
   m_HandleRect: {fileID: 949107595}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

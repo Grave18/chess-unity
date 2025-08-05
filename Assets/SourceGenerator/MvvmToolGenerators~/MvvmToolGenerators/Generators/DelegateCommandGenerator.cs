@@ -114,7 +114,7 @@ public class CommandGenerator : ISourceGenerator
                     .OfType<MethodDeclarationSyntax>()
                     .Any(x => x.AttributeLists
                         .Any(al => al.Attributes
-                            .Any(a => a.Name.ToString() == "RelayCommand"))))
+                            .Any(a => a.Name.ToString() == "DelegateCommand"))))
             {
                 ClassesForCommandGeneration.Add(classDecl);
             }

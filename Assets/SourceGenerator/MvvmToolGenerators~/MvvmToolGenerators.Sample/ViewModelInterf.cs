@@ -18,17 +18,17 @@ public partial class ViewModelInterf : INotifyPropertyChanged
         Console.WriteLine($"TestPropInterf0 changed to: {value}");
     }
 
-    [RelayCommand]
+    [DelegateCommand]
     public void TestMethodInterf0(object obj = null)
     {
         TestPropInterf0++;
         TestPropInterf1++;
     }
 
-    [RelayCommand]
+    [DelegateCommand]
     private void TestMethodInterf1(object obj)
     {
-    TestPropInterf0++;
-    TestPropInterf1++;
+        TestPropInterf0++;
+        TestPropInterf1++;
     }
 }

@@ -11,14 +11,14 @@ public partial class ViewModelAttr
     [ObservableProperty]
     private int _testPropAttr1;
 
-    [RelayCommand]
+    [DelegateCommand]
     private void TestMethodAttr0(object obj)
     {
         TestPropAttr0++;
         TestPropAttr1++;
     }
 
-    [RelayCommand]
+    [DelegateCommand]
     private void TestMethodAttr1(object obj)
     {
         TestPropAttr0++;

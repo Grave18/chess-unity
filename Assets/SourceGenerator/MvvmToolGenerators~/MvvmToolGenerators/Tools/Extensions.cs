@@ -5,7 +5,7 @@ namespace MvvmToolGenerators.Tools;
 
 public static class Extensions
 {
-    private static void ShowDiagnosticOfGenerator(this GeneratorExecutionContext context,
+    public static void ShowDiagnostics(this GeneratorExecutionContext context,
         string id,
         string message,
         DiagnosticSeverity severity = DiagnosticSeverity.Info,
@@ -33,7 +33,7 @@ public static class Extensions
         return isUnity && isNotAssemblyCsharp;
     }
 
-    private static bool IsUnity(this Compilation compilation)
+    public static bool IsUnity(this Compilation compilation)
     {
         bool isUnity = compilation.ReferencedAssemblyNames
             .Any(a => a.Name == "UnityEngine");
