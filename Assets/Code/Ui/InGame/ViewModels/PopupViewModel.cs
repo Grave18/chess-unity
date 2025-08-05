@@ -32,8 +32,8 @@ namespace Ui.InGame.ViewModels
         protected override void Awake()
         {
             base.Awake();
-            PopupYesCommand = new RelayCommand(ClosePopupToPause);
-            PopupNoCommand = new RelayCommand(ClosePopupToPause);
+            PopupYesCommand = new RelayCommand();
+            PopupNoCommand = new RelayCommand();
         }
 
         public void OpenRematchPopup()
@@ -99,7 +99,9 @@ namespace Ui.InGame.ViewModels
             IsSaveCheckBoxEnabled = true;
             PopupText = "Wait for other player to reconnect...";
             PopupYesButtonText = "Exit to menu";
+            PopupNoButtonText = null;
             PopupYesCommand.Replace(ExitToMainMenu);
+            PopupNoCommand.Replace(null);
 
             menuStateMachine.OpenPopup();
         }
