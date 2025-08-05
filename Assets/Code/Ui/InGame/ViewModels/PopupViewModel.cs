@@ -36,15 +36,26 @@ namespace Ui.InGame.ViewModels
             PopupNoCommand = new RelayCommand();
         }
 
-        public void OpenRematchPopup()
+        public void OpenRematchPopup(bool isRematchRequest = false)
         {
             IsPopupOpen = true;
             IsPopupNoButtonEnabled = true;
             IsSaveCheckBoxEnabled = false;
-            PopupText = "Are you want to Rematch?";
+
             PopupYesButtonText = "Yes";
             PopupNoButtonText = "No";
-            PopupYesCommand.Replace(Rematch);
+
+            if (isRematchRequest)
+            {
+                PopupText = "Rematch Requested! Rematch?";
+                PopupYesCommand.Replace(RematchApproval);
+            }
+            else
+            {
+                PopupText = "Do you want to Rematch?";
+                PopupYesCommand.Replace(Rematch);
+            }
+
             PopupNoCommand.Replace(ClosePopupToPause);
 
             menuStateMachine.OpenPopup();
@@ -122,6 +133,13 @@ namespace Ui.InGame.ViewModels
         {
             IsPopupOpen = false;
             game.Rematch();
+            menuStateMachine.ClosePopupToGame();
+        }
+
+        private void RematchApproval()
+        {
+            IsPopupOpen = false;
+            game.RematchApproval();
             menuStateMachine.ClosePopupToGame();
         }
 

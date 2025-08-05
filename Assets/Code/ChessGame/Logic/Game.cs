@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ChessGame.ChessBoard;
@@ -8,13 +7,15 @@ using ChessGame.Logic.MovesBuffer;
 using ChessGame.Logic.Players;
 using MainCamera;
 using Network;
+using PurrNet;
 using Settings;
+using Ui.InGame.ViewModels;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace ChessGame.Logic
 {
-    public class Game : MonoBehaviour
+    public class Game : NetworkBehaviour
     {
         public MachineManager Machine { get; private set; }
         public Competitors Competitors { get; private set; }
@@ -145,6 +146,8 @@ namespace ChessGame.Logic
             Machine.SetState(new EndGameState(this));
         }
 
+// ========= Begin of Rematch, Draw, Resign ========
+
         public void Rematch()
         {
             if (OnlineInstanceHandler.IsOffline)
@@ -164,20 +167,30 @@ namespace ChessGame.Logic
 
         private void RematchOnline()
         {
-            // PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
-            // RequestRematchTarget(otherPlayerID);
+            PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
+            RequestRematch_TargetRpc(otherPlayerID);
         }
 
-        // [ObserversRpc]
-        // private void RequestRematchTarget(PlayerID playerId)
-        // {
-        //      if(playerId.id != localPlayer?.id)
-        //      {
-        //          return;
-        //      }
-        //
-        //      EffectsPlayer.Instance.PlayNotifySound();
-        // }
+        [TargetRpc]
+        private void RequestRematch_TargetRpc(PlayerID playerId)
+        {
+            PopupViewModel.Instance.OpenRematchPopup(isRematchRequest: true);
+            EffectsPlayer.Instance.PlayNotifySound();
+        }
+
+        public void RematchApproval()
+        {
+            RestartGame();
+
+            PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
+            Rematch_TargetRpc(otherPlayerID);
+        }
+
+        [TargetRpc]
+        private void Rematch_TargetRpc(PlayerID player)
+        {
+            RestartGame();
+        }
 
         public void Resign()
         {
@@ -193,14 +206,7 @@ namespace ChessGame.Logic
             Draw("Draw by agreement");
         }
 
-        private void Draw(string description)
-        {
-            CheckType = CheckType.Draw;
-            _winnerColor = PieceColor.None;
-            CheckDescription = description;
-
-            Machine.SetState(new EndGameState(this));
-        }
+// ========= End of Rematch, Draw, Resign ========
 
         public void Checkmate()
         {
@@ -327,6 +333,15 @@ namespace ChessGame.Logic
                 // Description was set earlier
                 Draw(CheckDescription);
             }
+        }
+
+        private void Draw(string description)
+        {
+            CheckType = CheckType.Draw;
+            _winnerColor = PieceColor.None;
+            CheckDescription = description;
+
+            Machine.SetState(new EndGameState(this));
         }
 
         private bool IsThreefoldRule()
