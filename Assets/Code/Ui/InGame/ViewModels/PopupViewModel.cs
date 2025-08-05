@@ -26,17 +26,17 @@ namespace Ui.InGame.ViewModels
         [ObservableProperty] private bool _isSaveCheckBoxEnabled;
         [ObservableProperty] private bool _isSaveCheckBoxChecked;
 
-        public DelegateCommand PopupYesCommand { get; set; }
-        public DelegateCommand PopupNoCommand { get; set; }
+        public RelayCommand PopupYesCommand { get; set; }
+        public RelayCommand PopupNoCommand { get; set; }
 
         protected override void Awake()
         {
             base.Awake();
-            PopupYesCommand = new DelegateCommand(ClosePopupToPause);
-            PopupNoCommand = new DelegateCommand(ClosePopupToPause);
+            PopupYesCommand = new RelayCommand(ClosePopupToPause);
+            PopupNoCommand = new RelayCommand(ClosePopupToPause);
         }
 
-        public void OpenRematchPopup(object obj)
+        public void OpenRematchPopup()
         {
             IsPopupOpen = true;
             IsPopupNoButtonEnabled = true;
@@ -44,13 +44,13 @@ namespace Ui.InGame.ViewModels
             PopupText = "Are you want to Rematch?";
             PopupYesButtonText = "Yes";
             PopupNoButtonText = "No";
-            PopupYesCommand.ReplaceCommand(Rematch);
-            PopupNoCommand.ReplaceCommand(ClosePopupToPause);
+            PopupYesCommand.Replace(Rematch);
+            PopupNoCommand.Replace(ClosePopupToPause);
 
             menuStateMachine.OpenPopup();
         }
 
-        public void OpenDrawPopup(object obj)
+        public void OpenDrawPopup()
         {
             IsPopupOpen = true;
             IsPopupNoButtonEnabled = true;
@@ -58,13 +58,13 @@ namespace Ui.InGame.ViewModels
             PopupText = "Are you want to Draw?";
             PopupYesButtonText = "Yes";
             PopupNoButtonText = "No";
-            PopupYesCommand.ReplaceCommand(Draw);
-            PopupNoCommand.ReplaceCommand(ClosePopupToPause);
+            PopupYesCommand.Replace(Draw);
+            PopupNoCommand.Replace(ClosePopupToPause);
 
             menuStateMachine.OpenPopup();
         }
 
-        public void OpenResignPopup(object obj)
+        public void OpenResignPopup()
         {
             IsPopupOpen = true;
             IsPopupNoButtonEnabled = true;
@@ -72,13 +72,13 @@ namespace Ui.InGame.ViewModels
             PopupText = "Are you want to Resign?";
             PopupYesButtonText = "Yes";
             PopupNoButtonText = "No";
-            PopupYesCommand.ReplaceCommand(Resign);
-            PopupNoCommand.ReplaceCommand(ClosePopupToPause);
+            PopupYesCommand.Replace(Resign);
+            PopupNoCommand.Replace(ClosePopupToPause);
 
             menuStateMachine.OpenPopup();
         }
 
-        public void OpenExitPopup(object obj)
+        public void OpenExitPopup()
         {
             IsPopupOpen = true;
             IsPopupNoButtonEnabled = true;
@@ -86,58 +86,58 @@ namespace Ui.InGame.ViewModels
             PopupText = "Are you want to Exit?";
             PopupYesButtonText = "Yes";
             PopupNoButtonText = "No";
-            PopupYesCommand.ReplaceCommand(ExitToMainMenu);
-            PopupNoCommand.ReplaceCommand(ClosePopupToPause);
+            PopupYesCommand.Replace(ExitToMainMenu);
+            PopupNoCommand.Replace(ClosePopupToPause);
 
             menuStateMachine.OpenPopup();
         }
 
-        public void OpenReconnectPopup(object o)
+        public void OpenReconnectPopup()
         {
             IsPopupOpen = true;
             IsPopupNoButtonEnabled = false;
             IsSaveCheckBoxEnabled = true;
             PopupText = "Wait for other player to reconnect...";
             PopupYesButtonText = "Exit to menu";
-            PopupYesCommand.ReplaceCommand(ExitToMainMenu);
+            PopupYesCommand.Replace(ExitToMainMenu);
 
             menuStateMachine.OpenPopup();
         }
 
-        public void ClosePopupToPause(object obj = null)
+        public void ClosePopupToPause()
         {
             IsPopupOpen = false;
             menuStateMachine.ClosePopupToPause();
         }
 
-        public void ClosePopupToGame(object obj = null)
+        public void ClosePopupToGame()
         {
             IsPopupOpen = false;
             menuStateMachine.ClosePopupToGame();
         }
 
-        private void Rematch(object obj)
+        private void Rematch()
         {
             IsPopupOpen = false;
             game.Rematch();
             menuStateMachine.ClosePopupToGame();
         }
 
-        private void Draw(object obj)
+        private void Draw()
         {
             IsPopupOpen = false;
             game.DrawByAgreement();
             menuStateMachine.ClosePopupToGame();
         }
 
-        private void Resign(object obj)
+        private void Resign()
         {
             IsPopupOpen = false;
             game.Resign();
             menuStateMachine.ClosePopupToGame();
         }
 
-        private void ExitToMainMenu(object obj)
+        private void ExitToMainMenu()
         {
             SaveBoard();
             sceneLoader.LoadMainMenu();

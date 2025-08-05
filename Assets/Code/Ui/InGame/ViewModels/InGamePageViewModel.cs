@@ -15,51 +15,44 @@ namespace Ui.InGame.ViewModels
         [SerializeField] private FenFromBoard fenFromBoard;
         [SerializeField] private PopupViewModel popupViewModel;
 
-        public DelegateCommand OpenRematchPopupCommand { get; set; }
-        public DelegateCommand OpenDrawPopupCommand { get; set; }
-        public DelegateCommand OpenResignPopupCommand { get; set; }
+        [ObservableProperty]
+        private bool _isPopupOpen;
 
-        private void Awake()
+        [RelayCommand(CanExecute = nameof(OpenRematchPopup_CanExecute))]
+        private void OpenRematchPopup()
         {
-            OpenRematchPopupCommand = new DelegateCommand(OpenRematchPopup_CanExecute, OpenRematchPopup);
-            OpenDrawPopupCommand = new DelegateCommand(OpenDrawPopup_CanExecute, OpenDrawPopup);
-            OpenResignPopupCommand = new DelegateCommand(OpenResignPopup_CanExecute, OpenResignPopup);
-
-            OpenRematchPopupCommand.RaiseCanExecuteChanged();
+            popupViewModel.OpenRematchPopup();
         }
 
-        public void OpenRematchPopup(object obj)
+        [RelayCommand(CanExecute = nameof(OpenDrawPopup_CanExecute))]
+        private void OpenDrawPopup()
         {
-            popupViewModel.OpenRematchPopup(obj);
+            popupViewModel.OpenDrawPopup();
         }
 
-        public void OpenDrawPopup(object obj)
+        [RelayCommand(CanExecute = nameof(OpenResignPopup_CanExecute))]
+        private void OpenResignPopup()
         {
-            popupViewModel.OpenDrawPopup(obj);
-        }
-
-        public void OpenResignPopup(object obj)
-        {
-            popupViewModel.OpenResignPopup(obj);
+            popupViewModel.OpenResignPopup();
         }
 
         [RelayCommand]
-        public void OpenExitPopup(object obj)
+        private void OpenExitPopup()
         {
-            popupViewModel.OpenExitPopup(obj);
+            popupViewModel.OpenExitPopup();
         }
 
-        public bool OpenRematchPopup_CanExecute(object obj)
+        private bool OpenRematchPopup_CanExecute()
         {
             return OnlineInstanceHandler.IsOffline || (OnlineInstanceHandler.IsOnline && game.IsGameOver);
         }
 
-        public bool OpenDrawPopup_CanExecute(object obj)
+        private bool OpenDrawPopup_CanExecute()
         {
             return OnlineInstanceHandler.IsOnline && !game.IsGameOver && game.IsMyTurn;
         }
 
-        public bool OpenResignPopup_CanExecute(object obj)
+        private bool OpenResignPopup_CanExecute()
         {
             return !game.IsGameOver && game.IsMyTurn;
         }

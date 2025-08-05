@@ -41,7 +41,7 @@ namespace Network
             if (asServer)
             {
                 Debug.Log($"Player {player} left. Wait for reconnect");
-                PopupViewModel.Instance.OpenReconnectPopup(null);
+                PopupViewModel.Instance.OpenReconnectPopup();
             }
         }
 
