@@ -331,7 +331,7 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  reconnectPanel: {fileID: 0}
+  gameSettingsContainer: {fileID: 2013615972}
 --- !u!1 &575615450
 GameObject:
   m_ObjectHideFlags: 0

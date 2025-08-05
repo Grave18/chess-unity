@@ -1376,6 +1376,7 @@ MonoBehaviour:
   gameSettingsContainer: {fileID: 1470752476}
   fenFromBoard: {fileID: 1300988198}
   popupViewModel: {fileID: 1759059227}
+  inGameMenuViewModel: {fileID: 1517905530}
 --- !u!1 &129982294 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3134483344102738262, guid: abbfba2ec56ddee408cabc6f67711dd8,

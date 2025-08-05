@@ -1,5 +1,6 @@
 ﻿using PurrNet;
 using PurrNet.Transports;
+using Settings;
 using Ui.InGame.ViewModels;
 using UnityEngine;
 
@@ -7,42 +8,79 @@ namespace Network
 {
     public class ConnectionHandler : NetworkBehaviour
     {
+        [SerializeField] private GameSettingsContainer gameSettingsContainer;
+
         private void Start()
         {
-            InstanceHandler.NetworkManager.onServerConnectionState += OnServerConnectionState;
-            InstanceHandler.NetworkManager.onClientConnectionState += OnConnectionState;
-            InstanceHandler.NetworkManager.onPlayerJoined += OnPlayerJoined;
-            InstanceHandler.NetworkManager.onPlayerLeft += OnPlayerLeft;
+            if (InstanceHandler.NetworkManager != null)
+            {
+                InstanceHandler.NetworkManager.onPlayerJoined += OnPlayerJoined;
+                InstanceHandler.NetworkManager.onPlayerLeft += OnPlayerLeft;
+
+                InstanceHandler.NetworkManager.onServerConnectionState += OnServerConnectionState;
+                InstanceHandler.NetworkManager.onClientConnectionState += OnConnectionState;
+            }
         }
 
         private void OnDisable()
         {
-            InstanceHandler.NetworkManager.onServerConnectionState -= OnServerConnectionState;
-            InstanceHandler.NetworkManager.onClientConnectionState -= OnConnectionState;
-            InstanceHandler.NetworkManager.onPlayerJoined -= OnPlayerJoined;
-            InstanceHandler.NetworkManager.onPlayerLeft -= OnPlayerLeft;
+            if (InstanceHandler.NetworkManager != null)
+            {
+                InstanceHandler.NetworkManager.onPlayerJoined -= OnPlayerJoined;
+                InstanceHandler.NetworkManager.onPlayerLeft -= OnPlayerLeft;
+
+                InstanceHandler.NetworkManager.onServerConnectionState -= OnServerConnectionState;
+                InstanceHandler.NetworkManager.onClientConnectionState -= OnConnectionState;
+            }
         }
 
         private void OnPlayerJoined(PlayerID player, bool isReconnect, bool asServer)
         {
             if (asServer)
             {
-                Debug.Log($"Player {player} joined. IsReconnect: {isReconnect}");
-
                 if (isReconnect)
                 {
-                    PopupViewModel.Instance.ClosePopupToGame();
+                    ClosePopup();
                 }
             }
+        }
+
+        private static void ClosePopup()
+        {
+            PopupViewModel.Instance.ClosePopupToGame();
+        }
+
+        protected override void OnObserverAdded(PlayerID player)
+        {
+            if (player.id == 002)
+            {
+                SendFenPresetTo(player);
+            }
+        }
+
+        private void SendFenPresetTo(PlayerID player)
+        {
+            string serversFenPreset = gameSettingsContainer.GetCurrentFen();
+            SetFenPreset_TargetRpc(player, serversFenPreset);
+        }
+
+        [TargetRpc]
+        private void SetFenPreset_TargetRpc(PlayerID target, string fenPreset)
+        {
+            gameSettingsContainer.SetCurrentFen(fenPreset);
         }
 
         private void OnPlayerLeft(PlayerID player, bool asServer)
         {
             if (asServer)
             {
-                Debug.Log($"Player {player} left. Wait for reconnect");
-                PopupViewModel.Instance.OpenReconnectPopup();
+                OpenPopup();
             }
+        }
+
+        private static void OpenPopup()
+        {
+            PopupViewModel.Instance.OpenReconnectPopup();
         }
 
         private void OnServerConnectionState(ConnectionState serverState)

@@ -28,16 +28,6 @@ namespace Network
             }
         }
 
-        protected override void OnObserverAdded(PlayerID player)
-        {
-            base.OnObserverAdded(player);
-
-            if (player.id == 002)
-            {
-                SetPreset(player, gameSettingsContainer.GetCurrentFen());
-            }
-        }
-
         protected override void OnDestroy()
         {
             if (InstanceHandler.NetworkManager != null)
@@ -68,12 +58,6 @@ namespace Network
             yield return new WaitForSecondsRealtime(0.5f);
 
             InstanceHandler.NetworkManager.sceneModule.LoadSceneAsync(gameScene, LoadSceneMode.Additive);
-        }
-
-        [TargetRpc]
-        private void SetPreset(PlayerID target, string preset)
-        {
-            gameSettingsContainer.SetCurrentFen(preset);
         }
     }
 }

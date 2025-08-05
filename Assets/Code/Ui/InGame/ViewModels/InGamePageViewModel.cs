@@ -14,9 +14,27 @@ namespace Ui.InGame.ViewModels
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
         [SerializeField] private FenFromBoard fenFromBoard;
         [SerializeField] private PopupViewModel popupViewModel;
+        [SerializeField] private InGameMenuViewModel inGameMenuViewModel;
 
-        [ObservableProperty]
-        private bool _isPopupOpen;
+        private void OnEnable()
+        {
+            inGameMenuViewModel.OnOpenedChanged += OnInGameMenuOpenedChanged;
+        }
+
+        private void OnDisable()
+        {
+            inGameMenuViewModel.OnOpenedChanged -= OnInGameMenuOpenedChanged;
+        }
+
+        private void OnInGameMenuOpenedChanged(bool isOpened)
+        {
+            if(isOpened)
+            {
+                OpenRematchPopupCommand.NotifyCanExecuteChanged();
+                OpenDrawPopupCommand.NotifyCanExecuteChanged();
+                OpenResignPopupCommand.NotifyCanExecuteChanged();
+            }
+        }
 
         [RelayCommand(CanExecute = nameof(OpenRematchPopup_CanExecute))]
         private void OpenRematchPopup()

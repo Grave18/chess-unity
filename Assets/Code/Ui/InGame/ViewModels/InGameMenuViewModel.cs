@@ -1,4 +1,5 @@
-﻿using ChessGame.Logic.MenuStates;
+﻿using System;
+using ChessGame.Logic.MenuStates;
 using MvvmTool;
 using UnityEngine;
 
@@ -11,6 +12,8 @@ namespace Ui.InGame.ViewModels
         [SerializeField] private MenuStateMachine menuStateMachine;
 
         [ObservableProperty] private bool _isOpened;
+
+        public event Action<bool> OnOpenedChanged;
 
         // For Game Popup needs
         public PopupViewModel Popup => popupViewModel;
@@ -26,6 +29,8 @@ namespace Ui.InGame.ViewModels
             {
                 menuStateMachine.OpenPause();
             }
+
+            OnOpenedChanged?.Invoke(IsOpened);
         }
     }
 }
