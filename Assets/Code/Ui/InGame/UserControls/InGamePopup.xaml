@@ -33,7 +33,7 @@
                         <!-- Button Panel Grid-->
                         <Grid DockPanel.Dock="Bottom"
                               VerticalAlignment="Bottom"
-                              HorizontalAlignment="Stretch">
+                              HorizontalAlignment="Center">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
