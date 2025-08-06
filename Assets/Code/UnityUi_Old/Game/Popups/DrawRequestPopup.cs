@@ -43,7 +43,7 @@ namespace Ui.Game.Popups
         private void AcceptDraw()
         {
             _thisMenuPanel.Hide();
-            game.DrawByAgreement();
+            // game.DrawByAgreement();
 
             AcceptDrawTarget(OnlineInstanceHandler.OtherPlayerID);
         }
@@ -56,7 +56,7 @@ namespace Ui.Game.Popups
                 return;
             }
 
-            game.DrawByAgreement();
+            // game.DrawByAgreement();
             drawPopup.AcceptDrawByRequestPopup();
         }
 

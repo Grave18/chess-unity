@@ -73,7 +73,7 @@ namespace Ui.Game.Popups
         private void RematchOffline()
         {
             _thisMenuPanel.Hide();
-            game.RestartGame();
+            game.Rematch();
         }
 
         private void RematchOnline()

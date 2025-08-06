@@ -36,55 +36,16 @@ namespace Ui.InGame.ViewModels
             PopupNoCommand = new RelayCommand();
         }
 
-        public void OpenRematchPopup(bool isRematchRequest = false)
+        public void OpenConfigurablePopup(PopupSettings popupSettings)
         {
             IsPopupOpen = true;
-            IsPopupNoButtonEnabled = true;
-            IsSaveCheckBoxEnabled = false;
-
-            PopupYesButtonText = "Yes";
-            PopupNoButtonText = "No";
-
-            if (isRematchRequest)
-            {
-                PopupText = "Rematch Requested! Rematch?";
-                PopupYesCommand.Replace(RematchApproval);
-            }
-            else
-            {
-                PopupText = "Do you want to Rematch?";
-                PopupYesCommand.Replace(Rematch);
-            }
-
-            PopupNoCommand.Replace(ClosePopupToPause);
-
-            menuStateMachine.OpenPopup();
-        }
-
-        public void OpenDrawPopup()
-        {
-            IsPopupOpen = true;
-            IsPopupNoButtonEnabled = true;
-            IsSaveCheckBoxEnabled = false;
-            PopupText = "Are you want to Draw?";
-            PopupYesButtonText = "Yes";
-            PopupNoButtonText = "No";
-            PopupYesCommand.Replace(Draw);
-            PopupNoCommand.Replace(ClosePopupToPause);
-
-            menuStateMachine.OpenPopup();
-        }
-
-        public void OpenResignPopup()
-        {
-            IsPopupOpen = true;
-            IsPopupNoButtonEnabled = true;
-            IsSaveCheckBoxEnabled = false;
-            PopupText = "Are you want to Resign?";
-            PopupYesButtonText = "Yes";
-            PopupNoButtonText = "No";
-            PopupYesCommand.Replace(Resign);
-            PopupNoCommand.Replace(ClosePopupToPause);
+            IsPopupNoButtonEnabled = popupSettings.IsPopupNoButtonEnabled;
+            IsSaveCheckBoxEnabled = popupSettings.IsSaveCheckBoxEnabled;
+            PopupText = popupSettings.PopupText;
+            PopupYesButtonText = popupSettings.PopupYesButtonText;
+            PopupNoButtonText = popupSettings.PopupNoButtonText;
+            PopupYesCommand.Replace(popupSettings.PopupYesCommand);
+            PopupNoCommand.Replace(popupSettings.PopupNoCommand);
 
             menuStateMachine.OpenPopup();
         }
@@ -129,34 +90,6 @@ namespace Ui.InGame.ViewModels
             menuStateMachine.ClosePopupToGame();
         }
 
-        private void Rematch()
-        {
-            IsPopupOpen = false;
-            game.Rematch();
-            menuStateMachine.ClosePopupToGame();
-        }
-
-        private void RematchApproval()
-        {
-            IsPopupOpen = false;
-            game.RematchApproval();
-            menuStateMachine.ClosePopupToGame();
-        }
-
-        private void Draw()
-        {
-            IsPopupOpen = false;
-            game.DrawByAgreement();
-            menuStateMachine.ClosePopupToGame();
-        }
-
-        private void Resign()
-        {
-            IsPopupOpen = false;
-            game.Resign();
-            menuStateMachine.ClosePopupToGame();
-        }
-
         private void ExitToMainMenu()
         {
             SaveBoard();
@@ -171,6 +104,17 @@ namespace Ui.InGame.ViewModels
                 gameSettingsContainer.SetSavedFen(fen);
                 LogUi.Debug($"Board saved with: {fen}");
             }
+        }
+
+        public class PopupSettings
+        {
+            public bool IsPopupNoButtonEnabled = true;
+            public bool IsSaveCheckBoxEnabled = false;
+            public string PopupText = "n/a";
+            public string PopupYesButtonText = "Yes";
+            public string PopupNoButtonText = "No";
+            public System.Action PopupYesCommand = null;
+            public System.Action PopupNoCommand = null;
         }
     }
 }

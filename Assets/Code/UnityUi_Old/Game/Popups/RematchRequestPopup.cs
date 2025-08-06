@@ -44,7 +44,7 @@ namespace Ui.Game.Popups
         private void AcceptRematch()
         {
             _thisMenuPanel.Hide();
-            game.RestartGame();
+            game.Rematch();
 
             AcceptRematchTarget(OnlineInstanceHandler.OtherPlayerID);
         }
@@ -59,7 +59,7 @@ namespace Ui.Game.Popups
 
             endGamePopupMenuPanel.Hide();
             rematchPopup.AcceptRematchByRequestPopup();
-            game.RestartGame();
+            game.Rematch();
         }
 
         private void DeclineRematch()

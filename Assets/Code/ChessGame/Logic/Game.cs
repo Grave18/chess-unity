@@ -6,16 +6,13 @@ using ChessGame.Logic.GameStates;
 using ChessGame.Logic.MovesBuffer;
 using ChessGame.Logic.Players;
 using MainCamera;
-using Network;
-using PurrNet;
 using Settings;
-using Ui.InGame.ViewModels;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace ChessGame.Logic
 {
-    public class Game : NetworkBehaviour
+    public class Game : MonoBehaviour
     {
         public MachineManager Machine { get; private set; }
         public Competitors Competitors { get; private set; }
@@ -92,13 +89,6 @@ namespace ChessGame.Logic
             Machine = machine;
         }
 
-        public void RestartGame()
-        {
-            Competitors.Restart();
-            Board.Build();
-            StartGame();
-        }
-
         public void StartGame()
         {
             _cameraController.RotateToStartPosition(StartGameContinuation);
@@ -145,68 +135,6 @@ namespace ChessGame.Logic
 
             Machine.SetState(new EndGameState(this));
         }
-
-// ========= Begin of Rematch, Draw, Resign ========
-
-        public void Rematch()
-        {
-            if (OnlineInstanceHandler.IsOffline)
-            {
-                RematchOffline();
-            }
-            else
-            {
-                RematchOnline();
-            }
-        }
-
-        private void RematchOffline()
-        {
-            RestartGame();
-        }
-
-        private void RematchOnline()
-        {
-            PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
-            RequestRematch_TargetRpc(otherPlayerID);
-        }
-
-        [TargetRpc]
-        private void RequestRematch_TargetRpc(PlayerID playerId)
-        {
-            PopupViewModel.Instance.OpenRematchPopup(isRematchRequest: true);
-            EffectsPlayer.Instance.PlayNotifySound();
-        }
-
-        public void RematchApproval()
-        {
-            RestartGame();
-
-            PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
-            Rematch_TargetRpc(otherPlayerID);
-        }
-
-        [TargetRpc]
-        private void Rematch_TargetRpc(PlayerID player)
-        {
-            RestartGame();
-        }
-
-        public void Resign()
-        {
-            CheckType = CheckType.Resign;
-            CheckDescription = $"{CurrentTurnColor} player resigned";
-            _winnerColor = PreviousTurnColor;
-
-            Machine.SetState(new EndGameState(this));
-        }
-
-        public void DrawByAgreement()
-        {
-            Draw("Draw by agreement");
-        }
-
-// ========= End of Rematch, Draw, Resign ========
 
         public void Checkmate()
         {
@@ -335,11 +263,27 @@ namespace ChessGame.Logic
             }
         }
 
-        private void Draw(string description)
+        public void Rematch()
+        {
+            Competitors.Restart();
+            Board.Build();
+            StartGame();
+        }
+
+        public void Draw(string description)
         {
             CheckType = CheckType.Draw;
-            _winnerColor = PieceColor.None;
             CheckDescription = description;
+            _winnerColor = PieceColor.None;
+
+            Machine.SetState(new EndGameState(this));
+        }
+
+        public void Resign()
+        {
+            CheckType = CheckType.Resign;
+            CheckDescription = $"{CurrentTurnColor} player resigned";
+            _winnerColor = PreviousTurnColor;
 
             Machine.SetState(new EndGameState(this));
         }

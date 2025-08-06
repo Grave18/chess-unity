@@ -37,13 +37,13 @@ namespace Ui.Game.Popups
 
         private void ResignOffline()
         {
-            game.Resign();
+            // game.Resign();
         }
 
         [ObserversRpc]
         private void ResignOnline()
         {
-            game.Resign();
+            // game.Resign();
         }
     }
 }
