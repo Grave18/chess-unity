@@ -1,5 +1,6 @@
 ﻿using System.Collections;
-using ChessGame.Logic;
+using Logic;
+using Sound;
 using TMPro;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace Ui.Game
     {
         [Header("References")]
         [SerializeField] private Initialization.Initialization initialization;
-        [SerializeField] private ChessGame.Logic.Game game;
+        [SerializeField] private Logic.Game game;
 
         [Header("Ui")]
         [SerializeField] private TMP_Text whiteText;

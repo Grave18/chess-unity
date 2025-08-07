@@ -1,8 +1,8 @@
-﻿using ChessGame.Logic;
-using GameAndScene;
+﻿using Logic;
 using Settings;
 using Ui.Auxiliary;
 using MvvmTool;
+using SceneManagement;
 using UnityEngine;
 
 namespace Ui.Menu.ViewModels

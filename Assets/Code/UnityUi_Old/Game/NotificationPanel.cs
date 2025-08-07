@@ -1,4 +1,4 @@
-using ChessGame.Logic;
+using Logic;
 using TMPro;
 using UnityEngine;
 
@@ -7,7 +7,7 @@ namespace Ui.Game
     public class NotificationPanel : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private ChessGame.Logic.Game game;
+        [SerializeField] private Logic.Game game;
 
         [Header("Panels")]
         [SerializeField] private GameObject additionalPanel;

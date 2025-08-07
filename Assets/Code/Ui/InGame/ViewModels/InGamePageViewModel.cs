@@ -1,9 +1,10 @@
-﻿using GameAndScene;
-using Network;
+﻿using Network;
 using Notation;
 using Settings;
 using MvvmTool;
 using PurrNet;
+using SceneManagement;
+using Sound;
 using UnityEngine;
 
 namespace Ui.InGame.ViewModels
@@ -11,7 +12,7 @@ namespace Ui.InGame.ViewModels
     public partial class InGamePageViewModel : NetworkBehaviour
     {
         [SerializeField] private SceneLoader sceneLoader;
-        [SerializeField] private ChessGame.Logic.Game game;
+        [SerializeField] private Logic.Game game;
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
         [SerializeField] private FenFromBoard fenFromBoard;
         [SerializeField] private PopupViewModel popupViewModel;

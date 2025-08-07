@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UtilsCommon.Mathematics;
 
-namespace GameAndScene
+namespace Settings
 {
     [DefaultExecutionOrder(-1)]
     public class AudioSettingsContainer : MonoBehaviour

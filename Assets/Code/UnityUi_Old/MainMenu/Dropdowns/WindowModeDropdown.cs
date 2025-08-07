@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using GameAndScene;
+using Settings;
 using Ui.Common;
 using UnityEngine;
 

@@ -1,8 +1,7 @@
 ﻿using EditorCools;
-using Settings;
 using UnityEngine;
 
-namespace Initialization
+namespace Settings
 {
     public class GameSettingsConfigurator : MonoBehaviour
     {

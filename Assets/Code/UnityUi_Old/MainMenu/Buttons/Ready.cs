@@ -1,4 +1,4 @@
-﻿using ChessGame.Logic;
+﻿using Logic;
 using PurrLobby;
 using Settings;
 using Ui.Common.Buttons;

@@ -8,7 +8,7 @@ namespace Ui.Game.Popups
     [DefaultExecutionOrder(1)] // Needed for ButtonBase.Awake() is run before this OnEnable
     public class RematchButtonEnabler : MonoBehaviour
     {
-        [SerializeField] private ChessGame.Logic.Game game;
+        [SerializeField] private Logic.Game game;
 
         private void OnEnable()
         {

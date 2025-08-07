@@ -1,5 +1,5 @@
-using ChessGame.Logic;
-using GameAndScene;
+using Logic;
+using SceneManagement;
 using Settings;
 using Ui.Common.Buttons;
 using UnityEngine;

@@ -1,5 +1,5 @@
-﻿using ChessGame.Logic;
-using ChessGame.Logic.Players;
+﻿using Logic;
+using Logic.Players;
 using PurrNet;
 using Settings;
 using UnityEngine;

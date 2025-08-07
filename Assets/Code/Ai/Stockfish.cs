@@ -4,8 +4,9 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ChessGame.Logic.MovesBuffer;
 using Initialization;
+using Logic.MovesBuffer;
+using Settings;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 

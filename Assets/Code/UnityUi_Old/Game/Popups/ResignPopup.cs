@@ -8,7 +8,7 @@ namespace Ui.Game.Popups
     public class ResignPopup : NetworkBehaviour
     {
         [Header("References")]
-        [SerializeField] private ChessGame.Logic.Game game;
+        [SerializeField] private Logic.Game game;
 
         [Header("Buttons")]
         [SerializeField] private ButtonBase yesButton;

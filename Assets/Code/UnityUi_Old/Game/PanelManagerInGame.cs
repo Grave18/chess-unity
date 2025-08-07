@@ -1,4 +1,4 @@
-﻿using ChessGame;
+﻿using InputManagement;
 using Ui.MainMenu;
 using UnityEngine;
 
@@ -7,7 +7,7 @@ namespace Ui.Game
     public class PanelManagerInGame : PanelManagerBase
     {
         [Header("References")]
-        [SerializeField] private ChessGame.Logic.Game game;
+        [SerializeField] private Logic.Game game;
 
         [Header("UI")]
         [SerializeField] private GameObject inputBlockingPanel;
@@ -32,7 +32,7 @@ namespace Ui.Game
         /// Disable input if in Menu and enable input blocking
         protected override void SetCurrentPanelHook()
         {
-            GInput.IsEnabled = !IsInMenu;
+            InputController.IsEnabled = !IsInMenu;
             inputBlockingPanel.SetActive(IsInMenu);
         }
 

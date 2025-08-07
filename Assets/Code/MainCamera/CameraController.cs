@@ -1,6 +1,6 @@
 ﻿using System.Collections;
-using ChessGame;
-using ChessGame.Logic;
+using InputManagement;
+using Logic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
@@ -173,7 +173,7 @@ namespace MainCamera
         private void CalculateZoom()
         {
             // From keyboard
-            _newDistance -= GInput.Scroll() * zoomSensitivity;
+            _newDistance -= InputController.Scroll() * zoomSensitivity;
             _newDistance = Mathf.Clamp(_newDistance, minDistance, maxDistance);
 
             // Smoothing zoom
@@ -182,10 +182,10 @@ namespace MainCamera
 
         private void CalculateOrbit()
         {
-            if (GInput.Rmb())
+            if (InputController.Rmb())
             {
-                _newYawRad -= GInput.Horizontal() * orbitSensitivity;
-                _newPitchRad -= GInput.Vertical() * orbitSensitivity;
+                _newYawRad -= InputController.Horizontal() * orbitSensitivity;
+                _newPitchRad -= InputController.Vertical() * orbitSensitivity;
             }
 
             _newPitchRad = Mathf.Clamp(_newPitchRad, minPitchRad, maxPitchRad);

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using GameAndScene;
+using Settings;
 using Ui.Auxiliary;
 using UnityEngine;
 

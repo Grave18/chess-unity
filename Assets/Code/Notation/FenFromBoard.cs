@@ -1,9 +1,9 @@
 using System.Text;
-using ChessGame.ChessBoard;
-using ChessGame.ChessBoard.Info;
-using ChessGame.ChessBoard.Pieces;
-using ChessGame.Logic;
-using ChessGame.Logic.MovesBuffer;
+using ChessBoard;
+using ChessBoard.Info;
+using ChessBoard.Pieces;
+using Logic;
+using Logic.MovesBuffer;
 using UnityEngine;
 
 #if UNITY_EDITOR

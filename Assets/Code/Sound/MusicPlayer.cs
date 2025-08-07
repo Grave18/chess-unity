@@ -1,14 +1,17 @@
 using UnityEngine;
 
-public class MusicPlayer : MonoBehaviour
+namespace Sound
 {
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip mainTheme;
-
-    private void Start()
+    public class MusicPlayer : MonoBehaviour
     {
-        audioSource.clip = mainTheme;
-        audioSource.loop = true;
-        audioSource.Play();
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip mainTheme;
+
+        private void Start()
+        {
+            audioSource.clip = mainTheme;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
     }
 }

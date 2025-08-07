@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-namespace GameAndScene
+namespace Settings
 {
     [DefaultExecutionOrder(-1)]
     public class GraphicsSettingsContainer : MonoBehaviour

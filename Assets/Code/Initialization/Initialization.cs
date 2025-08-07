@@ -2,11 +2,11 @@
 using Ai;
 using System.Threading.Tasks;
 using AssetsAndResources;
-using ChessGame.ChessBoard;
-using ChessGame.Logic;
-using ChessGame.Logic.MovesBuffer;
-using ChessGame.Logic.Players;
+using ChessBoard;
 using Highlighting;
+using Logic;
+using Logic.MovesBuffer;
+using Logic.Players;
 using MainCamera;
 using Network;
 using Notation;

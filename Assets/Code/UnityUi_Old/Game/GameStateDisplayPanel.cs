@@ -1,4 +1,4 @@
-﻿using ChessGame.Logic;
+﻿using Logic;
 using TMPro;
 using UnityEngine;
 
@@ -6,7 +6,7 @@ namespace Ui.Game
 {
     public class GameStateDisplayPanel : MonoBehaviour
     {
-        [SerializeField] private ChessGame.Logic.Game game;
+        [SerializeField] private Logic.Game game;
         [SerializeField] private TMP_Text whiteText;
         [SerializeField] private TMP_Text blackText;
 

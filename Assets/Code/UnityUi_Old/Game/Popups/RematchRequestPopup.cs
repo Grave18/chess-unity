@@ -1,5 +1,6 @@
 using Network;
 using PurrNet;
+using Sound;
 using Ui.Common.Buttons;
 using Ui.MainMenu;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace Ui.Game.Popups
     public class RematchRequestPopup : NetworkBehaviour
     {
         [Header("References")]
-        [SerializeField] private ChessGame.Logic.Game game;
+        [SerializeField] private Logic.Game game;
 
         [Header("Ui")]
         [SerializeField] private PanelManagerInGame panelManagerInGame;

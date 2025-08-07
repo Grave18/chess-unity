@@ -1,9 +1,9 @@
-﻿using ChessGame.Logic.MenuStates;
-using GameAndScene;
+﻿using Logic.MenuStates;
 using Notation;
 using Settings;
 using MvvmTool;
 using Network;
+using SceneManagement;
 using Ui.Auxiliary;
 using UnityEngine;
 using UtilsCommon.Singleton;
@@ -14,7 +14,7 @@ namespace Ui.InGame.ViewModels
     public partial class PopupViewModel : SingletonBehaviour<PopupViewModel>
     {
         [SerializeField] private SceneLoader sceneLoader;
-        [SerializeField] private ChessGame.Logic.Game game;
+        [SerializeField] private Logic.Game game;
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
         [SerializeField] private FenFromBoard fenFromBoard;
         [SerializeField] private MenuStateMachine menuStateMachine;

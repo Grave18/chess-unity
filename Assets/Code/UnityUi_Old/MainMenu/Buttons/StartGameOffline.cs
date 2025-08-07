@@ -1,4 +1,4 @@
-﻿using GameAndScene;
+﻿using SceneManagement;
 using Settings;
 using Ui.Common.Buttons;
 using UnityEngine;

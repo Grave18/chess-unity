@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using Ai;
-using ChessGame.Logic;
 using Initialization;
+using Logic;
 using ParrelSync;
 using UnityEngine;
 

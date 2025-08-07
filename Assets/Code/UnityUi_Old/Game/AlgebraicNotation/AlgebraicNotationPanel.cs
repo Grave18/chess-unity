@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using ChessGame.Logic;
-using ChessGame.Logic.MovesBuffer;
+using Logic;
+using Logic.MovesBuffer;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +11,7 @@ namespace Ui.Game.AlgebraicNotation
     public class AlgebraicNotationPanel : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private ChessGame.Logic.Game game;
+        [SerializeField] private Logic.Game game;
         [SerializeField] private UciBuffer uciBuffer;
 
         [Header("Ui")]

@@ -2,9 +2,9 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using BoardEditor;
 using Settings;
 using Ui.Auxiliary;
+using Ui.BoardInMainMenu;
 using UnityEngine;
 
 namespace Ui.Menu.ViewModels

@@ -1,4 +1,4 @@
-﻿using ChessGame.Logic;
+﻿using Logic;
 using Network;
 using Settings;
 using UnityEngine;
@@ -9,7 +9,7 @@ namespace Ui.Game
     public class UndoRedoPausePanel : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private ChessGame.Logic.Game game;
+        [SerializeField] private Logic.Game game;
         [SerializeField] private Initialization.Initialization initialization;
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
 

@@ -11,7 +11,7 @@ namespace Ui.Game.Popups
     public class DrawRequestPopup : NetworkBehaviour
     {
         [Header("References")]
-        [SerializeField] private ChessGame.Logic.Game game;
+        [SerializeField] private Logic.Game game;
 
         [Header("Ui")]
         [SerializeField] private DrawPopup drawPopup;

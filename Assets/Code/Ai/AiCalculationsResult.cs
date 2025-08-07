@@ -1,5 +1,5 @@
-﻿using ChessGame.ChessBoard;
-using ChessGame.ChessBoard.Info;
+﻿using ChessBoard;
+using ChessBoard.Info;
 
 namespace Ai
 {

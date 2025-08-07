@@ -1,21 +1,24 @@
-using ChessGame.Logic;
+using Logic;
 using UnityEngine;
 
-public class SoundManager : MonoBehaviour
+namespace Sound
 {
-    [Header("References")]
-    [SerializeField] private Game game;
-    [SerializeField] private EffectsPlayer effectsPlayer;
-
-    private void OnEnable()
+    public class SoundManager : MonoBehaviour
     {
-        game.OnStart += effectsPlayer.PlayGameStartSound;
-        game.OnEnd += effectsPlayer.PlayGameEndSound;
-    }
+        [Header("References")]
+        [SerializeField] private Game game;
+        [SerializeField] private EffectsPlayer effectsPlayer;
 
-    private void OnDisable()
-    {
-        game.OnStart -= effectsPlayer.PlayGameStartSound;
-        game.OnEnd -= effectsPlayer.PlayGameEndSound;
+        private void OnEnable()
+        {
+            game.OnStart += effectsPlayer.PlayGameStartSound;
+            game.OnEnd += effectsPlayer.PlayGameEndSound;
+        }
+
+        private void OnDisable()
+        {
+            game.OnStart -= effectsPlayer.PlayGameStartSound;
+            game.OnEnd -= effectsPlayer.PlayGameEndSound;
+        }
     }
 }

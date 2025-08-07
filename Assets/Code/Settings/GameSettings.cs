@@ -1,8 +1,7 @@
-﻿using Ai;
-using ChessGame.Logic;
+﻿using Logic;
 using UnityEngine;
 
-namespace Initialization
+namespace Settings
 {
     [System.Serializable]
     public class GameSettings

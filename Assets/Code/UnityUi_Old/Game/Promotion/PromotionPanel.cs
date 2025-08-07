@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections;
-using ChessGame;
-using ChessGame.ChessBoard;
-using ChessGame.ChessBoard.Info;
-using ChessGame.Logic;
+using ChessBoard;
+using ChessBoard.Info;
+using Logic;
 using UnityEngine;
 using UtilsCommon.Mathematics;
 

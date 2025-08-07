@@ -5,7 +5,7 @@ namespace Ui.Game
     public class MenuButtonPanel : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private ChessGame.Logic.Game game;
+        [SerializeField] private Logic.Game game;
 
         [Header("Ui")]
         [SerializeField] private GameObject restartButton;

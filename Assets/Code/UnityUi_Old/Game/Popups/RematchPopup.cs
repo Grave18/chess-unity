@@ -12,7 +12,7 @@ namespace Ui.Game.Popups
     public class RematchPopup : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private ChessGame.Logic.Game game;
+        [SerializeField] private Logic.Game game;
 
         [Header("UI")]
         [SerializeField] private PanelManagerInGame panelManagerInGame;
