@@ -9,7 +9,7 @@ using UnityEngine.Assertions;
 
 namespace Ui.Game.Popups
 {
-    public class RematchPopup : NetworkBehaviour
+    public class RematchPopup : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] private ChessGame.Logic.Game game;
@@ -86,16 +86,16 @@ namespace Ui.Game.Popups
             RequestRematchTarget(otherPlayerID);
         }
 
-        [ObserversRpc]
+        // [ObserversRpc]
         private void RequestRematchTarget(PlayerID playerId)
         {
-            if(playerId.id != localPlayer?.id)
-            {
-                return;
-            }
-
-            rematchRequestPopup.Show();
-            EffectsPlayer.Instance.PlayNotifySound();
+            // if(playerId.id != localPlayer?.id)
+            // {
+            //     return;
+            // }
+            //
+            // rematchRequestPopup.Show();
+            // EffectsPlayer.Instance.PlayNotifySound();
         }
 
         public void AcceptRematchByRequestPopup()
