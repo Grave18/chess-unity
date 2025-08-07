@@ -1,6 +1,8 @@
 using System.Collections;
 using Network.Localhost;
 using PurrNet;
+using PurrNet.Modules;
+using PurrNet.Transports;
 using Settings;
 using TMPro;
 using UnityEngine;
@@ -12,6 +14,8 @@ namespace Network
     {
         [Header("References")]
         [PurrScene] [SerializeField] private string gameScene;
+        [PurrScene] [SerializeField] private string onlineLocalhostScene;
+        [PurrScene] [SerializeField] private string mainMenuScene;
 
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
 
@@ -24,7 +28,8 @@ namespace Network
         {
             if (InstanceHandler.NetworkManager != null)
             {
-                InstanceHandler.NetworkManager.onPlayerJoined += OnConnected;
+                InstanceHandler.NetworkManager.onPlayerJoined += OnPlayerJoined;
+                InstanceHandler.NetworkManager.onClientConnectionState += OnClientConnectionState;
             }
         }
 
@@ -32,16 +37,43 @@ namespace Network
         {
             if (InstanceHandler.NetworkManager != null)
             {
-                InstanceHandler.NetworkManager.onPlayerJoined -= OnConnected;
+                InstanceHandler.NetworkManager.onPlayerJoined -= OnPlayerJoined;
+                InstanceHandler.NetworkManager.onClientConnectionState -= OnClientConnectionState;
             }
         }
 
-        private void OnConnected(PlayerID player, bool isReconnect, bool asServer)
+        private void OnClientConnectionState(ConnectionState state)
+        {
+            if (state == ConnectionState.Disconnected)
+            {
+                if (isServer)
+                {
+                    OnHostDisconnected();
+                }
+                else
+                {
+                    OnClientDisconnected();
+                }
+            }
+        }
+
+        private void OnHostDisconnected()
+        {
+            SceneManager.UnloadSceneAsync(gameScene)!
+                .completed += _ => SceneManager.LoadSceneAsync(mainMenuScene, LoadSceneMode.Additive)!
+                .completed += _ => InstanceHandler.NetworkManager?.StopServer();
+        }
+
+        private void OnClientDisconnected()
+        {
+            SceneManager.LoadSceneAsync(mainMenuScene, LoadSceneMode.Additive);
+        }
+
+        private void OnPlayerJoined(PlayerID player, bool isReconnect, bool asServer)
         {
             if (asServer)
             {
                 _connectionCount += 1;
-
                 if (_connectionCount == LocalhostPlayersCount.Get)
                 {
                     StartCoroutine(LoadGame());
@@ -49,7 +81,7 @@ namespace Network
             }
             else
             {
-                debugText.text = $"Host: {InstanceHandler.NetworkManager.isHost}. Connections: {_connectionCount}";
+                debugText.text = $"Host: {InstanceHandler.NetworkManager?.isHost}";
             }
         }
 
@@ -57,7 +89,13 @@ namespace Network
         {
             yield return new WaitForSecondsRealtime(0.5f);
 
-            InstanceHandler.NetworkManager.sceneModule.LoadSceneAsync(gameScene, LoadSceneMode.Additive);
+            ScenesModule sceneModule = InstanceHandler.NetworkManager?.sceneModule;
+            sceneModule?.LoadSceneAsync(gameScene, LoadSceneMode.Additive);
+        }
+
+        public static void DisconnectFromServer()
+        {
+            InstanceHandler.NetworkManager?.StopClient();
         }
     }
 }

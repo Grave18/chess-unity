@@ -465,6 +465,8 @@ MonoBehaviour:
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
   gameScene: GameScene
+  onlineLocalhostScene: OnlineLocalhostScene
+  mainMenuScene: MainMenuScene
   gameSettingsContainer: {fileID: 2013615972}
   debugText: {fileID: 826125186}
 --- !u!4 &677459663

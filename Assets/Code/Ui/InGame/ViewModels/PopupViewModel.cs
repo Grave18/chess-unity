@@ -3,6 +3,7 @@ using GameAndScene;
 using Notation;
 using Settings;
 using MvvmTool;
+using Network;
 using Ui.Auxiliary;
 using UnityEngine;
 using UtilsCommon.Singleton;
@@ -90,10 +91,18 @@ namespace Ui.InGame.ViewModels
             menuStateMachine.ClosePopupToGame();
         }
 
-        private void ExitToMainMenu()
+        public void ExitToMainMenu()
         {
             SaveBoard();
-            sceneLoader.LoadMainMenu();
+
+            if (OnlineInstanceHandler.IsOnline)
+            {
+                SceneLoaderOnline.DisconnectFromServer();
+            }
+            else
+            {
+                sceneLoader.LoadMainMenu();
+            }
         }
 
         private void SaveBoard()

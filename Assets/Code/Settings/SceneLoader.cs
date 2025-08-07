@@ -30,15 +30,27 @@ namespace GameAndScene
 
         public void LoadOnlineLocalhost()
         {
-            SceneManager
-                .LoadSceneAsync(onlineLocalhostScene, LoadSceneMode.Additive)!
-                .completed += OnOnlineSceneLoadCompleted;
+            if (IsSceneLoaded(onlineLocalhostScene))
+            {
+                SceneManager.UnloadSceneAsync(mainMenuScene);
+            }
+            else
+            {
+                SceneManager.LoadSceneAsync(onlineLocalhostScene, LoadSceneMode.Additive)!
+                    .completed += OnOnlineSceneLoadCompleted;
+            }
 
             return;
             void OnOnlineSceneLoadCompleted(AsyncOperation op)
             {
                 SceneManager.UnloadSceneAsync(mainMenuScene);
             }
+        }
+
+        private static bool IsSceneLoaded(string sceneName)
+        {
+            Scene scene = SceneManager.GetSceneByName(sceneName);
+            return scene.isLoaded;
         }
 
         public void ReloadCurrentScene()

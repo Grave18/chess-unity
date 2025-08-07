@@ -25,13 +25,7 @@ namespace Ui.Auxiliary
 
         protected GameMenuBase()
         {
-            if (Instance != null)
-            {
-                LogUi.Debug($"{typeof(GameMenuBase)} already bound. Replacing Instance:");
-            }
-
             Instance = this;
-            LogUi.Debug($"Bound {typeof(GameMenuBase)} to {Instance}");
         }
 
 #if NOESIS

@@ -1,5 +1,4 @@
 ﻿using PurrNet;
-using PurrNet.Transports;
 using Settings;
 using Ui.InGame.ViewModels;
 using UnityEngine;
@@ -10,27 +9,22 @@ namespace Network
     {
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
 
-        private void Start()
+        private void Awake()
         {
             if (InstanceHandler.NetworkManager != null)
             {
                 InstanceHandler.NetworkManager.onPlayerJoined += OnPlayerJoined;
                 InstanceHandler.NetworkManager.onPlayerLeft += OnPlayerLeft;
-
-                InstanceHandler.NetworkManager.onServerConnectionState += OnServerConnectionState;
-                InstanceHandler.NetworkManager.onClientConnectionState += OnConnectionState;
             }
         }
 
-        private void OnDisable()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             if (InstanceHandler.NetworkManager != null)
             {
                 InstanceHandler.NetworkManager.onPlayerJoined -= OnPlayerJoined;
                 InstanceHandler.NetworkManager.onPlayerLeft -= OnPlayerLeft;
-
-                InstanceHandler.NetworkManager.onServerConnectionState -= OnServerConnectionState;
-                InstanceHandler.NetworkManager.onClientConnectionState -= OnConnectionState;
             }
         }
 
@@ -61,11 +55,11 @@ namespace Network
         private void SendFenPresetTo(PlayerID player)
         {
             string serversFenPreset = gameSettingsContainer.GetCurrentFen();
-            SetFenPreset_TargetRpc(player, serversFenPreset);
+            SetFenPresetTo_TargetRpc(player, serversFenPreset);
         }
 
         [TargetRpc]
-        private void SetFenPreset_TargetRpc(PlayerID target, string fenPreset)
+        private void SetFenPresetTo_TargetRpc(PlayerID target, string fenPreset)
         {
             gameSettingsContainer.SetCurrentFen(fenPreset);
         }
@@ -74,38 +68,18 @@ namespace Network
         {
             if (asServer)
             {
-                OpenPopup();
+                return;
+            }
+
+            if (player.id == 002)
+            {
+                OpenReconnectPopup();
             }
         }
 
-        private static void OpenPopup()
+        private static void OpenReconnectPopup()
         {
             PopupViewModel.Instance.OpenReconnectPopup();
-        }
-
-        private void OnServerConnectionState(ConnectionState serverState)
-        {
-
-        }
-
-        private void OnConnectionState(ConnectionState clientState)
-        {
-            if (clientState == ConnectionState.Connecting)
-            {
-
-            }
-            else if (clientState == ConnectionState.Connected)
-            {
-
-            }
-            else if (clientState == ConnectionState.Disconnecting)
-            {
-
-            }
-            else if (clientState == ConnectionState.Disconnected)
-            {
-
-            }
         }
     }
 }
