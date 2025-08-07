@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Network;
-using Network.Localhost;
 using PurrNet;
 using PurrNet.Logging;
 using UnityEngine;
@@ -13,6 +11,8 @@ namespace PurrLobby
 {
     public class LobbyManager : MonoBehaviour
     {
+        private const int PlayersToStart = 2;
+        
         [SerializeField] private MonoBehaviour currentProvider;
 
         private ILobbyProvider _currentProvider;
@@ -400,7 +400,7 @@ namespace PurrLobby
             await WaitForAllTasksAsync();
 
             if(_currentLobby.IsValid
-               && _currentLobby.Members.Count == LocalhostPlayersCount.Get
+               && _currentLobby.Members.Count == PlayersToStart
                && _currentLobby.Members.TrueForAll(x => x.IsReady))
             {
                 await _currentProvider.SetAllReadyAsync();
