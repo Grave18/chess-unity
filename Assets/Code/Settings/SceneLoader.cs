@@ -1,5 +1,9 @@
+using System.Collections;
+using PurrNet;
+using Settings;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UtilsCommon;
 using UtilsCommon.SceneTool;
 
 namespace GameAndScene
@@ -30,26 +34,50 @@ namespace GameAndScene
 
         public void LoadOnlineLocalhost()
         {
-            if (IsSceneLoaded(onlineLocalhostScene))
+            if (!IsSceneLoaded(onlineLocalhostScene))
             {
-                SceneManager.UnloadSceneAsync(mainMenuScene);
+                LoadGameFirstTime();
             }
             else
             {
-                SceneManager.LoadSceneAsync(onlineLocalhostScene, LoadSceneMode.Additive)!
-                    .completed += OnOnlineSceneLoadCompleted;
+                LoadGameSecondTime();
+            }
+        }
+
+        private void LoadGameFirstTime()
+        {
+            SceneManager.LoadSceneAsync(onlineLocalhostScene, LoadSceneMode.Additive)!
+                .completed += _ => SceneManager.UnloadSceneAsync(mainMenuScene)!
+                .completed += _ => StartServerAndClient();
+        }
+
+        private void LoadGameSecondTime()
+        {
+            SceneManager.UnloadSceneAsync(mainMenuScene)!
+                .completed += _ => StartServerAndClient();
+        }
+
+        private static void StartServerAndClient()
+        {
+            if (GameSettingsContainer.IsLocalhostServer)
+            {
+                InstanceHandler.NetworkManager?.StartServer();
             }
 
+            CoroutineRunner.Run(StartClientRoutine());
             return;
-            void OnOnlineSceneLoadCompleted(AsyncOperation op)
+
+            IEnumerator StartClientRoutine()
             {
-                SceneManager.UnloadSceneAsync(mainMenuScene);
+                yield return new WaitForSeconds(1f);
+
+                InstanceHandler.NetworkManager?.StartClient();
             }
         }
 
         private static bool IsSceneLoaded(string sceneName)
         {
-            Scene scene = SceneManager.GetSceneByName(sceneName);
+            Scene scene = SceneManager.GetSceneByPath(sceneName);
             return scene.isLoaded;
         }
 
