@@ -5,6 +5,7 @@ using Settings;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UtilsCommon;
 
 namespace Network
 {
@@ -117,14 +118,31 @@ namespace Network
 
         private void OnHostDisconnected()
         {
-            SceneManager.UnloadSceneAsync(gameScene)!
-                .completed += _ => SceneManager.LoadSceneAsync(mainMenuScene, LoadSceneMode.Additive)!
-                .completed += _ => InstanceHandler.NetworkManager?.StopServer();
+            if (InstanceHandler.NetworkManager != null)
+            {
+                InstanceHandler.NetworkManager.sceneModule.UnloadSceneAsync(gameScene)!
+                    .completed += _ => SceneManager.LoadSceneAsync(mainMenuScene, LoadSceneMode.Additive)!
+                    .completed += _ => InstanceHandler.NetworkManager?.StopServer();
+            }
+            else
+            {
+                SceneManager.UnloadSceneAsync(gameScene)!
+                    .completed += _ => SceneManager.LoadSceneAsync(mainMenuScene, LoadSceneMode.Additive)!
+                    .completed += _ => InstanceHandler.NetworkManager?.StopServer();
+            }
         }
 
         private void OnClientDisconnected()
         {
-            SceneManager.LoadSceneAsync(mainMenuScene, LoadSceneMode.Additive);
+            CoroutineRunner.Run(ClientDisconnectedRoutine());
+            return;
+
+            // Add delay to game scene to unload and load main menu
+            IEnumerator ClientDisconnectedRoutine()
+            {
+                yield return new WaitUntil(() => !IsSceneLoaded(gameScene));
+                SceneManager.LoadSceneAsync(mainMenuScene, LoadSceneMode.Additive);
+            }
         }
     }
 }
