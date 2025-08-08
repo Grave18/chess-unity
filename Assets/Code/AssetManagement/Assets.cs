@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace AssetsAndResources
+namespace AssetManagement
 {
     public class Assets : MonoBehaviour
     {

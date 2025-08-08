@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Ai;
 using System.Threading.Tasks;
-using AssetsAndResources;
+using AssetManagement;
 using ChessBoard;
 using Highlighting;
 using Logic;

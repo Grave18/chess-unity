@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace AssetsAndResources
+namespace AssetManagement
 {
     [CreateAssetMenu(fileName = "BoardPreset", menuName = "Board/BoardPreset")]
     public class BoardPreset : ScriptableObject
