@@ -17,6 +17,7 @@ namespace Network
             if (InstanceHandler.NetworkManager != null)
             {
                 InstanceHandler.NetworkManager.onPlayerJoined += OnPlayerJoined;
+                InstanceHandler.NetworkManager.onPlayerLeft += OnPlayerLeft;
             }
         }
 
@@ -25,20 +26,31 @@ namespace Network
             if (InstanceHandler.NetworkManager != null)
             {
                 InstanceHandler.NetworkManager.onPlayerJoined -= OnPlayerJoined;
+                InstanceHandler.NetworkManager.onPlayerLeft -= OnPlayerLeft;
             }
         }
 
+        private PlayerID ServerId { get; set; }
         private void OnPlayerJoined(PlayerID player, bool isReconnect, bool asServer)
         {
             if (asServer)
             {
-                InitializationAsServer(player);
+                SetServerId(player);
+                GiveOwnershipTo(player);
             }
         }
 
-        private void InitializationAsServer(PlayerID player)
+        private void SetServerId(PlayerID player)
         {
-            if (player.id == 001)
+            if (ServerId == default)
+            {
+                ServerId = player;
+            }
+        }
+
+        private void GiveOwnershipTo(PlayerID player)
+        {
+            if (player.id == ServerId.id)
             {
                 playerOnlineWhite.GiveOwnership(player);
                 clockOnline.GiveOwnership(player);
@@ -46,6 +58,22 @@ namespace Network
             else
             {
                 playerOnlineBlack.GiveOwnership(player);
+            }
+        }
+
+        private void OnPlayerLeft(PlayerID player, bool asServer)
+        {
+            if (asServer)
+            {
+                ResetServerId(player);
+            }
+        }
+
+        private void ResetServerId(PlayerID player)
+        {
+            if (player.id == ServerId.id)
+            {
+                ServerId = default;
             }
         }
     }
