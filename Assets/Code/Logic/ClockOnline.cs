@@ -15,31 +15,27 @@ namespace Logic
         private SyncVar<TimeSpan> _blackTime = new();
 
         private bool _isPlaying;
-        private bool _isInitialized;
 
         public TimeSpan WhiteTime => _whiteTime.value;
         public TimeSpan BlackTime => _blackTime.value;
 
         public void Init(Game game, Vector2Int time)
         {
-            if (_isInitialized)
-            {
-                Debug.Log("{nameof(Clock): Clock is already initialized}");
-                return;
-            }
-
             _game = game;
             _initialWhiteTime = TimeSpan.FromMinutes(time.x) + TimeSpan.FromSeconds(time.y);
             _initialBlackTime = _initialWhiteTime;
 
+            SubscribeToGameEvents();
+        }
+
+        private void SubscribeToGameEvents()
+        {
             _game.OnWarmup += InitTime;
             _game.OnStart += StartTimer;
             _game.OnEndMove += Play;
             _game.OnEnd += Pause;
             _game.OnPlay += Play;
             _game.OnPause += Pause;
-
-            _isInitialized = true;
         }
 
         protected override void OnDestroy()
@@ -48,13 +44,18 @@ namespace Logic
 
             if (_game)
             {
-                _game.OnWarmup -= InitTime;
-                _game.OnStart -= StartTimer;
-                _game.OnEndMove -= Play;
-                _game.OnEnd -= Pause;
-                _game.OnPlay -= Play;
-                _game.OnPause -= Pause;
+                UnsubscribeFromGameEvents();
             }
+        }
+
+        private void UnsubscribeFromGameEvents()
+        {
+            _game.OnWarmup -= InitTime;
+            _game.OnStart -= StartTimer;
+            _game.OnEndMove -= Play;
+            _game.OnEnd -= Pause;
+            _game.OnPlay -= Play;
+            _game.OnPause -= Pause;
         }
 
         private void StartTimer()
