@@ -5,30 +5,37 @@ namespace Ui.Game
 {
     public class CurrentPlayerPointerPanel : MonoBehaviour
     {
-        [SerializeField] private Logic.Game game;
+        private Logic.Game _game;
         [SerializeField] private Image whiteImage;
         [SerializeField] private Image blackImage;
 
-        private void OnEnable()
+
+        public void Init(Logic.Game game)
         {
-            game.OnStart += Fade;
-            game.OnEndMove += Fade;
+            _game = game;
+
+            _game.OnStart += Fade;
+            _game.OnEndMove += Fade;
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
-            game.OnStart -= Fade;
-            game.OnEndMove -= Fade;
+            if (_game == null)
+            {
+                return;
+            }
+            _game.OnStart -= Fade;
+            _game.OnEndMove -= Fade;
         }
 
         private void Fade()
         {
-            if (game.IsWhiteTurn)
+            if (_game.IsWhiteTurn)
             {
                 whiteImage.CrossFadeAlpha(1f, 0.2f, false);
                 blackImage.CrossFadeAlpha(0f, 0.2f, false);
             }
-            else if (game.IsBlackTurn)
+            else if (_game.IsBlackTurn)
             {
                 whiteImage.CrossFadeAlpha(0f, 0.2f, false);
                 blackImage.CrossFadeAlpha(1f, 0.2f, false);

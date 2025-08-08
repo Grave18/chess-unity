@@ -15,8 +15,8 @@ namespace MainCamera
     [RequireComponent(typeof(Camera))]
     public class CameraController : MonoBehaviour
     {
-        private const float WhiteInitPosition = Mathf.PI*1.5f;
-        private const float BlackInitPosition = Mathf.PI*0.5f;
+        private float _whiteInitialYawRad = Mathf.PI*1.5f;
+        private float _blackInitialYawRad = Mathf.PI*0.5f;
 
         [Header("Target")]
         [SerializeField] private Vector3 offset = new(0, 0.15f, 0);
@@ -77,17 +77,19 @@ namespace MainCamera
 
         public void Init(Game game, PieceColor rotateCameraToColor, bool isAutoRotationOn)
         {
-            _rotateCameraToColor = rotateCameraToColor;
             _game = game;
+            _rotateCameraToColor = rotateCameraToColor;
             _isAutoRotationOn = isAutoRotationOn;
+
+            SetCameraTargetAnglesByColor();
 
             if (_rotateCameraToColor == PieceColor.White)
             {
-                yawRad = WhiteInitPosition;
+                yawRad = _whiteInitialYawRad;
             }
             else if (_rotateCameraToColor == PieceColor.Black)
             {
-                yawRad = BlackInitPosition;
+                yawRad = _blackInitialYawRad;
             }
 
             _newDistance = distance;
@@ -98,6 +100,20 @@ namespace MainCamera
             {
                 _game.OnEndMoveWithColor += AutoRotate;
                 _game.OnEnd += StopAutoRotate;
+            }
+        }
+
+        private void SetCameraTargetAnglesByColor()
+        {
+            if (_rotateCameraToColor == PieceColor.White)
+            {
+                _whiteInitialYawRad = Mathf.PI*1.5f;
+                _blackInitialYawRad = Mathf.PI*0.5f;
+            }
+            else if (_rotateCameraToColor == PieceColor.Black)
+            {
+                _whiteInitialYawRad = Mathf.PI*0.5f;
+                _blackInitialYawRad = Mathf.PI*1.5f;
             }
         }
 
@@ -146,7 +162,7 @@ namespace MainCamera
             t += Time.deltaTime * 1f/initialPositionRotateTimeSec;
 
             yawRad = Mathf.LerpAngle(Mathf.PI, targetYawRad, Easing.Generic(t, initialPositionRotateEasing));
-            pitchRad = Mathf.LerpAngle(BlackInitPosition, Mathf.PI*0.25f, Easing.Generic(t, initialPositionRotateEasing));
+            pitchRad = Mathf.LerpAngle(Mathf.PI*0.5f, Mathf.PI*0.25f, Easing.Generic(t, initialPositionRotateEasing));
             distance = Mathf.Lerp(3f, 1.25f, Easing.Generic(t, initialPositionRotateEasing));
         }
 
@@ -253,13 +269,13 @@ namespace MainCamera
         }
 
         /// Get start position for black or white color
-        private static float GetTargetYawRad(PieceColor playerColor)
+        private float GetTargetYawRad(PieceColor playerColor)
         {
             return playerColor switch
             {
-                PieceColor.White => WhiteInitPosition, // 270 degrees
-                PieceColor.Black => BlackInitPosition, // 90 degrees
-                _ => WhiteInitPosition,
+                PieceColor.White => _whiteInitialYawRad,
+                PieceColor.Black => _blackInitialYawRad,
+                _ => _whiteInitialYawRad,
             };
         }
 

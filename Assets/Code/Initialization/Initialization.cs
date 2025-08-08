@@ -40,16 +40,18 @@ namespace Initialization
         [SerializeField] private Competitors competitors;
         [SerializeField] private Highlighter highlighter;
         [SerializeField] private UciBuffer uciBuffer;
-        [FormerlySerializedAs("machineManager")] [SerializeField] private GameStateMachine gameStateMachine;
+        [SerializeField] private GameStateMachine gameStateMachine;
         [SerializeField] private MenuStateMachine menuStateMachine;
 
         [Header("Ui")]
         [SerializeField] private PromotionPanel promotionPanel;
-        [SerializeField] private ClockPanel clockPanel;
+        [SerializeField] private ClockPanelCanvas whiteClockPrefab;
+        [SerializeField] private ClockPanelCanvas blackClockPrefab;
 
         [Header("Camera")]
         [SerializeField] private CameraController cameraController;
         [SerializeField] private Camera mainCamera;
+        [SerializeField] private Camera uiCamera;
 
         private Stockfish _stockfish;
         private GameSettings _gameSettings;
@@ -119,18 +121,33 @@ namespace Initialization
             Assert.IsNotNull(_clock, $"{nameof(Initialization)}: Clock is null");
 
             _clock.Init(game, gameSettingsContainer.GetTime());
-            clockPanel.Init(_clock);
+
+            InstantiateClockPanel();
+        }
+
+        private void InstantiateClockPanel()
+        {
+            ClockPanelCanvas clockPanelCanvas = _gameSettings.PlayerColor == PieceColor.White ? whiteClockPrefab : blackClockPrefab;
+            ClockPanelCanvas instance = Instantiate(clockPanelCanvas);
+            instance.Init(game, _clock, uiCamera);
         }
 
         private void InitCamera()
         {
             // Rotate camera to side in fen string only if 2 players
             PieceColor rotateCameraToColor = IsVsPlayer ? _turnColor : _gameSettings.PlayerColor;
-            cameraController.Init(game, rotateCameraToColor, IsVsPlayer);
+            bool isAutoRotationOn = IsVsPlayer;
+            cameraController.Init(game, rotateCameraToColor, isAutoRotationOn);
         }
 
         private async Task InitBoardAsync()
         {
+            if (_gameSettings.PlayerColor == PieceColor.Black)
+            {
+                var boardPositioner = board.GetComponent<BoardPositioner>();
+                boardPositioner.PositionForBlackPieces();
+            }
+
             (GameObject boardPrefab, IList<GameObject> piecePrefabs) = await assets.LoadPrefabs();
             board.Init(game, uciBuffer, _fenSplit, boardPrefab, piecePrefabs, _turnColor);
         }
