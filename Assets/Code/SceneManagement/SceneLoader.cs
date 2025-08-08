@@ -75,9 +75,9 @@ namespace SceneManagement
             }
         }
 
-        private static bool IsSceneLoaded(string sceneName)
+        private static bool IsSceneLoaded(SceneReference sceneReference)
         {
-            Scene scene = SceneManager.GetSceneByPath(sceneName);
+            Scene scene = SceneManager.GetSceneByPath(sceneReference.ScenePath);
             return scene.isLoaded;
         }
 

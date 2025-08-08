@@ -1,6 +1,5 @@
 using System.Collections;
 using PurrNet;
-using PurrNet.Modules;
 using PurrNet.Transports;
 using Settings;
 using TMPro;
@@ -76,7 +75,7 @@ namespace Network
 
         private static bool IsSceneLoaded(string sceneName)
         {
-            Scene scene = SceneManager.GetSceneByPath(sceneName);
+            Scene scene = SceneManager.GetSceneByName(sceneName);
             return scene.isLoaded;
         }
 
