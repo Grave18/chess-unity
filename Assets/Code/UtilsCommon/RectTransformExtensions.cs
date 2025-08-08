@@ -1,5 +1,5 @@
-﻿using Ui.Common.Classes;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityUi.Common.Classes;
 
 namespace UtilsCommon
 {

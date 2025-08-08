@@ -12,11 +12,11 @@ using MainCamera;
 using Network;
 using Notation;
 using Settings;
-using Ui.Game;
-using Ui.Game.Promotion;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Serialization;
+using UnityUi.InGame;
+using UnityUi.InGame.Promotion;
 
 #if UNITY_EDITOR
 using EditorCools;

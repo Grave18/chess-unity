@@ -4,8 +4,8 @@ using ChessBoard.Pieces;
 using Highlighting;
 using InputManagement;
 using PurrNet;
-using Ui.Game.Promotion;
 using UnityEngine;
+using UnityUi.InGame.Promotion;
 
 namespace Logic.Players
 {
