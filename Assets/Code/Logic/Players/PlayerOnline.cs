@@ -117,10 +117,10 @@ namespace Logic.Players
                     return;
                 }
 
-                _game.Machine.Pause();
+                _game.GameStateMachine.Pause();
                 _promotionPanel.RequestPromotedPiece(_game.CurrentTurnColor, pieceLetter =>
                 {
-                    _game.Machine.Play();
+                    _game.GameStateMachine.Play();
                     uci += pieceLetter;
                     Move(uci);
                 });
@@ -134,7 +134,7 @@ namespace Logic.Players
         [ObserversRpc(runLocally: true)]
         private void Move(string uci)
         {
-            _game.Machine.Move(uci);
+            _game.GameStateMachine.Move(uci);
             _game.Deselect();
         }
 

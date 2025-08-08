@@ -30,7 +30,7 @@ namespace Logic.GameStates
         {
             if (Game.UciBuffer.CanUndo(out MoveData moveData))
             {
-                Game.Machine.SetState(new UndoState(Game, moveData), isSetPreviousState:false);
+                Game.GameStateMachine.SetState(new UndoState(Game, moveData), isSetPreviousState:false);
             }
         }
 

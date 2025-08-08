@@ -29,12 +29,12 @@ namespace Logic.MenuStates
 
         public override void ClosePause()
         {
-            Machine.ChangeState<GameState>();
+            Machine.SetState<PlayState>();
         }
 
         public override void OpenPopup()
         {
-            Machine.ChangeState<PopupState>();
+            Machine.SetState<PopupState>();
         }
 
         private void EnableProtection(bool value)

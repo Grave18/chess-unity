@@ -11,18 +11,17 @@ namespace Logic.MenuStates
 
         private MenuState _currentState;
 
-        private void Start()
-        {
-            ChangeState<GameState>();
-        }
-
-        public void ChangeState<T>() where T : MenuState
+        public void SetState<T>() where T : MenuState
         {
             _currentState?.OnExit();
 
-            if (typeof(T) == typeof(GameState))
+            if (typeof(T) == typeof(MenuState))
             {
-                _currentState = new GameState(this);
+                throw new System.Exception($"{nameof(T)} is not a valid state");
+            }
+            if (typeof(T) == typeof(PlayState))
+            {
+                _currentState = new PlayState(this, gameCanvas);
             }
             else if (typeof(T) == typeof(PauseState))
             {
@@ -53,11 +52,6 @@ namespace Logic.MenuStates
         public void OpenPopup()
         {
             _currentState?.OpenPopup();
-        }
-
-        public void ClosePopup()
-        {
-            _currentState?.ClosePopupToGame();
         }
 
         public void ClosePopupToPause()

@@ -3,33 +3,28 @@ using UnityEngine;
 
 namespace Logic.MenuStates
 {
-    public class PopupState : MenuState
+    public class PlayState : MenuState
     {
         private readonly GameObject _gameCanvas;
 
-        public PopupState(MenuStateMachine stateMachine, GameObject gameCanvas) : base(stateMachine)
+        public PlayState(MenuStateMachine stateMachine, GameObject gameCanvas) : base(stateMachine)
         {
             _gameCanvas = gameCanvas;
         }
 
         public override void OnEnter()
         {
-            EnableProtection(true);
-        }
-
-        public override void OnExit()
-        {
             EnableProtection(false);
         }
 
-        public override void ClosePopupToGame()
-        {
-            Machine.SetState<PlayState>();
-        }
-
-        public override void ClosePopupToPause()
+        public override void OpenPause()
         {
             Machine.SetState<PauseState>();
+        }
+
+        public override void OpenPopup()
+        {
+            Machine.SetState<PopupState>();
         }
 
         private void EnableProtection(bool value)

@@ -1,6 +1,6 @@
 ﻿namespace Logic.MenuStates
 {
-    public class MenuState
+    public abstract class MenuState
     {
         protected MenuStateMachine Machine { get; }
 

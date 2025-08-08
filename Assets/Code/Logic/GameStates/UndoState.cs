@@ -115,7 +115,7 @@ namespace Logic.GameStates
         private void Abort()
         {
             Debug.LogError("Invalid Undo");
-            Game.Machine.SetPreviousState();
+            Game.GameStateMachine.SetPreviousState();
         }
 
         public override void Exit(string nextState)
@@ -187,7 +187,7 @@ namespace Logic.GameStates
             Game.UciBuffer.Undo();
             Game.PreformCalculations();
             Game.FireEndMove();
-            Game.Machine.SetPreviousState();
+            Game.GameStateMachine.SetPreviousState();
 
             PlayCheckSound();
         }

@@ -179,7 +179,7 @@ namespace Logic.GameStates
         private void Abort(string uci)
         {
             Debug.Log($"{uci}: invalid move");
-            Game.Machine.SetState(new IdleState(Game));
+            Game.GameStateMachine.SetState(new IdleState(Game));
         }
 
         public override void Exit(string nextState)
@@ -252,7 +252,7 @@ namespace Logic.GameStates
             Game.PreformCalculations();
             UpdateAlgebraicNotation();
             Game.FireEndMove();
-            Game.Machine.SetState(new IdleState(Game));
+            Game.GameStateMachine.SetState(new IdleState(Game));
             PlayCheckSound();
         }
 

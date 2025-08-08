@@ -5,6 +5,7 @@ using AssetsAndResources;
 using ChessBoard;
 using Highlighting;
 using Logic;
+using Logic.MenuStates;
 using Logic.MovesBuffer;
 using Logic.Players;
 using MainCamera;
@@ -15,6 +16,7 @@ using Ui.Game;
 using Ui.Game.Promotion;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Serialization;
 
 #if UNITY_EDITOR
 using EditorCools;
@@ -38,7 +40,8 @@ namespace Initialization
         [SerializeField] private Competitors competitors;
         [SerializeField] private Highlighter highlighter;
         [SerializeField] private UciBuffer uciBuffer;
-        [SerializeField] private MachineManager machineManager;
+        [FormerlySerializedAs("machineManager")] [SerializeField] private GameStateMachine gameStateMachine;
+        [SerializeField] private MenuStateMachine menuStateMachine;
 
         [Header("Ui")]
         [SerializeField] private PromotionPanel promotionPanel;
@@ -101,7 +104,8 @@ namespace Initialization
 
         private void InitGame()
         {
-            game.Init(board, competitors, cameraController, uciBuffer, _turnColor, gameSettingsContainer, machineManager);
+            game.Init(board, competitors, cameraController, uciBuffer,
+                _turnColor, gameSettingsContainer, gameStateMachine, menuStateMachine);
         }
 
         private void InitHighlighter()

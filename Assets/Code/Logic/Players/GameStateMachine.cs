@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Logic.Players
 {
-    public class MachineManager : MonoBehaviour
+    public class GameStateMachine : MonoBehaviour
     {
         [SerializeField] private Game game;
 

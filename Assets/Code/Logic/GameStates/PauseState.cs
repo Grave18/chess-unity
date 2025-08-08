@@ -28,7 +28,7 @@ namespace Logic.GameStates
         {
             if (Game.UciBuffer.CanUndo(out MoveData moveData))
             {
-                Game.Machine.SetState(new UndoState(Game, moveData));
+                Game.GameStateMachine.SetState(new UndoState(Game, moveData));
             }
         }
 
@@ -36,13 +36,13 @@ namespace Logic.GameStates
         {
             if (Game.UciBuffer.CanRedo(out MoveData moveData))
             {
-                Game.Machine.SetState(new RedoState(Game, moveData));
+                Game.GameStateMachine.SetState(new RedoState(Game, moveData));
             }
         }
 
         public override void Play()
         {
-            Game.Machine.SetState(new IdleState(Game));
+            Game.GameStateMachine.SetState(new IdleState(Game));
         }
 
         public override void Pause()

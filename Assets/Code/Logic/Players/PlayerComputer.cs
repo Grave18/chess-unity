@@ -30,7 +30,7 @@ namespace Logic.Players
                 return;
             }
 
-            _game.Machine.Move(uci);
+            _game.GameStateMachine.Move(uci);
         }
 
         public void UpdatePlayer()

@@ -25,14 +25,14 @@ namespace Logic.GameStates
 
         public override void Move(string uci)
         {
-            Game.Machine.SetState(new MoveState(Game, uci));
+            Game.GameStateMachine.SetState(new MoveState(Game, uci));
         }
 
         public override void Undo()
         {
             if (Game.UciBuffer.CanUndo(out MoveData moveData))
             {
-                Game.Machine.SetState(new UndoState(Game, moveData));
+                Game.GameStateMachine.SetState(new UndoState(Game, moveData));
             }
         }
 
@@ -40,7 +40,7 @@ namespace Logic.GameStates
         {
             if (Game.UciBuffer.CanRedo(out MoveData moveData))
             {
-                Game.Machine.SetState(new RedoState(Game, moveData));
+                Game.GameStateMachine.SetState(new RedoState(Game, moveData));
             }
         }
 
@@ -51,7 +51,7 @@ namespace Logic.GameStates
 
         public override void Pause()
         {
-            Game.Machine.SetState(new PauseState(Game));
+            Game.GameStateMachine.SetState(new PauseState(Game));
         }
 
         public override void Update()

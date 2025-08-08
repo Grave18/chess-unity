@@ -1201,7 +1201,7 @@ GameObject:
   - component: {fileID: 231309766}
   - component: {fileID: 231309765}
   m_Layer: 0
-  m_Name: MachineManager
+  m_Name: GameStateMachine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1438,7 +1438,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 177198598}
   m_HandleRect: {fileID: 177198597}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3635,7 +3635,8 @@ MonoBehaviour:
   competitors: {fileID: 1739655008}
   highlighter: {fileID: 1544682202}
   uciBuffer: {fileID: 2060320542}
-  machineManager: {fileID: 231309765}
+  gameStateMachine: {fileID: 231309765}
+  menuStateMachine: {fileID: 2146145379}
   promotionPanel: {fileID: 59947144}
   clockPanel: {fileID: 49431645}
   cameraController: {fileID: 330585549}
@@ -6978,7 +6979,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 949107596}
   m_HandleRect: {fileID: 949107595}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

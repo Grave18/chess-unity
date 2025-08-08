@@ -3,6 +3,7 @@ using System.Linq;
 using ChessBoard;
 using ChessBoard.Pieces;
 using Logic.GameStates;
+using Logic.MenuStates;
 using Logic.MovesBuffer;
 using Logic.Players;
 using MainCamera;
@@ -14,7 +15,8 @@ namespace Logic
 {
     public class Game : MonoBehaviour
     {
-        public MachineManager Machine { get; private set; }
+        public GameStateMachine GameStateMachine { get; private set; }
+        public MenuStateMachine MenuStateMachine { get; private set; }
         public Competitors Competitors { get; private set; }
         public Board Board { get; private set; }
         public UciBuffer UciBuffer { get; private set; }
@@ -78,7 +80,7 @@ namespace Logic
         public void FirePause() => OnPause?.Invoke();
 
         public void Init(Board board, Competitors competitors, CameraController cameraController, UciBuffer commandUciBuffer,
-            PieceColor color, GameSettingsContainer gameSettingsContainer, MachineManager machine)
+            PieceColor color, GameSettingsContainer gameSettingsContainer, GameStateMachine gameStateMachine, MenuStateMachine menuStateMachine)
         {
             Board = board;
             Competitors = competitors;
@@ -86,7 +88,8 @@ namespace Logic
             UciBuffer = commandUciBuffer;
             _startingColor = color;
             _gameSettingsContainer = gameSettingsContainer;
-            Machine = machine;
+            GameStateMachine = gameStateMachine;
+            MenuStateMachine = menuStateMachine;
         }
 
         public void StartGame()
@@ -95,13 +98,14 @@ namespace Logic
 
             ResetGameState();
             PreformCalculations();
-            Machine.SetState(new WarmUpState(this));
+            MenuStateMachine.SetState<PlayState>();
+            GameStateMachine.SetState(new WarmUpState(this));
 
             return;
 
             void StartGameContinuation()
             {
-                Machine.SetState(new IdleState(this));
+                GameStateMachine.SetState(new IdleState(this));
                 FireStart();
             }
         }
@@ -133,13 +137,13 @@ namespace Logic
                 _winnerColor = PieceColor.White;
             }
 
-            Machine.SetState(new EndGameState(this));
+            GameStateMachine.SetState(new EndGameState(this));
         }
 
         public void Checkmate()
         {
             _winnerColor = PreviousTurnColor;
-            Machine.SetState(new EndGameState(this));
+            GameStateMachine.SetState(new EndGameState(this));
         }
 
         /// Calculate under attack squares, check type, moves, captures, draw
@@ -276,7 +280,7 @@ namespace Logic
             CheckDescription = description;
             _winnerColor = PieceColor.None;
 
-            Machine.SetState(new EndGameState(this));
+            GameStateMachine.SetState(new EndGameState(this));
         }
 
         public void Resign()
@@ -285,7 +289,7 @@ namespace Logic
             CheckDescription = $"{CurrentTurnColor} player resigned";
             _winnerColor = PreviousTurnColor;
 
-            Machine.SetState(new EndGameState(this));
+            GameStateMachine.SetState(new EndGameState(this));
         }
 
         private bool IsThreefoldRule()
