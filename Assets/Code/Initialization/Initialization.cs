@@ -14,8 +14,8 @@ using Notation;
 using Settings;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Serialization;
 using UnityUi.InGame;
+using UnityUi.InGame.BoardUi;
 using UnityUi.InGame.Promotion;
 
 #if UNITY_EDITOR
@@ -35,6 +35,7 @@ namespace Initialization
         [Header("Game")]
         [SerializeField] private Game game;
         [SerializeField] private Board board;
+        [SerializeField] private NameCanvas nameCanvas;
         [SerializeField] private ClockOffline clockOffline;
         [SerializeField] private FenFromBoard fenFromBoard;
         [SerializeField] private Competitors competitors;
@@ -82,6 +83,7 @@ namespace Initialization
             InitCamera();
             InitHighlighter();
             await InitBoardAsync();
+            InitNameCanvas();
             InitFenGenerator();
             InitAi();
             InitPlayers();
@@ -150,6 +152,14 @@ namespace Initialization
 
             (GameObject boardPrefab, IList<GameObject> piecePrefabs) = await assets.LoadPrefabs();
             board.Init(game, uciBuffer, _fenSplit, boardPrefab, piecePrefabs, _turnColor);
+        }
+
+        private void InitNameCanvas()
+        {
+            string whitePlayerName = _gameSettings.Player1Settings.Name;
+            string blackPlayerName = _gameSettings.Player2Settings.Name;
+
+            nameCanvas.Init(whitePlayerName, blackPlayerName);
         }
 
         private void InitFenGenerator()
