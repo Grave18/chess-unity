@@ -1,7 +1,10 @@
-﻿using PurrNet;
+﻿using System.Threading.Tasks;
+using PurrNet;
+using PurrNet.Packing;
 using Settings;
 using Ui.InGame.ViewModels;
 using UnityEngine;
+using UtilsCommon;
 
 namespace Network
 {
@@ -48,20 +51,39 @@ namespace Network
         {
             if (player.id == 002)
             {
-                SendFenPresetTo(player);
+                ExchangeDataBetweenPlayers(player);
             }
         }
 
-        private void SendFenPresetTo(PlayerID player)
+        private void ExchangeDataBetweenPlayers(PlayerID connectedPlayer)
         {
             string serversFenPreset = gameSettingsContainer.GetCurrentFen();
-            SetFenPresetTo_TargetRpc(player, serversFenPreset);
+            string playerName = gameSettingsContainer.GameSettings.Player1Settings.Name;
+            var connectionInfo = new ConnectionInfo
+            {
+                FenPreset = serversFenPreset,
+                PlayerName = playerName,
+            };
+
+            ExchangeDataBetweenPlayers_TargetRpc(connectedPlayer, connectionInfo)
+                .ContinueOnMainThread(clientConnectionInfoTask =>
+                {
+                    gameSettingsContainer.SetPlayer2Name(clientConnectionInfoTask.Result.PlayerName);
+                });
         }
 
         [TargetRpc]
-        private void SetFenPresetTo_TargetRpc(PlayerID target, string fenPreset)
+        private Task<ConnectionInfo> ExchangeDataBetweenPlayers_TargetRpc(PlayerID target, ConnectionInfo serverConnectionInfo)
         {
-            gameSettingsContainer.SetCurrentFen(fenPreset);
+            gameSettingsContainer.SetPlayer2Name(serverConnectionInfo.PlayerName);
+            gameSettingsContainer.SetCurrentFen(serverConnectionInfo.FenPreset);
+
+            var clientConnectionInfo = new ConnectionInfo
+            {
+                PlayerName = gameSettingsContainer.GameSettings.Player1Settings.Name,
+            };
+
+            return Task.FromResult(clientConnectionInfo);
         }
 
         private void OnPlayerLeft(PlayerID player, bool asServer)
@@ -81,5 +103,11 @@ namespace Network
         {
             PopupViewModel.Instance.OpenReconnectPopup();
         }
+    }
+
+    internal struct ConnectionInfo : IPackedAuto
+    {
+        public string FenPreset;
+        public string PlayerName;
     }
 }

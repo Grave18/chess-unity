@@ -5,17 +5,10 @@ using UnityEngine;
 
 namespace UtilsCommon
 {
-    /// <summary>
     /// Utility methods for working with tasks
-    /// </summary>
     public static class TaskUtils
     {
-        /// <summary>
         /// Waits until the given predicate is true, or the application is exiting
-        /// </summary>
-        /// <param name="predicate">The predicate to wait for</param>
-        /// <param name="delay">The delay between checks, in milliseconds. Defaults to 25.</param>
-        /// <returns>A task that completes when the predicate is true, or the cancellation token is cancelled.</returns>
         public static async Task WaitUntil(Func<bool> predicate, int delay = 25)
         {
             CancellationToken token = Application.exitCancellationToken;
@@ -23,6 +16,22 @@ namespace UtilsCommon
             {
                 await Task.Delay(delay, token);
             }
+        }
+
+        /// Continues a task on the Unity main thread. Throws if not called from the main thread
+        public static void ContinueOnMainThread<T>(this Task<T> task, Action<Task<T>> continuation)
+        {
+            SynchronizationContext context = SynchronizationContext.Current;
+
+            if (context == null || context.GetType().Name != "UnitySynchronizationContext")
+            {
+                throw new InvalidOperationException("No SynchronizationContext on current thread. Call from Unity main thread.");
+            }
+
+            task.ContinueWith(t =>
+            {
+                context.Post(_ => continuation(t), null);
+            });
         }
     }
 }

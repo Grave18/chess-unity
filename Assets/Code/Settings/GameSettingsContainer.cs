@@ -247,6 +247,27 @@ namespace Settings
             Save();
         }
 
+        public string GetPlayer1Name()
+        {
+            return gameSettings.Player1Settings.Name;
+        }
+
+        public void SetPlayer1Name(string playerName)
+        {
+            gameSettings.Player1Settings.Name = playerName;
+            Save();
+        }
+        public string GetPlayer2Name()
+        {
+            return gameSettings.Player2Settings.Name;
+        }
+
+        public void SetPlayer2Name(string playerName)
+        {
+            gameSettings.Player2Settings.Name = playerName;
+            Save();
+        }
+
         private void Save()
         {
             string jsonString = JsonUtility.ToJson(gameSettings);
