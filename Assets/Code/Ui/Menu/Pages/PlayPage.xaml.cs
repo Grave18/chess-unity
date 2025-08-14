@@ -59,6 +59,16 @@ namespace Ui.Menu.Pages
             GameMenuBase.Instance.ChangePage<MainPage>();
         }
 
+        private void CreateLobby_OnClick(object sender, RoutedEventArgs e)
+        {
+            GameMenuBase.Instance.ChangePage<LobbyPage>();
+        }
+
+        private void FindGame_OnClick(object sender, RoutedEventArgs e)
+        {
+            GameMenuBase.Instance.ChangePage<FindGamePage>();
+        }
+
 #if NOESIS
         public Grid Root { get; set; }
         private TabControl TabControl { get; set; }
@@ -76,6 +86,18 @@ namespace Ui.Menu.Pages
             if (eventName == "Click" && handlerName == nameof(Back_Click))
             {
                 ((Button)source).Click += Back_Click;
+                return true;
+            }
+
+            if (eventName == "Click" && handlerName == nameof(CreateLobby_OnClick))
+            {
+                ((Button)source).Click += CreateLobby_OnClick;
+                return true;
+            }
+
+            if (eventName == "Click" && handlerName == nameof(FindGame_OnClick))
+            {
+                ((Button)source).Click += FindGame_OnClick;
                 return true;
             }
 

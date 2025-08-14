@@ -1,0 +1,78 @@
+<UserControl x:Class="Ui.Menu.Pages.LobbyPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="700">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0"
+               Content="Lobby"
+               Style="{DynamicResource HeaderLabelStyle}" />
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*" />
+                    <RowDefinition Height="2*" />
+                </Grid.RowDefinitions>
+                <!-- Lobby List -->
+                <Border Grid.Row="0" Style="{StaticResource SettingsControlsBorder}">
+                    <DockPanel>
+
+                    </DockPanel>
+                </Border>
+                <!-- Join code -->
+                <Border Grid.Row="1" Style="{StaticResource SettingsControlsBorder}">
+                    <DockPanel>
+
+                    </DockPanel>
+                </Border>
+            </Grid>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="3*" />
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0"
+                        Style="{StaticResource SettingsControlsBorder}">
+                    <Label Content="Friends"
+                           Style="{DynamicResource HeaderLabelStyle}"/>
+                </Border>
+
+                <!-- Friends List -->
+                <Border Grid.Row="1" Style="{StaticResource SettingsControlsBorder}">
+                    <DockPanel>
+                        
+                    </DockPanel>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <Button Grid.Row="2"
+                Margin="0 0 0 20"
+                Content="Ready"
+                Command="{Binding ReadyCommand}"/>
+
+        <Button Grid.Row="3"
+                Margin="0 0 0 20"
+                Content="Back"
+                Command="{Binding BackCommand}"
+                Click="Back_Click" />
+    </Grid>
+
+</UserControl>

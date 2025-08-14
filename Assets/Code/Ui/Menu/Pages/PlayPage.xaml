@@ -119,7 +119,15 @@
                             Content="Create Lobby"
                             VerticalAlignment="Bottom"
                             DataContext="{Binding DataContext, ElementName=ThisControl}"
+                            Click="CreateLobby_OnClick"
                             Command="{Binding CreateLobbyCommand}" />
+                    <!--Find Game Button -->
+                    <Button DockPanel.Dock="Bottom"
+                            Content="Find Game"
+                            VerticalAlignment="Bottom"
+                            DataContext="{Binding DataContext, ElementName=ThisControl}"
+                            Click="FindGame_OnClick"
+                            Command="{Binding FindGameCommand}" />
                 </DockPanel>
             </TabItem>
 
