@@ -1,16 +1,22 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using UnityEditor;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace UtilsCommon
 {
+#if UNITY_EDITOR
     [InitializeOnLoad]
+#endif
     public static class LayoutLoader
     {
         private static readonly Type WindowLayoutType;
 
+#if UNITY_EDITOR
         static LayoutLoader()
         {
             WindowLayoutType = typeof(Editor).Assembly.GetType("UnityEditor.WindowLayout");
@@ -19,7 +25,7 @@ namespace UtilsCommon
                 Debug.LogError("Could not find UnityEditor.WindowLayout");
             }
         }
-
+#endif
         public static void Load(string layoutName)
         {
             string layoutPath = GetLayoutPath(layoutName);

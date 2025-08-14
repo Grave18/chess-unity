@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Globalization;
 using Ai;
-using Initialization;
 using Logic;
-using ParrelSync;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using ParrelSync;
+#endif
 
 namespace Settings
 {
@@ -23,7 +25,7 @@ namespace Settings
         private static string LocalhostServerKey => ClonesManager.IsClone() ? "IsServerClone" : "IsServer";
 #else
         public static string GameSettingsKey => "GameSettings";
-        private static string localhostServerKey => "IsServer";
+        private static string LocalhostServerKey => "IsServer";
 #endif
 
         public static bool IsLocalhostServer
