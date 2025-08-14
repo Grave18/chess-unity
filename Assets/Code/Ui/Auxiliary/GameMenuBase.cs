@@ -4,10 +4,11 @@ using UnityEngine;
 using Noesis;
 
 #else
+using System;
 using System.Windows.Controls;
 #endif
 
-using System;
+using UtilsCommon.ObjectCreation;
 
 namespace Ui.Auxiliary
 {
@@ -15,9 +16,9 @@ namespace Ui.Auxiliary
     {
         public static GameMenuBase Instance { get; private set; }
 
-        public void ChangePage<T>() where T : UserControl
+        public void ChangePage<T>(params object[] args) where T : UserControl
         {
-            var newPage = Activator.CreateInstance<T>();
+            var newPage = ActivatorHelper.CreateInstance<T>(args);
             ChangePage(newPage);
         }
 
