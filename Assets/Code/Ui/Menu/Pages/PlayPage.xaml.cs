@@ -19,11 +19,17 @@ namespace Ui.Menu.Pages
 {
     public partial class PlayPage : UserControl
     {
+        private readonly string _selectedTab;
         public PlayPage()
         {
             Initialized += OnInitialized;
             Loaded += OnLoaded;
             InitializeComponent();
+        }
+
+        public PlayPage(string selectedTab) : this()
+        {
+            _selectedTab = selectedTab;
         }
 
         private void OnInitialized(object sender, EventArgs args)
@@ -36,7 +42,25 @@ namespace Ui.Menu.Pages
 
         private void OnLoaded(object sender, RoutedEventArgs args)
         {
+            SelectTab();
             SetupInputPlayPage();
+        }
+
+        private void SelectTab()
+        {
+            if (_selectedTab != null)
+            {
+                foreach (TabItem tabItem in TabControl.Items)
+                {
+                    if (tabItem.Name == _selectedTab)
+                    {
+                        TabControl.SelectedItem = tabItem;
+                        return;
+                    }
+                }
+
+                LogUi.Debug($"Tab {_selectedTab} not found");
+            }
         }
 
         private void SetupInputPlayPage()
@@ -70,8 +94,11 @@ namespace Ui.Menu.Pages
         }
 
 #if NOESIS
-        public Grid Root { get; set; }
+        private Grid Root { get; set; }
         private TabControl TabControl { get; set; }
+        private TabItem OnlineTab { get; set; }
+        private TabItem OfflineTab { get; set; }
+        private TabItem ComputerTab { get; set; }
 
         private void InitializeComponent()
         {
@@ -79,6 +106,9 @@ namespace Ui.Menu.Pages
 
             Root = FindName("Root") as Grid;
             TabControl = FindName("TabControl") as TabControl;
+            OnlineTab = FindName("OnlineTab") as TabItem;
+            OfflineTab = FindName("OfflineTab") as TabItem;
+            ComputerTab = FindName("ComputerTab") as TabItem;
         }
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)

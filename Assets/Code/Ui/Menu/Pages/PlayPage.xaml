@@ -34,7 +34,8 @@
             </TabControl.Resources>
 
             <!-- Offline Tab -->
-            <TabItem Header="2 Players"
+            <TabItem Name="OfflineTab"
+                     Header="2 Players"
                      TabIndex="1"
                      KeyboardNavigation.TabNavigation="Continue"
                      Style="{DynamicResource TabItemStyle}">
@@ -59,7 +60,8 @@
             </TabItem>
 
             <!-- Computer Tab -->
-            <TabItem Header="Computer"
+            <TabItem Name="ComputerTab"
+                     Header="Computer"
                      TabIndex="2"
                      Style="{DynamicResource TabItemStyle}">
                 <DockPanel Margin="30">
@@ -85,7 +87,8 @@
             </TabItem>
 
             <!-- Online Tab -->
-            <TabItem Header="Online"
+            <TabItem Name="OnlineTab"
+                     Header="Online"
                      TabIndex="3"
                      Style="{DynamicResource TabItemStyle}"
                      KeyboardNavigation.TabNavigation="Continue">
