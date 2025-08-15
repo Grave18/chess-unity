@@ -1,13 +1,4 @@
-
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Events;
-using PurrNet.Logging;
-using PurrNet.Utils;
-
 #if UTP_AUTH
 using Unity.Services.Authentication;
 using Unity.Services.Core;
@@ -20,7 +11,7 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 #endif
 
-namespace PurrLobby.Providers {
+namespace LobbyManagement.Providers {
     public class UnityLobbyProvider : MonoBehaviour
 #if UTP_LOBBYRELAY && UTP_AUTH
         , ILobbyProvider

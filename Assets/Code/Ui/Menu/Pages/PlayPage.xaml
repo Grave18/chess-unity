@@ -117,15 +117,19 @@
                                 DataContext="{Binding DataContext, ElementName=ThisControl}"
                                 Command="{Binding StartLocalClientCommand}" />
                     </Grid>
+
                     <!-- Create Lobby Button -->
                     <Button DockPanel.Dock="Bottom"
+                            Name="CreateLobbyButton"
                             Content="Create Lobby"
                             VerticalAlignment="Bottom"
-                            DataContext="{Binding DataContext, ElementName=ThisControl}"
                             Click="CreateLobby_OnClick"
+                            DataContext="{Binding DataContext, ElementName=ThisControl}"
                             Command="{Binding CreateLobbyCommand}" />
+
                     <!--Find Game Button -->
                     <Button DockPanel.Dock="Bottom"
+                            Name="FindGameButton"
                             Content="Find Game"
                             VerticalAlignment="Bottom"
                             DataContext="{Binding DataContext, ElementName=ThisControl}"

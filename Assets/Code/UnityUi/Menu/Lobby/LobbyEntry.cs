@@ -1,3 +1,4 @@
+using LobbyManagement;
 using PurrLobby;
 using TMPro;
 using UnityEngine;
@@ -9,7 +10,7 @@ namespace UnityUi.Menu.Lobby
         [SerializeField] private TMP_Text lobbyNameText;
         [SerializeField] private TMP_Text playersText;
 
-        private PurrLobby.Lobby _room;
+        private LobbyManagement.Lobby _room;
         private LobbyManager _lobbyManager;
         private UnityEngine.UI.Button _button;
 
@@ -28,7 +29,7 @@ namespace UnityUi.Menu.Lobby
             _button.onClick.RemoveListener(OnClick);
         }
 
-        public void Init(PurrLobby.Lobby room, LobbyManager lobbyManager)
+        public void Init(LobbyManagement.Lobby room, LobbyManager lobbyManager)
         {
             lobbyNameText.text = room.Name.Length > 0 ? room.Name : room.LobbyId;
             playersText.text = $"{room.Members.Count}/{room.MaxPlayers}";

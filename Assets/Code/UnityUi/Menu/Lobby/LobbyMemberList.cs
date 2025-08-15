@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using LobbyManagement;
 using PurrLobby;
 using UnityEngine;
 
@@ -23,7 +24,7 @@ namespace UnityUi.Menu.Lobby
             lobbyManager.OnRoomUpdated.RemoveListener(LobbyDataUpdate);
         }
 
-        private void LobbyDataUpdate(PurrLobby.Lobby room)
+        private void LobbyDataUpdate(LobbyManagement.Lobby room)
         {
             if(!room.IsValid)
             {
@@ -43,7 +44,7 @@ namespace UnityUi.Menu.Lobby
             }
         }
 
-        private void HandleExistingMembers(PurrLobby.Lobby room)
+        private void HandleExistingMembers(LobbyManagement.Lobby room)
         {
             foreach (Transform child in content)
             {
@@ -60,7 +61,7 @@ namespace UnityUi.Menu.Lobby
             }
         }
 
-        private void HandleNewMembers(PurrLobby.Lobby room)
+        private void HandleNewMembers(LobbyManagement.Lobby room)
         {
             var existingMembers = content.GetComponentsInChildren<MemberEntry>();
 
@@ -76,7 +77,7 @@ namespace UnityUi.Menu.Lobby
             }
         }
 
-        private void HandleLeftMembers(PurrLobby.Lobby room)
+        private void HandleLeftMembers(LobbyManagement.Lobby room)
         {
             var childrenToRemove = new List<Transform>();
 

@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PurrLobby;
 using UnityEngine.Events;
 
-namespace PurrLobby {
+namespace LobbyManagement.Providers {
     public interface ILobbyProvider {
         // Initialization
         Task InitializeAsync();

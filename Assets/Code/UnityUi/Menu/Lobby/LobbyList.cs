@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using LobbyManagement;
 using PurrLobby;
 using UnityEngine;
 
@@ -41,14 +42,14 @@ namespace UnityUi.Menu.Lobby
             _isActive = false;
         }
 
-        private void Populate(List<PurrLobby.Lobby> rooms)
+        private void Populate(List<LobbyManagement.Lobby> rooms)
         {
             foreach (Transform child in content)
             {
                 Destroy(child.gameObject);
             }
 
-            foreach (PurrLobby.Lobby room in rooms)
+            foreach (LobbyManagement.Lobby room in rooms)
             {
                 LobbyEntry entry = Instantiate(lobbyEntryPrefab, content);
                 entry.Init(room, lobbyManager);

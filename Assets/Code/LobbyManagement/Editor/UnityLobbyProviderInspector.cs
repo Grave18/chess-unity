@@ -1,8 +1,7 @@
 ﻿#if UNITY_EDITOR
+using LobbyManagement.Providers;
 using UnityEditor;
 using UnityEngine;
-
-using PurrLobby.Providers;
 
 namespace PurrLobby.Editor {
     [CustomEditor(typeof(UnityLobbyProvider))]

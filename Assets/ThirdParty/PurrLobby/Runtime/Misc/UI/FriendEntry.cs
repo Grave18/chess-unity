@@ -1,4 +1,5 @@
 using System;
+using LobbyManagement;
 using PurrNet.Logging;
 using TMPro;
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace PurrLobby
             if(!TryGetComponent(out _button))
                 PurrLogger.LogError($"{nameof(FriendEntry)}: No button found.", this);
             
-            nameText.text = friend.DisplayName;
+            nameText.text = friend.Name;
             avatarImage.texture = friend.Avatar;
             _friend = friend;
             _lobbyManager = lobbyManager;

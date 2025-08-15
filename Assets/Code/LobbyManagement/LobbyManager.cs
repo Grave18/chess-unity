@@ -1,18 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LobbyManagement.Providers;
 using PurrNet;
 using PurrNet.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 // ReSharper disable All
 
-namespace PurrLobby
+namespace LobbyManagement
 {
     public class LobbyManager : MonoBehaviour
     {
         private const int PlayersToStart = 2;
-        
+
         [SerializeField] private MonoBehaviour currentProvider;
 
         private ILobbyProvider _currentProvider;

@@ -1,4 +1,5 @@
-﻿using Logic;
+﻿using LobbyManagement;
+using Logic;
 using Settings;
 using Ui.Auxiliary;
 using MvvmTool;
@@ -7,10 +8,11 @@ using UnityEngine;
 
 namespace Ui.Menu.ViewModels
 {
-    public class PlayPageViewModel : MonoBehaviour
+    public partial class PlayPageViewModel : MonoBehaviour
     {
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
         [SerializeField] private SceneLoader sceneLoader;
+        [SerializeField] private LobbyManager lobbyManager;
 
         public DelegateCommand PlayOfflineCommand { get; private set; }
         public DelegateCommand PlayWithComputerCommand { get; private set; }
@@ -44,6 +46,18 @@ namespace Ui.Menu.ViewModels
         private void PlayOnline(object obj)
         {
             LogUi.Debug("PlayOnline Clicked");
+        }
+
+        [RelayCommand]
+        private void CreateLobby()
+        {
+            lobbyManager.CreateRoom();
+        }
+
+        [RelayCommand]
+        private void FindGame()
+        {
+            // todo FindGame()
         }
 
         public void StartLocalServer(object obj)

@@ -541,7 +541,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &40541449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -645,7 +645,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa8df2805464ff84dac7775364161fb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lobbyManager: {fileID: 905780854}
+  lobbyManager: {fileID: 905780858}
   lobbyPanel: {fileID: 295614923}
   onlinePanel: {fileID: 1210402658}
 --- !u!1001 &42114128
@@ -899,6 +899,53 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2240555395234040949}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &56940688
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 56940689}
+  - component: {fileID: 56940690}
+  m_Layer: 0
+  m_Name: LobbyViewModel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &56940689
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 56940688}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1745821753}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &56940690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 56940688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d7044104f284f4fbd6cdb4f42d1edda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lobbyManager: {fileID: 905780858}
+  filter: 2
+  updateIntervalSec: 3
 --- !u!114 &87492035 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8250804488083174717, guid: d3a01af0dd4b3034a985831a5cb02615,
@@ -2385,7 +2432,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaf5d248b6b6431fac2a7fa23ea0239d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lobbyManager: {fileID: 905780854}
+  lobbyManager: {fileID: 0}
 --- !u!114 &295614923 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -8828884534415201457, guid: 4aaff250fd3a3f24a8802ac5de1950c5,
@@ -3566,6 +3613,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameSettingsContainer: {fileID: 1174948613}
   sceneLoader: {fileID: 597079910}
+  lobbyManager: {fileID: 905780858}
 --- !u!114 &640902418 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5910287522441678870, guid: 4aaff250fd3a3f24a8802ac5de1950c5,
@@ -4512,8 +4560,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 905780855}
-  - component: {fileID: 905780854}
-  - component: {fileID: 905780853}
+  - component: {fileID: 905780858}
+  - component: {fileID: 905780857}
   - component: {fileID: 905780856}
   m_Layer: 0
   m_Name: LobbyManager
@@ -4522,7 +4570,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &905780853
+--- !u!4 &905780855
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 905780851}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &905780856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 905780851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20fee011decf443089712aee314859c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lobbyManager: {fileID: 905780858}
+  nextScene: OnlineLobbyScene
+--- !u!114 &905780857
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4537,7 +4614,7 @@ MonoBehaviour:
   lobbyType: 2
   maxLobbiesToFind: 10
   handleSteamInit: 1
---- !u!114 &905780854
+--- !u!114 &905780858
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4549,7 +4626,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 018749c98c25d47418932e090d8f8fbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentProvider: {fileID: 905780853}
+  currentProvider: {fileID: 905780857}
   createRoomArgs:
     maxPlayers: 2
     roomProperties:
@@ -4595,35 +4672,6 @@ MonoBehaviour:
   onShutdown:
     m_PersistentCalls:
       m_Calls: []
---- !u!4 &905780855
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 905780851}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &905780856
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 905780851}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20fee011decf443089712aee314859c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lobbyManager: {fileID: 905780854}
-  nextScene: OnlineLobbyScene
 --- !u!1001 &916211044
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5574,7 +5622,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0e8050241bd4ec08c5e343941d598ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lobbyManager: {fileID: 905780854}
+  lobbyManager: {fileID: 0}
   lobbyEntryPrefab: {fileID: -829664520429341635, guid: 5ef05ce5d1b0f6940849791bfcab5956,
     type: 3}
   content: {fileID: 955895769}
@@ -6037,11 +6085,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4173f34713fc44519b3c2a44cb491464, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lobbyManager: {fileID: 905780854}
+  lobbyManager: {fileID: 905780858}
   friendEntry: {fileID: 5830115731434508322, guid: e52b07d38e68b4c4cbd3969bc51dea93,
     type: 3}
   content: {fileID: 1068553261}
-  filter: 0
+  filter: 1
 --- !u!1001 &1071110955
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6576,7 +6624,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53b786a12e2e43babf1da9e623a983c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lobbyManager: {fileID: 905780854}
+  lobbyManager: {fileID: 905780858}
   gameSettingsContainer: {fileID: 1174948613}
 --- !u!1001 &1210402655
 PrefabInstance:
@@ -7398,7 +7446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f03d2fe0ab54366bf943ae63c432a72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lobbyManager: {fileID: 905780854}
+  lobbyManager: {fileID: 905780858}
   memberEntryPrefab: {fileID: 1132880664040779526, guid: b6ab96d64b734af4ba53760208bbb2e3,
     type: 3}
   content: {fileID: 1125462209061473008}
@@ -8701,7 +8749,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nextPanel: {fileID: 1210402658}
-  lobbyManager: {fileID: 905780854}
+  lobbyManager: {fileID: 0}
 --- !u!114 &1518086802 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8752858842245621142, guid: d3a01af0dd4b3034a985831a5cb02615,
@@ -8809,6 +8857,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneLoader: {fileID: 597079910}
   gameSettingsContainer: {fileID: 1174948613}
+--- !u!1 &1568582826
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1568582827}
+  - component: {fileID: 1568582828}
+  m_Layer: 0
+  m_Name: FindGameViewModel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1568582827
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1568582826}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1745821753}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1568582828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1568582826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c508d1f8a6c40d0a8fb7599e34b5700, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1571747764
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10018,6 +10110,8 @@ Transform:
   - {fileID: 716589254}
   - {fileID: 2031742850}
   - {fileID: 1830902100}
+  - {fileID: 56940689}
+  - {fileID: 1568582827}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1746377081 stripped

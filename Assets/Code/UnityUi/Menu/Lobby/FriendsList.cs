@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PurrLobby;
+using LobbyManagement;
 using UnityEngine;
 
 namespace UnityUi.Menu.Lobby
@@ -47,7 +47,7 @@ namespace UnityUi.Menu.Lobby
             }
         }
 
-        private void Update()
+        private void Update_Disabled()
         {
             if(_lastUpdateTime + 3f < Time.time)
             {

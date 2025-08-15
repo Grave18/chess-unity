@@ -1,5 +1,5 @@
 #if UNITY_EDITOR
-using PurrLobby.Providers;
+using LobbyManagement.Providers;
 
 #if STEAMWORKS_NET_PACKAGE
 using Steamworks;
@@ -26,7 +26,7 @@ namespace PurrLobby.Editor
             {
                 if (!provider)
                     return;
-                
+
                 var isInitialized = provider.IsSteamClientAvailable;
 
                 if (isInitialized)

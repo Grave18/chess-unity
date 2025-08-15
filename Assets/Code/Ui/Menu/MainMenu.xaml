@@ -15,6 +15,8 @@
         <noesis:Dependency Source="Pages/PlayPage.xaml" />
         <noesis:Dependency Source="Pages/BoardPage.xaml" />
         <noesis:Dependency Source="Pages/SettingsPage.xaml" />
+        <noesis:Dependency Source="Pages/FindGamePage.xaml" />
+        <noesis:Dependency Source="Pages/LobbyPage.xaml" />
     </noesis:Xaml.Dependencies>
 
     <Viewbox Stretch="Uniform">

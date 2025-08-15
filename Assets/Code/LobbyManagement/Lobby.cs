@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace PurrLobby {
+namespace LobbyManagement {
     [System.Serializable]
     public struct Lobby {
         public string Name;

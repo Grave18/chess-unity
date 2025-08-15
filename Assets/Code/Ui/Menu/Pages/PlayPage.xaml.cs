@@ -35,7 +35,7 @@ namespace Ui.Menu.Pages
         private void OnInitialized(object sender, EventArgs args)
         {
 #if NOESIS
-            DataContext = Object.FindAnyObjectByType<PlayPageViewModel>();
+            this.DataContext = Object.FindAnyObjectByType<PlayPageViewModel>();
             Root.DataContext = Object.FindAnyObjectByType<GameSettingsViewModel>();
 #endif
         }
@@ -85,30 +85,40 @@ namespace Ui.Menu.Pages
 
         private void CreateLobby_OnClick(object sender, RoutedEventArgs e)
         {
+            CreateLobbyButton.Command.Execute(null);
             GameMenuBase.Instance.ChangePage<LobbyPage>();
         }
 
         private void FindGame_OnClick(object sender, RoutedEventArgs e)
         {
+            FindGameButton.Command.Execute(null);
             GameMenuBase.Instance.ChangePage<FindGamePage>();
         }
 
 #if NOESIS
         private Grid Root { get; set; }
+
         private TabControl TabControl { get; set; }
         private TabItem OnlineTab { get; set; }
         private TabItem OfflineTab { get; set; }
         private TabItem ComputerTab { get; set; }
+
+        private Button CreateLobbyButton { get; set; }
+        private Button FindGameButton { get; set; }
 
         private void InitializeComponent()
         {
             GUI.LoadComponent(this, "Assets/Code/Ui/Menu/Pages/PlayPage.xaml");
 
             Root = FindName("Root") as Grid;
+
             TabControl = FindName("TabControl") as TabControl;
             OnlineTab = FindName("OnlineTab") as TabItem;
             OfflineTab = FindName("OfflineTab") as TabItem;
             ComputerTab = FindName("ComputerTab") as TabItem;
+
+            CreateLobbyButton = FindName("CreateLobbyButton") as Button;
+            FindGameButton = FindName("FindGameButton") as Button;
         }
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)

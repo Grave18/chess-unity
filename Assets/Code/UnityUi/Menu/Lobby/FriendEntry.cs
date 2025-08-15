@@ -1,3 +1,4 @@
+using LobbyManagement;
 using PurrLobby;
 using PurrNet.Logging;
 using TMPro;
@@ -37,7 +38,7 @@ namespace UnityUi.Menu.Lobby
             // if(!TryGetComponent(out _button))
             //     PurrLogger.LogError($"{nameof(FriendEntry)}: No button found.", this);
 
-            nameText.text = friend.DisplayName;
+            nameText.text = friend.Name;
             avatarImage.texture = friend.Avatar;
             _friend = friend;
             _lobbyManager = lobbyManager;

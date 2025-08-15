@@ -17,7 +17,7 @@ using UnityEngine;
 using UnityEngine.Events;
 // ReSharper disable All
 
-namespace PurrLobby.Providers
+namespace LobbyManagement.Providers
 {
     public class SteamLobbyProvider : MonoBehaviour
 #if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
@@ -488,7 +488,7 @@ namespace PurrLobby.Providers
             return new FriendUser()
             {
                 Id = steamId.m_SteamID.ToString(),
-                DisplayName = displayName,
+                Name = displayName,
                 Avatar = avatar
             };
         }

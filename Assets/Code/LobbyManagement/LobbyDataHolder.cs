@@ -1,7 +1,6 @@
-using System;
 using UnityEngine;
 
-namespace PurrLobby
+namespace LobbyManagement
 {
     public class LobbyDataHolder : MonoBehaviour
     {

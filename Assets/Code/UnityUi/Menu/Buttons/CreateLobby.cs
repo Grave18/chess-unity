@@ -1,4 +1,4 @@
-﻿using PurrLobby;
+﻿using LobbyManagement;
 using UnityEngine;
 using UnityUi.Common.Buttons;
 
