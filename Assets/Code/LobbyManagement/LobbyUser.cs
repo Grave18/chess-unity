@@ -5,10 +5,10 @@ namespace LobbyManagement
 {
     public struct LobbyUser : IEquatable<LobbyUser>
     {
-        public string Id;
-        public string DisplayName;
-        public bool IsReady;
-        public Texture2D Avatar;
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public bool IsReady { get; set; }
+        public Texture2D Avatar { get; set; }
 
         public bool Equals(LobbyUser other)
         {

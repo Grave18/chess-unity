@@ -2,12 +2,10 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using LobbyManagement;
-using MvvmTool;
 using UnityEngine;
 
 namespace Ui.Menu.ViewModels
 {
-    [INotifyPropertyChanged]
     public partial class LobbyViewModel : MonoBehaviour
     {
         [SerializeField] private LobbyManager lobbyManager;
@@ -17,16 +15,21 @@ namespace Ui.Menu.ViewModels
         private float _lastUpdateTime;
 
         public ObservableCollection<FriendUser> Friends { get; set; } = new();
+        public ObservableCollection<LobbyUser> LobbyUsers { get; set; } = new();
 
         private void OnEnable()
         {
             lobbyManager.OnFriendListPulled.AddListener(PopulateFriends);
+            lobbyManager.OnRoomLeft.AddListener(OnLobbyLeave);
+            lobbyManager.OnRoomUpdated.AddListener(LobbyDataUpdate);
             PullFriends();
         }
 
         private void OnDisable()
         {
             lobbyManager.OnFriendListPulled.RemoveListener(PopulateFriends);
+            lobbyManager.OnRoomLeft.RemoveListener(OnLobbyLeave);
+            lobbyManager.OnRoomUpdated.RemoveListener(LobbyDataUpdate);
         }
 
         private void PopulateFriends(List<FriendUser> newQuery)
@@ -55,6 +58,64 @@ namespace Ui.Menu.ViewModels
                 }
 
                 Friends.Add(friend);
+            }
+        }
+
+        private void OnLobbyLeave()
+        {
+            LobbyUsers.Clear();
+        }
+
+        private void LobbyDataUpdate(Lobby lobby)
+        {
+            if (!lobby.IsValid)
+            {
+                return;
+            }
+
+            SetReadyFeedback(lobby);
+            AddNewMembers(lobby);
+            RemoveLeftMembers(lobby);
+        }
+
+        private void SetReadyFeedback(Lobby room)
+        {
+            // foreach (Transform child in content)
+            // {
+            //     if (!child.TryGetComponent(out MemberEntry member))
+            //     {
+            //         continue;
+            //     }
+            //
+            //     LobbyUser matchingMember = room.Members.Find((LobbyUser x) => x.Id == member.MemberId);
+            //     if (!string.IsNullOrEmpty(matchingMember.Id))
+            //     {
+            //         // Set ready color
+            //         member.SetReady(matchingMember.IsReady);
+            //     }
+            // }
+        }
+
+        private void AddNewMembers(Lobby room)
+        {
+            foreach (LobbyUser member in room.Members)
+            {
+                if (LobbyUsers.Contains(member))
+                {
+                    continue;
+                }
+
+                LobbyUsers.Add(member);
+            }
+        }
+
+        private void RemoveLeftMembers(Lobby room)
+        {
+            var leftLobbyUsers = LobbyUsers.Except(room.Members);
+
+            foreach (LobbyUser lobbyUser in leftLobbyUsers)
+            {
+                LobbyUsers.Remove(lobbyUser);
             }
         }
 

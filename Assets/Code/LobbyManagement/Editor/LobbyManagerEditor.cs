@@ -186,12 +186,12 @@ namespace PurrLobby.Editor
                     if (!memberFoldouts.ContainsKey(member.Id))
                         memberFoldouts[member.Id] = false;
 
-                    memberFoldouts[member.Id] = EditorGUILayout.Foldout(memberFoldouts[member.Id], member.DisplayName);
+                    memberFoldouts[member.Id] = EditorGUILayout.Foldout(memberFoldouts[member.Id], member.Name);
                     if (memberFoldouts[member.Id])
                     {
                         EditorGUI.indentLevel++;
                         EditorGUILayout.LabelField("ID:", member.Id);
-                        EditorGUILayout.LabelField("Display Name:", member.DisplayName);
+                        EditorGUILayout.LabelField("Display Name:", member.Name);
                         EditorGUILayout.LabelField("Is Ready:", member.IsReady.ToString());
                         if (member.Avatar != null)
                         {

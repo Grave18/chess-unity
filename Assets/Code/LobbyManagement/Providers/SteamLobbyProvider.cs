@@ -439,7 +439,7 @@ namespace LobbyManagement.Providers
             return new LobbyUser
             {
                 Id = steamId.m_SteamID.ToString(),
-                DisplayName = displayName,
+                Name = displayName,
                 IsReady = isReady,
                 Avatar = avatar
             };

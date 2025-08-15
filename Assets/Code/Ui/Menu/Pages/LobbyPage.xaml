@@ -44,14 +44,17 @@
                     <RowDefinition Height="5*" />
                     <RowDefinition Height="2*" />
                 </Grid.RowDefinitions>
-                <!-- Lobby List -->
-                <Border Grid.Row="0" Style="{StaticResource SettingsControlsBorder}">
-                    <DockPanel>
 
-                    </DockPanel>
+                <!-- Lobby List -->
+                <Border Grid.Row="0"
+                        Style="{StaticResource SettingsControlsBorder}">
+                    <ListBox ItemsSource="{Binding LobbyUsers}"
+                             ItemTemplate="{StaticResource PlayerTemplate}" />
                 </Border>
+
                 <!-- Join code -->
-                <Border Grid.Row="1" Style="{StaticResource SettingsControlsBorder}">
+                <Border Grid.Row="1"
+                        Style="{StaticResource SettingsControlsBorder}">
                     <DockPanel>
 
                     </DockPanel>
