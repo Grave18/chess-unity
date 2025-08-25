@@ -9,7 +9,10 @@ namespace Ui.Menu.ViewModels
 {
     public partial class LobbyViewModel : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] private LobbyManager lobbyManager;
+
+        [Header("Settings")]
         [SerializeField] private LobbyManager.FriendFilter filter = LobbyManager.FriendFilter.All;
         [SerializeField] private float updateIntervalSec = 3f;
 
@@ -99,7 +102,7 @@ namespace Ui.Menu.ViewModels
 
         private void RemoveLeftMembers(Lobby room)
         {
-            var leftLobbyUsers = LobbyUsers.Except(room.Members);
+            var leftLobbyUsers = LobbyUsers.Except(room.Members).ToArray();
 
             foreach (LobbyUser lobbyUser in leftLobbyUsers)
             {
