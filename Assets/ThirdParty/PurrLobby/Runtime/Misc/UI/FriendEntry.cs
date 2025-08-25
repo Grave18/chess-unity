@@ -23,7 +23,7 @@ namespace PurrLobby
                 PurrLogger.LogError($"{nameof(FriendEntry)}: No button found.", this);
             
             nameText.text = friend.Name;
-            avatarImage.texture = friend.Avatar;
+            avatarImage.texture = friend.Image;
             _friend = friend;
             _lobbyManager = lobbyManager;
         }

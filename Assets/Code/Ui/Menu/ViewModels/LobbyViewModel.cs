@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using LobbyManagement;
+using MvvmTool;
 using UnityEngine;
 
 namespace Ui.Menu.ViewModels
@@ -16,6 +17,12 @@ namespace Ui.Menu.ViewModels
 
         public ObservableCollection<FriendUser> Friends { get; set; } = new();
         public ObservableCollection<LobbyUser> LobbyUsers { get; set; } = new();
+
+        [RelayCommand]
+        private void Ready()
+        {
+            lobbyManager.ToggleLocalReady();
+        }
 
         private void OnEnable()
         {
@@ -73,27 +80,8 @@ namespace Ui.Menu.ViewModels
                 return;
             }
 
-            SetReadyFeedback(lobby);
             AddNewMembers(lobby);
             RemoveLeftMembers(lobby);
-        }
-
-        private void SetReadyFeedback(Lobby room)
-        {
-            // foreach (Transform child in content)
-            // {
-            //     if (!child.TryGetComponent(out MemberEntry member))
-            //     {
-            //         continue;
-            //     }
-            //
-            //     LobbyUser matchingMember = room.Members.Find((LobbyUser x) => x.Id == member.MemberId);
-            //     if (!string.IsNullOrEmpty(matchingMember.Id))
-            //     {
-            //         // Set ready color
-            //         member.SetReady(matchingMember.IsReady);
-            //     }
-            // }
         }
 
         private void AddNewMembers(Lobby room)

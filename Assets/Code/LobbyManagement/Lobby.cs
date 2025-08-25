@@ -21,7 +21,7 @@ namespace LobbyManagement {
                 var newMember = @new.Members[i];
                 var oldMember = Members[i];
 
-                if(newMember.Id != oldMember.Id || newMember.IsReady != oldMember.IsReady || newMember.Name != oldMember.Name || newMember.Avatar != oldMember.Avatar)
+                if(newMember.Id != oldMember.Id || newMember.IsReady != oldMember.IsReady || newMember.Name != oldMember.Name || newMember.Image != oldMember.Image)
                     return true;
             }
 

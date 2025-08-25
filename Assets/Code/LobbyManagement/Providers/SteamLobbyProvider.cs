@@ -441,7 +441,7 @@ namespace LobbyManagement.Providers
                 Id = steamId.m_SteamID.ToString(),
                 Name = displayName,
                 IsReady = isReady,
-                Avatar = avatar
+                Image = avatar
             };
         }
 
@@ -489,7 +489,7 @@ namespace LobbyManagement.Providers
             {
                 Id = steamId.m_SteamID.ToString(),
                 Name = displayName,
-                Avatar = avatar
+                Image = avatar
             };
         }
 
@@ -530,7 +530,7 @@ namespace LobbyManagement.Providers
                 if (updatedMembers[i].Id == steamId.m_SteamID.ToString())
                 {
                     var updatedUser = updatedMembers[i];
-                    updatedUser.Avatar = avatar;
+                    updatedUser.Image = avatar;
                     updatedMembers[i] = updatedUser;
                     break;
                 }

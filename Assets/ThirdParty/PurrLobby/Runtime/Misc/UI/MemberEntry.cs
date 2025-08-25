@@ -19,7 +19,7 @@ namespace PurrLobby
         {
             _defaultColor = userName.color;
             _memberId = user.Id;
-            avatar.texture = user.Avatar;
+            avatar.texture = user.Image;
             userName.text = user.Name;
             SetReady(user.IsReady);
         }

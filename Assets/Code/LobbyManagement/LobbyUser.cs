@@ -7,8 +7,8 @@ namespace LobbyManagement
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public Texture2D Image { get; set; }
         public bool IsReady { get; set; }
-        public Texture2D Avatar { get; set; }
 
         public bool Equals(LobbyUser other)
         {
