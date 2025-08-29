@@ -13,7 +13,7 @@ namespace UnityUi.Menu.Lobby
         [SerializeField] private TMP_Text nameText;
         [SerializeField] private RawImage avatarImage;
 
-        private FriendUser? _friend;
+        private FriendItem? _friend;
         private LobbyManager _lobbyManager;
         private float _inviteTime = -999;
         private Button _button;
@@ -33,7 +33,7 @@ namespace UnityUi.Menu.Lobby
             _button.onClick.RemoveListener(Invite);
         }
 
-        public void Init(FriendUser friend, LobbyManager lobbyManager)
+        public void Init(FriendItem friend, LobbyManager lobbyManager)
         {
             // if(!TryGetComponent(out _button))
             //     PurrLogger.LogError($"{nameof(FriendEntry)}: No button found.", this);
@@ -52,14 +52,14 @@ namespace UnityUi.Menu.Lobby
 
         public void Invite()
         {
-            if (!_friend.HasValue)
-            {
-                PurrLogger.LogError($"{nameof(FriendEntry)}: No friend to invite.", this);
-                return;
-            }
-            _inviteTime = Time.time;
-            _lobbyManager.InviteFriend(_friend.Value);
-            _button.interactable = false;
+            // if (!_friend.HasValue)
+            // {
+            //     PurrLogger.LogError($"{nameof(FriendEntry)}: No friend to invite.", this);
+            //     return;
+            // }
+            // _inviteTime = Time.time;
+            // _lobbyManager.InviteFriend(_friend.Value);
+            // _button.interactable = false;
         }
     }
 }

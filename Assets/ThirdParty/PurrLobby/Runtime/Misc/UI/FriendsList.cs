@@ -16,7 +16,7 @@ namespace PurrLobby
         private float _lastUpdateTime;
         private Dictionary<string, FriendEntry> _currentFriends = new Dictionary<string, FriendEntry>();
 
-        public void Populate(List<FriendUser> friends)
+        public void Populate(List<FriendItem> friends)
         {
             var newFriendIds = new HashSet<string>(friends.Select(f => f.Id));
             var existingFriendIds = new HashSet<string>(_currentFriends.Keys);

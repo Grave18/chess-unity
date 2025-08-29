@@ -25,7 +25,7 @@ namespace UnityUi.Menu.Lobby
             lobbyManager.OnFriendListPulled.RemoveListener(Populate);
         }
 
-        public void Populate(List<FriendUser> friends)
+        public void Populate(List<FriendItem> friends)
         {
             var newFriendIds = new HashSet<string>(friends.Select(f => f.Id));
             var existingFriendIds = new HashSet<string>(_currentFriends.Keys);

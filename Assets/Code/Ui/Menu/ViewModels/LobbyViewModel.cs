@@ -18,7 +18,7 @@ namespace Ui.Menu.ViewModels
 
         private float _lastUpdateTime;
 
-        public ObservableCollection<FriendUser> Friends { get; set; } = new();
+        public ObservableCollection<FriendItem> Friends { get; set; } = new();
         public ObservableCollection<LobbyUser> LobbyUsers { get; set; } = new();
 
         [RelayCommand]
@@ -42,25 +42,25 @@ namespace Ui.Menu.ViewModels
             lobbyManager.OnRoomUpdated.RemoveListener(LobbyDataUpdate);
         }
 
-        private void PopulateFriends(List<FriendUser> newQuery)
+        private void PopulateFriends(List<FriendItem> newQuery)
         {
             RemoveOfflineFriends(newQuery);
             AddNewFriends(newQuery);
         }
 
-        private void RemoveOfflineFriends(List<FriendUser> newQuery)
+        private void RemoveOfflineFriends(List<FriendItem> newQuery)
         {
-            var offlineFriends = Friends.Except(newQuery);
+            var offlineFriends = Friends.Except(newQuery).ToList();
 
-            foreach (FriendUser offlineFriend in offlineFriends)
+            foreach (FriendItem offlineFriend in offlineFriends)
             {
                 Friends.Remove(offlineFriend);
             }
         }
 
-        private void AddNewFriends(List<FriendUser> newQuery)
+        private void AddNewFriends(List<FriendItem> newQuery)
         {
-            foreach (FriendUser friend in newQuery)
+            foreach (FriendItem friend in newQuery)
             {
                 if (Friends.Contains(friend))
                 {
@@ -127,12 +127,6 @@ namespace Ui.Menu.ViewModels
         {
             _lastUpdateTime = Time.time;
             lobbyManager.PullFriends(filter);
-        }
-
-        [RelayCommand]
-        private void FriendClick(FriendUser friend)
-        {
-            Debug.Log($"Friend clicked {friend.Name}, {friend.Id}");
         }
     }
 }

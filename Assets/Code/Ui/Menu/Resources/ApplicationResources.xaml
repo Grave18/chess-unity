@@ -59,8 +59,7 @@
 
     <!-- Friend Template -->
     <DataTemplate x:Key="FriendUserTemplate">
-        <Button Command="{Binding DataContext.FriendClickCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                CommandParameter="{Binding}">
+        <Button Command="{Binding FriendClickCommand}">
             <Grid Height="Auto">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="50" />

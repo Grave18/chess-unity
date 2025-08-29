@@ -30,7 +30,7 @@ namespace LobbyManagement
         public UnityEvent<Lobby> OnRoomUpdated = new UnityEvent<Lobby>();
         public UnityEvent<List<LobbyUser>> OnPlayerListUpdated = new UnityEvent<List<LobbyUser>>();
         public UnityEvent<List<Lobby>> OnRoomSearchResults = new UnityEvent<List<Lobby>>();
-        public UnityEvent<List<FriendUser>> OnFriendListPulled = new UnityEvent<List<FriendUser>>();
+        public UnityEvent<List<FriendItem>> OnFriendListPulled = new UnityEvent<List<FriendItem>>();
         public UnityEvent OnAllReady = new UnityEvent();
         public UnityEvent<string> OnError = new UnityEvent<string>();
 
@@ -218,7 +218,7 @@ namespace LobbyManagement
             RunTask(async () =>
             {
                 EnsureProviderSet();
-                var friends = await _currentProvider.GetFriendsAsync(filter);
+                List<FriendItem> friends = await _currentProvider.GetFriendsAsync(filter);
                 OnFriendListPulled?.Invoke(friends);
             });
         }
@@ -227,7 +227,7 @@ namespace LobbyManagement
         /// Invite the given user to the current lobby.
         /// </summary>
         /// <param name="user"></param>
-        public void InviteFriend(FriendUser user)
+        public void InviteFriend(FriendItem user)
         {
             RunTask(async () =>
             {

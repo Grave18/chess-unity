@@ -10,10 +10,10 @@ namespace LobbyManagement.Providers {
         void Shutdown();
 
         // Friend List
-        Task<List<FriendUser>> GetFriendsAsync(LobbyManager.FriendFilter filter);
+        Task<List<FriendItem>> GetFriendsAsync(LobbyManager.FriendFilter filter);
 
         // Invitations
-        Task InviteFriendAsync(FriendUser user);
+        Task InviteFriendAsync(FriendItem user);
 
         // Lobby Management
         Task<Lobby> CreateLobbyAsync(int maxPlayers, Dictionary<string, string> lobbyProperties = null);
@@ -34,7 +34,7 @@ namespace LobbyManagement.Providers {
         event UnityAction OnLobbyLeft;
         event UnityAction<Lobby> OnLobbyUpdated;
         event UnityAction<List<LobbyUser>> OnLobbyPlayerListUpdated;
-        event UnityAction<List<FriendUser>> OnFriendListPulled;
+        event UnityAction<List<FriendItem>> OnFriendListPulled;
 
         // Error Handling
         event UnityAction<string> OnError;

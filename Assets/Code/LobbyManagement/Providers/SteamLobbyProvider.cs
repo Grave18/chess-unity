@@ -39,7 +39,7 @@ namespace LobbyManagement.Providers
         public event UnityAction OnLobbyLeft;
         public event UnityAction<Lobby> OnLobbyUpdated;
         public event UnityAction<List<LobbyUser>> OnLobbyPlayerListUpdated;
-        public event UnityAction<List<FriendUser>> OnFriendListPulled;
+        public event UnityAction<List<FriendItem>> OnFriendListPulled;
         public event UnityAction<string> OnError;
 
         [SerializeField] private bool handleSteamInit = false;
@@ -120,12 +120,12 @@ namespace LobbyManagement.Providers
             );
         }
 
-        public Task<List<FriendUser>> GetFriendsAsync(LobbyManager.FriendFilter filter)
+        public Task<List<FriendItem>> GetFriendsAsync(LobbyManager.FriendFilter filter)
         {
             if (!IsSteamClientAvailable)
                 return default;
 
-            var friends = new List<FriendUser>();
+            var friends = new List<FriendItem>();
             int friendCount = Steamworks.SteamFriends.GetFriendCount(Steamworks.EFriendFlags.k_EFriendFlagImmediate);
 
             for (int i = 0; i < friendCount; i++)
@@ -208,7 +208,7 @@ namespace LobbyManagement.Providers
             }
         }
 
-        public Task InviteFriendAsync(FriendUser user)
+        public Task InviteFriendAsync(FriendItem user)
         {
             if (IsSteamClientAvailable && !string.IsNullOrEmpty(user.Id) && ulong.TryParse(user.Id, out var id))
             {
@@ -466,7 +466,7 @@ namespace LobbyManagement.Providers
             texture.SetPixels(pixels);
         }
 
-        private FriendUser CreateFriendUser(Steamworks.CSteamID steamId)
+        private FriendItem CreateFriendUser(Steamworks.CSteamID steamId)
         {
             var displayName = Steamworks.SteamFriends.GetFriendPersonaName(steamId);
 
@@ -485,7 +485,7 @@ namespace LobbyManagement.Providers
                 }
             }
 
-            return new FriendUser()
+            return new FriendItem()
             {
                 Id = steamId.m_SteamID.ToString(),
                 Name = displayName,
