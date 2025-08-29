@@ -25,6 +25,8 @@
 
             <Border Grid.Row="0"
                     Style="{StaticResource SettingsControlsBorder}">
+                <ListBox ItemsSource="{Binding Lobbies}"
+                         ItemTemplate="{StaticResource PlayerTemplate}" />
             </Border>
             <Border Grid.Row="1"
                     Style="{StaticResource SettingsControlsBorder}">

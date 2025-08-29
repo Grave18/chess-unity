@@ -37,7 +37,7 @@
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <converters:Texture2dToImageSourceConverter x:Key="Texture2dToImageSourceConverter" />
 
-    <!-- Player Template -->
+    <!-- Lobby Template -->
     <DataTemplate x:Key="PlayerTemplate">
         <Grid Height="Auto">
             <Grid.ColumnDefinitions>
@@ -55,6 +55,23 @@
                       Width="50"
                       Height="50"/>
         </Grid>
+    </DataTemplate>
+
+    <!-- Friend Template -->
+    <DataTemplate x:Key="FriendUserTemplate">
+        <Button Command="{Binding DataContext.FriendClickCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                CommandParameter="{Binding}">
+            <Grid Height="Auto">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0"
+                       Source="{Binding Image, Converter={StaticResource Texture2dToImageSourceConverter}}" />
+                <Label Grid.Column="1"
+                       Content="{Binding Name}" />
+            </Grid>
+        </Button>
     </DataTemplate>
 
     <!-- Main Style-->

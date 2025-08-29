@@ -944,7 +944,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lobbyManager: {fileID: 905780858}
-  filter: 2
+  filter: 1
   updateIntervalSec: 3
 --- !u!114 &87492035 stripped
 MonoBehaviour:
@@ -4611,7 +4611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15156e7f57bff964485891eba8344bbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lobbyType: 1
+  lobbyType: 2
   maxLobbiesToFind: 10
   handleSteamInit: 1
 --- !u!114 &905780858
@@ -8901,6 +8901,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c508d1f8a6c40d0a8fb7599e34b5700, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lobbyManager: {fileID: 905780858}
+  updateIntervalSec: 3
 --- !u!1001 &1571747764
 PrefabInstance:
   m_ObjectHideFlags: 0

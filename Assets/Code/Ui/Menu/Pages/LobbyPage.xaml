@@ -62,8 +62,7 @@
                 <Border Grid.Row="1"
                         Style="{StaticResource SettingsControlsBorder}">
                     <ListBox ItemsSource="{Binding Friends}"
-                             ItemTemplate="{StaticResource PlayerTemplate}">
-                       
+                             ItemTemplate="{StaticResource FriendUserTemplate}">
                     </ListBox>
                 </Border>
             </Grid>

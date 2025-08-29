@@ -128,5 +128,11 @@ namespace Ui.Menu.ViewModels
             _lastUpdateTime = Time.time;
             lobbyManager.PullFriends(filter);
         }
+
+        [RelayCommand]
+        private void FriendClick(FriendUser friend)
+        {
+            Debug.Log($"Friend clicked {friend.Name}, {friend.Id}");
+        }
     }
 }
