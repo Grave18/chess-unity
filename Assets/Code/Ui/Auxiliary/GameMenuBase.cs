@@ -15,18 +15,26 @@ namespace Ui.Auxiliary
     public abstract partial class GameMenuBase : UserControl
     {
         public static GameMenuBase Instance { get; private set; }
+        public UserControl _currentPage;
+
+        protected GameMenuBase()
+        {
+            Instance = this;
+        }
 
         public void ChangePage<T>(params object[] args) where T : UserControl
         {
             var newPage = ActivatorHelper.CreateInstance<T>(args);
+            _currentPage = newPage;
+
             ChangePage(newPage);
         }
 
         protected abstract void ChangePage(UserControl page);
 
-        protected GameMenuBase()
+        public bool IsCurrentPage<T>()
         {
-            Instance = this;
+            return _currentPage is T;
         }
 
 #if NOESIS

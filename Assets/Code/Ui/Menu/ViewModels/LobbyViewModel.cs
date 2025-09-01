@@ -44,8 +44,17 @@ namespace Ui.Menu.ViewModels
 
         private void PopulateFriends(List<FriendItem> newQuery)
         {
+            InitFriends(newQuery);
             RemoveOfflineFriends(newQuery);
             AddNewFriends(newQuery);
+        }
+
+        private void InitFriends(List<FriendItem> newQuery)
+        {
+            foreach (FriendItem friend in newQuery)
+            {
+                friend.Init(lobbyManager);
+            }
         }
 
         private void RemoveOfflineFriends(List<FriendItem> newQuery)
@@ -127,6 +136,13 @@ namespace Ui.Menu.ViewModels
         {
             _lastUpdateTime = Time.time;
             lobbyManager.PullFriends(filter);
+        }
+
+        [RelayCommand]
+        private void Back()
+        {
+            Debug.Log("Leve Lobby");
+            lobbyManager.LeaveLobby();
         }
     }
 }

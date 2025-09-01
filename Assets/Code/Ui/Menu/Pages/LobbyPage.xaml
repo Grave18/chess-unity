@@ -74,6 +74,7 @@
                 Command="{Binding ReadyCommand}"/>
 
         <Button Grid.Row="3"
+                Name="Back"
                 Margin="0 0 0 20"
                 Content="Back"
                 Command="{Binding BackCommand}"

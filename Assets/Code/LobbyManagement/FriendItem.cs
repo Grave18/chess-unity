@@ -15,11 +15,24 @@ namespace LobbyManagement
         private bool _canInvite = true;
         private readonly WaitForSecondsRealtime _waitForSecondsRealtime = new(3);
 
+        private LobbyManager _lobbyManager;
+
+        public void Init(LobbyManager lobbyManager)
+        {
+            _lobbyManager = lobbyManager;
+        }
+
         [RelayCommand(CanExecute = nameof(FriendClick_CanExecute))]
         private void FriendClick()
         {
-            Debug.Log($"Friend clicked {Name}, {Id}");
-            DisableFriendInvite().RunCoroutine();
+            TemporaryDisableFriendInviteRoutine().RunCoroutine();
+
+            Invite();
+        }
+
+        private void Invite()
+        {
+            _lobbyManager?.InviteFriend(this);
         }
 
         private bool FriendClick_CanExecute()
@@ -27,7 +40,7 @@ namespace LobbyManagement
             return _canInvite;
         }
 
-        private IEnumerator DisableFriendInvite()
+        private IEnumerator TemporaryDisableFriendInviteRoutine()
         {
             _canInvite = false;
             FriendClickCommand.NotifyCanExecuteChanged();
@@ -37,7 +50,5 @@ namespace LobbyManagement
             _canInvite = true;
             FriendClickCommand.NotifyCanExecuteChanged();
         }
-
-
     }
 }

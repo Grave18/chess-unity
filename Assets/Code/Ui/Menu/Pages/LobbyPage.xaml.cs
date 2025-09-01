@@ -31,14 +31,19 @@ namespace Ui.Menu.Pages
 
         private void Back_Click(object sender, RoutedEventArgs e)
         {
+            Back.Command.Execute(null); // for command to execute before event handler
             GameMenuBase.Instance.ChangePage<PlayPage>("OnlineTab");
         }
 
 #if NOESIS
 
+        private Button Back;
+
         private void InitializeComponent()
         {
             Noesis.GUI.LoadComponent(this, "Assets/Code/Ui/Menu/Pages/LobbyPage.xaml");
+
+            Back = FindName("Back") as Button;
         }
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)

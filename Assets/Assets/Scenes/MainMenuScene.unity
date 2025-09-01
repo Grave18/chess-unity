@@ -4351,6 +4351,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   renderTexture: {fileID: 8400000, guid: f3ef78b0b841e9643a1c4eeab135ae56, type: 2}
+  lobbyManager: {fileID: 905780858}
 --- !u!1 &750573648
 GameObject:
   m_ObjectHideFlags: 0
