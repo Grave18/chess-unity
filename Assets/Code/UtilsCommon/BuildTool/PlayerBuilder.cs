@@ -58,12 +58,13 @@ namespace UtilsCommon.BuildTool
 
         private static void SetLocationPathName()
         {
+            string projectName = PlayerSettings.productName;
             string fileName = _buildSettings.BuildTarget switch
             {
-                BuildTarget.StandaloneWindows or BuildTarget.StandaloneWindows64 => "chess.exe",
-                BuildTarget.Android => "chess.app",
-                BuildTarget.StandaloneOSX => "chess.app",
-                BuildTarget.StandaloneLinux64 => "chess.x86_64",
+                BuildTarget.StandaloneWindows or BuildTarget.StandaloneWindows64 => $"{projectName}.exe",
+                BuildTarget.Android => $"{projectName}.app",
+                BuildTarget.StandaloneOSX => $"{projectName}.app",
+                BuildTarget.StandaloneLinux64 => $"{projectName}.x86_64",
                 _ => "chess",
             };
 
