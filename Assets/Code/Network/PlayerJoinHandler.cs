@@ -8,7 +8,7 @@ using UtilsCommon;
 
 namespace Network
 {
-    public class ConnectionHandler : NetworkBehaviour
+    public class PlayerJoinHandler : NetworkBehaviour
     {
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
 

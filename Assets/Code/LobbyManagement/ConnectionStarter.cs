@@ -3,6 +3,7 @@ using PurrNet;
 using PurrNet.Logging;
 using PurrNet.Transports;
 using UnityEngine;
+using UtilsCommon;
 
 #if UTP_LOBBYRELAY
 using PurrNet.UTP;
@@ -13,16 +14,19 @@ namespace LobbyManagement
 {
     public class ConnectionStarter : MonoBehaviour
     {
-        private NetworkManager _networkManager;
+        [SerializeField] private NetworkManager networkManager;
+
         private LobbyDataHolder _lobbyDataHolder;
 
         private void Awake()
         {
-            if(!TryGetComponent(out _networkManager)) {
-                PurrLogger.LogError($"Failed to get {nameof(NetworkManager)} component.", this);
-            }
+            Initialize();
+        }
 
+        private void Initialize()
+        {
             _lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
+
             if(!_lobbyDataHolder)
             {
                 PurrLogger.LogError($"Failed to get {nameof(LobbyDataHolder)} component.", this);
@@ -31,29 +35,55 @@ namespace LobbyManagement
 
         private void Start()
         {
-            if (!_networkManager)
+            if (IsReferencesNotValid())
+            {
+                return;
+            }
+
+            SetupPurrTransport();
+            SetupUtpTransport();
+
+            if(CanStartServer())
+            {
+                StartServer();
+            }
+
+            StartClient().RunCoroutine();
+        }
+
+        private bool IsReferencesNotValid()
+        {
+            if (!networkManager)
             {
                 PurrLogger.LogError($"Failed to start connection. {nameof(NetworkManager)} is null!", this);
-                return;
+                return true;
             }
 
             if (!_lobbyDataHolder)
             {
                 PurrLogger.LogError($"Failed to start connection. {nameof(LobbyDataHolder)} is null!", this);
-                return;
+                return true;
             }
 
             if (!_lobbyDataHolder.CurrentLobby.IsValid)
             {
                 PurrLogger.Log("Offline game. Can't start connection. Destroying multiplayer part", this);
-                Destroy(gameObject);
-                return;
+                // Destroy(gameObject);
+                return true;
             }
 
-            if(_networkManager.transport is PurrTransport transport) {
+            return false;
+        }
+
+        private void SetupPurrTransport()
+        {
+            if(networkManager.transport is PurrTransport transport) {
                 transport.roomName = _lobbyDataHolder.CurrentLobby.LobbyId;
             }
+        }
 
+        private void SetupUtpTransport()
+        {
 #if UTP_LOBBYRELAY
             else if(_networkManager.transport is UTPTransport) {
                 if(_lobbyDataHolder.CurrentLobby.IsOwner) {
@@ -62,21 +92,24 @@ namespace LobbyManagement
                 (_networkManager.transport as UTPTransport).InitializeRelayClient(_lobbyDataHolder.CurrentLobby.Properties["JoinCode"]);
             }
 #else
-                //P2P Connection, receive IP/Port from server
+            //P2P Connection, receive IP/Port from server
 #endif
+        }
 
-            if(_lobbyDataHolder.CurrentLobby.IsOwner)
-            {
-                _networkManager.StartServer();
-            }
+        private bool CanStartServer()
+        {
+            return _lobbyDataHolder.CurrentLobby.IsOwner;
+        }
 
-            StartCoroutine(StartClient());
+        private void StartServer()
+        {
+            networkManager.StartServer();
         }
 
         private IEnumerator StartClient()
         {
             yield return new WaitForSeconds(1f);
-            _networkManager.StartClient();
+            networkManager.StartClient();
         }
     }
 }

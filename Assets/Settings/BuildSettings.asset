@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecc0db107c124c338f632c209b3d9d2a, type: 3}
   m_Name: BuildSettings
   m_EditorClassIdentifier: 
-  BuildPath: D:/gdrive/chess_build
+  BuildPath: D:/dev/unity/portfolio/chess_3d/Build
   BuildTargetGroup: 1
   BuildTarget: 19
-  BuildOptions: 525
+  BuildOptions: 521
   AddSteamAppidFile: 1
   SteamAppid: 480
   developmentBuild: 1
@@ -24,5 +24,5 @@ MonoBehaviour:
   deepProfiling: 0
   waitForPlayerConnection: 0
   showBuildFolder: 1
-  autoRunPlayer: 1
+  autoRunPlayer: 0
   clanBuild: 0
