@@ -1,5 +1,4 @@
 using System.Collections;
-using LobbyManagement;
 using PurrNet;
 using PurrNet.Logging;
 using PurrNet.Transports;
@@ -10,7 +9,7 @@ using PurrNet.UTP;
 using Unity.Services.Relay.Models;
 #endif
 
-namespace PurrLobby
+namespace LobbyManagement
 {
     public class ConnectionStarter : MonoBehaviour
     {
@@ -55,7 +54,7 @@ namespace PurrLobby
                 transport.roomName = _lobbyDataHolder.CurrentLobby.LobbyId;
             }
 
-#if UTP_LOBBYRELAYD
+#if UTP_LOBBYRELAY
             else if(_networkManager.transport is UTPTransport) {
                 if(_lobbyDataHolder.CurrentLobby.IsOwner) {
                     (_networkManager.transport as UTPTransport).InitializeRelayServer((Allocation)_lobbyDataHolder.CurrentLobby.ServerObject);

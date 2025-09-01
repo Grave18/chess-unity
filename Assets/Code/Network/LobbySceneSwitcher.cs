@@ -1,15 +1,13 @@
 ﻿using LobbyManagement;
-using PurrLobby;
-using PurrNet;
+using SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Network
 {
-    public class SceneSwitcher : MonoBehaviour
+    public class LobbySceneSwitcher : MonoBehaviour
     {
         [SerializeField] private LobbyManager lobbyManager;
-        [PurrScene, SerializeField] private string nextScene;
+        [SerializeField] private SceneLoader sceneLoader;
 
         private void OnEnable()
         {
@@ -24,7 +22,7 @@ namespace Network
         private void SwitchScene()
         {
             lobbyManager.SetLobbyStarted();
-            SceneManager.LoadSceneAsync(nextScene);
+            sceneLoader.LoadOnlineLobby();
         }
     }
 }
