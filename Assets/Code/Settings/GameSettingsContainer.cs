@@ -80,20 +80,24 @@ namespace Settings
         /// Two hotseat players
         public void SetupGameOffline()
         {
-            PlayerSettings player1Settings = gameSettings.Player1Settings;
-            player1Settings.PlayerType = PlayerType.Human;
+            PlayerSettings player1 = gameSettings.Player1Settings;
+            player1.PlayerType = PlayerType.Human;
 
-            PlayerSettings player2Settings = gameSettings.Player2Settings;
-            player2Settings.PlayerType = PlayerType.Human;
+            PlayerSettings player2 = gameSettings.Player2Settings;
+            player2.Name = "Player 2";
+            player2.PlayerType = PlayerType.Human;
 
             Save();
         }
 
         public void SetupGameWithComputer()
         {
-            PlayerSettings computerPlayerSettings = gameSettings.Player2Settings;
-            computerPlayerSettings.Name = "Computer";
-            computerPlayerSettings.PlayerType = PlayerType.Computer;
+            PlayerSettings humanPlayer = gameSettings.Player1Settings;
+            humanPlayer.PlayerType = PlayerType.Human;
+
+            PlayerSettings computerPlayer = gameSettings.Player2Settings;
+            computerPlayer.Name = "Computer";
+            computerPlayer.PlayerType = PlayerType.Computer;
 
             Save();
         }
@@ -102,11 +106,12 @@ namespace Settings
         {
             gameSettings.PlayerColor = playerColor;
 
-            PlayerSettings player1Settings = gameSettings.Player1Settings;
-            player1Settings.PlayerType = PlayerType.Online;
+            PlayerSettings player1 = gameSettings.Player1Settings;
+            player1.PlayerType = PlayerType.Online;
 
-            PlayerSettings player2Settings = gameSettings.Player2Settings;
-            player2Settings.PlayerType = PlayerType.Online;
+            PlayerSettings player2 = gameSettings.Player2Settings;
+            player2.Name = "N/A";
+            player2.PlayerType = PlayerType.Online;
 
             Save();
         }
