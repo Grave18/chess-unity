@@ -3495,6 +3495,28 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1761616795205421849, guid: d16220142e37a2f49a5d7c95c16d4832,
+        type: 3}
+      propertyPath: onlineScene.scenePath
+      value: Assets/Assets/Scenes/OnlineLocalhostScene.unity
+      objectReference: {fileID: 0}
+    - target: {fileID: 1761616795205421849, guid: d16220142e37a2f49a5d7c95c16d4832,
+        type: 3}
+      propertyPath: onlineScene.sceneAsset
+      value: 
+      objectReference: {fileID: 102900000, guid: 9c0b0537b08d3e04c89049f71e9c8f25,
+        type: 3}
+    - target: {fileID: 1761616795205421849, guid: d16220142e37a2f49a5d7c95c16d4832,
+        type: 3}
+      propertyPath: onlineLobbyScene.scenePath
+      value: Assets/Assets/Scenes/OnlineLocalhostScene.unity
+      objectReference: {fileID: 0}
+    - target: {fileID: 1761616795205421849, guid: d16220142e37a2f49a5d7c95c16d4832,
+        type: 3}
+      propertyPath: onlineLobbyScene.sceneAsset
+      value: 
+      objectReference: {fileID: 102900000, guid: 9c0b0537b08d3e04c89049f71e9c8f25,
+        type: 3}
     - target: {fileID: 4826083067962836097, guid: d16220142e37a2f49a5d7c95c16d4832,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6343,6 +6365,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lobbyManager: {fileID: 905780858}
   sceneLoader: {fileID: 597079910}
+  gameSettingsContainer: {fileID: 1174948613}
 --- !u!1 &1109461022
 GameObject:
   m_ObjectHideFlags: 0

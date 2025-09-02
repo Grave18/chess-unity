@@ -19,7 +19,7 @@ namespace UnityUi.Menu.Buttons
             gameSettingsContainer.SetupGameOnline(isServer ? PieceColor.White : PieceColor.Black);
             GameSettingsContainer.IsLocalhostServer = isServer;
 
-            sceneLoader.LoadOnlineLocalhost();
+            sceneLoader.LoadOnline();
         }
     }
 }

@@ -1,9 +1,5 @@
-using System.Collections;
-using PurrNet;
-using Settings;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UtilsCommon;
 using UtilsCommon.SceneTool;
 
 namespace SceneManagement
@@ -13,8 +9,7 @@ namespace SceneManagement
         [Header("Scenes")]
         [SerializeField] private SceneReference mainMenuScene;
         [SerializeField] private SceneReference gameScene;
-        [SerializeField] private SceneReference onlineLobbyScene;
-        [SerializeField] private SceneReference onlineLocalhostScene;
+        [SerializeField] private SceneReference onlineScene;
         [SerializeField] private SceneReference blankScene;
 
         public void LoadMainMenu()
@@ -27,52 +22,27 @@ namespace SceneManagement
             LoadScene(gameScene);
         }
 
-        public void LoadOnlineLobby()
+        public void LoadOnline()
         {
-            LoadScene(onlineLobbyScene);
-        }
-
-        public void LoadOnlineLocalhost()
-        {
-            if (!IsSceneLoaded(onlineLocalhostScene))
+            if (!IsSceneLoaded(onlineScene))
             {
-                LoadGameFirstTime();
+                LoadOnlineFirstTime();
             }
             else
             {
-                LoadGameSecondTime();
+                LoadOnlineSecondTime();
             }
         }
 
-        private void LoadGameFirstTime()
+        private void LoadOnlineFirstTime()
         {
-            SceneManager.LoadSceneAsync(onlineLocalhostScene, LoadSceneMode.Additive)!
-                .completed += _ => SceneManager.UnloadSceneAsync(mainMenuScene)!
-                .completed += _ => StartServerAndClient();
+            SceneManager.LoadSceneAsync(onlineScene, LoadSceneMode.Additive)!
+                .completed += _ => SceneManager.UnloadSceneAsync(mainMenuScene);
         }
 
-        private void LoadGameSecondTime()
+        private void LoadOnlineSecondTime()
         {
-            SceneManager.UnloadSceneAsync(mainMenuScene)!
-                .completed += _ => StartServerAndClient();
-        }
-
-        private static void StartServerAndClient()
-        {
-            if (GameSettingsContainer.IsLocalhostServer)
-            {
-                InstanceHandler.NetworkManager?.StartServer();
-            }
-
-            CoroutineRunner.Run(StartClientRoutine());
-            return;
-
-            IEnumerator StartClientRoutine()
-            {
-                yield return new WaitForSeconds(1f);
-
-                InstanceHandler.NetworkManager?.StartClient();
-            }
+            SceneManager.UnloadSceneAsync(mainMenuScene);
         }
 
         private static bool IsSceneLoaded(SceneReference sceneReference)
@@ -88,10 +58,15 @@ namespace SceneManagement
             LoadScene(currentSceneName);
         }
 
-        private void LoadScene(string sceneName)
+        private AsyncOperation LoadScene(string sceneName)
         {
-            SceneManager.LoadSceneAsync(blankScene);
-            SceneManager.LoadSceneAsync(sceneName);
+            AsyncOperation asyncOperation = null;
+
+            SceneManager.LoadSceneAsync(blankScene)!
+                .completed += _ => SceneManager.LoadSceneAsync(sceneName)!
+                .completed += op => asyncOperation = op;
+
+            return asyncOperation;
         }
     }
 }

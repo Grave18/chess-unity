@@ -75,7 +75,7 @@ namespace Ui.Menu.ViewModels
             gameSettingsContainer.SetupGameOnline(playerColor);
             GameSettingsContainer.IsLocalhostServer = isLocalhostServer;
 
-            sceneLoader.LoadOnlineLocalhost();
+            sceneLoader.LoadOnline();
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using PurrNet;
 using PurrNet.Logging;
 using PurrNet.Transports;
+using Settings;
 using UnityEngine;
 using UtilsCommon;
 
@@ -15,15 +16,16 @@ namespace LobbyManagement
     public class ConnectionStarter : MonoBehaviour
     {
         [SerializeField] private NetworkManager networkManager;
+        [SerializeField] private GameSettingsContainer gameSettingsContainer;
 
         private LobbyDataHolder _lobbyDataHolder;
 
         private void Awake()
         {
-            Initialize();
+            FindLobbyDataHolder();
         }
 
-        private void Initialize()
+        private void FindLobbyDataHolder()
         {
             _lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
 
@@ -35,10 +37,10 @@ namespace LobbyManagement
 
         private void Start()
         {
-            if (IsReferencesNotValid())
-            {
-                return;
-            }
+            // if (IsReferencesNotValid())
+            // {
+            //     return;
+            // }
 
             SetupPurrTransport();
             SetupUtpTransport();
@@ -98,7 +100,9 @@ namespace LobbyManagement
 
         private bool CanStartServer()
         {
-            return _lobbyDataHolder.CurrentLobby.IsOwner;
+            bool isLobbyOwner = _lobbyDataHolder?.CurrentLobby is { IsValid: true, IsOwner: true };
+            bool isHost = GameSettingsContainer.IsLocalhostServer;
+            return isLobbyOwner || isHost;
         }
 
         private void StartServer()
