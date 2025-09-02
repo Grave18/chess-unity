@@ -100,9 +100,8 @@ namespace LobbyManagement
 
         private bool CanStartServer()
         {
-            bool isLobbyOwner = _lobbyDataHolder?.CurrentLobby is { IsValid: true, IsOwner: true };
-            bool isHost = GameSettingsContainer.IsLocalhostServer;
-            return isLobbyOwner || isHost;
+            bool isHost = GameSettingsContainer.IsHost;
+            return isHost;
         }
 
         private void StartServer()

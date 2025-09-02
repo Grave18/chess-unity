@@ -1,3 +1,4 @@
+using System;
 using Logic;
 using SceneManagement;
 using Settings;
@@ -6,6 +7,7 @@ using UnityUi.Common.Buttons;
 
 namespace UnityUi.Menu.Buttons
 {
+    [Obsolete]
     public class LoadLocalhost : ButtonCallbackBase
     {
         [SerializeField] private SceneLoader sceneLoader;
@@ -15,9 +17,8 @@ namespace UnityUi.Menu.Buttons
 
         protected override void OnClick()
         {
-
             gameSettingsContainer.SetupGameOnline(isServer ? PieceColor.White : PieceColor.Black);
-            GameSettingsContainer.IsLocalhostServer = isServer;
+            GameSettingsContainer.IsHost = isServer;
 
             sceneLoader.LoadOnline();
         }

@@ -28,7 +28,7 @@ namespace Settings
         private static string LocalhostServerKey => "IsServer";
 #endif
 
-        public static bool IsLocalhostServer
+        public static bool IsHost
         {
             get => PlayerPrefs.GetInt(LocalhostServerKey, 0) == 1;
             set => PlayerPrefs.SetInt(LocalhostServerKey, value ? 1 : 0);

@@ -24,8 +24,8 @@ namespace Network
 
         public static PlayerID ThisPlayerID => GetPlayerID(isThisPlayer: true);
         public static PlayerID OtherPlayerID => GetPlayerID(isThisPlayer: false);
-        public static PlayerID WhitePlayerID => new(001, false);
-        public static PlayerID BlackPlayerID => new(002, false);
+        public static PlayerID WhitePlayerID = new(001, false);
+        public static PlayerID BlackPlayerID = new(002, false);
 
         private static PlayerID GetPlayerID(bool isThisPlayer)
         {
@@ -42,7 +42,7 @@ namespace Network
                 return default;
             }
 
-            if (GameSettingsContainer.IsLocalhostServer)
+            if (GameSettingsContainer.IsHost)
             {
                 int index = isThisPlayer ? 0 : 1;
                 return nm.players[index];

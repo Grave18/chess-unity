@@ -3,6 +3,7 @@ using Logic;
 using Settings;
 using Ui.Auxiliary;
 using MvvmTool;
+using Network;
 using SceneManagement;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ namespace Ui.Menu.ViewModels
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
         [SerializeField] private SceneLoader sceneLoader;
         [SerializeField] private LobbyManager lobbyManager;
+        [SerializeField] private OnlineSceneSwitcher onlineSceneSwitcher;
 
         public DelegateCommand PlayOfflineCommand { get; private set; }
         public DelegateCommand PlayWithComputerCommand { get; private set; }
@@ -62,20 +64,12 @@ namespace Ui.Menu.ViewModels
 
         public void StartLocalServer(object obj)
         {
-            StartLocal(PieceColor.White, true);
+            onlineSceneSwitcher.SetupAndSwitchScene(PieceColor.White, isHost: true);
         }
 
         public void StartLocalClient(object obj)
         {
-            StartLocal(PieceColor.Black, false);
-        }
-
-        private void StartLocal(PieceColor playerColor, bool isLocalhostServer)
-        {
-            gameSettingsContainer.SetupGameOnline(playerColor);
-            GameSettingsContainer.IsLocalhostServer = isLocalhostServer;
-
-            sceneLoader.LoadOnline();
+            onlineSceneSwitcher.SetupAndSwitchScene(PieceColor.Black, isHost: false);
         }
     }
 }

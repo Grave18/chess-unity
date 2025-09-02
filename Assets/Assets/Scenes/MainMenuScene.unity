@@ -3636,6 +3636,7 @@ MonoBehaviour:
   gameSettingsContainer: {fileID: 1174948613}
   sceneLoader: {fileID: 597079910}
   lobbyManager: {fileID: 905780858}
+  onlineSceneSwitcher: {fileID: 1095514204}
 --- !u!114 &640902418 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5910287522441678870, guid: 4aaff250fd3a3f24a8802ac5de1950c5,
@@ -4604,8 +4605,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1095514203}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &905780857
@@ -6330,7 +6330,7 @@ GameObject:
   - component: {fileID: 1095514203}
   - component: {fileID: 1095514204}
   m_Layer: 0
-  m_Name: LobbySceneSwitcher
+  m_Name: OnlineSceneSwitcher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6344,12 +6344,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1095514202}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 905780855}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1095514204
 MonoBehaviour:
@@ -14679,4 +14679,5 @@ SceneRoots:
   - {fileID: 640971773}
   - {fileID: 1238607907}
   - {fileID: 905780855}
+  - {fileID: 1095514203}
   - {fileID: 290530629}

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Network
 {
-    public class LobbySceneSwitcher : MonoBehaviour
+    public class OnlineSceneSwitcher : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] private LobbyManager lobbyManager;
@@ -15,29 +15,29 @@ namespace Network
 
         private void OnEnable()
         {
-            lobbyManager.OnAllReady.AddListener(SwitchScene);
+            lobbyManager.OnAllReady.AddListener(StartOnlineFromLobby);
         }
 
         private void OnDisable()
         {
-            lobbyManager.OnAllReady.RemoveListener(SwitchScene);
+            lobbyManager.OnAllReady.RemoveListener(StartOnlineFromLobby);
         }
 
-        private void SwitchScene()
+        private void StartOnlineFromLobby()
         {
-            bool isLobbyOwner = lobbyManager.CurrentLobby.IsOwner;
+            bool isLobbyOwner = lobbyManager.CurrentLobby is { IsValid: true, IsOwner: true };
             PieceColor playerColor = isLobbyOwner ? PieceColor.White : PieceColor.Black;
 
-            SetupOnlineLobbyGame(playerColor);
-
             lobbyManager.SetLobbyStarted();
-            sceneLoader.LoadOnline();
+            SetupAndSwitchScene(playerColor, isLobbyOwner);
         }
 
-        private void SetupOnlineLobbyGame(PieceColor playerColor)
+        public void SetupAndSwitchScene(PieceColor playerColor, bool isHost)
         {
             gameSettingsContainer.SetupGameOnline(playerColor);
-            GameSettingsContainer.IsLocalhostServer = false;
+            GameSettingsContainer.IsHost = isHost;
+
+            sceneLoader.LoadOnline();
         }
     }
 }
