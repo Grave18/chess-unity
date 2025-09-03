@@ -72,7 +72,7 @@ namespace Network
                 });
         }
 
-        [TargetRpc]
+        [TargetRpc(asyncTimeoutInSec:60)]
         private Task<ConnectionInfo> ExchangeDataBetweenPlayers_TargetRpc(PlayerID target, ConnectionInfo serverConnectionInfo)
         {
             gameSettingsContainer.SetPlayer2Name(serverConnectionInfo.PlayerName);

@@ -342,9 +342,7 @@ GameObject:
   m_Component:
   - component: {fileID: 575615453}
   - component: {fileID: 575615452}
-  - component: {fileID: 575615459}
-  - component: {fileID: 575615460}
-  - component: {fileID: 575615457}
+  - component: {fileID: 575615454}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -369,7 +367,7 @@ MonoBehaviour:
   _startClientFlags: 0
   _cookieScope: 1
   _dontDestroyOnLoad: 0
-  _transport: {fileID: 575615457}
+  _transport: {fileID: 575615454}
   _networkPrefabs: {fileID: 11400000, guid: 61ab6c8df370f33429ba4e9c3aa2c17e, type: 2}
   _networkAssets: {fileID: 0}
   _networkRules: {fileID: 11400000, guid: d8799083b96579a42b8b2d03e4ceae98, type: 2}
@@ -399,40 +397,7 @@ Transform:
   - {fileID: 1240364635}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &575615457
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 575615450}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc64ff707d914a64e95f2ac0bf554c09, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _serverPort: 5000
-  _maxConnections: 2
-  _address: 127.0.0.1
-  _timeoutInSeconds: 120
-  _pollEventsInUpdate: 0
---- !u!114 &575615459
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 575615450}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8236d3bdb4b232c4e86ae303902bd5db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _ensureAllServersStart: 0
-  _transports:
-  - {fileID: 575615460}
-  - {fileID: 575615457}
---- !u!114 &575615460
+--- !u!114 &575615454
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -444,10 +409,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 332e746c3c3253246aacad4d5559f1fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _masterServer: https://purrbalancer.riten.dev:8080/
-  _roomName: 22bfa9e0bc474e5fbb8599b927d94899
-  _region: eu-central
-  _host: eu1.purrlay.riten.dev
+  _masterServer: https://purrtransport.purrservers.com/
+  _roomName: 
+  _region: france
+  _host: purrtransport-france.purrservers.com
   _pollEventsInUpdate: 0
 --- !u!1 &647513714
 GameObject:
@@ -958,6 +923,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   networkManager: {fileID: 575615452}
+  gameSettingsContainer: {fileID: 0}
 --- !u!1 &2013615971
 GameObject:
   m_ObjectHideFlags: 0

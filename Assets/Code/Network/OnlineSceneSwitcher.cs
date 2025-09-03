@@ -1,8 +1,10 @@
-﻿using LobbyManagement;
+﻿using System.Collections;
+using LobbyManagement;
 using Logic;
 using SceneManagement;
 using Settings;
 using UnityEngine;
+using UtilsCommon;
 
 namespace Network
 {
@@ -29,11 +31,16 @@ namespace Network
             PieceColor playerColor = isLobbyOwner ? PieceColor.White : PieceColor.Black;
 
             lobbyManager.SetLobbyStarted();
-            SetupAndSwitchScene(playerColor, isLobbyOwner);
+            SetupAndSwitchScene(playerColor, isLobbyOwner).RunCoroutine();
         }
 
-        public void SetupAndSwitchScene(PieceColor playerColor, bool isHost)
+        public IEnumerator SetupAndSwitchScene(PieceColor playerColor, bool isHost)
         {
+            if (!isHost)
+            {
+                yield return new WaitForSeconds(0.5f);
+            }
+
             gameSettingsContainer.SetupGameOnline(playerColor);
             GameSettingsContainer.IsHost = isHost;
 
