@@ -19,16 +19,10 @@ namespace UtilsCommon
             LoadScene("GameScene");
         }
 
-        [MenuItem("Tools/Load Online Lobby &3")]
+        [MenuItem("Tools/Load Online &3")]
         private static void LoadOnlineLobby()
         {
-            LoadScene("OnlineLobbyScene");
-        }
-
-        [MenuItem("Tools/Load Online Localhost &4")]
-        private static void LoadOnlineLocalhost()
-        {
-            LoadScene("OnlineLocalhostScene");
+            LoadScene("OnlineScene");
         }
 
         private static void LoadScene(string scene)
