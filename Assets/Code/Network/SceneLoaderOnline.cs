@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using PurrNet;
 using PurrNet.Transports;
@@ -5,23 +6,26 @@ using Settings;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UtilsCommon;
 
 namespace Network
 {
     public class SceneLoaderOnline : NetworkBehaviour
     {
-        [Header("References")]
+        [Header("Scenes")]
         [PurrScene] [SerializeField] private string gameScene;
-        [PurrScene] [SerializeField] private string onlineLocalhostScene;
+        [FormerlySerializedAs("onlineLocalhostScene")] [PurrScene] [SerializeField] private string onlineScene;
         [PurrScene] [SerializeField] private string mainMenuScene;
 
+        [Header("References")]
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
+        [SerializeField] private PlayerJoinHandler playerJoinHandler;
 
         [Header("Debug Ui")]
         [SerializeField] private TMP_Text debugText;
 
-        private int _playerCount;
+        private int PlayerCount => InstanceHandler.NetworkManager?.playerCount ?? 0;
 
         private void Awake()
         {
@@ -43,7 +47,7 @@ namespace Network
 
         private void Update()
         {
-            LogOnScreen(_playerCount);
+            LogOnScreen();
         }
 
         public static void DisconnectFromServer()
@@ -53,25 +57,18 @@ namespace Network
 
         private void OnPlayerJoined(PlayerID player, bool isReconnect, bool asServer)
         {
-            AcquirePlayerCount();
-
             if (!asServer)
             {
                 return;
             }
 
-            if (_playerCount == 2)
+            if (PlayerCount == 2)
             {
                 if (!IsSceneLoaded(gameScene))
                 {
-                    LoadGame();
+                    LoadGame().RunCoroutine();
                 }
             }
-        }
-
-        private void AcquirePlayerCount()
-        {
-            _playerCount = InstanceHandler.NetworkManager?.playerCount ?? 0;
         }
 
         private static bool IsSceneLoaded(string sceneName)
@@ -80,25 +77,24 @@ namespace Network
             return scene.isLoaded;
         }
 
-        private void LoadGame()
+        private IEnumerator LoadGame()
         {
-            StartCoroutine(LoadGameRoutine());
-            return;
+            yield return new WaitUntil(IsPlayersExchangeData);
 
-            IEnumerator LoadGameRoutine()
+            if (InstanceHandler.NetworkManager != null)
             {
-                yield return new WaitForSecondsRealtime(0.5f);
-
-                if (InstanceHandler.NetworkManager != null)
-                {
-                    InstanceHandler.NetworkManager.sceneModule.LoadSceneAsync(gameScene, LoadSceneMode.Additive);
-                }
+                InstanceHandler.NetworkManager.sceneModule.LoadSceneAsync(gameScene, LoadSceneMode.Additive);
             }
         }
 
-        private void LogOnScreen(int playerCount)
+        private bool IsPlayersExchangeData()
         {
-            debugText.text = $"Is Host: {InstanceHandler.NetworkManager?.isHost}, PlayerCount: {playerCount}";
+            return playerJoinHandler.IsAllPlayersExchangeData;
+        }
+
+        private void LogOnScreen()
+        {
+            debugText.text = $"Is Host: {InstanceHandler.NetworkManager?.isHost}, PlayerCount: {PlayerCount}";
         }
 
         private void OnClientConnectionState(ConnectionState state)

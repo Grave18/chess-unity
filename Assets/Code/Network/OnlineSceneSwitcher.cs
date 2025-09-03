@@ -38,7 +38,7 @@ namespace Network
         {
             if (!isHost)
             {
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSecondsRealtime(1f);
             }
 
             gameSettingsContainer.SetupGameOnline(playerColor);

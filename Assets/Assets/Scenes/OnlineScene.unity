@@ -487,6 +487,7 @@ MonoBehaviour:
   onlineLocalhostScene: OnlineScene
   mainMenuScene: MainMenuScene
   gameSettingsContainer: {fileID: 2013615972}
+  playerJoinHandler: {fileID: 492195223}
   debugText: {fileID: 826125186}
 --- !u!4 &677459663
 Transform:

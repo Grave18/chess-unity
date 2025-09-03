@@ -12,6 +12,8 @@ namespace Network
     {
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
 
+        public bool IsAllPlayersExchangeData { get; private set; }
+
         private void Awake()
         {
             if (InstanceHandler.NetworkManager != null)
@@ -49,7 +51,7 @@ namespace Network
 
         protected override void OnObserverAdded(PlayerID player)
         {
-            if (player.id == 002)
+            if (IsSecondPlayer(player))
             {
                 ExchangeDataBetweenPlayers(player);
             }
@@ -69,6 +71,7 @@ namespace Network
                 .ContinueOnMainThread(clientConnectionInfoTask =>
                 {
                     gameSettingsContainer.SetPlayer2Name(clientConnectionInfoTask.Result.PlayerName);
+                    IsAllPlayersExchangeData = true;
                 });
         }
 
@@ -90,13 +93,19 @@ namespace Network
         {
             if (asServer)
             {
+                IsAllPlayersExchangeData = false;
                 return;
             }
 
-            if (player.id == 002)
+            if (IsSecondPlayer(player))
             {
                 OpenReconnectPopup();
             }
+        }
+
+        private static bool IsSecondPlayer(PlayerID player)
+        {
+            return player.id == 002;
         }
 
         private static void OpenReconnectPopup()
