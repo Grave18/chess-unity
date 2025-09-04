@@ -6,6 +6,7 @@ using MvvmTool;
 using Network;
 using SceneManagement;
 using UnityEngine;
+using UtilsCommon;
 
 namespace Ui.Menu.ViewModels
 {
@@ -64,12 +65,16 @@ namespace Ui.Menu.ViewModels
 
         public void StartLocalServer(object obj)
         {
-            onlineSceneSwitcher.SetupAndSwitchScene(PieceColor.White, isHost: true);
+            onlineSceneSwitcher
+                .SetupAndSwitchScene(PieceColor.White, isHost: true)
+                .RunCoroutine();
         }
 
         public void StartLocalClient(object obj)
         {
-            onlineSceneSwitcher.SetupAndSwitchScene(PieceColor.Black, isHost: false);
+            onlineSceneSwitcher
+                .SetupAndSwitchScene(PieceColor.Black, isHost: false)
+                .RunCoroutine();
         }
     }
 }
