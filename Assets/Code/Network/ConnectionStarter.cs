@@ -1,59 +1,36 @@
-using System.Collections;
+using System.Threading.Tasks;
 using LobbyManagement;
 using PurrNet;
 using PurrNet.Logging;
 using PurrNet.Transports;
 using Settings;
 using UnityEngine;
-using UtilsCommon;
 
 namespace Network
 {
     public class ConnectionStarter : MonoBehaviour
     {
         [SerializeField] private NetworkManager networkManager;
-        [SerializeField] private GameSettingsContainer gameSettingsContainer;
 
-        private LobbyDataHolder _lobbyDataHolder;
-
-        private void Awake()
-        {
-            _lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
-        }
-
-        private void Start()
-        {
-            CheckReferences();
-
-            SetupTransports();
-
-            if(CanStartServer())
-            {
-                StartServer();
-            }
-
-            StartClient().RunCoroutine();
-        }
-
-        private void CheckReferences()
+        private void CheckReferences(LobbyDataHolder lobbyDataHolder)
         {
             if (!networkManager)
             {
                 PurrLogger.LogError($"Failed to start connection. {nameof(NetworkManager)} is null!", this);
             }
 
-            if (!_lobbyDataHolder)
+            if (!lobbyDataHolder)
             {
                 PurrLogger.LogError($"Failed to start connection. {nameof(LobbyDataHolder)} is null!", this);
             }
 
-            if (!_lobbyDataHolder.CurrentLobby.IsValid)
+            if (!lobbyDataHolder.CurrentLobby.IsValid)
             {
                 PurrLogger.Log("Lobby is not valid.", this);
             }
         }
 
-        private void SetupTransports()
+        public void SetupTransports(Lobby currentLobby)
         {
             if(networkManager.transport is CompositeTransport composite)
             {
@@ -61,36 +38,48 @@ namespace Network
                 {
                     if(transport is PurrTransport purrTransport)
                     {
-                        SetupPurrTransport(purrTransport);
+                        SetupPurrTransport(purrTransport, currentLobby);
                     }
                 }
             }
             else if (networkManager.transport is PurrTransport purrTransport)
             {
-                SetupPurrTransport(purrTransport);
+                SetupPurrTransport(purrTransport, currentLobby);
             }
         }
 
-        private void SetupPurrTransport(PurrTransport purrTransport)
+        private void SetupPurrTransport(PurrTransport purrTransport, Lobby currentLobby)
         {
-            purrTransport.roomName = _lobbyDataHolder.CurrentLobby.LobbyId;
+            purrTransport.roomName = currentLobby.LobbyId;
         }
 
-        private bool CanStartServer()
+        private static bool NeedToStartServer()
         {
             bool isHost = GameSettingsContainer.IsHost;
             return isHost;
         }
 
-        private void StartServer()
+        public async Task StartServer()
         {
-            networkManager.StartServer();
+            if (NeedToStartServer())
+            {
+                networkManager.StartServer();
+
+                while (networkManager.serverState != ConnectionState.Connected && !Application.exitCancellationToken.IsCancellationRequested)
+                {
+                    await Task.Delay(100);
+                }
+            }
         }
 
-        private IEnumerator StartClient()
+        public async Task StartClient()
         {
-            yield return new WaitForSeconds(1f);
             networkManager.StartClient();
+
+            while (networkManager.clientState != ConnectionState.Connected && !Application.exitCancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(100);
+            }
         }
     }
 }

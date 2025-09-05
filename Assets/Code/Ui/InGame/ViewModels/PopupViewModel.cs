@@ -97,7 +97,7 @@ namespace Ui.InGame.ViewModels
 
             if (OnlineInstanceHandler.IsOnline)
             {
-                SceneLoaderOnline.DisconnectFromServer();
+                ConnectionTerminator.DisconnectFromServer();
             }
             else
             {

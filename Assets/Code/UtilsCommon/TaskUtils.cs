@@ -18,6 +18,16 @@ namespace UtilsCommon
             }
         }
 
+        /// Waits while the given predicate is true, or the application is exiting
+        public static async Task WaitWhile(Func<bool> predicate, int delay = 25)
+        {
+            CancellationToken token = Application.exitCancellationToken;
+            while (predicate() && !token.IsCancellationRequested)
+            {
+                await Task.Delay(delay, token);
+            }
+        }
+
         /// Continues a task on the Unity main thread. Throws if not called from the main thread
         public static void ContinueOnMainThread<T>(this Task<T> task, Action<Task<T>> continuation)
         {
