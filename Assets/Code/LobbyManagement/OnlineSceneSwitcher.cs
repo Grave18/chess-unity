@@ -1,12 +1,11 @@
 ﻿using System.Collections;
-using LobbyManagement;
 using Logic;
 using SceneManagement;
 using Settings;
 using UnityEngine;
 using UtilsCommon;
 
-namespace Network
+namespace LobbyManagement
 {
     public class OnlineSceneSwitcher : MonoBehaviour
     {
