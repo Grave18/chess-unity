@@ -22,35 +22,24 @@ namespace Network
         public static PlayerOnline PlayerBlack => Instance.playerOnlineBlack;
         public static ClockOnline Clock => Instance.clockOnline;
 
-        public static PlayerID ThisPlayerID => GetPlayerID(isThisPlayer: true);
-        public static PlayerID OtherPlayerID => GetPlayerID(isThisPlayer: false);
-        public static PlayerID WhitePlayerID = new(001, false);
-        public static PlayerID BlackPlayerID = new(002, false);
+        public static PlayerID ThisPlayerID { get; private set; }
+        public static PlayerID OtherPlayerID { get; private set; }
 
-        private static PlayerID GetPlayerID(bool isThisPlayer)
+        public static void Init(PlayerID thisPlayerId)
         {
-            NetworkManager nm = InstanceHandler.NetworkManager;
-            if (nm == null)
+            ThisPlayerID = thisPlayerId;
+            if (thisPlayerId.id.value == 001)
             {
-                Debug.LogError($"{nameof(OnlineInstanceHandler)}: NetworkManager is null");
-                return default;
+                OtherPlayerID = new PlayerID(002, false);
             }
-
-            if (nm.players.Count < 2)
+            else if(thisPlayerId.id.value == 002)
             {
-                Debug.LogError($"{nameof(OnlineInstanceHandler)}: NetworkManager has less than 2 players");
-                return default;
-            }
-
-            if (GameSettingsContainer.IsHost)
-            {
-                int index = isThisPlayer ? 0 : 1;
-                return nm.players[index];
+                OtherPlayerID = new PlayerID(001, false);
             }
             else
             {
-                int index = isThisPlayer ? 1 : 0;
-                return nm.players[index];
+                Debug.LogWarning($"{nameof(OnlineInstanceHandler)}: ThisPlayerID is not 001 or 002");
+                OtherPlayerID = default;
             }
         }
     }

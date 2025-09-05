@@ -39,6 +39,7 @@ namespace Network
         {
             GetLobbyDataHolder();
             await SetupAndStartNetworking();
+            await InitOnlineInstanceHandler();
 
             if (GameSettingsContainer.IsHost)
             {
@@ -58,6 +59,19 @@ namespace Network
             connectionStarter.SetupTransports(_lobbyDataHolder.CurrentLobby);
             await connectionStarter.StartServer();
             await connectionStarter.StartClient();
+        }
+
+        private static async Task InitOnlineInstanceHandler()
+        {
+            while (InstanceHandler.NetworkManager?.localPlayer.id.value is 0 && !Application.exitCancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(100);
+            }
+
+            if (InstanceHandler.NetworkManager != null)
+            {
+                OnlineInstanceHandler.Init(InstanceHandler.NetworkManager.localPlayer);
+            }
         }
 
         private async Task GiveOwnership()
