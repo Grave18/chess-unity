@@ -9,7 +9,8 @@ namespace Network
         [Header("Debug Ui")]
         [SerializeField] private TMP_Text debugText;
 
-        private int PlayerCount => InstanceHandler.NetworkManager?.playerCount ?? 0;
+        private static int PlayerCount => InstanceHandler.NetworkManager?.playerCount ?? 0;
+        private static ulong PlayerID => InstanceHandler.NetworkManager?.localPlayer.id.value ?? 0;
 
         private void Update()
         {
@@ -18,7 +19,7 @@ namespace Network
 
         private void LogOnScreen()
         {
-            debugText.text = $"Is Host: {InstanceHandler.NetworkManager?.isHost}, PlayerCount: {PlayerCount}";
+            debugText.text = $"Is Host: {InstanceHandler.NetworkManager?.isHost}, PlayerCount: {PlayerCount}, id: {PlayerID}";
         }
     }
 }
