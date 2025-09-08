@@ -7,14 +7,18 @@ using UnityEngine;
 
 namespace UtilsCommon.BuildTool
 {
-    public class PostBuildProcessor : IPostprocessBuildWithReport
+    public class PostBuildProcessor : IPostprocessBuildWithReport, IPreprocessBuildWithReport
     {
         public int callbackOrder { get; }
 
-        public void OnPostprocessBuild(BuildReport report)
+        public void OnPreprocessBuild(BuildReport report)
         {
             IncrementBuildVersion();
-            Debug.Log($"Build finished. Version: {PlayerSettings.bundleVersion}");
+        }
+
+        public void OnPostprocessBuild(BuildReport report)
+        {
+            Debug.Log($"Build finished. Build version: {PlayerSettings.bundleVersion}");
         }
 
         private static void IncrementBuildVersion()
