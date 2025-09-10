@@ -1,7 +1,7 @@
 using Logic;
 using UnityEngine;
 
-namespace UnityUi.InGame
+namespace UnityUi.InGame.ClockUi
 {
     public class ClockPanelCanvas : MonoBehaviour
     {

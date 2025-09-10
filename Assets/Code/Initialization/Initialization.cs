@@ -16,6 +16,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityUi.InGame;
 using UnityUi.InGame.BoardUi;
+using UnityUi.InGame.ClockUi;
 using UnityUi.InGame.Promotion;
 
 #if UNITY_EDITOR

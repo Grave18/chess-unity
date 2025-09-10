@@ -4,7 +4,7 @@ using Sound;
 using TMPro;
 using UnityEngine;
 
-namespace UnityUi.InGame
+namespace UnityUi.InGame.ClockUi
 {
     public class ClockPanel : MonoBehaviour
     {

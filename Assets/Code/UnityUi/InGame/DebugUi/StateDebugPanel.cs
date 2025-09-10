@@ -2,7 +2,7 @@ using PurrNet;
 using TMPro;
 using UnityEngine;
 
-namespace UnityUi.InGame
+namespace UnityUi.InGame.DebugUi
 {
     public class StateDebugPanel : MonoBehaviour
     {
