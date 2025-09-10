@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityUi.Common.Classes;
 
 namespace UtilsCommon
 {
@@ -87,5 +86,15 @@ namespace UtilsCommon
             tr.offsetMin = offsetMin;
             tr.offsetMax = offsetMax;
         }
+    }
+
+    public enum VerticalAlignment
+    {
+        Top, Center, Bottom, Stretch
+    }
+
+    public enum HorizontalAlignment
+    {
+        Left, Center, Right, Stretch
     }
 }

@@ -7,7 +7,7 @@ namespace UnityUi.InGame
     public class NotificationPanel : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private Logic.Game game;
+        [SerializeField] private Game game;
 
         [Header("Panels")]
         [SerializeField] private GameObject additionalPanel;
