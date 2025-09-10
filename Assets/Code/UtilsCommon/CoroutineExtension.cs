@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 namespace UtilsCommon
@@ -8,6 +9,11 @@ namespace UtilsCommon
         public static Coroutine RunCoroutine(this IEnumerator coroutine)
         {
             return CoroutineRunner.Run(coroutine);
+        }
+
+        public static Coroutine RunCoroutineWithCallback(this IEnumerator coroutine, Action continuation)
+        {
+            return CoroutineRunner.RunWithCallback(coroutine, continuation);
         }
 
         public static void Stop(this Coroutine coroutine)
