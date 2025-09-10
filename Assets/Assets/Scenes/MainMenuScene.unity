@@ -3957,7 +3957,7 @@ Camera:
   field of view: 60
   orthographic: 0
   orthographic size: 5
-  m_Depth: -1
+  m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 0
@@ -4927,11 +4927,11 @@ SceneRoots:
   - {fileID: 219743059}
   - {fileID: 1927447740}
   - {fileID: 1745821753}
-  - {fileID: 597079909}
   - {fileID: 2030494223}
   - {fileID: 1637782477}
   - {fileID: 640971773}
   - {fileID: 1238607907}
+  - {fileID: 597079909}
   - {fileID: 905780855}
   - {fileID: 1095514203}
   - {fileID: 290530629}

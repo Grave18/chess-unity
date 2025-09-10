@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Assets/Scenes/BlankScene.unity
     guid: 38369a9a32eb9a54fac212dab2a3449e
+  - enabled: 1
+    path: Assets/Assets/Scenes/LoadingScene.unity
+    guid: 1841843d7597d594aa5a1ba286cb2cdc
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: a487de2a43d04144e936ccb5e4e53abc,
       type: 2}

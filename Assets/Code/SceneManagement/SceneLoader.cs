@@ -1,5 +1,7 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UtilsCommon;
 using UtilsCommon.SceneTool;
 
 namespace SceneManagement
@@ -8,18 +10,19 @@ namespace SceneManagement
     {
         [Header("Scenes")]
         [SerializeField] private SceneReference mainMenuScene;
+        [SerializeField] private SceneReference loadingScene;
         [SerializeField] private SceneReference gameScene;
         [SerializeField] private SceneReference onlineScene;
         [SerializeField] private SceneReference blankScene;
 
         public void LoadMainMenu()
         {
-            LoadScene(mainMenuScene);
+            LoadScene(mainMenuScene, gameScene).RunCoroutine();
         }
 
         public void LoadGame()
         {
-            LoadScene(gameScene);
+            LoadScene(gameScene, mainMenuScene).RunCoroutine();
         }
 
         public void LoadOnline()
@@ -55,18 +58,24 @@ namespace SceneManagement
         {
             string currentSceneName = SceneManager.GetActiveScene().name;
 
-            LoadScene(currentSceneName);
+            LoadScene(currentSceneName, currentSceneName).RunCoroutine();
         }
 
-        private AsyncOperation LoadScene(string sceneName)
+        private IEnumerator LoadScene(string sceneToLoad, string sceneToUnload)
         {
-            AsyncOperation asyncOperation = null;
+            yield return SceneManager.LoadSceneAsync(loadingScene, LoadSceneMode.Additive);
+            yield return LoadingScene.Instance.Fade();
 
-            SceneManager.LoadSceneAsync(blankScene)!
-                .completed += _ => SceneManager.LoadSceneAsync(sceneName)!
-                .completed += op => asyncOperation = op;
+            AsyncOperation unloadOp = SceneManager.UnloadSceneAsync(sceneToUnload);
+            AsyncOperation loadOp =  SceneManager.LoadSceneAsync(sceneToLoad, LoadSceneMode.Additive);
+            while (!loadOp!.isDone || !unloadOp!.isDone)
+            {
+                LoadingScene.Instance.LoadingProgress = loadOp.progress;
+                yield return null;
+            }
 
-            return asyncOperation;
+            yield return LoadingScene.Instance.UnFade();
+            yield return SceneManager.UnloadSceneAsync(loadingScene);
         }
     }
 }

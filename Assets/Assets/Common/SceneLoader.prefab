@@ -47,12 +47,15 @@ MonoBehaviour:
   mainMenuScene:
     sceneAsset: {fileID: 102900000, guid: f5813c29fb055e041a0f2e1ef2f44bb1, type: 3}
     scenePath: Assets/Assets/Scenes/MainMenuScene.unity
+  loadingScene:
+    sceneAsset: {fileID: 102900000, guid: 1841843d7597d594aa5a1ba286cb2cdc, type: 3}
+    scenePath: Assets/Assets/Scenes/LoadingScene.unity
   gameScene:
     sceneAsset: {fileID: 102900000, guid: 99c9720ab356a0642a771bea13969a05, type: 3}
     scenePath: Assets/Assets/Scenes/GameScene.unity
   onlineScene:
     sceneAsset: {fileID: 102900000, guid: 9c0b0537b08d3e04c89049f71e9c8f25, type: 3}
-    scenePath: Assets/Assets/Scenes/OnlineLocalhostScene.unity
+    scenePath: Assets/Assets/Scenes/OnlineScene.unity
   blankScene:
     sceneAsset: {fileID: 102900000, guid: 38369a9a32eb9a54fac212dab2a3449e, type: 3}
     scenePath: Assets/Assets/Scenes/BlankScene.unity
