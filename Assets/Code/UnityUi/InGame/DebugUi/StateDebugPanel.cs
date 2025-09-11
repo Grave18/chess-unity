@@ -21,7 +21,13 @@ namespace UnityUi.InGame.DebugUi
                 authority = InstanceHandler.NetworkManager.isServer ? "Server" : "Client";
             }
             authorityText.text = "Authority: " + authority;
-            stateText.text = "State: " + game.GameStateMachine.StateName;
+
+            if (!game)
+            {
+                return;
+            }
+
+            stateText.text = "State: " + game.GameStateMachine?.StateName;
             turnText.text = "Turn: " + game.CurrentTurnColor;
             checkText.text = "Check: " + game.CheckType;
         }

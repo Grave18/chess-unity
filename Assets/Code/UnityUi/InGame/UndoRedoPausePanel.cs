@@ -1,4 +1,5 @@
-﻿using Logic;
+﻿using Initialization;
+using Logic;
 using Network;
 using Settings;
 using UnityEngine;
@@ -9,8 +10,8 @@ namespace UnityUi.InGame
     public class UndoRedoPausePanel : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private Logic.Game game;
-        [SerializeField] private Initialization.Initialization initialization;
+        [SerializeField] private Game game;
+        [SerializeField] private GameInitialization gameInitialization;
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
 
         [Header("UI")]

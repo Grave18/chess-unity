@@ -3,6 +3,7 @@ using Ai;
 using System.Threading.Tasks;
 using AssetManagement;
 using ChessBoard;
+using Cysharp.Threading.Tasks;
 using Highlighting;
 using Logic;
 using Logic.MenuStates;
@@ -14,10 +15,10 @@ using Notation;
 using Settings;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityUi.InGame;
 using UnityUi.InGame.BoardUi;
 using UnityUi.InGame.ClockUi;
 using UnityUi.InGame.Promotion;
+using UtilsCommon.Singleton;
 
 #if UNITY_EDITOR
 using EditorCools;
@@ -26,7 +27,7 @@ using EditorCools;
 namespace Initialization
 {
     [DefaultExecutionOrder(-1)]
-    public sealed class Initialization : MonoBehaviour
+    public sealed class GameInitialization : SingletonBehaviour<GameInitialization>
     {
         [Header("Settings")]
         [SerializeField] private Assets assets;
@@ -67,15 +68,7 @@ namespace Initialization
         private bool IsVsPlayer => _gameSettings.Player1Settings.PlayerType == PlayerType.Human
                                    && _gameSettings.Player2Settings.PlayerType == PlayerType.Human;
 
-        private async void Awake()
-        {
-            await InitAsync();
-
-            board.Build();
-            game.StartGame();
-        }
-
-        private async Task InitAsync()
+        public async UniTask Init()
         {
             InitSettingsContainer();
             InitUciBuffer();
@@ -83,11 +76,16 @@ namespace Initialization
             InitClock();
             InitCamera();
             InitHighlighter();
-            await InitBoardAsync();
+            await InitBoard();
             InitNameCanvas();
             InitFenGenerator();
             InitAi();
             InitPlayers();
+        }
+
+        public void StartGame()
+        {
+            game.StartGame();
         }
 
         private void InitSettingsContainer()
@@ -121,7 +119,7 @@ namespace Initialization
         private void InitClock()
         {
             _clock = IsOffline ? clockOffline : OnlineInstanceHandler.Clock;
-            Assert.IsNotNull(_clock, $"{nameof(Initialization)}: Clock is null");
+            Assert.IsNotNull(_clock, $"{nameof(GameInitialization)}: Clock is null");
 
             _clock.Init(game, gameSettingsContainer.GetTime());
 
@@ -143,7 +141,7 @@ namespace Initialization
             cameraController.Init(game, rotateCameraToColor, isAutoRotationOn);
         }
 
-        private async Task InitBoardAsync()
+        private async Task InitBoard()
         {
             if (_gameSettings.PlayerColor == PieceColor.Black)
             {
@@ -153,6 +151,7 @@ namespace Initialization
 
             (GameObject boardPrefab, IList<GameObject> piecePrefabs) = await assets.LoadPrefabs();
             board.Init(game, uciBuffer, _fenSplit, boardPrefab, piecePrefabs, _turnColor);
+            board.Build();
         }
 
         private void InitNameCanvas()
@@ -210,7 +209,7 @@ namespace Initialization
                 if (color == PieceColor.White)
                 {
                     PlayerOnline playerOnlineWhite = OnlineInstanceHandler.PlayerWhite;
-                    Assert.IsNotNull(playerOnlineWhite, $"{nameof(Initialization)}: PlayerOnline White is null");
+                    Assert.IsNotNull(playerOnlineWhite, $"{nameof(GameInitialization)}: PlayerOnline White is null");
 
                     playerOnlineWhite.Init(game, mainCamera, highlighter, layerMask,
                         _gameSettings.IsAutoPromoteToQueen, promotionPanel);
@@ -221,7 +220,7 @@ namespace Initialization
                 if (color == PieceColor.Black)
                 {
                     PlayerOnline playerOnlineBlack = OnlineInstanceHandler.PlayerBlack;
-                    Assert.IsNotNull(playerOnlineBlack, $"{nameof(Initialization)}: PlayerOnline Black is null");
+                    Assert.IsNotNull(playerOnlineBlack, $"{nameof(GameInitialization)}: PlayerOnline Black is null");
 
                     playerOnlineBlack.Init(game, mainCamera, highlighter, layerMask,
                         _gameSettings.IsAutoPromoteToQueen, promotionPanel);

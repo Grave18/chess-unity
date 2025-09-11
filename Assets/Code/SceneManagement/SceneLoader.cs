@@ -1,7 +1,7 @@
-using System.Collections;
+using Cysharp.Threading.Tasks;
+using Initialization;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UtilsCommon;
 using UtilsCommon.SceneTool;
 
 namespace SceneManagement
@@ -15,17 +15,46 @@ namespace SceneManagement
         [SerializeField] private SceneReference onlineScene;
         [SerializeField] private SceneReference blankScene;
 
-        public void LoadMainMenu()
+        public async UniTaskVoid LoadMainMenu()
         {
-            LoadScene(mainMenuScene, gameScene).RunCoroutine();
+            await SceneManager.LoadSceneAsync(loadingScene, LoadSceneMode.Additive);
+            await LoadingScene.Instance.Fade();
+
+            AsyncOperation unloadOp = SceneManager.UnloadSceneAsync(gameScene);
+            AsyncOperation loadOp =  SceneManager.LoadSceneAsync(mainMenuScene, LoadSceneMode.Additive);
+            while (!loadOp!.isDone || !unloadOp!.isDone)
+            {
+                LoadingScene.Instance.LoadingProgress = loadOp.progress;
+                await UniTask.NextFrame();
+            }
+
+            await LoadingScene.Instance.UnFade();
+            await SceneManager.UnloadSceneAsync(loadingScene);
         }
 
-        public void LoadGame()
+        public async UniTaskVoid LoadGame()
         {
-            LoadScene(gameScene, mainMenuScene).RunCoroutine();
+            await SceneManager.LoadSceneAsync(loadingScene, LoadSceneMode.Additive);
+            await LoadingScene.Instance.Fade();
+
+            AsyncOperation unloadOp = SceneManager.UnloadSceneAsync(mainMenuScene);
+            AsyncOperation loadOp =  SceneManager.LoadSceneAsync(gameScene, LoadSceneMode.Additive);
+            float timer = 1f;
+            while (!loadOp!.isDone || !unloadOp!.isDone || timer > 0)
+            {
+                timer -= Time.deltaTime;
+                LoadingScene.Instance.LoadingProgress = loadOp.progress;
+                await UniTask.NextFrame();
+            }
+
+            await GameInitialization.Instance.Init();
+            GameInitialization.Instance.StartGame();
+
+            await LoadingScene.Instance.UnFade();
+            await SceneManager.UnloadSceneAsync(loadingScene);
         }
 
-        public void LoadOnline()
+        public void LoadGameOnline()
         {
             if (!IsSceneLoaded(onlineScene))
             {
@@ -52,30 +81,6 @@ namespace SceneManagement
         {
             Scene scene = SceneManager.GetSceneByPath(sceneReference.ScenePath);
             return scene.isLoaded;
-        }
-
-        public void ReloadCurrentScene()
-        {
-            string currentSceneName = SceneManager.GetActiveScene().name;
-
-            LoadScene(currentSceneName, currentSceneName).RunCoroutine();
-        }
-
-        private IEnumerator LoadScene(string sceneToLoad, string sceneToUnload)
-        {
-            yield return SceneManager.LoadSceneAsync(loadingScene, LoadSceneMode.Additive);
-            yield return LoadingScene.Instance.Fade();
-
-            AsyncOperation unloadOp = SceneManager.UnloadSceneAsync(sceneToUnload);
-            AsyncOperation loadOp =  SceneManager.LoadSceneAsync(sceneToLoad, LoadSceneMode.Additive);
-            while (!loadOp!.isDone || !unloadOp!.isDone)
-            {
-                LoadingScene.Instance.LoadingProgress = loadOp.progress;
-                yield return null;
-            }
-
-            yield return LoadingScene.Instance.UnFade();
-            yield return SceneManager.UnloadSceneAsync(loadingScene);
         }
     }
 }
