@@ -12,12 +12,13 @@ namespace Network
 {
     public class OnlineInitialization : SingletonBehaviour<OnlineInitialization>
     {
+        [Header("References")]
         [SerializeField] private NetworkManager networkManager;
         [SerializeField] private ConnectionStarter connectionStarter;
         [SerializeField] private PlayersDataExchanger playersDataExchanger;
-        [SerializeField] private GameSceneLoader gameSceneLoader;
+        [SerializeField] private OnlineSceneLoader onlineSceneLoader;
 
-        [Header("Online part")]
+        [Header("Owned objects")]
         [SerializeField] private PlayerOnline playerOnlineWhite;
         [SerializeField] private PlayerOnline playerOnlineBlack;
         [SerializeField] private ClockOnline clockOnline;
@@ -39,7 +40,7 @@ namespace Network
 
         public async Task LoadGame()
         {
-            await gameSceneLoader.Load();
+            await onlineSceneLoader.LoadGame();
         }
 
         private void GetLobbyDataHolder()

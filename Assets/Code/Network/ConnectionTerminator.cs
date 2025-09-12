@@ -1,22 +1,21 @@
-using System.Collections;
+using Cysharp.Threading.Tasks;
 using PurrNet;
 using PurrNet.Transports;
 using Settings;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UtilsCommon;
 
 namespace Network
 {
     public class ConnectionTerminator : NetworkBehaviour
     {
-        [Header("Scenes")]
-        [PurrScene] [SerializeField] private string gameScene;
-        [PurrScene] [SerializeField] private string onlineScene;
-        [PurrScene] [SerializeField] private string mainMenuScene;
-
         [Header("References")]
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
+        [SerializeField] private OnlineSceneLoader onlineSceneLoader;
+
+        public static void DisconnectFromServer()
+        {
+            InstanceHandler.NetworkManager?.StopClient();
+        }
 
         private void Awake()
         {
@@ -34,53 +33,32 @@ namespace Network
             }
         }
 
-        public static void DisconnectFromServer()
-        {
-            InstanceHandler.NetworkManager?.StopClient();
-        }
-
         private void OnClientConnectionState(ConnectionState state)
         {
             if (state == ConnectionState.Disconnected)
             {
                 if (isServer)
                 {
-                    HostDisconnect();
+                    HostDisconnect().Forget();
                 }
                 else
                 {
-                    ClientDisconnect().RunCoroutine();
+                    ClientDisconnect();
                 }
             }
         }
 
-        private void HostDisconnect()
+        private async UniTaskVoid HostDisconnect()
         {
-            if (InstanceHandler.NetworkManager != null)
-            {
-                InstanceHandler.NetworkManager.sceneModule.UnloadSceneAsync(gameScene)!
-                    .completed += _ => SceneManager.LoadSceneAsync(mainMenuScene, LoadSceneMode.Additive)!
-                    .completed += _ => InstanceHandler.NetworkManager?.StopServer();
-            }
-            else
-            {
-                SceneManager.UnloadSceneAsync(gameScene)!
-                    .completed += _ => SceneManager.LoadSceneAsync(mainMenuScene, LoadSceneMode.Additive)!
-                    .completed += _ => InstanceHandler.NetworkManager?.StopServer();
-            }
+            await onlineSceneLoader.UnloadGameAndLoadMainMenu();
+
+            InstanceHandler.NetworkManager?.StopServer();
         }
 
         // Add delay to game scene to unload and load main menu
-        private IEnumerator ClientDisconnect()
+        private void ClientDisconnect()
         {
-            yield return new WaitUntil(() => !IsSceneLoaded(gameScene));
-            SceneManager.LoadSceneAsync(mainMenuScene, LoadSceneMode.Additive);
-        }
-
-        private static bool IsSceneLoaded(string sceneName)
-        {
-            Scene scene = SceneManager.GetSceneByName(sceneName);
-            return scene.isLoaded;
+            onlineSceneLoader.UnloadGameAndLoadMainMenu().Forget();
         }
     }
 }

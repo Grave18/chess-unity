@@ -101,7 +101,7 @@ namespace Ui.InGame.ViewModels
             }
             else
             {
-                sceneLoader.LoadMainMenu();
+                sceneLoader.LoadMainMenu().Forget();
             }
         }
 

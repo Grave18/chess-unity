@@ -379,7 +379,7 @@ MonoBehaviour:
   networkManager: {fileID: 575615452}
   connectionStarter: {fileID: 1864661727}
   playersDataExchanger: {fileID: 492195223}
-  gameSceneLoader: {fileID: 1929361323}
+  onlineSceneLoader: {fileID: 1929361323}
   playerOnlineWhite: {fileID: 313843066}
   playerOnlineBlack: {fileID: 721045146}
   clockOnline: {fileID: 1240364636}
@@ -527,10 +527,8 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  gameScene: GameScene
-  onlineScene: OnlineScene
-  mainMenuScene: MainMenuScene
   gameSettingsContainer: {fileID: 2013615972}
+  onlineSceneLoader: {fileID: 1929361323}
 --- !u!4 &677459663
 Transform:
   m_ObjectHideFlags: 0
@@ -966,7 +964,7 @@ GameObject:
   - component: {fileID: 1929361324}
   - component: {fileID: 1929361323}
   m_Layer: 0
-  m_Name: GameSceneLoader
+  m_Name: OnlineSceneLoader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -985,6 +983,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameScene: GameScene
+  mainMenuScene: MainMenuScene
+  loadingScene: LoadingScene
 --- !u!4 &1929361324
 Transform:
   m_ObjectHideFlags: 0
@@ -1104,9 +1104,10 @@ SceneRoots:
   - {fileID: 370787670}
   - {fileID: 1588588156}
   - {fileID: 878617438}
-  - {fileID: 549042683}
   - {fileID: 575615453}
+  - {fileID: 549042683}
   - {fileID: 1864661726}
+  - {fileID: 677459663}
   - {fileID: 492195222}
   - {fileID: 1929361324}
   - {fileID: 2031326488}
@@ -1115,5 +1116,4 @@ SceneRoots:
   - {fileID: 1240364635}
   - {fileID: 647513715}
   - {fileID: 2013615973}
-  - {fileID: 677459663}
   - {fileID: 1303982657}
