@@ -20,9 +20,15 @@ namespace UtilsCommon
         }
 
         [MenuItem("Tools/Load Online &3")]
-        private static void LoadOnlineLobby()
+        private static void LoadOnline()
         {
             LoadScene("OnlineScene");
+        }
+
+        [MenuItem("Tools/Load Loading &4")]
+        private static void LoadLoading()
+        {
+            LoadScene("LoadingScene");
         }
 
         private static void LoadScene(string scene)
