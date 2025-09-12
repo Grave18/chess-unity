@@ -1,4 +1,7 @@
-﻿using PurrNet;
+﻿using Cysharp.Threading.Tasks;
+using Initialization;
+using PurrNet;
+using Settings;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,23 +12,16 @@ namespace Network
         [Header("Scenes")]
         [PurrScene] [SerializeField] private string gameScene;
 
-        public void Load()
+        public async UniTask Load()
         {
-            if (!IsSceneLoaded(gameScene))
+            if (GameSettingsContainer.IsHost)
             {
-                LoadGame();
+                await InstanceHandler.NetworkManager?.sceneModule.LoadSceneAsync(gameScene, LoadSceneMode.Additive);
             }
-        }
-
-        private static bool IsSceneLoaded(string sceneName)
-        {
-            Scene scene = SceneManager.GetSceneByName(sceneName);
-            return scene.isLoaded;
-        }
-
-        private void LoadGame()
-        {
-            InstanceHandler.NetworkManager?.sceneModule.LoadSceneAsync(gameScene, LoadSceneMode.Additive);
+            else
+            {
+                await UniTask.WaitWhile(() => GameInitialization.Instance is null);
+            }
         }
     }
 }

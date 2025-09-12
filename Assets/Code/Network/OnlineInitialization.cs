@@ -1,15 +1,16 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using LobbyManagement;
 using Logic;
 using Logic.Players;
 using PurrNet;
 using Settings;
 using UnityEngine;
+using UtilsCommon.Singleton;
 
 namespace Network
 {
-    public class OnlineInitialization : MonoBehaviour
+    public class OnlineInitialization : SingletonBehaviour<OnlineInitialization>
     {
         [SerializeField] private NetworkManager networkManager;
         [SerializeField] private ConnectionStarter connectionStarter;
@@ -23,19 +24,7 @@ namespace Network
 
         private LobbyDataHolder _lobbyDataHolder;
 
-        private async void Awake()
-        {
-            try
-            {
-                await Initialize();
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-            }
-        }
-
-        private async Task Initialize()
+        public async UniTask Init()
         {
             GetLobbyDataHolder();
             await SetupAndStartNetworking();
@@ -45,8 +34,12 @@ namespace Network
             {
                 await GiveOwnership();
                 await ExchangeDataBetweenPlayers();
-                gameSceneLoader.Load();
             }
+        }
+
+        public async Task LoadGame()
+        {
+            await gameSceneLoader.Load();
         }
 
         private void GetLobbyDataHolder()

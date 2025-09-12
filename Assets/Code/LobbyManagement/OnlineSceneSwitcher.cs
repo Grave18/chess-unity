@@ -43,7 +43,7 @@ namespace LobbyManagement
             gameSettingsContainer.SetupGameOnline(playerColor);
             GameSettingsContainer.IsHost = isHost;
 
-            sceneLoader.LoadGameOnline();
+            sceneLoader.LoadGameOnline().Forget();
         }
     }
 }

@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Initialization;
+using Network;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UtilsCommon.SceneTool;
@@ -54,27 +55,26 @@ namespace SceneManagement
             await SceneManager.UnloadSceneAsync(loadingScene);
         }
 
-        public void LoadGameOnline()
+        public async UniTaskVoid LoadGameOnline()
         {
+            await SceneManager.LoadSceneAsync(loadingScene, LoadSceneMode.Additive);
+            await LoadingScene.Instance.Fade();
+
+            SceneManager.UnloadSceneAsync(mainMenuScene);
+
             if (!IsSceneLoaded(onlineScene))
             {
-                LoadOnlineFirstTime();
+                await SceneManager.LoadSceneAsync(onlineScene, LoadSceneMode.Additive);
             }
-            else
-            {
-                LoadOnlineSecondTime();
-            }
-        }
 
-        private void LoadOnlineFirstTime()
-        {
-            SceneManager.LoadSceneAsync(onlineScene, LoadSceneMode.Additive)!
-                .completed += _ => SceneManager.UnloadSceneAsync(mainMenuScene);
-        }
+            await OnlineInitialization.Instance.Init();
+            await OnlineInitialization.Instance.LoadGame();
 
-        private void LoadOnlineSecondTime()
-        {
-            SceneManager.UnloadSceneAsync(mainMenuScene);
+            await GameInitialization.Instance.Init();
+            GameInitialization.Instance.StartGame();
+
+            await LoadingScene.Instance.UnFade();
+            await SceneManager.UnloadSceneAsync(loadingScene);
         }
 
         private static bool IsSceneLoaded(SceneReference sceneReference)
