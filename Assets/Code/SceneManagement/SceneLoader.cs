@@ -40,7 +40,7 @@ namespace SceneManagement
 
             AsyncOperation unloadOp = SceneManager.UnloadSceneAsync(mainMenuScene);
             AsyncOperation loadOp =  SceneManager.LoadSceneAsync(gameScene, LoadSceneMode.Additive);
-            float timer = 1f;
+            float timer = 2f;
             while (!loadOp!.isDone || !unloadOp!.isDone || timer > 0)
             {
                 timer -= Time.deltaTime;

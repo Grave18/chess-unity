@@ -1,16 +1,23 @@
-using System.Collections;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UtilsCommon.Singleton;
 
 public class LoadingScene : SingletonBehaviour<LoadingScene>
 {
     [SerializeField] private Image loadingBarImage;
-    [SerializeField] private CanvasGroup faderImage;
+    [SerializeField] private RectTransform loadingPanel;
+    [FormerlySerializedAs("faderImage")]
+    [SerializeField] private CanvasGroup faderCanvasGroup;
 
     [Header("Settings")]
     [SerializeField] private float fadeTimeSec = 1f;
-    [SerializeField] private float unFadeTimeSec = 1f;
+    [SerializeField] private Ease fadeEasing = Ease.OutBounce;
+    [SerializeField] private float unfadeTimeSec = 1f;
+    [SerializeField] private Ease unFadeEasing = Ease.OutBounce;
+
 
     public float LoadingProgress
     {
@@ -18,21 +25,21 @@ public class LoadingScene : SingletonBehaviour<LoadingScene>
         set => loadingBarImage.fillAmount = value;
     }
 
-    public IEnumerator Fade()
+    public async UniTask Fade()
     {
-        while (faderImage.alpha < 1)
-        {
-            faderImage.alpha += Time.deltaTime * 1f/fadeTimeSec;
-            yield return null;
-        }
+        await loadingPanel
+            .DOAnchorPos(new Vector2(0, 0), fadeTimeSec)
+            .From(new Vector2(-1920, 0))
+            .SetEase(fadeEasing)
+            .AsyncWaitForCompletion();
     }
 
-    public IEnumerator UnFade()
+    public async UniTask UnFade()
     {
-        while (faderImage.alpha > 0)
-        {
-            faderImage.alpha -= Time.deltaTime * 1f/unFadeTimeSec;
-            yield return null;
-        }
+        await loadingPanel
+            .DOAnchorPos(new Vector2(1920, 0), unfadeTimeSec)
+            .From(new Vector2(0, 0))
+            .SetEase(fadeEasing, 2)
+            .AsyncWaitForCompletion();
     }
 }
