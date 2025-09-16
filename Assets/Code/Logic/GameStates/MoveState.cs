@@ -94,7 +94,7 @@ namespace Logic.GameStates
                 {
                     _moveData.MoveType = MoveType.MovePromotion;
                     _moveData.HiddenPawn = piece;
-                    promotedPiece = Game.Board.SpawnPiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
+                    promotedPiece = Game.Board.GetSpawnedPiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                         parsedUci.ToSquare);
                     Turn = new MovePromotion(Game,_moveData.HiddenPawn, parsedUci.FromSquare, parsedUci.ToSquare,
                         promotedPiece);
@@ -123,7 +123,7 @@ namespace Logic.GameStates
                 {
                     _moveData.MoveType = MoveType.CapturePromotion;
                     _moveData.HiddenPawn = piece;
-                    promotedPiece = Game.Board.SpawnPiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
+                    promotedPiece = Game.Board.GetSpawnedPiece(parsedUci.PromotedPieceType, Game.CurrentTurnColor,
                         parsedUci.ToSquare);
                     Turn = new CapturePromotion(Game, piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece,
                         _moveData.BeatenPiece);

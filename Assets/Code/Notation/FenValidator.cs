@@ -7,7 +7,7 @@ namespace Notation
     {
         private static bool _isValid;
         private static string _errorMessage = string.Empty;
-        private static FenSplit _fenSplit;
+        private static FenSplit _fenParsed;
 
         public static bool IsValid(string fen, out string errorMessage)
         {
@@ -54,14 +54,14 @@ namespace Notation
                 }
             }
 
-            _fenSplit = new FenSplit
+            _fenParsed = new FenSplit
             {
                 PiecesPreset = splitPreset.Length > 0 ? splitPreset[0] : string.Empty,
                 TurnColor =    splitPreset.Length > 1 ? splitPreset[1] : string.Empty,
                 Castling =     splitPreset.Length > 2 ? splitPreset[2] : string.Empty,
                 EnPassant =    splitPreset.Length > 3 ? splitPreset[3] : string.Empty,
-                HalfMove =     splitPreset.Length > 4 ? splitPreset[4] : string.Empty,
-                FullMove =     splitPreset.Length > 5 ? splitPreset[5] : string.Empty
+                HalfMoveClock =     splitPreset.Length > 4 ? splitPreset[4] : string.Empty,
+                FullMoveCounter =     splitPreset.Length > 5 ? splitPreset[5] : string.Empty
             };
 
             if (splitPreset.Length > 6)
@@ -95,7 +95,7 @@ namespace Notation
             int whiteKnightCount = 0;
             int blackKnightCount = 0;
 
-            foreach (char ch in _fenSplit.PiecesPreset)
+            foreach (char ch in _fenParsed.PiecesPreset)
             {
                 switch (ch)
                 {
@@ -331,9 +331,9 @@ namespace Notation
                 return;
             }
 
-            if (_fenSplit.TurnColor is not "w" and not "b")
+            if (_fenParsed.TurnColor is not "w" and not "b")
             {
-                _errorMessage = $"Turn color '{_fenSplit.TurnColor}' must be 'w' or 'b'";
+                _errorMessage = $"Turn color '{_fenParsed.TurnColor}' must be 'w' or 'b'";
                 _isValid = false;
             }
         }
@@ -345,10 +345,10 @@ namespace Notation
                 return;
             }
 
-            string castling = _fenSplit.Castling;
+            string castling = _fenParsed.Castling;
             if (castling.Length is > 4 or < 1)
             {
-                _errorMessage = $"Castling '{_fenSplit.Castling}' must be between 1 and 4 characters long";
+                _errorMessage = $"Castling '{_fenParsed.Castling}' must be between 1 and 4 characters long";
                 _isValid = false;
                 return;
             }
@@ -406,7 +406,7 @@ namespace Notation
                 return;
             }
 
-            string ep = _fenSplit.EnPassant;
+            string ep = _fenParsed.EnPassant;
 
             if (ep == "-")
             {
@@ -423,7 +423,7 @@ namespace Notation
             int fileNum = FileToNumber(ep[0]);
             int rank = CharToOrdinalInt(ep[1]);
             int rankIndex = rank - 1;
-            string[] ranks = _fenSplit.PiecesPreset.Split('/').Reverse().ToArray();
+            string[] ranks = _fenParsed.PiecesPreset.Split('/').Reverse().ToArray();
 
             if (rank == 3)
             {
@@ -495,9 +495,9 @@ namespace Notation
                 return;
             }
 
-            if (!int.TryParse(_fenSplit.HalfMove, out _))
+            if (!int.TryParse(_fenParsed.HalfMoveClock, out _))
             {
-                _errorMessage = $"Half move '{_fenSplit.HalfMove}' must be a number";
+                _errorMessage = $"Half move '{_fenParsed.HalfMoveClock}' must be a number";
                 _isValid = false;
             }
         }
@@ -509,9 +509,9 @@ namespace Notation
                 return;
             }
 
-            if (!int.TryParse(_fenSplit.FullMove, out _))
+            if (!int.TryParse(_fenParsed.FullMoveCounter, out _))
             {
-                _errorMessage = $"Full move '{_fenSplit.FullMove}' must be a number";
+                _errorMessage = $"Full move '{_fenParsed.FullMoveCounter}' must be a number";
                 _isValid = false;
             }
         }

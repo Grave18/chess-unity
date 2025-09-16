@@ -6,7 +6,7 @@
         public string TurnColor;
         public string Castling;
         public string EnPassant;
-        public string HalfMove;
-        public string FullMove;
+        public string HalfMoveClock;
+        public string FullMoveCounter;
     }
 }

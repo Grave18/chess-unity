@@ -57,7 +57,7 @@ namespace Initialization
         private Stockfish _stockfish;
         private GameSettings _gameSettings;
         private PieceColor _turnColor;
-        private FenSplit _fenSplit;
+        private FenFromString _fenFromString;
         private IClock _clock;
 
         private bool IsOffline => _gameSettings.Player1Settings.PlayerType != PlayerType.Online
@@ -92,14 +92,14 @@ namespace Initialization
             gameSettingsContainer.Init();
 
             _gameSettings = gameSettingsContainer.GameSettings;
-            _fenSplit = FenUtility.GetFenSplit(_gameSettings.CurrentFen);
-            _turnColor = FenUtility.GetTurnColorFromFenSplit(_fenSplit);
+            _fenFromString = new FenFromString(_gameSettings.CurrentFen);
+            _turnColor = _fenFromString.TurnColor;
         }
 
         private void InitUciBuffer()
         {
-            int halfMoveClock = FenUtility.GetHalfMoveClock(_gameSettings.CurrentFen);
-            int fullMoveCounter = FenUtility.GetFullMoveCounter(_gameSettings.CurrentFen);
+            int halfMoveClock = _fenFromString.HalfMoveClock;
+            int fullMoveCounter = _fenFromString.FullMoveCounter;
             uciBuffer.Init(fenFromBoard, halfMoveClock, fullMoveCounter);
         }
 
@@ -144,7 +144,7 @@ namespace Initialization
             RotateBoard();
 
             LoadedPrefabs loadedPrefabs = await assets.LoadPrefabs();
-            board.Init(game, uciBuffer, _fenSplit, loadedPrefabs.BoardPrefab, loadedPrefabs.PiecesPrefabs, _turnColor);
+            board.Init(game, uciBuffer, _fenFromString, loadedPrefabs.BoardPrefab, loadedPrefabs.PiecesPrefabs, _turnColor);
 
             board.Build();
         }
