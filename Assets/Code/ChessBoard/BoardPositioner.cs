@@ -7,7 +7,7 @@ namespace ChessBoard
         [SerializeField] private Board board;
         [SerializeField] private BeatenPieces beatenPieces;
 
-        public void SetupForWhitePieces()
+        public void PositionForWhitePieces()
         {
             board.gameObject.transform.localRotation = Quaternion.identity;
             beatenPieces.gameObject.transform.localScale = Vector3.one;

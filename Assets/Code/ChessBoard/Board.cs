@@ -140,8 +140,8 @@ namespace ChessBoard
             beatenPieces.Clear();
             FindAllSquares();
             HashSquares();
-            LoadPiecesFromPreset();
-            InstantiateBoard();
+            LoadPiecesFromPresetAndSpawn();
+            SpawnBoard();
         }
 
         public void DestroyBoardAndPieces()
@@ -173,7 +173,7 @@ namespace ChessBoard
             }
         }
 
-        private void LoadPiecesFromPreset()
+        private void LoadPiecesFromPresetAndSpawn()
         {
             int x = 0;
             foreach (char ch in _fenSplit.PiecesPreset)
@@ -320,7 +320,7 @@ namespace ChessBoard
             }
         }
 
-        private void InstantiateBoard()
+        private void SpawnBoard()
         {
             _boardInstance = Instantiate(_boardPrefab, transform);
         }

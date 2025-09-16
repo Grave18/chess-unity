@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Ai;
-using System.Threading.Tasks;
+﻿using Ai;
 using AssetManagement;
 using ChessBoard;
 using Cysharp.Threading.Tasks;
@@ -95,7 +93,7 @@ namespace Initialization
 
             _gameSettings = gameSettingsContainer.GameSettings;
             _fenSplit = FenUtility.GetFenSplit(_gameSettings.CurrentFen);
-            _turnColor = Assets.GetTurnColorFromPreset(_fenSplit);
+            _turnColor = FenUtility.GetTurnColorFromFenSplit(_fenSplit);
         }
 
         private void InitUciBuffer()
@@ -141,17 +139,28 @@ namespace Initialization
             cameraController.Init(game, rotateCameraToColor, isAutoRotationOn);
         }
 
-        private async Task InitBoard()
+        private async UniTask InitBoard()
         {
-            if (_gameSettings.PlayerColor == PieceColor.Black)
+            RotateBoard();
+
+            LoadedPrefabs loadedPrefabs = await assets.LoadPrefabs();
+            board.Init(game, uciBuffer, _fenSplit, loadedPrefabs.BoardPrefab, loadedPrefabs.PiecesPrefabs, _turnColor);
+
+            board.Build();
+        }
+
+        private void RotateBoard()
+        {
+            var boardPositioner = board.GetComponent<BoardPositioner>();
+
+            if (_gameSettings.PlayerColor == PieceColor.White)
             {
-                var boardPositioner = board.GetComponent<BoardPositioner>();
+                boardPositioner.PositionForWhitePieces();
+            }
+            else if (_gameSettings.PlayerColor == PieceColor.Black)
+            {
                 boardPositioner.PositionForBlackPieces();
             }
-
-            (GameObject boardPrefab, IList<GameObject> piecePrefabs) = await assets.LoadPrefabs();
-            board.Init(game, uciBuffer, _fenSplit, boardPrefab, piecePrefabs, _turnColor);
-            board.Build();
         }
 
         private void InitNameCanvas()

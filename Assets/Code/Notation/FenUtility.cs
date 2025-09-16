@@ -1,4 +1,6 @@
-﻿namespace Notation
+﻿using Logic;
+
+namespace Notation
 {
     public static class FenUtility
     {
@@ -18,6 +20,18 @@
             };
 
             return parsedPreset;
+        }
+
+        public static PieceColor GetTurnColorFromFenSplit(FenSplit fenSplit)
+        {
+            PieceColor turnColor = fenSplit.TurnColor switch
+            {
+                "w" => PieceColor.White,
+                "b" => PieceColor.Black,
+                _ => PieceColor.None
+            };
+
+            return turnColor;
         }
 
         public static int GetHalfMoveClock(string fen)

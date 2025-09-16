@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Logic;
-using Notation;
+using Cysharp.Threading.Tasks;
 using Settings;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -17,29 +15,17 @@ namespace AssetManagement
         private AsyncOperationHandle<GameObject> _boardHandle;
         private AsyncOperationHandle<IList<GameObject>> _piecesHandle;
 
-        public async Task<(GameObject, IList<GameObject>)> LoadPrefabs()
+        public async UniTask<LoadedPrefabs> LoadPrefabs()
         {
             string boardModelAddress = gameSettingsContainer.GetBoardModelAddress();
             _boardHandle = Addressables.LoadAssetAsync<GameObject>(boardModelAddress);
-            GameObject boardPrefab = await _boardHandle.Task;
+            GameObject boardPrefab = await _boardHandle;
 
             string piecesModelAddress = gameSettingsContainer.GetPieceModelAddress();
             _piecesHandle =  Addressables.LoadAssetsAsync<GameObject>(piecesModelAddress, _ => { });
-            IList<GameObject> piecePrefabs = await _piecesHandle.Task;
+            IList<GameObject> piecePrefabs = await _piecesHandle;
 
-            return (boardPrefab, piecePrefabs);
-        }
-
-        public static PieceColor GetTurnColorFromPreset(FenSplit fenSplit)
-        {
-            PieceColor turnColor = fenSplit.TurnColor switch
-            {
-                "w" => PieceColor.White,
-                "b" => PieceColor.Black,
-                _ => PieceColor.None
-            };
-
-            return turnColor;
+            return new LoadedPrefabs { BoardPrefab = boardPrefab, PiecesPrefabs = piecePrefabs };
         }
 
         private void OnDestroy()
@@ -59,5 +45,11 @@ namespace AssetManagement
                 Addressables.Release(_boardHandle);
             }
         }
+    }
+
+    public struct LoadedPrefabs
+    {
+        public GameObject BoardPrefab;
+        public IList<GameObject> PiecesPrefabs;
     }
 }
