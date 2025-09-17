@@ -117,8 +117,6 @@ namespace Initialization
         private void InitClock()
         {
             _clock = IsOffline ? clockOffline : OnlineInstanceHandler.Clock;
-            Assert.IsNotNull(_clock, $"{nameof(GameInitialization)}: Clock is null");
-
             _clock.Init(game, gameSettingsContainer.GetTime());
 
             InstantiateClockPanel();
@@ -127,7 +125,7 @@ namespace Initialization
         private void InstantiateClockPanel()
         {
             ClockPanelCanvas clockPanelCanvas = _gameSettings.PlayerColor == PieceColor.White ? whiteClockPrefab : blackClockPrefab;
-            ClockPanelCanvas instance = Instantiate(clockPanelCanvas);
+            ClockPanelCanvas instance = Instantiate(clockPanelCanvas, transform);
             instance.Init(game, _clock, uiCamera);
         }
 
@@ -141,12 +139,11 @@ namespace Initialization
 
         private async UniTask InitBoard()
         {
-            RotateBoard();
-
             LoadedPrefabs loadedPrefabs = await assets.LoadPrefabs();
             board.Init(game, uciBuffer, _fenFromString, loadedPrefabs.BoardPrefab, loadedPrefabs.PiecesPrefabs, _turnColor);
 
             board.Build();
+            RotateBoard();
         }
 
         private void RotateBoard()
