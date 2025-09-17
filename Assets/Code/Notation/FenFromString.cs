@@ -7,10 +7,10 @@ namespace Notation
 {
     public class FenFromString
     {
-        public PieceColor TurnColor { get; private set; }
-        public int HalfMoveClock { get; private set; }
-        public int FullMoveCounter { get; private set; }
-        public IList<PieceInfo> PieceInfos { get; private set; }
+        public PieceColor TurnColor { get; }
+        public int HalfMoveClock { get; }
+        public int FullMoveCounter { get; }
+        public IList<PieceInfo> PieceInfos { get; }
         public string EnPassantAddress => _fenSplit.EnPassant;
 
         private readonly FenSplit _fenSplit;

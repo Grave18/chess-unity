@@ -48,19 +48,16 @@ namespace Network
             _lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
         }
 
-        private async Task SetupAndStartNetworking()
+        private async UniTask SetupAndStartNetworking()
         {
             connectionStarter.SetupTransports(_lobbyDataHolder.CurrentLobby);
-            await connectionStarter.StartServer();
+            await connectionStarter.StartServerIfHost();
             await connectionStarter.StartClient();
         }
 
-        private static async Task InitOnlineInstanceHandler()
+        private static async UniTask InitOnlineInstanceHandler()
         {
-            while (InstanceHandler.NetworkManager?.localPlayer.id.value is 0 && !Application.exitCancellationToken.IsCancellationRequested)
-            {
-                await Task.Delay(100);
-            }
+            await UniTask.WaitWhile(() => InstanceHandler.NetworkManager?.localPlayer.id.value == 0);
 
             if (InstanceHandler.NetworkManager != null)
             {
@@ -68,12 +65,9 @@ namespace Network
             }
         }
 
-        private async Task GiveOwnership()
+        private async UniTask GiveOwnership()
         {
-            while (networkManager.playerCount < 2 && !Application.exitCancellationToken.IsCancellationRequested)
-            {
-                await Task.Delay(100);
-            }
+            await UniTask.WaitWhile(() => networkManager.playerCount < 2);
 
             SetupHostOwnership(OnlineInstanceHandler.ThisPlayerID);
             SetupClientOwnership(OnlineInstanceHandler.OtherPlayerID);

@@ -19,19 +19,27 @@ namespace Settings
 
         public GameSettings GameSettings => gameSettings;
 
-        // TODO: this is for temporary localhost server. Need to be removed
+        // TODO: this is for temporary localhost
 #if UNITY_EDITOR
         public static string GameSettingsKey => ClonesManager.IsClone() ? "GameSettingsClone" : "GameSettings";
-        private static string LocalhostServerKey => ClonesManager.IsClone() ? "IsServerClone" : "IsServer";
+        private static string IsHostServerKey => ClonesManager.IsClone() ? "IsServerClone" : "IsServer";
+        private static string IsLocalServerKey => ClonesManager.IsClone() ? "IsLocalClone" : "IsLocal";
 #else
         public static string GameSettingsKey => "GameSettings";
-        private static string LocalhostServerKey => "IsServer";
+        private static string IsHostServerKey => "IsServer";
+        private static string IsLocalServerKey => "IsLocal";
 #endif
 
         public static bool IsHost
         {
-            get => PlayerPrefs.GetInt(LocalhostServerKey, 0) == 1;
-            set => PlayerPrefs.SetInt(LocalhostServerKey, value ? 1 : 0);
+            get => PlayerPrefs.GetInt(IsHostServerKey, 0) == 1;
+            set => PlayerPrefs.SetInt(IsHostServerKey, value ? 1 : 0);
+        }
+
+        public static bool IsLocal
+        {
+            get => PlayerPrefs.GetInt(IsLocalServerKey, 0) == 1;
+            set => PlayerPrefs.SetInt(IsLocalServerKey, value ? 1 : 0);
         }
         // end todo
 

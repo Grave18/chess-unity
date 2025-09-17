@@ -1,9 +1,8 @@
-﻿using System.Collections;
+﻿using Cysharp.Threading.Tasks;
 using Logic;
 using SceneManagement;
 using Settings;
 using UnityEngine;
-using UtilsCommon;
 
 namespace LobbyManagement
 {
@@ -30,18 +29,19 @@ namespace LobbyManagement
             PieceColor playerColor = isLobbyOwner ? PieceColor.White : PieceColor.Black;
 
             lobbyManager.SetLobbyStarted();
-            SetupAndSwitchScene(playerColor, isLobbyOwner).RunCoroutine();
+            SetupAndSwitchScene(playerColor, isLobbyOwner).Forget();
         }
 
-        public IEnumerator SetupAndSwitchScene(PieceColor playerColor, bool isHost)
+        public async UniTaskVoid SetupAndSwitchScene(PieceColor playerColor, bool isHost, bool isLocal = false)
         {
             if (!isHost)
             {
-                yield return new WaitForSecondsRealtime(1f);
+                await UniTask.WaitForSeconds(1f, ignoreTimeScale: true);
             }
 
             gameSettingsContainer.SetupGameOnline(playerColor);
             GameSettingsContainer.IsHost = isHost;
+            GameSettingsContainer.IsLocal = isLocal;
 
             sceneLoader.LoadGameOnline().Forget();
         }
