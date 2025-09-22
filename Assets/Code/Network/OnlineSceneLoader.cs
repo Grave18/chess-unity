@@ -3,6 +3,7 @@ using PurrNet;
 using Settings;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityUi;
 
 namespace Network
 {
@@ -28,12 +29,12 @@ namespace Network
         public async UniTask UnloadGameAndLoadMainMenu()
         {
             await SceneManager.LoadSceneAsync(loadingScene, LoadSceneMode.Additive);
-            await LoadingScene.Instance.Fade();
+            await LoadingSceneFader.Instance.Fade();
 
             await UnloadGame();
             await SceneManager.LoadSceneAsync(mainMenuScene, LoadSceneMode.Additive);
 
-            await LoadingScene.Instance.UnFade();
+            await LoadingSceneFader.Instance.UnFade();
             await SceneManager.UnloadSceneAsync(loadingScene);
         }
 

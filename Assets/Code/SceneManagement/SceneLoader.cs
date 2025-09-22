@@ -3,6 +3,7 @@ using Initialization;
 using Network;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityUi;
 using UtilsCommon.SceneTool;
 
 namespace SceneManagement
@@ -19,24 +20,24 @@ namespace SceneManagement
         public async UniTaskVoid LoadMainMenu()
         {
             await SceneManager.LoadSceneAsync(loadingScene, LoadSceneMode.Additive);
-            await LoadingScene.Instance.Fade();
+            await LoadingSceneFader.Instance.Fade();
 
             AsyncOperation unloadOp = SceneManager.UnloadSceneAsync(gameScene);
             AsyncOperation loadOp =  SceneManager.LoadSceneAsync(mainMenuScene, LoadSceneMode.Additive);
             while (!loadOp!.isDone || !unloadOp!.isDone)
             {
-                LoadingScene.Instance.LoadingProgress = loadOp.progress;
+                LoadingSceneFader.Instance.LoadingProgress = loadOp.progress;
                 await UniTask.NextFrame();
             }
 
-            await LoadingScene.Instance.UnFade();
+            await LoadingSceneFader.Instance.UnFade();
             await SceneManager.UnloadSceneAsync(loadingScene);
         }
 
         public async UniTaskVoid LoadGame()
         {
             await SceneManager.LoadSceneAsync(loadingScene, LoadSceneMode.Additive);
-            await LoadingScene.Instance.Fade();
+            await LoadingSceneFader.Instance.Fade();
 
             AsyncOperation unloadOp = SceneManager.UnloadSceneAsync(mainMenuScene);
             AsyncOperation loadOp =  SceneManager.LoadSceneAsync(gameScene, LoadSceneMode.Additive);
@@ -44,21 +45,21 @@ namespace SceneManagement
             while (!loadOp!.isDone || !unloadOp!.isDone || timer > 0)
             {
                 timer -= Time.deltaTime;
-                LoadingScene.Instance.LoadingProgress = loadOp.progress;
+                LoadingSceneFader.Instance.LoadingProgress = loadOp.progress;
                 await UniTask.NextFrame();
             }
 
             await GameInitialization.Instance.Init();
             GameInitialization.Instance.StartGame();
 
-            await LoadingScene.Instance.UnFade();
+            await LoadingSceneFader.Instance.UnFade();
             await SceneManager.UnloadSceneAsync(loadingScene);
         }
 
         public async UniTaskVoid LoadGameOnline()
         {
             await SceneManager.LoadSceneAsync(loadingScene, LoadSceneMode.Additive);
-            await LoadingScene.Instance.Fade();
+            await LoadingSceneFader.Instance.Fade();
 
             SceneManager.UnloadSceneAsync(mainMenuScene);
 
@@ -73,7 +74,7 @@ namespace SceneManagement
             await GameInitialization.Instance.Init();
             GameInitialization.Instance.StartGame();
 
-            await LoadingScene.Instance.UnFade();
+            await LoadingSceneFader.Instance.UnFade();
             await SceneManager.UnloadSceneAsync(loadingScene);
         }
 
