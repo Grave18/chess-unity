@@ -29,9 +29,7 @@ namespace Logic.Moves
         {
             Vector3 from = _fromSquare.transform.position;
             Vector3 to = _toSquare.transform.position;
-            Vector3 pos = Vector3.Lerp(from, to, Easing.InOutCubic(t));
-
-            _movedPiece.MoveTo(pos);
+            _movedPiece.MoveTo(from, to, t);
         }
 
         public override void End()

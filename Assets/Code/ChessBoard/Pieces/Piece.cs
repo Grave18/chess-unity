@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using ChessBoard.Info;
-using DG.Tweening;
 using Logic;
 using UnityEngine;
+using UtilsCommon.Mathematics;
 
 #pragma warning disable CS0252, CS0253
 
@@ -14,15 +13,12 @@ namespace ChessBoard.Pieces
         [Header("Piece settings")]
         [SerializeField] protected PieceColor pieceColor;
 
-        [SerializeField] private LayerMask squareLayer;
-
-        [Header("Animation")]
-        [SerializeField] private float animationSpeed = 1f;
-        [SerializeField] private Ease animationEase = Ease.InOutCubic;
-
         [Header("Debug preview")]
         [SerializeField] protected Square currentSquare;
         [field:SerializeField] public bool IsFirstMove { get; set; }
+
+        [Header("Piece movement settings")]
+        [SerializeField] protected EasingType moveEasing = EasingType.InOutCubic;
 
         public Dictionary<Square, MoveInfo> MoveSquares { get; } = new();
         public Dictionary<Square, CaptureInfo> CaptureSquares { get; } = new();
@@ -73,29 +69,9 @@ namespace ChessBoard.Pieces
             currentSquare?.SetPiece(this);
         }
 
-        // Todo: remove this
-        public async Task MoveToAsync(Square square)
+        public virtual void MoveTo(Vector3 from, Vector3 to, float t)
         {
-            Vector3 position = square.transform.position;
-
-            // Move
-            float distance = Vector3.Distance(transform.position, position);
-            float duration = distance / animationSpeed;
-
-            Tween moveTween = transform
-                .DOMove(position, duration)
-                .SetEase(animationEase);
-
-            // Reset current square
-            currentSquare.SetPiece(null);
-            currentSquare = square;
-            currentSquare.SetPiece(this);
-
-            await moveTween.AsyncWaitForCompletion();
-        }
-
-        public void MoveTo(Vector3 newPosition)
-        {
+            Vector3 newPosition = Vector3.Lerp(from, to, Easing.Generic(t, moveEasing));
             transform.position = newPosition;
         }
 
