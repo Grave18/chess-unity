@@ -71,7 +71,7 @@ namespace Highlighting
             // Attackers
             foreach (AttackLine attackLine in _game.AttackLines)
             {
-                if (attackLine.IsCheck && attackLine.Attacker.TryGetComponent(out Dissolve attackerFx))
+                if (attackLine.IsCheck && attackLine.Attacker.TryGetComponent(out EffectsRunner attackerFx))
                 {
                     attackerFx.HighlightPiece(enableHighlight: true);
                 }
@@ -85,7 +85,7 @@ namespace Highlighting
                     continue;
                 }
 
-                var pFx = assumeKing.GetComponent<Dissolve>();
+                var pFx = assumeKing.GetComponent<EffectsRunner>();
                 pFx.HighlightPiece(enableHighlight: true);
 
                 // Highlight king square with red circle
@@ -156,13 +156,13 @@ namespace Highlighting
 
             foreach (Piece piece in _game.WhitePieces)
             {
-                var pieceFx = piece.GetComponent<Dissolve>();
+                var pieceFx = piece.GetComponent<EffectsRunner>();
                 pieceFx.HighlightPiece(enableHighlight: false);
             }
 
             foreach (Piece piece in _game.BlackPieces)
             {
-                var pieceFx = piece.GetComponent<Dissolve>();
+                var pieceFx = piece.GetComponent<EffectsRunner>();
                 pieceFx.HighlightPiece(enableHighlight: false);
             }
         }

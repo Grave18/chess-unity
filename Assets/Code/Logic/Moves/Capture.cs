@@ -1,5 +1,6 @@
 ﻿using ChessBoard;
 using ChessBoard.Pieces;
+using Effects;
 using Sound;
 
 namespace Logic.Moves
@@ -8,16 +9,20 @@ namespace Logic.Moves
     {
         private readonly Piece _beatenPiece;
         private readonly Turn _simpleMove;
+        private readonly EffectsRunner effectsRunner;
 
         public Capture(Game game, Piece movedPiece, Square fromSquare, Square toSquare, Piece beatenPiece, bool isFirstMove)
         {
             _beatenPiece = beatenPiece;
             _simpleMove = new SimpleMove(game,movedPiece, fromSquare,toSquare, isFirstMove, isComposite: true);
+
+            effectsRunner = _beatenPiece.GetComponent<EffectsRunner>();
         }
 
         public override void Progress(float t, bool isUndo = false)
         {
             _simpleMove.Progress(t);
+            effectsRunner?.ProgressDisappear(t);
         }
 
         public override void End()
@@ -28,6 +33,8 @@ namespace Logic.Moves
             BeatenPieces.Instance.Add(_beatenPiece, beatenPieceSquare);
 
             _simpleMove.End();
+
+            effectsRunner?.Appear();
         }
 
         public override void EndUndo()
@@ -37,6 +44,8 @@ namespace Logic.Moves
             // Order matters
             _simpleMove.EndUndo();
             beatenPiece.AddToBoard(beatenPieceSquare);
+
+            effectsRunner?.Appear();
         }
 
         public override void PlaySound()
