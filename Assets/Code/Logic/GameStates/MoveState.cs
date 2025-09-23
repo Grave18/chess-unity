@@ -239,7 +239,7 @@ namespace Logic.GameStates
             float delta = Time.deltaTime / MoveTimeSec;
             T += delta;
 
-            Turn.Progress(T, isUndo: false);
+            Turn.Progress(T);
             PlaySound(delta);
         }
 

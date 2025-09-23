@@ -2,7 +2,6 @@
 using ChessBoard.Pieces;
 using Sound;
 using UnityEngine;
-using UtilsCommon.Mathematics;
 
 namespace Logic.Moves
 {
@@ -25,7 +24,7 @@ namespace Logic.Moves
             _isComposite = isComposite;
         }
 
-        public override void Progress(float t, bool isUndo = false)
+        public override void Progress(float t)
         {
             Vector3 from = _fromSquare.transform.position;
             Vector3 to = _toSquare.transform.position;

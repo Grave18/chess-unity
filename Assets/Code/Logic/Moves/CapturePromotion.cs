@@ -15,7 +15,7 @@ namespace Logic.Moves
             _promotion = new Promotion(piece, fromSquare, toSquare, otherPiece);
         }
 
-        public override void Progress(float t, bool isUndo = false)
+        public override void Progress(float t)
         {
             _capture.Progress(t);
         }
@@ -34,7 +34,6 @@ namespace Logic.Moves
 
         public override void PlaySound()
         {
-            base.PlaySound();
             EffectsPlayer.Instance.PlayPromoteSound();
         }
     }

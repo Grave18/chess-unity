@@ -19,7 +19,7 @@ namespace Logic.Moves
             effectsRunner = _beatenPiece.GetComponent<EffectsRunner>();
         }
 
-        public override void Progress(float t, bool isUndo = false)
+        public override void Progress(float t)
         {
             _simpleMove.Progress(t);
             effectsRunner?.ProgressDisappear(t);
@@ -50,7 +50,6 @@ namespace Logic.Moves
 
         public override void PlaySound()
         {
-            base.PlaySound();
             EffectsPlayer.Instance.PlayCaptureSound();
         }
     }

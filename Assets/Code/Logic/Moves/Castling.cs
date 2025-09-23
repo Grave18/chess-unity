@@ -14,7 +14,7 @@ namespace Logic.Moves
             _rookMove = new SimpleMove(game, castlingInfo.Rook, castlingInfo.RookFromSquare, castlingInfo.RookToSquare, isFirstMove);
         }
 
-        public override void Progress(float t, bool isUndo = false)
+        public override void Progress(float t)
         {
             if (t < 0.5f)
             {
@@ -40,7 +40,6 @@ namespace Logic.Moves
 
         public override void PlaySound()
         {
-            base.PlaySound();
             EffectsPlayer.Instance.PlayCastleSound();
         }
     }
