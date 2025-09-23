@@ -143,13 +143,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pieceColor: 1
-  squareLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  animationSpeed: 1
-  animationEase: 10
   currentSquare: {fileID: 0}
   <IsFirstMove>k__BackingField: 0
+  moveEasing: 6
   moves:
   - {x: 1, y: 2}
   - {x: 2, y: 1}
@@ -159,6 +155,8 @@ MonoBehaviour:
   - {x: -2, y: -1}
   - {x: -2, y: 1}
   - {x: -1, y: 2}
+  jumpHeight: 0.15
+  jumpEasing: 6
 --- !u!114 &8030326933156002300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -171,4 +169,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c93b05f31c0f904bb9f332f3dc6d735, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dissolveTime: 3
+  dissolveTime: 2

@@ -143,13 +143,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pieceColor: 2
-  squareLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  animationSpeed: 1
-  animationEase: 10
   currentSquare: {fileID: 0}
   <IsFirstMove>k__BackingField: 0
+  moveEasing: 6
   movesFirstMove:
   - {x: 0, y: 1}
   - {x: 0, y: 2}
@@ -170,4 +166,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c93b05f31c0f904bb9f332f3dc6d735, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dissolveTime: 3
+  dissolveTime: 2
