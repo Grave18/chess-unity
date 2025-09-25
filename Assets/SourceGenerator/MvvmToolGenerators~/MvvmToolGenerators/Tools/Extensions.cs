@@ -28,9 +28,11 @@ public static class Extensions
     {
         // Hack to avoid generating code for non Assembly-CSharp assemblies
         bool isUnity = IsUnity(compilation);
-        bool isNotAssemblyCsharp = compilation.AssemblyName != "Assembly-CSharp";
+        bool isNotAssemblyCsharp = compilation.AssemblyName != "MainAssembly";
 
         return isUnity && isNotAssemblyCsharp;
+
+        return true;
     }
 
     public static bool IsUnity(this Compilation compilation)
