@@ -81,9 +81,9 @@ namespace Initialization
             InitPlayers();
         }
 
-        public void StartGame()
+        public async UniTask StartGame()
         {
-            game.StartGame();
+            await game.StartGame();
         }
 
         private void InitSettingsContainer()

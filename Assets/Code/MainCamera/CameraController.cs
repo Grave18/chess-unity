@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Cysharp.Threading.Tasks;
 using InputManagement;
 using Logic;
 using UnityEngine;
@@ -126,16 +127,11 @@ namespace MainCamera
             }
         }
 
-        public void RotateToStartPosition(UnityAction continuation = null)
-        {
-            StartCoroutine(RotateToStartPositionRoutine(_rotateCameraToColor, continuation));
-        }
-
-        private IEnumerator RotateToStartPositionRoutine(PieceColor playerColor, UnityAction continuation)
+        public async UniTask RotateToStartPosition()
         {
             _isUpdating = false;
 
-            float targetYawRad = GetTargetYawRad(playerColor);
+            float targetYawRad = GetTargetYawRad(_rotateCameraToColor);
 
             float t = 0f;
             while (t < 1f)
@@ -145,14 +141,12 @@ namespace MainCamera
                 CalculateCameraPosition();
                 ApplyToCamera();
 
-                yield return null;
+                await UniTask.NextFrame();
             }
 
             _newYawRad = yawRad;
             _newPitchRad = pitchRad;
             _newDistance = distance;
-
-            continuation?.Invoke();
 
             _isUpdating = true;
         }
@@ -323,7 +317,7 @@ namespace MainCamera
         [Button(space: 10)]
         public void RotateToStartPositionButton()
         {
-           RotateToStartPosition();
+           RotateToStartPosition().Forget();
         }
 #endif
     }

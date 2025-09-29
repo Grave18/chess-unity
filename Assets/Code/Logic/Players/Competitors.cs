@@ -11,6 +11,8 @@ namespace Logic.Players
         private IPlayer _initialPlayer;
         private IPlayer _currentPlayer;
 
+        public IPlayer CurrentPlayer => _currentPlayer;
+
         public void Init(Game game, IPlayer playerWhite, IPlayer playerBlack, PieceColor firstMoveColor)
         {
             _game = game;

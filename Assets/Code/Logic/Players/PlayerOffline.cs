@@ -122,7 +122,7 @@ namespace Logic.Players
             }
         }
 
-        private void Move(string uci)
+        public void Move(string uci)
         {
             _game.GameStateMachine.Move(uci);
             _game.Deselect();

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ChessBoard;
 using ChessBoard.Pieces;
+using Cysharp.Threading.Tasks;
 using Logic.GameStates;
 using Logic.MenuStates;
 using Logic.MovesBuffer;
@@ -92,22 +93,17 @@ namespace Logic
             MenuStateMachine = menuStateMachine;
         }
 
-        public void StartGame()
+        public async UniTask StartGame()
         {
-            _cameraController.RotateToStartPosition(StartGameContinuation);
-
             ResetGameState();
             PreformCalculations();
             MenuStateMachine.SetState<PlayState>();
             GameStateMachine.SetState(new WarmUpState(this));
 
-            return;
+            await _cameraController.RotateToStartPosition();
 
-            void StartGameContinuation()
-            {
-                GameStateMachine.SetState(new IdleState(this));
-                FireStart();
-            }
+            GameStateMachine.SetState(new IdleState(this));
+            FireStart();
         }
 
         private void ResetGameState()
@@ -271,7 +267,7 @@ namespace Logic
         {
             Competitors.Restart();
             Board.Build();
-            StartGame();
+            StartGame().Forget();
         }
 
         public void Draw(string description)
