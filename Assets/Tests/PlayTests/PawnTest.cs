@@ -1,8 +1,6 @@
 using System.Collections;
 using ChessBoard;
 using ChessBoard.Pieces;
-using Cysharp.Threading.Tasks;
-using Initialization;
 using Logic;
 using Logic.Players;
 using NUnit.Framework;
@@ -22,7 +20,7 @@ namespace PlayTests
         [UnityTest]
         public IEnumerator Move_WhenOneSquare_PieceIsMovedToToSquare()
         {
-            yield return InitGameWithPreset("3k4/8/8/8/8/8/3P4/4K3 w - - 0 1");
+            yield return TestUtils.InitGameWithPreset("3k4/8/8/8/8/8/3P4/4K3 w - - 0 1");
 
             var board = Object.FindObjectOfType<Board>();
             Piece pieceGiven = board.GetSquare("d2").GetPiece();
@@ -40,7 +38,7 @@ namespace PlayTests
         [UnityTest]
         public IEnumerator Move_WhenTwoSquares_IfFirstMove_PieceIsMovedToToSquare()
         {
-            yield return InitGameWithPreset("3k4/8/8/8/8/8/3P4/4K3 w - - 0 1");
+            yield return TestUtils.InitGameWithPreset("3k4/8/8/8/8/8/3P4/4K3 w - - 0 1");
 
             var board = Object.FindObjectOfType<Board>();
             Piece pieceGiven = board.GetSquare("d2").GetPiece();
@@ -58,7 +56,7 @@ namespace PlayTests
         [UnityTest]
         public IEnumerator Move_WhenTwoSquares_IfNotFirstMove_PieceIsNotMovedToSquare()
         {
-            yield return InitGameWithPreset("4k3/8/8/8/8/3P4/8/4K3 w - - 0 1");
+            yield return TestUtils.InitGameWithPreset("4k3/8/8/8/8/3P4/8/4K3 w - - 0 1");
 
             var board = Object.FindObjectOfType<Board>();
 
@@ -75,7 +73,7 @@ namespace PlayTests
         [UnityTest]
         public IEnumerator Move_WhenThreeSquares_PieceIsNotMovedToSquare()
         {
-            yield return InitGameWithPreset("3k4/8/8/8/8/8/3P4/4K3 w - - 0 1");
+            yield return TestUtils.InitGameWithPreset("3k4/8/8/8/8/8/3P4/4K3 w - - 0 1");
 
             var board = Object.FindObjectOfType<Board>();
             Piece pieceGiven = board.GetSquare("d2").GetPiece();
@@ -93,7 +91,7 @@ namespace PlayTests
         [UnityTest]
         public IEnumerator Capture_WhenCapturedPieceIsLeftOrRight_PieceIsCaptured()
         {
-            yield return InitGameWithPreset("4k3/8/8/8/8/2ppp3/3P4/4K3 w - - 0 1");
+            yield return TestUtils.InitGameWithPreset("4k3/8/8/8/8/2ppp3/3P4/4K3 w - - 0 1");
 
             var board = Object.FindObjectOfType<Board>();
             var currentPlayer = Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
@@ -123,7 +121,7 @@ namespace PlayTests
         [UnityTest]
         public IEnumerator Capture_WhenCapturedPieceIsFront_PieceIsNotCaptured()
         {
-            yield return InitGameWithPreset("4k3/8/8/8/8/2ppp3/3P4/4K3 w - - 0 1");
+            yield return TestUtils.InitGameWithPreset("4k3/8/8/8/8/2ppp3/3P4/4K3 w - - 0 1");
 
             var board = Object.FindObjectOfType<Board>();
             var currentPlayer = Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
@@ -140,7 +138,7 @@ namespace PlayTests
         [UnityTest]
         public IEnumerator Capture_WhenEnPassant_PieceIsCaptured()
         {
-            yield return InitGameWithPreset("4k3/8/8/8/2Pp4/8/8/4K3 b - c3 0 1");
+            yield return TestUtils.InitGameWithPreset("4k3/8/8/8/2Pp4/8/8/4K3 b - c3 0 1");
 
             var board = Object.FindObjectOfType<Board>();
             var currentPlayer = Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
@@ -155,14 +153,61 @@ namespace PlayTests
             Assert.IsNull(pieceToCapture.GetSquare());
         }
 
-        private static IEnumerator InitGameWithPreset(string fenPreset)
+        [UnityTest]
+        public IEnumerator Promotion_WhenOnEmptySquare_PawnIsPromotedToQueen_Knight_Rook_Bishop()
         {
-            var gameSettingsContainer = Object.FindObjectOfType<GameSettingsContainer>();
-            gameSettingsContainer.SetCurrentFen(fenPreset);
+            yield return TestUtils.InitGameWithPreset("7k/3P4/8/8/8/8/8/R6K w - - 0 1");
 
-            var gameInitialization = Object.FindObjectOfType<GameInitialization>();
-            yield return gameInitialization.Init().ToCoroutine();
-            yield return gameInitialization.StartGame().ToCoroutine();
+            var game = Object.FindObjectOfType<Game>();
+            var board = Object.FindObjectOfType<Board>();
+            var currentPlayer = Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
+
+            // Queen
+            yield return TestUtils.Move("d7d8q", currentPlayer, game);
+
+            Piece pieceExpected = board.GetSquare("d8").GetPiece();
+            Assert.IsTrue(pieceExpected is Queen, "Piece is not a Queen");
+
+            yield return TestUtils.Undo(game);
+
+            // Knight
+            yield return TestUtils.Move("d7d8n", currentPlayer, game);
+
+            pieceExpected = board.GetSquare("d8").GetPiece();
+            Assert.IsTrue(pieceExpected is Knight, "Piece is not a Knight");
+
+            yield return TestUtils.Undo(game);
+
+            // Rook
+            yield return TestUtils.Move("d7d8r", currentPlayer, game);
+
+            pieceExpected = board.GetSquare("d8").GetPiece();
+            Assert.IsTrue(pieceExpected is Rook, "Piece is not a Rook");
+
+            yield return TestUtils.Undo(game);
+
+            // Bishop
+            yield return TestUtils.Move("d7d8b", currentPlayer, game);
+
+            pieceExpected = board.GetSquare("d8").GetPiece();
+            Assert.IsTrue(pieceExpected is Bishop, "Piece is not a Bishop");
+        }
+
+        [UnityTest]
+        public IEnumerator Promotion_WhenCapture_CaptureAndPawnIsPromotedToQueen()
+        {
+            yield return TestUtils.InitGameWithPreset("2r4k/3P4/8/8/8/8/8/R6K w - - 0 1");
+
+            var game = Object.FindObjectOfType<Game>();
+            var board = Object.FindObjectOfType<Board>();
+            var currentPlayer = Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
+            Piece pieceToCapture = board.GetSquare("c8").GetPiece();
+
+            yield return TestUtils.Move("d7c8q", currentPlayer, game);
+
+            Piece pieceExpected = board.GetSquare("c8").GetPiece();
+            Assert.IsTrue(pieceExpected is Queen, "Piece is not a Queen");
+            Assert.IsTrue(pieceToCapture.GetSquare() is null, "Piece is not captured");
         }
 
         [UnitySetUp]
