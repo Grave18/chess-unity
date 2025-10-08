@@ -1,35 +1,53 @@
 ﻿using System.Collections;
+using ChessBoard;
 using Cysharp.Threading.Tasks;
 using Initialization;
 using Logic;
 using Logic.Players;
 using Settings;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace PlayTests
 {
     public static class TestUtils
     {
-        public static IEnumerator InitGameWithPreset(string fenPreset)
+        public static Game Game => Object.FindObjectOfType<Game>();
+        public static PlayerOffline PlayerOffline => Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
+        public static Board Board => Object.FindObjectOfType<Board>();
+
+        public static IEnumerator TestSetup()
+        {
+            yield return SceneManager.LoadSceneAsync("MainMenuScene");
+
+            var gameSettingsContainer = Object.FindObjectOfType<GameSettingsContainer>();
+            gameSettingsContainer.SetupGameOffline();
+
+            yield return SceneManager.LoadSceneAsync("GameScene", LoadSceneMode.Additive);
+            yield return SceneManager.UnloadSceneAsync("MainMenuScene");
+        }
+
+        public static IEnumerator InitGameWithPreset(string fenPreset, bool isAutoRotateCamera = false)
         {
             var gameSettingsContainer = Object.FindObjectOfType<GameSettingsContainer>();
             gameSettingsContainer.SetCurrentFen(fenPreset);
+            gameSettingsContainer.IsAutoRotateCamera = isAutoRotateCamera;
 
             var gameInitialization = Object.FindObjectOfType<GameInitialization>();
             yield return gameInitialization.Init().ToCoroutine();
             yield return gameInitialization.StartGame().ToCoroutine();
         }
 
-        public static IEnumerator Move(string uci, PlayerOffline currentPlayer, Game game)
+        public static IEnumerator Move(string uci)
         {
-            currentPlayer?.Move(uci);
-            return new WaitUntil(() => game.GameStateMachine.StateName == "Idle");
+            PlayerOffline.Move(uci);
+            return new WaitUntil(() => Game.GameStateMachine.StateName == "Idle");
         }
 
-        public static IEnumerator Undo(Game game)
+        public static IEnumerator Undo()
         {
-            game.GameStateMachine.Undo();
-            return new WaitUntil(() => game.GameStateMachine.StateName == "Idle");
+            Game.GameStateMachine.Undo();
+            return new WaitUntil(() => Game.GameStateMachine.StateName == "Idle");
         }
     }
 }

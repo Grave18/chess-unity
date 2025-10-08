@@ -43,6 +43,16 @@ namespace Settings
         }
         // end todo
 
+        public bool IsAutoRotateCamera
+        {
+            get => gameSettings.IsAutorotateCamera;
+            set
+            {
+                gameSettings.IsAutorotateCamera = value;
+                Save();
+            }
+        }
+
         private void Awake()
         {
             Init();

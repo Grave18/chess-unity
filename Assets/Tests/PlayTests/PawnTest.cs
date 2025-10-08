@@ -163,31 +163,31 @@ namespace PlayTests
             var currentPlayer = Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
 
             // Queen
-            yield return TestUtils.Move("d7d8q", currentPlayer, game);
+            yield return TestUtils.Move("d7d8q");
 
             Piece pieceExpected = board.GetSquare("d8").GetPiece();
             Assert.IsTrue(pieceExpected is Queen, "Piece is not a Queen");
 
-            yield return TestUtils.Undo(game);
+            yield return TestUtils.Undo();
 
             // Knight
-            yield return TestUtils.Move("d7d8n", currentPlayer, game);
+            yield return TestUtils.Move("d7d8n");
 
             pieceExpected = board.GetSquare("d8").GetPiece();
             Assert.IsTrue(pieceExpected is Knight, "Piece is not a Knight");
 
-            yield return TestUtils.Undo(game);
+            yield return TestUtils.Undo();
 
             // Rook
-            yield return TestUtils.Move("d7d8r", currentPlayer, game);
+            yield return TestUtils.Move("d7d8r");
 
             pieceExpected = board.GetSquare("d8").GetPiece();
             Assert.IsTrue(pieceExpected is Rook, "Piece is not a Rook");
 
-            yield return TestUtils.Undo(game);
+            yield return TestUtils.Undo();
 
             // Bishop
-            yield return TestUtils.Move("d7d8b", currentPlayer, game);
+            yield return TestUtils.Move("d7d8b");
 
             pieceExpected = board.GetSquare("d8").GetPiece();
             Assert.IsTrue(pieceExpected is Bishop, "Piece is not a Bishop");
@@ -203,7 +203,7 @@ namespace PlayTests
             var currentPlayer = Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
             Piece pieceToCapture = board.GetSquare("c8").GetPiece();
 
-            yield return TestUtils.Move("d7c8q", currentPlayer, game);
+            yield return TestUtils.Move("d7c8q");
 
             Piece pieceExpected = board.GetSquare("c8").GetPiece();
             Assert.IsTrue(pieceExpected is Queen, "Piece is not a Queen");

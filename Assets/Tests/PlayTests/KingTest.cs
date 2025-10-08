@@ -25,7 +25,7 @@ namespace PlayTests
 
             Piece pieceGiven = board.GetSquare("e1").GetPiece();
 
-            yield return TestUtils.Move("e1e3", currentPlayer, game);
+            yield return TestUtils.Move("e1e3");
 
             Piece pieceExpected = board.GetSquare("e3").GetPiece();
             Assert.AreNotEqual(pieceExpected, pieceGiven);
@@ -42,7 +42,7 @@ namespace PlayTests
 
             Piece pieceGiven = board.GetSquare("e1").GetPiece();
 
-            yield return TestUtils.Move("e1e2", currentPlayer, game);
+            yield return TestUtils.Move("e1e2");
 
             Piece pieceExpected = board.GetSquare("e3").GetPiece();
             Assert.AreNotEqual(pieceExpected, pieceGiven);
@@ -58,7 +58,7 @@ namespace PlayTests
 
             Assert.AreEqual(CheckType.None, game.CheckType);
 
-            yield return TestUtils.Move("f3e3", currentPlayer, game);
+            yield return TestUtils.Move("f3e3");
 
             Assert.AreEqual(CheckType.Check, game.CheckType);
         }
@@ -73,7 +73,7 @@ namespace PlayTests
 
             Assert.AreEqual(CheckType.Check, game.CheckType);
 
-            yield return TestUtils.Move("e3f3", currentPlayer, game);
+            yield return TestUtils.Move("e3f3");
 
             Assert.AreEqual(CheckType.None, game.CheckType);
         }
@@ -86,7 +86,7 @@ namespace PlayTests
             var currentPlayer = Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
             var game = Object.FindObjectOfType<Game>();
 
-            yield return TestUtils.Move("e3c3", currentPlayer, game);
+            yield return TestUtils.Move("e3c3");
 
             Assert.AreEqual(CheckType.CheckMate, game.CheckType);
         }
@@ -99,7 +99,7 @@ namespace PlayTests
             var game = Object.FindObjectOfType<Game>();
             var currentPlayer = Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
 
-            yield return TestUtils.Move("g4g3", currentPlayer, game);
+            yield return TestUtils.Move("g4g3");
 
             Assert.AreEqual(game.CheckType, CheckType.Draw);
         }
@@ -115,7 +115,7 @@ namespace PlayTests
             Piece kingGiven = game.Board.GetSquare("e1").GetPiece();
             Piece rookGiven = game.Board.GetSquare("h1").GetPiece();
 
-            yield return TestUtils.Move("e1g1", currentPlayer, game);
+            yield return TestUtils.Move("e1g1");
 
             Piece kingExpected = game.Board.GetSquare("g1").GetPiece();
             Piece rookExpected = game.Board.GetSquare("f1").GetPiece();
@@ -134,7 +134,7 @@ namespace PlayTests
             Piece kingGiven = game.Board.GetSquare("e1").GetPiece();
             Piece rookGiven = game.Board.GetSquare("h1").GetPiece();
 
-            yield return TestUtils.Move("e1g1", currentPlayer, game);
+            yield return TestUtils.Move("e1g1");
 
             Piece kingExpected = game.Board.GetSquare("g1").GetPiece();
             Piece rookExpected = game.Board.GetSquare("f1").GetPiece();
@@ -153,7 +153,7 @@ namespace PlayTests
             Piece kingGiven = game.Board.GetSquare("e1").GetPiece();
             Piece rookGiven = game.Board.GetSquare("h1").GetPiece();
 
-            yield return TestUtils.Move("e1g1", currentPlayer, game);
+            yield return TestUtils.Move("e1g1");
 
             Piece kingExpected = game.Board.GetSquare("g1").GetPiece();
             Piece rookExpected = game.Board.GetSquare("f1").GetPiece();
