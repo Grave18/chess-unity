@@ -27,11 +27,12 @@ namespace PlayTests
             yield return SceneManager.UnloadSceneAsync("MainMenuScene");
         }
 
-        public static IEnumerator InitGameWithPreset(string fenPreset, bool isAutoRotateCamera = false)
+        public static IEnumerator InitGameWithPreset(string fenPreset, bool isAutoRotateCamera = false, bool isRotateCameraOnStart = false)
         {
             var gameSettingsContainer = Object.FindObjectOfType<GameSettingsContainer>();
             gameSettingsContainer.SetCurrentFen(fenPreset);
             gameSettingsContainer.IsAutoRotateCamera = isAutoRotateCamera;
+            gameSettingsContainer.IsRotateCameraOnStart = isRotateCameraOnStart;
 
             var gameInitialization = Object.FindObjectOfType<GameInitialization>();
             yield return gameInitialization.Init().ToCoroutine();

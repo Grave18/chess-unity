@@ -127,7 +127,7 @@ namespace MainCamera
             }
         }
 
-        public async UniTask RotateToStartPosition()
+        public async UniTask RotateToStartPosition(bool isRotateCameraOnStart = true)
         {
             _isUpdating = false;
 
@@ -136,6 +136,11 @@ namespace MainCamera
             float t = 0f;
             while (t < 1f)
             {
+                if (!isRotateCameraOnStart)
+                {
+                    t = 1f;
+                }
+
                 CalculateTPitch();
                 CalculateRotateToStartPosition(targetYawRad, ref t);
                 CalculateCameraPosition();

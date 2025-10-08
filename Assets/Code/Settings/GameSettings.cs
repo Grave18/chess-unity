@@ -21,6 +21,7 @@ namespace Settings
         [Header("Qol Settings")]
         public bool IsAutoPromoteToQueen;
         public bool IsAutorotateCamera = true;
+        public bool IsRotateCameraOnStart = true;
 
         [Header("Models")]
         public string PiecesModelAddress;

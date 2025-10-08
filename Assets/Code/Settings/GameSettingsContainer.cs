@@ -53,6 +53,16 @@ namespace Settings
             }
         }
 
+        public bool IsRotateCameraOnStart
+        {
+            get => gameSettings.IsRotateCameraOnStart;
+            set
+            {
+                gameSettings.IsRotateCameraOnStart = value;
+                Save();
+            }
+        }
+
         private void Awake()
         {
             Init();

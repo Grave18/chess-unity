@@ -100,7 +100,8 @@ namespace Logic
             MenuStateMachine.SetState<PlayState>();
             GameStateMachine.SetState(new WarmUpState(this));
 
-            await _cameraController.RotateToStartPosition();
+            bool isRotateCameraOnStart = _gameSettingsContainer.IsRotateCameraOnStart;
+            await _cameraController.RotateToStartPosition(isRotateCameraOnStart);
 
             GameStateMachine.SetState(new IdleState(this));
             FireStart();
