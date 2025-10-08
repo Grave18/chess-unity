@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using ChessBoard;
+using ChessBoard.Pieces;
 using Cysharp.Threading.Tasks;
 using Initialization;
 using Logic;
 using Logic.Players;
+using NUnit.Framework;
 using Settings;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -37,6 +39,52 @@ namespace PlayTests
             var gameInitialization = Object.FindObjectOfType<GameInitialization>();
             yield return gameInitialization.Init().ToCoroutine();
             yield return gameInitialization.StartGame().ToCoroutine();
+        }
+
+        public static IEnumerator Move_AssertEqual_Undo(string where, Piece pieceGiven)
+        {
+            yield return Move(where);
+            string square = where.Substring(2);
+            Piece pieceExpected = Board.GetSquare(square).GetPiece();
+            Assert.AreEqual(pieceExpected, pieceGiven);
+
+            yield return Undo();
+        }
+
+        public static IEnumerator Capture_AssertEqual_Undo(string where, Piece pieceGiven)
+        {
+            string square = where.Substring(2);
+            Piece pieceToCapture = Board.GetSquare(square).GetPiece();
+
+            yield return Move(where);
+            Piece pieceExpected = Board.GetSquare(square).GetPiece();
+            Assert.AreEqual(pieceExpected, pieceGiven);
+            Assert.Null(pieceToCapture.GetSquare());
+
+            yield return Undo();
+        }
+
+        public static IEnumerator Move_AssertNotEqual_Undo(string where, Piece pieceGiven)
+        {
+            yield return Move(where);
+            string square = where.Substring(2);
+            Piece pieceExpected = Board.GetSquare(square).GetPiece();
+            Assert.AreNotEqual(pieceExpected, pieceGiven);
+
+            yield return Undo();
+        }
+
+        public static IEnumerator Capture_AssertNotEqual_Undo(string where, Piece pieceGiven)
+        {
+            string square = where.Substring(2);
+            Piece pieceToCapture = Board.GetSquare(square).GetPiece();
+
+            yield return Move(where);
+            Piece pieceExpected = Board.GetSquare(square).GetPiece();
+            Assert.AreNotEqual(pieceExpected, pieceGiven);
+            Assert.NotNull(pieceToCapture.GetSquare());
+
+            yield return Undo();
         }
 
         public static IEnumerator Move(string uci)
