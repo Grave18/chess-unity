@@ -2,63 +2,114 @@ using System.Collections;
 using ChessBoard;
 using ChessBoard.Pieces;
 using Logic;
-using Logic.Players;
 using NUnit.Framework;
-using Settings;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+
+using static PlayTests.TestUtils;
 
 namespace PlayTests
 {
     [TestFixture]
     public class KingTest
     {
+        [UnitySetUp]
+        public IEnumerator Setup()
+        {
+            yield return TestSetup();
+        }
+
+        [UnityTest]
+        public IEnumerator Move_WhenAllDirections_CanMoveToSquare()
+        {
+            yield return InitGameWithPreset("4k2r/8/8/8/3K4/8/8/7R w - - 0 1");
+
+            var board = Object.FindObjectOfType<Board>();
+            Piece pieceGiven = board.GetSquare("d4").GetPiece();
+
+            yield return Move_AssertEqual_Undo("d4e3", pieceGiven);
+            yield return Move_AssertEqual_Undo("d4e4", pieceGiven);
+            yield return Move_AssertEqual_Undo("d4e5", pieceGiven);
+            yield return Move_AssertEqual_Undo("d4d5", pieceGiven);
+            yield return Move_AssertEqual_Undo("d4c5", pieceGiven);
+            yield return Move_AssertEqual_Undo("d4c4", pieceGiven);
+            yield return Move_AssertEqual_Undo("d4c3", pieceGiven);
+            yield return Move_AssertEqual_Undo("d4d3", pieceGiven);
+        }
+
         [UnityTest]
         public IEnumerator Move_WhenTwoSquares_IsNotMovedToSquare()
         {
-            yield return TestUtils.InitGameWithPreset("4k3/8/8/8/8/2P5/8/4K3 w - - 0 1");
+            yield return InitGameWithPreset("4k3/8/8/8/8/2P5/8/4K3 w - - 0 1");
 
-            var game = Object.FindObjectOfType<Game>();
             var board = Object.FindObjectOfType<Board>();
-            var currentPlayer = Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
-
             Piece pieceGiven = board.GetSquare("e1").GetPiece();
 
-            yield return TestUtils.Move("e1e3");
-
-            Piece pieceExpected = board.GetSquare("e3").GetPiece();
-            Assert.AreNotEqual(pieceExpected, pieceGiven);
+            yield return Move_AssertNotEqual_Undo("e1e3", pieceGiven);
         }
 
         [UnityTest]
         public IEnumerator Move_WhenMoveOnAttackedSquare_CanNotMoveToSquare()
         {
-            yield return TestUtils.InitGameWithPreset("R3k3/8/8/8/8/5p2/8/4K3 w - - 0 1");
+            yield return InitGameWithPreset("4k3/b7/8/8/3K4/8/8/8 w - - 0 1");
 
-            var game = Object.FindObjectOfType<Game>();
             var board = Object.FindObjectOfType<Board>();
-            var currentPlayer = Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
+            Piece pieceGiven = board.GetSquare("d4").GetPiece();
 
-            Piece pieceGiven = board.GetSquare("e1").GetPiece();
+            yield return Move_AssertNotEqual_Undo("d4c5", pieceGiven);
+            yield return Move_AssertNotEqual_Undo("d4e3", pieceGiven);
+        }
 
-            yield return TestUtils.Move("e1e2");
+        [UnityTest]
+        public IEnumerator Move_WhenMoveOnAttackedButDefendedSquare_CanMoveToSquare()
+        {
+            yield return InitGameWithPreset("4k3/b7/1P6/8/3K4/8/8/8 w - - 0 1");
 
-            Piece pieceExpected = board.GetSquare("e3").GetPiece();
-            Assert.AreNotEqual(pieceExpected, pieceGiven);
+            var board = Object.FindObjectOfType<Board>();
+            Piece pieceGiven = board.GetSquare("d4").GetPiece();
+
+            yield return Move_AssertEqual_Undo("d4c5", pieceGiven);
+            yield return Move_AssertEqual_Undo("d4e3", pieceGiven);
+        }
+
+        [UnityTest]
+        public IEnumerator Capture_WhenSideDirections_CanMoveToSquareAndCapture()
+        {
+            yield return InitGameWithPreset("4k2r/8/8/2p1p3/2pKp3/2p1p3/8/7R w - - 0 1");
+
+            var board = Object.FindObjectOfType<Board>();
+            Piece pieceGiven = board.GetSquare("d4").GetPiece();
+
+            yield return Capture_AssertEqual_Undo("d4e3", pieceGiven);
+            yield return Capture_AssertEqual_Undo("d4e4", pieceGiven);
+            yield return Capture_AssertEqual_Undo("d4e5", pieceGiven);
+            yield return Capture_AssertEqual_Undo("d4c5", pieceGiven);
+            yield return Capture_AssertEqual_Undo("d4c4", pieceGiven);
+            yield return Capture_AssertEqual_Undo("d4c3", pieceGiven);
+        }
+
+        [UnityTest]
+        public IEnumerator Capture_WhenUpAndDownDirections_CanMoveToSquareAndCapture()
+        {
+            yield return InitGameWithPreset("4k2r/8/8/3p4/3K4/3p4/8/7R w - - 0 1");
+
+            var board = Object.FindObjectOfType<Board>();
+            Piece pieceGiven = board.GetSquare("d4").GetPiece();
+
+            yield return Capture_AssertEqual_Undo("d4d5", pieceGiven);
+            yield return Capture_AssertEqual_Undo("d4d3", pieceGiven);
         }
 
         [UnityTest]
         public IEnumerator Check_WhenUnderAttack_StateIsCheck()
         {
-            yield return TestUtils.InitGameWithPreset("4k3/8/8/8/8/5r2/8/4K3 b - - 0 1");
+            yield return InitGameWithPreset("4k3/8/8/8/8/5r2/8/4K3 b - - 0 1");
 
-            var currentPlayer = Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
             var game = Object.FindObjectOfType<Game>();
 
             Assert.AreEqual(CheckType.None, game.CheckType);
 
-            yield return TestUtils.Move("f3e3");
+            yield return Move("f3e3");
 
             Assert.AreEqual(CheckType.Check, game.CheckType);
         }
@@ -66,14 +117,13 @@ namespace PlayTests
         [UnityTest]
         public IEnumerator Check_WhenAttackGone_StateIsNone()
         {
-            yield return TestUtils.InitGameWithPreset("4k3/8/8/8/8/4r3/8/4K3 b - - 0 1");
+            yield return InitGameWithPreset("4k3/8/8/8/8/4r3/8/4K3 b - - 0 1");
 
-            var currentPlayer = Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
             var game = Object.FindObjectOfType<Game>();
 
             Assert.AreEqual(CheckType.Check, game.CheckType);
 
-            yield return TestUtils.Move("e3f3");
+            yield return Move("e3f3");
 
             Assert.AreEqual(CheckType.None, game.CheckType);
         }
@@ -81,25 +131,21 @@ namespace PlayTests
         [UnityTest]
         public IEnumerator CheckMate_WhenUnderAttackAndCanNotMove_StateIsCheckMate()
         {
-            yield return TestUtils.InitGameWithPreset("6k1/8/8/8/8/4r3/r7/1PKP4 b - - 0 1");
+            yield return InitGameWithPreset("6k1/8/8/8/8/4r3/r7/1PKP4 b - - 0 1");
 
-            var currentPlayer = Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
-            var game = Object.FindObjectOfType<Game>();
+            yield return Move("e3c3");
 
-            yield return TestUtils.Move("e3c3");
-
-            Assert.AreEqual(CheckType.CheckMate, game.CheckType);
+            Assert.AreEqual(CheckType.Checkmate, TestUtils.Game.CheckType);
         }
 
         [UnityTest]
         public IEnumerator Stalemate_WhenKingPinned_StateIsStalemate()
         {
-            yield return TestUtils.InitGameWithPreset("4k3/8/8/8/6q1/8/8/7K b - - 0 1");
+            yield return InitGameWithPreset("4k3/8/8/8/6q1/8/8/7K b - - 0 1");
 
             var game = Object.FindObjectOfType<Game>();
-            var currentPlayer = Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
 
-            yield return TestUtils.Move("g4g3");
+            yield return Move("g4g3");
 
             Assert.AreEqual(game.CheckType, CheckType.Draw);
         }
@@ -107,15 +153,14 @@ namespace PlayTests
         [UnityTest]
         public IEnumerator Castling_WhenCanCastleAndCastling_MoveToSquare()
         {
-            yield return TestUtils.InitGameWithPreset("4k3/8/8/8/8/8/8/4K2R w K - 0 1");
+            yield return InitGameWithPreset("4k3/8/8/8/8/8/8/4K2R w K - 0 1");
 
-            var currentPlayer = Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
             var game = Object.FindObjectOfType<Game>();
 
             Piece kingGiven = game.Board.GetSquare("e1").GetPiece();
             Piece rookGiven = game.Board.GetSquare("h1").GetPiece();
 
-            yield return TestUtils.Move("e1g1");
+            yield return Move("e1g1");
 
             Piece kingExpected = game.Board.GetSquare("g1").GetPiece();
             Piece rookExpected = game.Board.GetSquare("f1").GetPiece();
@@ -126,15 +171,14 @@ namespace PlayTests
         [UnityTest]
         public IEnumerator Castling_WhenUnderAttack_CanNotMoveToSquare()
         {
-            yield return TestUtils.InitGameWithPreset("4k3/8/8/8/8/4r3/8/4K2R w K - 0 1");
+            yield return InitGameWithPreset("4k3/8/8/8/8/4r3/8/4K2R w K - 0 1");
 
-            var currentPlayer = Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
             var game = Object.FindObjectOfType<Game>();
 
             Piece kingGiven = game.Board.GetSquare("e1").GetPiece();
             Piece rookGiven = game.Board.GetSquare("h1").GetPiece();
 
-            yield return TestUtils.Move("e1g1");
+            yield return Move("e1g1");
 
             Piece kingExpected = game.Board.GetSquare("g1").GetPiece();
             Piece rookExpected = game.Board.GetSquare("f1").GetPiece();
@@ -145,32 +189,19 @@ namespace PlayTests
         [UnityTest]
         public IEnumerator Castling_WhenMoveLineUnderAttack_CanNotMoveToSquare()
         {
-            yield return TestUtils.InitGameWithPreset("4k3/8/8/8/8/5r2/8/4K2R w K - 0 1");
+            yield return InitGameWithPreset("4k3/8/8/8/8/5r2/8/4K2R w K - 0 1");
 
-            var currentPlayer = Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
             var game = Object.FindObjectOfType<Game>();
 
             Piece kingGiven = game.Board.GetSquare("e1").GetPiece();
             Piece rookGiven = game.Board.GetSquare("h1").GetPiece();
 
-            yield return TestUtils.Move("e1g1");
+            yield return Move("e1g1");
 
             Piece kingExpected = game.Board.GetSquare("g1").GetPiece();
             Piece rookExpected = game.Board.GetSquare("f1").GetPiece();
             Assert.AreNotEqual(kingExpected, kingGiven);
             Assert.AreNotEqual(rookExpected, rookGiven);
-        }
-
-        [UnitySetUp]
-        public IEnumerator Setup()
-        {
-            yield return SceneManager.LoadSceneAsync("MainMenuScene");
-
-            var gameSettingsContainerObj = Object.FindObjectOfType<GameSettingsContainer>();
-            gameSettingsContainerObj.SetupGameOffline();
-
-            yield return SceneManager.LoadSceneAsync("GameScene", LoadSceneMode.Additive);
-            yield return SceneManager.UnloadSceneAsync("MainMenuScene");
         }
     }
 }
