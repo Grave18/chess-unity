@@ -34,63 +34,36 @@ namespace UnityUi.InGame
 
         private void UpdateNotificationText()
         {
-            switch (game.CheckType)
+            if (game.IsCheck)
             {
-                case CheckType.None:
-                    SetPanel(text: "", additional: "", isText: false, isPanel: false);
-                    break;
-                case CheckType.Check:
-                    SetPanel(text: "Check", additional: "", isText: true, isPanel: false);
-                    break;
-                case CheckType.DoubleCheck:
-                    SetPanel(text: "Double check", additional: "", isText: true, isPanel: false);
-                    break;
-                case CheckType.CheckMate:
-                    ProcessCheckmate(game.CurrentTurnColor);
-                    break;
-                case CheckType.Draw:
-                    SetPanel(text: "Draw", additional: game.CheckDescription, isText: true, isPanel: true);
-                    break;
-                case CheckType.Resign:
-                    SetPanel(text: "Resign", additional: game.CheckDescription, isText: true, isPanel: true);
-                    break;
-                case CheckType.TimeOutWhite or CheckType.TimeOutBlack:
-                    ProcessTimeOut(game.CheckType);
-                    break;
-                default:
-                    SetPanel(text: "", "", isText: false, isPanel: false);
-                    break;
+                SetPanel(text: "Check", additional: "", isShowHeader: true, isShowAdditional: false);
+            }
+            else if (game.IsCheckmate)
+            {
+                SetPanel(text: "Checkmate", game.EndGameDescription, isShowHeader: true, isShowAdditional: true);
+            }
+            else if (game.IsDraw)
+            {
+                SetPanel(text: "Draw", additional: game.EndGameDescription, isShowHeader: true, isShowAdditional: true);
+            }
+            else if (game.IsResign)
+            {
+                SetPanel(text: "Resign", additional: game.EndGameDescription, isShowHeader: true, isShowAdditional: true);
+            }
+            else if (game.IsTimeOut)
+            {
+                SetPanel(text: "Time is over",game.EndGameDescription, isShowHeader: true, isShowAdditional: true);
+            }
+            else
+            {
+                SetPanel(text: "", "", isShowHeader: false, isShowAdditional: false);
             }
         }
 
-        private void ProcessTimeOut(CheckType checkType)
+        private void SetPanel(string text, string additional, bool isShowHeader, bool isShowAdditional)
         {
-            string additional = checkType switch
-            {
-                CheckType.TimeOutWhite => "White runs out of time",
-                CheckType.TimeOutBlack => "Black runs out of time",
-                _ => "Invalid time out",
-            };
-
-            SetPanel(text: "Time is over", additional, isText: true, isPanel: true);
-        }
-
-        private void ProcessCheckmate(PieceColor currentColor)
-        {
-            string additional = currentColor switch
-            {
-                PieceColor.Black => "White wins this game",
-                PieceColor.White => "Black wins this game",
-                _ => "Invalid color"
-            };
-
-            SetPanel(text: "Checkmate", additional, isText: true, isPanel: true);
-        }
-
-        private void SetPanel(string text, string additional, bool isText, bool isPanel)
-        {
-            notificationText.gameObject.SetActive(isText);
-            additionalPanel.SetActive(isPanel);
+            notificationText.gameObject.SetActive(isShowHeader);
+            additionalPanel.SetActive(isShowAdditional);
             notificationText.text = text;
             additionalText.text = additional;
         }

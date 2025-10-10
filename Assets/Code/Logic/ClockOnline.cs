@@ -130,7 +130,7 @@ namespace Logic
         [ObserversRpc]
         private void SetTimeoutAll(PieceColor pieceColor)
         {
-            _game.SetTimeOut(pieceColor);
+            _game.TimeOutSetup(pieceColor);
         }
     }
 }

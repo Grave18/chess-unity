@@ -14,6 +14,12 @@ namespace Logic.GameStates
 
         public override void Enter()
         {
+            if (Game.IsEndGame)
+            {
+                EndGame();
+                return;
+            }
+
             _isRunning = true;
             Game.Competitors.StartPlayer();
         }
@@ -56,18 +62,24 @@ namespace Logic.GameStates
 
         public override void Update()
         {
-            if (Game.IsCheckMate)
-            {
-                Game.Checkmate();
-                return;
-            }
-
             if (!_isRunning)
             {
                 return;
             }
 
+            if (Game.IsEndGame)
+            {
+                EndGame();
+                return;
+            }
+
             Game.Competitors.UpdatePlayer();
+        }
+
+        private void EndGame()
+        {
+            Game.GameStateMachine.SetState(new EndGameState(Game));
+            Game.Competitors.StopPlayer();
         }
     }
 }

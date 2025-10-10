@@ -23,6 +23,10 @@ namespace Settings
         public bool IsAutorotateCamera = true;
         public bool IsRotateCameraOnStart = true;
 
+        [Header("Draw Rules")]
+        public int FiftyMoveRuleCount = 50;
+        public int ThreefoldRepetitionCount = 3;
+
         [Header("Models")]
         public string PiecesModelAddress;
         public string BoardModelAddress;

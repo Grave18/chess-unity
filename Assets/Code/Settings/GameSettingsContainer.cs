@@ -63,6 +63,26 @@ namespace Settings
             }
         }
 
+        public int FiftyMoveRuleCount
+        {
+            get => gameSettings.FiftyMoveRuleCount;
+            set
+            {
+                gameSettings.FiftyMoveRuleCount = value;
+                Save();
+            }
+        }
+
+        public int ThreefoldRepetitionCount
+        {
+            get => gameSettings.ThreefoldRepetitionCount;
+            set
+            {
+                gameSettings.ThreefoldRepetitionCount = value;
+                Save();
+            }
+        }
+
         private void Awake()
         {
             Init();

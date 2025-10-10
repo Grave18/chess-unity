@@ -7,10 +7,9 @@
         Check,
         DoubleCheck,
         // End game
-        CheckMate,
+        Checkmate,
         Draw,
+        TimeOut,
         Resign,
-        TimeOutWhite,
-        TimeOutBlack,
     }
 }

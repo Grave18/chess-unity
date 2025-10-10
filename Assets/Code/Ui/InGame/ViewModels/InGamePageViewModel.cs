@@ -55,7 +55,7 @@ namespace Ui.InGame.ViewModels
         private bool OpenRematchPopup_CanExecute()
         {
             bool isOffline = OnlineInstanceHandler.IsOffline;
-            bool isOnline = OnlineInstanceHandler.IsOnline && !IsRematchRequested && !IsDrawRequested && game.IsGameOver;
+            bool isOnline = OnlineInstanceHandler.IsOnline && !IsRematchRequested && !IsDrawRequested && game.IsEndGame;
             bool canOpen = isOffline || isOnline;
             return canOpen;
         }
@@ -75,7 +75,7 @@ namespace Ui.InGame.ViewModels
 
         private bool OpenDrawPopup_CanExecute()
         {
-            bool isOnline = OnlineInstanceHandler.IsOnline && !IsRematchRequested && !IsDrawRequested && !game.IsGameOver && game.IsMyTurn;
+            bool isOnline = OnlineInstanceHandler.IsOnline && !IsRematchRequested && !IsDrawRequested && !game.IsEndGame && game.IsMyTurn;
             return isOnline;
         }
 
@@ -94,7 +94,7 @@ namespace Ui.InGame.ViewModels
 
         private bool OpenResignPopup_CanExecute()
         {
-            bool isOnline = OnlineInstanceHandler.IsOnline && !IsRematchRequested && !IsDrawRequested&& !game.IsGameOver && game.IsMyTurn;
+            bool isOnline = OnlineInstanceHandler.IsOnline && !IsRematchRequested && !IsDrawRequested&& !game.IsEndGame && game.IsMyTurn;
             return isOnline;
         }
 
@@ -206,7 +206,7 @@ namespace Ui.InGame.ViewModels
 
         private void DrawApprove()
         {
-            game.Draw("Draw by agreement");
+            game.DrawSetup("Draw by agreement");
             popupViewModel.ClosePopupToGame();
 
             PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
@@ -217,7 +217,7 @@ namespace Ui.InGame.ViewModels
         private void DrawApprove_TargetRpc(PlayerID otherPlayerID)
         {
             IsDrawRequested = false;
-            game.Draw("Draw by agreement");
+            game.DrawSetup("Draw by agreement");
         }
 
         private void DrawDecline()
@@ -236,7 +236,7 @@ namespace Ui.InGame.ViewModels
 
         private void Resign()
         {
-            game.Resign();
+            game.ResignSetup();
             popupViewModel.ClosePopupToGame();
 
             PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
@@ -246,7 +246,7 @@ namespace Ui.InGame.ViewModels
         [TargetRpc]
         private void Resign_TargetRpc(PlayerID otherPlayerID)
         {
-            game.Resign();
+            game.ResignSetup();
         }
     }
 }

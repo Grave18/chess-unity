@@ -50,7 +50,7 @@ namespace Highlighting
             }
 
             // Highlight check king and attacker pieces
-            if (_game.CheckType is CheckType.Check or CheckType.DoubleCheck)
+            if (_game.IsCheck)
             {
                 HighlightCheck(piece);
             }

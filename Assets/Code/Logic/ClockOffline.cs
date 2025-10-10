@@ -103,7 +103,7 @@ namespace Logic
             {
                 _isPlaying = false;
                 time = TimeSpan.Zero;
-                _game.SetTimeOut(pieceColor);
+                _game.TimeOutSetup(pieceColor);
             }
         }
     }

@@ -25,19 +25,17 @@ namespace Logic
         public PieceColor CurrentTurnColor { get; private set; } = PieceColor.White;
         public PieceColor PreviousTurnColor => CurrentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
         public CheckType CheckType { get; private set; } = CheckType.None;
-        public string CheckDescription { get; private set; }
+        public string EndGameDescription { get; private set; }
         public HashSet<Square> UnderAttackSquares { get; private set; } = new();
         public AttackLinesList AttackLines { get; } = new();
+        private PieceColor _winnerColor;
 
-        public ISelectable Selected { get; private set; }
-
-        [Header("Settings")]
-        [SerializeField] private int rule50Count = 50;
-        [SerializeField] private int ruleThreefoldCount = 3;
+        // Draw Rules
+        private int _fiftyMoveRuleCount;
+        private int _threefoldRepetitionCount;
 
         private PieceColor _startingColor;
         private CameraController _cameraController;
-        private PieceColor _winnerColor;
         private GameSettingsContainer _gameSettingsContainer;
 
         // Board shortcuts
@@ -48,17 +46,21 @@ namespace Logic
 
         // End game
         public bool IsCheck => CheckType is CheckType.Check or CheckType.DoubleCheck;
-        public bool IsCheckMate => CheckType == CheckType.CheckMate;
+        public bool IsCheckmate => CheckType is CheckType.Checkmate;
         public bool IsDraw => CheckType == CheckType.Draw;
+        public bool IsTimeOut => CheckType is CheckType.TimeOut;
+        public bool IsResign => CheckType is CheckType.Resign;
+        public bool IsEndGame => IsCheckmate || IsDraw || IsTimeOut || IsResign;
         public bool IsWinnerWhite => _winnerColor == PieceColor.White;
         public bool IsWinnerBlack => _winnerColor == PieceColor.Black;
-        private bool IsTimeOut => CheckType is CheckType.TimeOutWhite or CheckType.TimeOutBlack;
-        public bool IsGameOver => CheckType is not CheckType.None and not CheckType.Check and not CheckType.DoubleCheck;
 
         /// Is it turn of current player
         public bool IsMyTurn => CurrentTurnColor == _gameSettingsContainer.GameSettings.PlayerColor;
         public bool IsWhiteTurn => CurrentTurnColor == PieceColor.White;
         public bool IsBlackTurn => CurrentTurnColor == PieceColor.Black;
+
+        // Selection
+        public ISelectable Selected { get; private set; }
 
         public HashSet<Piece> CurrentTurnPieces => CurrentTurnColor == PieceColor.White ? Board.WhitePieces : Board.BlackPieces;
         public HashSet<Piece> PrevTurnPieces => CurrentTurnColor == PieceColor.Black ? Board.WhitePieces : Board.BlackPieces;
@@ -91,6 +93,9 @@ namespace Logic
             _gameSettingsContainer = gameSettingsContainer;
             GameStateMachine = gameStateMachine;
             MenuStateMachine = menuStateMachine;
+
+            _fiftyMoveRuleCount = _gameSettingsContainer.FiftyMoveRuleCount;
+            _threefoldRepetitionCount = _gameSettingsContainer.ThreefoldRepetitionCount;
         }
 
         public async UniTask StartGame()
@@ -121,26 +126,50 @@ namespace Logic
             Competitors.SwapCurrentPlayer();
         }
 
-        public void SetTimeOut(PieceColor pieceColor)
+        public void Rematch()
+        {
+            Competitors.Restart();
+            Board.Build();
+            StartGame().Forget();
+        }
+
+        public void TimeOutSetup(PieceColor pieceColor)
         {
             if (pieceColor == PieceColor.White)
             {
-                CheckType = CheckType.TimeOutWhite;
+                CheckType = CheckType.TimeOut;
                 _winnerColor = PieceColor.Black;
+                EndGameDescription = "White is timeout";
             }
             else if (pieceColor == PieceColor.Black)
             {
-                CheckType = CheckType.TimeOutBlack;
+                CheckType = CheckType.TimeOut;
                 _winnerColor = PieceColor.White;
+                EndGameDescription = "Black is timeout";
             }
-
-            GameStateMachine.SetState(new EndGameState(this));
         }
 
-        public void Checkmate()
+        public void CheckmateSetup()
         {
+            CheckType = CheckType.Checkmate;
             _winnerColor = PreviousTurnColor;
-            GameStateMachine.SetState(new EndGameState(this));
+
+            string winnerString = _winnerColor == PieceColor.White ? "White" : "Black";
+            EndGameDescription = $"{winnerString} winning the game";
+        }
+
+        public void DrawSetup(string description)
+        {
+            CheckType = CheckType.Draw;
+            EndGameDescription = description;
+            _winnerColor = PieceColor.None;
+        }
+
+        public void ResignSetup()
+        {
+            CheckType = CheckType.Resign;
+            EndGameDescription = $"{CurrentTurnColor} player resigned";
+            _winnerColor = PreviousTurnColor;
         }
 
         /// Calculate under attack squares, check type, moves, captures, draw
@@ -155,8 +184,7 @@ namespace Logic
                 piece.CalculateConstrains();
             }
 
-            CalculateDraw();
-            CalculateCheckMate(CurrentTurnPieces);
+            CalculateEndGame(CurrentTurnPieces);
         }
 
         private static HashSet<Square> GetUnderAttackSquares(HashSet<Piece> pieces)
@@ -247,132 +275,36 @@ namespace Logic
             }
         }
 
-        private void CalculateDraw()
+        private void CalculateEndGame(HashSet<Piece> currentTurnPieces)
         {
-            if (IsThreefoldRule())
-            {
-                Draw("By threefold repetition");
-            }
-            else if (IsRule50())
-            {
-                Draw("By fifty move rule");
-            }
-            else if(IsInsufficientPieces())
-            {
-                // Description was set earlier
-                Draw(CheckDescription);
-            }
-        }
-
-        public void Rematch()
-        {
-            Competitors.Restart();
-            Board.Build();
-            StartGame().Forget();
-        }
-
-        public void Draw(string description)
-        {
-            CheckType = CheckType.Draw;
-            CheckDescription = description;
-            _winnerColor = PieceColor.None;
-
-            GameStateMachine.SetState(new EndGameState(this));
-        }
-
-        public void Resign()
-        {
-            CheckType = CheckType.Resign;
-            CheckDescription = $"{CurrentTurnColor} player resigned";
-            _winnerColor = PreviousTurnColor;
-
-            GameStateMachine.SetState(new EndGameState(this));
-        }
-
-        private bool IsThreefoldRule()
-        {
-            bool isThreefold = UciBuffer.ThreefoldRepetitionCount == ruleThreefoldCount;
-
-            return isThreefold;
-        }
-
-        private bool IsRule50()
-        {
-            return UciBuffer.HalfMoveClock == rule50Count * 2;
-        }
-
-        private bool IsInsufficientPieces()
-        {
-            bool isInsufficientPieces = IsInsufficientPiecesOneSide(CurrentTurnPieces, PrevTurnPieces)
-                          || IsInsufficientPiecesOneSide(PrevTurnPieces, CurrentTurnPieces);
-
-            return isInsufficientPieces;
-        }
-
-        private bool IsInsufficientPiecesOneSide(HashSet<Piece> thisSide, HashSet<Piece> otherSide)
-        {
-            bool oneKingThisSide = thisSide.Count == 1 && thisSide.First() is King;
-            bool isDraw = oneKingThisSide && IsInsufficientFiguresInOtherSide(otherSide);
-
-            return isDraw;
-        }
-
-        /// K-K; K-KN; K-KNN; K-KB
-        private bool IsInsufficientFiguresInOtherSide(HashSet<Piece> otherSide)
-        {
-            bool hasKing = otherSide.Count > 0 && otherSide.Any(p => p is King);
-
-            bool oneKing = otherSide.Count == 1 && hasKing;
-            if (oneKing)
-            {
-                CheckDescription = "Insufficient figures. Both sides has only one king";
-                return true;
-            }
-
-            bool kingAndBishop = otherSide.Count == 2 && hasKing && otherSide.Any(p => p is Bishop);
-            if (kingAndBishop)
-            {
-                CheckDescription = "Insufficient figures. One side has one king and other king and bishop";
-                return true;
-            }
-
-            bool kingAndKnight = otherSide.Count == 2 && hasKing && otherSide.Any(p => p is Knight);
-            if (kingAndKnight)
-            {
-                CheckDescription = "Insufficient figures. One side has one king and other king and knight";
-                return true;
-            }
-
-            bool kingAnd2Knights = otherSide.Count == 3 && hasKing && otherSide.OfType<Knight>().Count() == 2;
-            if (kingAnd2Knights)
-            {
-                CheckDescription = "Insufficient figures. One side has one king and other king and 2 knights";
-                return true;
-            }
-
-            return false;
-        }
-
-        private void CalculateCheckMate(HashSet<Piece> currentTurnPieces)
-        {
-            // If all pieces have no moves exit early
             if (IsAnyPieceHasMove(currentTurnPieces))
             {
-                return;
+                if (IsThreefoldRule())
+                {
+                    DrawSetup("By threefold repetition");
+                }
+                else if (IsRule50())
+                {
+                    DrawSetup("By fifty move rule");
+                }
+                else if(IsInsufficientMaterial(out string checkDescription))
+                {
+                    DrawSetup(checkDescription);
+                }
             }
-
-            switch (CheckType)
+            else
             {
-                case CheckType.None:
-                    CheckType = CheckType.Draw;
-                    CheckDescription = "Stalemate. Players have no moves";
-                    break;
-                case CheckType.Check or CheckType.DoubleCheck:
-                    CheckType = CheckType.CheckMate;
-                    break;
-                default:
-                    CheckType = CheckType;
-                    break;
+                switch (CheckType)
+                {
+                    // Stalemate
+                    case CheckType.None:
+                        DrawSetup("Stalemate. Players have no moves");
+                        break;
+                    // Checkmate
+                    case CheckType.Check or CheckType.DoubleCheck:
+                        CheckmateSetup();
+                        break;
+                }
             }
         }
 
@@ -382,7 +314,79 @@ namespace Logic
                                                   || piece.CaptureSquares.Count > 0);
         }
 
-        // Board shortcuts
+        private bool IsThreefoldRule()
+        {
+            bool isThreefold = UciBuffer.ThreefoldRepetitionCount == _threefoldRepetitionCount;
+
+            return isThreefold;
+        }
+
+        private bool IsRule50()
+        {
+            return UciBuffer.HalfMoveClock == _fiftyMoveRuleCount * 2;
+        }
+
+        private bool IsInsufficientMaterial(out string checkDescription)
+        {
+            checkDescription = string.Empty;
+            bool isInsufficientPieces = IsInsufficientPiecesOneSide(CurrentTurnPieces, PrevTurnPieces, out checkDescription)
+                          || IsInsufficientPiecesOneSide(PrevTurnPieces, CurrentTurnPieces, out checkDescription);
+
+            return isInsufficientPieces;
+        }
+
+        private static bool IsInsufficientPiecesOneSide(HashSet<Piece> thisSide, HashSet<Piece> otherSide, out string checkDescription)
+        {
+            checkDescription = string.Empty;
+            bool oneKingThisSide = thisSide.Count == 1 && thisSide.First() is King;
+            bool isDraw = oneKingThisSide && IsInsufficientFiguresInOtherSide(otherSide, out checkDescription);
+
+            return isDraw;
+        }
+
+        /// K-K; K-KN; K-KNN; K-KB
+        private static bool IsInsufficientFiguresInOtherSide(HashSet<Piece> otherSide, out string checkDescription)
+        {
+            checkDescription = string.Empty;
+            bool hasKing = otherSide.Count > 0 && otherSide.Any(p => p is King);
+
+            // K vs K
+            bool oneKing = otherSide.Count == 1 && hasKing;
+            if (oneKing)
+            {
+                checkDescription = "Insufficient figures. Both sides has only one king";
+                return true;
+            }
+
+            // K vs KB
+            bool kingAndBishop = otherSide.Count == 2 && hasKing && otherSide.Any(p => p is Bishop);
+            if (kingAndBishop)
+            {
+                checkDescription = "Insufficient figures. One side has one king and other king and bishop";
+                return true;
+            }
+
+            // K vs KN
+            bool kingAndKnight = otherSide.Count == 2 && hasKing && otherSide.Any(p => p is Knight);
+            if (kingAndKnight)
+            {
+                checkDescription = "Insufficient figures. One side has one king and other king and knight";
+                return true;
+            }
+
+            // K vs KNN
+            bool kingAnd2Knights = otherSide.Count == 3 && hasKing && otherSide.OfType<Knight>().Count() == 2;
+            if (kingAnd2Knights)
+            {
+                checkDescription = "Insufficient figures. One side has one king and other king and 2 knights";
+                return true;
+            }
+
+            return false;
+        }
+
+#region Board shortcuts
+
         /// Get section relative to current piece color
         public Square GetSquareRel(PieceColor pieceColor, Square currentSquare, Vector2Int offset)
         {
@@ -411,5 +415,7 @@ namespace Logic
         {
             Selected = null;
         }
+
+#endregion
     }
 }

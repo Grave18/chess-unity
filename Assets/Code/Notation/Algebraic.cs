@@ -75,7 +75,7 @@ namespace Notation
             {
                 CheckType.Check => "+",
                 CheckType.DoubleCheck => "++",
-                CheckType.CheckMate => "#",
+                CheckType.Checkmate => "#",
                 _ => string.Empty,
             };
         }

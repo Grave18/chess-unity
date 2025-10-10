@@ -74,7 +74,7 @@ namespace Logic.GameStates
             {
                 Uci = _uci,
                 IsFirstMove = piece.IsFirstMove,
-                HalfMoveClock = GetHalfMoves(),
+                HalfMoveClock = GetIncrementedHalfMovesCounter(),
                 FullMoveCounter = GetFullMoveCounter(piece.GetPieceColor()),
             };
             bool isValid = false;
@@ -149,7 +149,7 @@ namespace Logic.GameStates
             return isValid;
         }
 
-        private int GetHalfMoves()
+        private int GetIncrementedHalfMovesCounter()
         {
             return Game.UciBuffer.HalfMoveClock + 1;
         }
