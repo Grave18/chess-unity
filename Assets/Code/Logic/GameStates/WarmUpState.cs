@@ -16,7 +16,7 @@
 
         public override void Exit()
         {
-            // Empty
+            Game.FireStart();
         }
 
         public override void Move(string uci)

@@ -105,6 +105,7 @@ namespace Initialization
 
         private void InitGame()
         {
+            gameStateMachine.Init(game);
             game.Init(board, competitors, cameraController, uciBuffer,
                 _turnColor, gameSettingsContainer, gameStateMachine, menuStateMachine);
         }

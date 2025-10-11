@@ -5,7 +5,7 @@ namespace Logic.Players
 {
     public class GameStateMachine : MonoBehaviour
     {
-        [SerializeField] private Game game;
+        private Game _game;
 
         private GameState _state;
         private GameState _previousState;
@@ -23,6 +23,11 @@ namespace Logic.Players
             _state?.Enter();
         }
 
+        public void Init(Game game)
+        {
+            _game = game;
+        }
+
         public void SetPreviousState()
         {
             if (_previousState != null)
@@ -32,7 +37,7 @@ namespace Logic.Players
             }
             else
             {
-                SetState(new IdleState(game));
+                SetState(new IdleState(_game));
                 Debug.Log("Go to default Idle state");
             }
         }

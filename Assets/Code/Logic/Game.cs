@@ -38,12 +38,6 @@ namespace Logic
         private CameraController _cameraController;
         private GameSettingsContainer _gameSettingsContainer;
 
-        // Board shortcuts
-        public HashSet<Piece> WhitePieces => Board.WhitePieces;
-        public HashSet<Piece> BlackPieces => Board.BlackPieces;
-        public IEnumerable<Square> Squares => Board.Squares;
-        public Square NullSquare => Board.NullSquare;
-
         // End game
         public bool IsCheck => CheckType is CheckType.Check or CheckType.DoubleCheck;
         public bool IsCheckmate => CheckType is CheckType.Checkmate;
@@ -109,7 +103,6 @@ namespace Logic
             await _cameraController.RotateToStartPosition(isRotateCameraOnStart);
 
             GameStateMachine.SetState(new IdleState(this));
-            FireStart();
         }
 
         private void ResetGameState()
@@ -386,6 +379,12 @@ namespace Logic
         }
 
 #region Board shortcuts
+
+        // Board shortcuts
+        public HashSet<Piece> WhitePieces => Board.WhitePieces;
+        public HashSet<Piece> BlackPieces => Board.BlackPieces;
+        public IEnumerable<Square> Squares => Board.Squares;
+        public Square NullSquare => Board.NullSquare;
 
         /// Get section relative to current piece color
         public Square GetSquareRel(PieceColor pieceColor, Square currentSquare, Vector2Int offset)
