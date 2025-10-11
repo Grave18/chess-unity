@@ -12,13 +12,13 @@ namespace Logic.Players
 
         public string StateName => _state?.Name ?? "No State";
 
-        public void SetState(GameState state, string nextState = "None", bool isSetPreviousState = true)
+        public void SetState(GameState state, bool isSetPreviousState = true)
         {
             _previousState = isSetPreviousState
                 ? _state
                 : null;
 
-            _state?.Exit(nextState);
+            _state?.Exit();
             _state = state;
             _state?.Enter();
         }
@@ -27,12 +27,12 @@ namespace Logic.Players
         {
             if (_previousState != null)
             {
-                SetState(_previousState, _previousState.Name);
+                SetState(_previousState);
                 _previousState = null;
             }
             else
             {
-                SetState(new IdleState(game), "Idle");
+                SetState(new IdleState(game));
                 Debug.Log("Go to default Idle state");
             }
         }

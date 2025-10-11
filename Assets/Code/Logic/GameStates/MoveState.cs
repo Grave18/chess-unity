@@ -182,7 +182,7 @@ namespace Logic.GameStates
             Game.GameStateMachine.SetState(new IdleState(Game));
         }
 
-        public override void Exit(string nextState)
+        public override void Exit()
         {
             // Empty
         }

@@ -16,7 +16,7 @@ namespace Logic.GameStates
             Game.FireEnd();
         }
 
-        public override void Exit(string nextState)
+        public override void Exit()
         {
             // Empty
         }

@@ -14,7 +14,7 @@ namespace Logic.GameStates
             Game.FirePause();
         }
 
-        public override void Exit(string nextState)
+        public override void Exit()
         {
             Game.FirePlay();
         }

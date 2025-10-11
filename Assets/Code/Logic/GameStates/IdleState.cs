@@ -24,7 +24,7 @@ namespace Logic.GameStates
             Game.Competitors.StartPlayer();
         }
 
-        public override void Exit(string nextState)
+        public override void Exit()
         {
             Game.Competitors.StopPlayer();
         }

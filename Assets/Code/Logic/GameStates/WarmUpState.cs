@@ -14,7 +14,7 @@
             Game.FireWarmup();
         }
 
-        public override void Exit(string nextState)
+        public override void Exit()
         {
             // Empty
         }

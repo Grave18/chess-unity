@@ -118,7 +118,7 @@ namespace Logic.GameStates
             Game.GameStateMachine.SetPreviousState();
         }
 
-        public override void Exit(string nextState)
+        public override void Exit()
         {
             // Empty
         }
