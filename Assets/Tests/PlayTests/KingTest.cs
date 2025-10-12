@@ -117,13 +117,13 @@ namespace PlayTests
         [UnityTest]
         public IEnumerator Check_WhenAttackGone_StateIsNone()
         {
-            yield return InitGameWithPreset("4k3/8/8/8/8/4r3/8/4K3 b - - 0 1");
+            yield return InitGameWithPreset("4k3/8/8/8/8/4r3/8/4K3 w - - 0 1");
 
             var game = Object.FindObjectOfType<Game>();
 
             Assert.AreEqual(CheckType.Check, game.CheckType);
 
-            yield return Move("e3f3");
+            yield return Move("e1f1");
 
             Assert.AreEqual(CheckType.None, game.CheckType);
         }

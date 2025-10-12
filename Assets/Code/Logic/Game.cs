@@ -94,8 +94,6 @@ namespace Logic
 
         public async UniTask StartGame()
         {
-            ResetGameState();
-            PreformCalculations();
             MenuStateMachine.SetState<PlayState>();
             GameStateMachine.SetState(new WarmUpState(this));
 
@@ -105,7 +103,7 @@ namespace Logic
             GameStateMachine.SetState(new IdleState(this));
         }
 
-        private void ResetGameState()
+        public void ResetGameState()
         {
             CheckType = CheckType.None;
             CurrentTurnColor = _startingColor;

@@ -11,6 +11,8 @@
 
         public override void Enter()
         {
+            Game.ResetGameState();
+            Game.PreformCalculations();
             Game.FireWarmup();
         }
 
