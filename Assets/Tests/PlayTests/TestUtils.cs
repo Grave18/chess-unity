@@ -41,6 +41,12 @@ namespace PlayTests
             yield return gameInitialization.StartGame().ToCoroutine();
         }
 
+        public static Piece GetPiece(string name)
+        {
+            var board = Object.FindObjectOfType<Board>();
+            return board.GetSquare(name).GetPiece();
+        }
+
         public static IEnumerator Move_AssertEqual_Undo(string where, Piece pieceGiven)
         {
             yield return Move(where);
