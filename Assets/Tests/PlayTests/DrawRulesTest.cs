@@ -124,11 +124,47 @@ namespace PlayTests
             Assert.AreEqual(CheckType.Draw, TestUtils.Game.CheckType);
         }
 
-        // [UnityTest]
-        // public IEnumerator InsufficientFiguresRule()
-        // {
-        //     yield return null;
-        //     Assert.Pass();
-        // }
+        [UnityTest]
+        public IEnumerator InsufficientMaterialRule_WhenInitialKK_MustBeDraw()
+        {
+            yield return InitGameWithPreset("4k3/8/8/8/8/8/8/4K3 w - - 0 1");
+
+            Assert.AreEqual(CheckType.Draw, TestUtils.Game.CheckType);
+        }
+
+        [UnityTest]
+        public IEnumerator InsufficientMaterialRule_WhenInitialKKB_MustBeDraw()
+        {
+            yield return InitGameWithPreset("6k1/8/8/5b2/8/8/8/7K b - - 0 1");
+
+            Assert.AreEqual(CheckType.Draw, TestUtils.Game.CheckType);
+        }
+
+        [UnityTest]
+        public IEnumerator InsufficientMaterialRule_WhenInitialKKN_MustBeDraw()
+        {
+            yield return InitGameWithPreset("6k1/8/8/8/3N4/8/8/7K b - - 0 1");
+
+            Assert.AreEqual(CheckType.Draw, TestUtils.Game.CheckType);
+        }
+
+        [UnityTest]
+        public IEnumerator InsufficientMaterialRule_WhenInitialKKNN_MustBeDraw()
+        {
+            yield return InitGameWithPreset("6k1/8/8/8/1n3n2/8/8/7K b - - 0 1");
+
+            Assert.AreEqual(CheckType.Draw, TestUtils.Game.CheckType);
+        }
+
+        [UnityTest]
+        public IEnumerator InsufficientMaterialRule_WhenKKAndCapturePawn_MustBeDraw()
+        {
+            yield return InitGameWithPreset("4k3/8/3P4/8/8/8/8/4K3 w - - 0 1");
+
+            yield return Move("d6d7");
+            yield return Move("e8d7");
+
+            Assert.AreEqual(CheckType.Draw, TestUtils.Game.CheckType);
+        }
     }
 }

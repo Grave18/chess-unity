@@ -345,7 +345,7 @@ namespace Logic
             bool oneKing = otherSide.Count == 1 && hasKing;
             if (oneKing)
             {
-                checkDescription = "Insufficient figures. Both sides has only one king";
+                checkDescription = "Insufficient material. Both sides has only one king";
                 return true;
             }
 
@@ -353,7 +353,7 @@ namespace Logic
             bool kingAndBishop = otherSide.Count == 2 && hasKing && otherSide.Any(p => p is Bishop);
             if (kingAndBishop)
             {
-                checkDescription = "Insufficient figures. One side has one king and other king and bishop";
+                checkDescription = "Insufficient material. One side has one king and other king and bishop";
                 return true;
             }
 
@@ -361,7 +361,7 @@ namespace Logic
             bool kingAndKnight = otherSide.Count == 2 && hasKing && otherSide.Any(p => p is Knight);
             if (kingAndKnight)
             {
-                checkDescription = "Insufficient figures. One side has one king and other king and knight";
+                checkDescription = "Insufficient material. One side has one king and other king and knight";
                 return true;
             }
 
@@ -369,7 +369,7 @@ namespace Logic
             bool kingAnd2Knights = otherSide.Count == 3 && hasKing && otherSide.OfType<Knight>().Count() == 2;
             if (kingAnd2Knights)
             {
-                checkDescription = "Insufficient figures. One side has one king and other king and 2 knights";
+                checkDescription = "Insufficient material. One side has one king and other king and 2 knights";
                 return true;
             }
 
