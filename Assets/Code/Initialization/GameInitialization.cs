@@ -98,9 +98,7 @@ namespace Initialization
 
         private void InitUciBuffer()
         {
-            int halfMoveClock = _fenFromString.HalfMoveClock;
-            int fullMoveCounter = _fenFromString.FullMoveCounter;
-            uciBuffer.Init(fenFromBoard, halfMoveClock, fullMoveCounter);
+            uciBuffer.Init(fenFromBoard, _fenFromString);
         }
 
         private void InitGame()

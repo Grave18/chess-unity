@@ -36,6 +36,11 @@ namespace Notation
             PieceInfos = GetPiecesFromPreset();
         }
 
+        public string GetShort()
+        {
+            return $"{_fenSplit.PiecesPreset} {_fenSplit.TurnColor} {_fenSplit.Castling} {_fenSplit.EnPassant}";
+        }
+
         private static PieceColor GetTurnColorFromFenSplit(string turnColorStr)
         {
             PieceColor turnColor = turnColorStr switch

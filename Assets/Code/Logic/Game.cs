@@ -307,7 +307,7 @@ namespace Logic
 
         private bool IsThreefoldRule()
         {
-            bool isThreefold = UciBuffer.ThreefoldRepetitionCount == _threefoldRepetitionCount;
+            bool isThreefold = UciBuffer.ThreefoldRepetitionCount >= _threefoldRepetitionCount;
 
             return isThreefold;
         }

@@ -323,6 +323,12 @@ namespace Settings
             Save();
         }
 
+        public void RestoreDefaultRules()
+        {
+            gameSettings.FiftyMoveRuleCount = 50;
+            gameSettings.ThreefoldRepetitionCount = 3;
+        }
+
         private void Save()
         {
             string jsonString = JsonUtility.ToJson(gameSettings);

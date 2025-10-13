@@ -30,11 +30,23 @@ namespace Logic.MovesBuffer
         /// Returns max repetition of the same position
         public int ThreefoldRepetitionCount => _threefoldRepetition.Values.Count > 0 ? _threefoldRepetition.Values.Max() : 0;
 
-        public void Init(FenFromBoard fenFromBoard, int initialHalfMoveClock, int initialFullMoveCounter)
+        public void Init(FenFromBoard fenFromBoard, FenFromString fenFromString)
         {
             _fenFromBoard = fenFromBoard;
-            _initialHalfMoveClock = initialHalfMoveClock;
-            _initialFullMoveCounter = initialFullMoveCounter;
+            _initialHalfMoveClock = fenFromString.HalfMoveClock;
+            _initialFullMoveCounter = fenFromString.FullMoveCounter;
+
+            AddInitialPositionToThreefoldRule(fenFromString);
+        }
+
+        private void AddInitialPositionToThreefoldRule(FenFromString fenFromString)
+        {
+            string shortFen = fenFromString.GetShort();
+
+            if (!_threefoldRepetition.TryAdd(shortFen, 1))
+            {
+                _threefoldRepetition[shortFen] += 1;
+            }
         }
 
         public void Add(MoveData moveData)
@@ -52,7 +64,7 @@ namespace Logic.MovesBuffer
             _head = newNode;
 
             RemoveRedundantMoves();
-            AddTreefoldRule(moveData);
+            AddThreefoldRule(moveData);
 
             OnAdd?.Invoke(newNode.Value);
         }
@@ -67,7 +79,7 @@ namespace Logic.MovesBuffer
             }
         }
 
-        private void AddTreefoldRule(MoveData moveData)
+        private void AddThreefoldRule(MoveData moveData)
         {
             // Threefold repetition
             string shortFen = _fenFromBoard.GetShort();
