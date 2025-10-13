@@ -2,6 +2,7 @@
 using Logic;
 using NUnit.Framework;
 using UnityEngine.TestTools;
+
 using static PlayTests.TestUtils;
 
 namespace PlayTests
@@ -13,6 +14,7 @@ namespace PlayTests
         public IEnumerator Setup()
         {
             yield return TestSetup();
+            GameSettingsContainer.RestoreDefaultRules();
         }
 
         [UnityTest]
@@ -35,7 +37,7 @@ namespace PlayTests
         public IEnumerator FiftyMoveRule_WhenLastIsCheckmate_MustBeCheckmate()
         {
             GameSettingsContainer.FiftyMoveRuleCount = 3;
-            yield return InitGameWithPreset("rnbqkbn1/8/8/8/8/8/r7/1NPPKPNR w - - 0 1", isRotateCameraOnStart: true);
+            yield return InitGameWithPreset("rnbqkbn1/8/8/8/8/8/r7/1NPPKPNR w - - 0 1");
 
             yield return Move("h1h8");
             yield return Move("a8a5");
@@ -79,13 +81,49 @@ namespace PlayTests
             Assert.AreNotEqual(CheckType.Draw, TestUtils.Game.CheckType);
         }
 
-        // [UnityTest]
-        // public IEnumerator ThreeFoldRule()
-        // {
-        //     yield return null;
-        //     Assert.Pass();
-        // }
-        //
+        [UnityTest]
+        public IEnumerator ThreeFoldRule_WhenNormal_MustBeDraw()
+        {
+            yield return InitGameWithPreset("k3r3/8/8/8/8/8/8/K3R2R w - - 0 1");
+
+            // 1st e1 e8
+            yield return Move("e1e2");
+            yield return Move("e8e7");
+            // 2nd e1 e8
+            yield return Move("e2e1");
+            yield return Move("e7e8");
+            yield return Move("e1e2");
+            yield return Move("e8e7");
+            // 3rd e1 e8
+            yield return Move("e2e1");
+            yield return Move("e7e8");
+
+            Assert.AreEqual(CheckType.Draw, TestUtils.Game.CheckType);
+        }
+
+        [UnityTest]
+        public IEnumerator ThreeFoldRule_WhenFirstPositionWithCastling_MustBeDraw()
+        {
+            yield return InitGameWithPreset("q3k3/8/8/8/8/8/8/4K2R w K - 0 1");
+
+            // 1st e1 e8
+            yield return Move("e1e2");
+            yield return Move("e8e7");
+            // 2nd e1 e8
+            yield return Move("e2e1");
+            yield return Move("e7e8");
+            yield return Move("e1e2");
+            yield return Move("e8e7");
+            // 3rd e1 e8
+            yield return Move("e2e1");
+            yield return Move("e7e8");
+            Assert.AreEqual(CheckType.None, TestUtils.Game.CheckType, "In this position must be None. Because initial castling position");
+
+            // Because first position is castling we must make one more move with white king
+            yield return Move("e1e2");
+            Assert.AreEqual(CheckType.Draw, TestUtils.Game.CheckType);
+        }
+
         // [UnityTest]
         // public IEnumerator InsufficientFiguresRule()
         // {

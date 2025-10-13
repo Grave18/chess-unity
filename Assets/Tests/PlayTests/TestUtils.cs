@@ -104,5 +104,17 @@ namespace PlayTests
             Game.GameStateMachine.Undo();
             return new WaitUntil(() => Game.GameStateMachine.StateName is "Idle" or "End Game");
         }
+
+        public static IEnumerator Wait(float sec, bool isRealtime = true)
+        {
+            if (isRealtime)
+            {
+                yield return new WaitForSecondsRealtime(sec);
+            }
+            else
+            {
+                yield return new WaitForSeconds(sec);
+            }
+        }
     }
 }
