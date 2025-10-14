@@ -17,7 +17,7 @@ namespace SceneManagement
         [SerializeField] private SceneReference onlineScene;
         [SerializeField] private SceneReference blankScene;
 
-        public async UniTaskVoid LoadMainMenu()
+        public async UniTask LoadMainMenu()
         {
             await SceneManager.LoadSceneAsync(loadingScene, LoadSceneMode.Additive);
             await LoadingSceneFader.Instance.Fade();
@@ -34,7 +34,7 @@ namespace SceneManagement
             await SceneManager.UnloadSceneAsync(loadingScene);
         }
 
-        public async UniTaskVoid LoadGame()
+        public async UniTask LoadGame()
         {
             await SceneManager.LoadSceneAsync(loadingScene, LoadSceneMode.Additive);
             await LoadingSceneFader.Instance.Fade();
@@ -50,13 +50,13 @@ namespace SceneManagement
             }
 
             await GameInitialization.Instance.Init();
-            GameInitialization.Instance.StartGame();
+            await GameInitialization.Instance.StartGame();
 
             await LoadingSceneFader.Instance.UnFade();
             await SceneManager.UnloadSceneAsync(loadingScene);
         }
 
-        public async UniTaskVoid LoadGameOnline()
+        public async UniTask LoadGameOnline()
         {
             await SceneManager.LoadSceneAsync(loadingScene, LoadSceneMode.Additive);
             await LoadingSceneFader.Instance.Fade();
@@ -72,7 +72,7 @@ namespace SceneManagement
             await OnlineInitialization.Instance.LoadGame();
 
             await GameInitialization.Instance.Init();
-            GameInitialization.Instance.StartGame();
+            await GameInitialization.Instance.StartGame();
 
             await LoadingSceneFader.Instance.UnFade();
             await SceneManager.UnloadSceneAsync(loadingScene);

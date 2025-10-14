@@ -1,4 +1,5 @@
-﻿using LobbyManagement;
+﻿using Cysharp.Threading.Tasks;
+using LobbyManagement;
 using Logic;
 using Settings;
 using Ui.Auxiliary;
@@ -35,13 +36,13 @@ namespace Ui.Menu.ViewModels
         private void PlayOffline(object obj)
         {
             gameSettingsContainer.SetupGameOffline();
-            sceneLoader.LoadGame();
+            sceneLoader.LoadGame().Forget();
         }
 
         private void PlayWithComputer(object obj)
         {
             gameSettingsContainer.SetupGameWithComputer();
-            sceneLoader.LoadGame();
+            sceneLoader.LoadGame().Forget();
         }
 
         private void PlayOnline(object obj)

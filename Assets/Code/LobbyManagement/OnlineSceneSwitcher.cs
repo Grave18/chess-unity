@@ -32,7 +32,7 @@ namespace LobbyManagement
             SetupAndSwitchScene(playerColor, isLobbyOwner).Forget();
         }
 
-        public async UniTaskVoid SetupAndSwitchScene(PieceColor playerColor, bool isHost, bool isLocal = false)
+        public async UniTask SetupAndSwitchScene(PieceColor playerColor, bool isHost, bool isLocal = false)
         {
             if (!isHost)
             {
@@ -43,7 +43,7 @@ namespace LobbyManagement
             GameSettingsContainer.IsHost = isHost;
             GameSettingsContainer.IsLocal = isLocal;
 
-            sceneLoader.LoadGameOnline().Forget();
+            await sceneLoader.LoadGameOnline();
         }
     }
 }
