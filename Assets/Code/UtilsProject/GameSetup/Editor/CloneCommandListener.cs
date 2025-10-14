@@ -24,6 +24,9 @@ namespace UtilsProject.GameSetup
                 case "StartLocalhost":
                     ExecuteLoadLocalhostCommand();
                     break;
+                case "ExitPlaymode":
+                    EditorApplication.ExitPlaymode();
+                    break;
             }
 
             PlayerPrefs.SetString("CommandToClone", string.Empty);

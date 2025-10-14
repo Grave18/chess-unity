@@ -2,7 +2,7 @@
 
 namespace UtilsProject.GameSetup
 {
-    public static class CommandSender
+    public static class CloneCommandSender
     {
         public static void Send(string command)
         {

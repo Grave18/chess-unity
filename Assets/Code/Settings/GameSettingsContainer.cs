@@ -164,6 +164,20 @@ namespace Settings
             Save();
         }
 
+        public void SetupGameOnlineWithComputer(PieceColor playerColor)
+        {
+            gameSettings.PlayerColor = playerColor;
+
+            PlayerSettings player1 = gameSettings.Player1Settings;
+            player1.PlayerType = PlayerType.Computer;
+
+            PlayerSettings player2 = gameSettings.Player2Settings;
+            player2.Name = "N/A";
+            player2.PlayerType = PlayerType.Computer;
+
+            Save();
+        }
+
         public string GetPlayerName()
         {
             return gameSettings.Player1Settings.Name;

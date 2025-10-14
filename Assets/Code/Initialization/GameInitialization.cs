@@ -60,9 +60,6 @@ namespace Initialization
         private FenFromString _fenFromString;
         private IClock _clock;
 
-        private bool IsOffline => _gameSettings.Player1Settings.PlayerType != PlayerType.Online
-                                  && _gameSettings.Player2Settings.PlayerType != PlayerType.Online;
-
         private bool IsVsPlayer => _gameSettings.Player1Settings.PlayerType == PlayerType.Human
                                    && _gameSettings.Player2Settings.PlayerType == PlayerType.Human;
 
@@ -115,7 +112,7 @@ namespace Initialization
 
         private void InitClock()
         {
-            _clock = IsOffline ? clockOffline : OnlineInstanceHandler.Clock;
+            _clock = OnlineInstanceHandler.IsOffline ? clockOffline : OnlineInstanceHandler.Clock;
             _clock.Init(game, gameSettingsContainer.GetTime());
 
             InstantiateClockPanel();

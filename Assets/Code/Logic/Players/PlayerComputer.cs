@@ -19,7 +19,6 @@ namespace Logic.Players
             _stockfish = stockfish;
         }
 
-
         /// Get calculations from Ai and make move
         public async void StartPlayer()
         {

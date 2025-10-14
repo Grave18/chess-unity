@@ -1,6 +1,7 @@
-﻿using System.Collections;
+﻿using Cysharp.Threading.Tasks;
+using LobbyManagement;
+using Logic;
 using ParrelSync;
-using Ui.Menu.ViewModels;
 using UnityEditor;
 using UnityEngine;
 
@@ -19,31 +20,37 @@ namespace UtilsProject.GameSetup
         {
             if (state == PlayModeStateChange.EnteredPlayMode)
             {
-                Load();
+                Load().Forget();
                 EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
             }
         }
 
-        private static void Load()
+        public static async UniTask Load(bool isLoadComputerPlayers = false)
         {
-            var playPageViewModel = Object.FindAnyObjectByType<PlayPageViewModel>();
-            playPageViewModel?.StartCoroutine(LoadRoutine());
+            await UniTask.WaitForSeconds(1f, ignoreTimeScale: true);
 
-            return;
-            IEnumerator LoadRoutine()
+            if (ClonesManager.IsClone())
             {
-                yield return new WaitForSeconds(1f);
-
-                if (ClonesManager.IsClone())
-                {
-                    playPageViewModel.StartLocalClient(null);
-                }
-                else
-                {
-                    playPageViewModel.StartLocalServer(null);
-                    CommandSender.Send("StartLocalhost");
-                }
+                await StartClient(isLoadComputerPlayers);
             }
+            else
+            {
+                await StartHost(isLoadComputerPlayers);
+            }
+        }
+
+        private static async UniTask StartClient(bool isLoadComputerPlayers)
+        {
+            var onlineSceneSwitcher = Object.FindObjectOfType<OnlineSceneSwitcher>();
+            await onlineSceneSwitcher.SetupAndSwitchScene(PieceColor.Black, isHost: false, isLocal: true, isLoadComputerPlayers);
+        }
+
+        private static async UniTask StartHost(bool isLoadComputerPlayers)
+        {
+            CloneCommandSender.Send("StartLocalhost");
+
+            var onlineSceneSwitcher = Object.FindObjectOfType<OnlineSceneSwitcher>();
+            await onlineSceneSwitcher.SetupAndSwitchScene(PieceColor.White, isHost: true, isLocal: true, isLoadComputerPlayers);
         }
     }
 }
