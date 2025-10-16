@@ -4,23 +4,26 @@ using Settings;
 
 namespace Logic.Players
 {
-    public class PlayerComputer : IPlayer
+    public class InputComputer : IInputHandler
     {
-        private readonly Game _game;
         private readonly Stockfish _stockfish;
         private readonly PlayerSettings _playerSettings;
 
-        private CancellationTokenSource _moveCts = new ();
+        private IPlayer _player;
+        private CancellationTokenSource _moveCts = new();
 
-        public PlayerComputer(Game game, PlayerSettings playerSettings, Stockfish stockfish)
+        public InputComputer(PlayerSettings playerSettings, Stockfish stockfish)
         {
-            _game = game;
             _playerSettings = playerSettings;
             _stockfish = stockfish;
         }
 
-        /// Get calculations from Ai and make move
-        public async void StartPlayer()
+        public void SetPlayer(IPlayer player)
+        {
+            _player = player;
+        }
+
+        public async void StartInput()
         {
             string uci = await _stockfish.GetUci(_playerSettings, _moveCts.Token);
 
@@ -29,16 +32,15 @@ namespace Logic.Players
                 return;
             }
 
-            _game.GameStateMachine.Move(uci);
+            _player.Move(uci);
         }
 
-        public void UpdatePlayer()
+        public void UpdateInput()
         {
-            // Empty
+            // Noop
         }
 
-        // Stop All Ai calculations
-        public void StopPlayer()
+        public void StopInput()
         {
             _moveCts?.Cancel();
             _moveCts = new CancellationTokenSource();

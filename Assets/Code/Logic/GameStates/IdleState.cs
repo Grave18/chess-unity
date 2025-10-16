@@ -70,7 +70,6 @@ namespace Logic.GameStates
             if (Game.IsEndGame)
             {
                 EndGame();
-                return;
             }
 
             Game.Competitors.UpdatePlayer();

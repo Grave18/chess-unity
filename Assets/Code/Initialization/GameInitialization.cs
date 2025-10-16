@@ -12,7 +12,6 @@ using Network;
 using Notation;
 using Settings;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityUi.InGame.BoardUi;
 using UnityUi.InGame.ClockUi;
 using UnityUi.InGame.Promotion;
@@ -43,6 +42,7 @@ namespace Initialization
         [SerializeField] private UciBuffer uciBuffer;
         [SerializeField] private GameStateMachine gameStateMachine;
         [SerializeField] private MenuStateMachine menuStateMachine;
+        [SerializeField] private InputHuman inputHuman;
 
         [Header("Ui")]
         [SerializeField] private PromotionPanel promotionPanel;
@@ -171,8 +171,8 @@ namespace Initialization
 
         private void InitPlayers()
         {
-            IPlayer playerWhite = GetPlayer(_gameSettings.Player1Settings, PieceColor.White);
-            IPlayer playerBlack = GetPlayer(_gameSettings.Player2Settings, PieceColor.Black);
+            IPlayer playerWhite = ConstructPlayer(_gameSettings.Player1Settings, PieceColor.White);
+            IPlayer playerBlack = ConstructPlayer(_gameSettings.Player2Settings, PieceColor.Black);
 
             competitors.Init(game, playerWhite, playerBlack, _turnColor);
         }
@@ -193,45 +193,53 @@ namespace Initialization
                        || _gameSettings.Player2Settings.PlayerType == PlayerType.Computer);
         }
 
-        private IPlayer GetPlayer(PlayerSettings playerSettings, PieceColor color)
+        private IPlayer ConstructPlayer(PlayerSettings playerSettings, PieceColor color)
+        {
+            IInputHandler inputHandler = GetInput(playerSettings);
+            IPlayer player = GetPlayer(color, inputHandler);
+
+            return player;
+        }
+
+        private IInputHandler GetInput(PlayerSettings playerSettings)
         {
             if (playerSettings.PlayerType == PlayerType.Computer)
             {
-                return new PlayerComputer(game, playerSettings, _stockfish);
+                return new InputComputer(playerSettings, _stockfish);
             }
 
             if (playerSettings.PlayerType == PlayerType.Human)
             {
-                return new PlayerOffline(game, mainCamera, highlighter, layerMask,
-                    _gameSettings.IsAutoPromoteToQueen, promotionPanel);
-            }
-
-            if (playerSettings.PlayerType == PlayerType.Online)
-            {
-                if (color == PieceColor.White)
-                {
-                    PlayerOnline playerOnlineWhite = OnlineInstanceHandler.PlayerWhite;
-                    Assert.IsNotNull(playerOnlineWhite, $"{nameof(GameInitialization)}: PlayerOnline White is null");
-
-                    playerOnlineWhite.Init(game, mainCamera, highlighter, layerMask,
-                        _gameSettings.IsAutoPromoteToQueen, promotionPanel);
-
-                    return playerOnlineWhite;
-                }
-
-                if (color == PieceColor.Black)
-                {
-                    PlayerOnline playerOnlineBlack = OnlineInstanceHandler.PlayerBlack;
-                    Assert.IsNotNull(playerOnlineBlack, $"{nameof(GameInitialization)}: PlayerOnline Black is null");
-
-                    playerOnlineBlack.Init(game, mainCamera, highlighter, layerMask,
-                        _gameSettings.IsAutoPromoteToQueen, promotionPanel);
-
-                    return playerOnlineBlack;
-                }
+                inputHuman.Init(game, mainCamera, highlighter, layerMask, _gameSettings.IsAutoPromoteToQueen, promotionPanel);
+                return inputHuman;
             }
 
             return null;
+        }
+
+        private IPlayer GetPlayer(PieceColor color, IInputHandler inputHandler)
+        {
+            IPlayer player = null;
+
+            if (OnlineInstanceHandler.IsOnline)
+            {
+                if (color == PieceColor.White)
+                {
+                    player = OnlineInstanceHandler.PlayerWhite;
+                    OnlineInstanceHandler.PlayerWhite.Init(game, inputHandler);
+                }
+                else if (color == PieceColor.Black)
+                {
+                    player = OnlineInstanceHandler.PlayerBlack;
+                    OnlineInstanceHandler.PlayerBlack.Init(game, inputHandler);
+                }
+            }
+            else
+            {
+                player = new PlayerOffline(game, inputHandler);
+            }
+
+            return player;
         }
 
         private void OnDestroy()

@@ -1,153 +1,48 @@
-﻿using System;
-using ChessBoard;
-using ChessBoard.Pieces;
-using Highlighting;
-using InputManagement;
-using PurrNet;
-using UnityEngine;
-using UnityUi.InGame.Promotion;
+﻿using PurrNet;
 
 namespace Logic.Players
 {
     public class PlayerOnline : NetworkBehaviour, IPlayer
     {
         private Game _game;
-        private Camera _mainCamera;
-        private PromotionPanel _promotionPanel;
-        private Highlighter _highlighter;
-        private LayerMask _layerMask;
-        private bool _isAutoPromoteToQueen;
+        private IInputHandler _inputHandler;
 
-        private const float MaxDistance = 100;
-
-        public void Init(Game game, Camera mainCamera, Highlighter highlighter, LayerMask layerMask,
-            bool isAutoPromoteToQueen, PromotionPanel promotionPanel)
+        public void Init(Game game, IInputHandler inputHandler)
         {
             _game = game;
-            _highlighter = highlighter;
-            _mainCamera = mainCamera;
-            _layerMask = layerMask;
-            _isAutoPromoteToQueen = isAutoPromoteToQueen;
-            _promotionPanel = promotionPanel;
+            _inputHandler = inputHandler;
+
+            inputHandler.SetPlayer(this);
         }
 
         public void StartPlayer()
         {
-            // Empty
+            if (isController)
+            {
+                _inputHandler.StartInput();
+            }
         }
 
         public void UpdatePlayer()
         {
             if (isController)
             {
-                Input();
+                _inputHandler.UpdateInput();
             }
-        }
-
-        private void Input()
-        {
-            // Cast ray from cursor
-            Vector3 mousePos = InputController.MousePosition();
-            Ray ray = _mainCamera.ScreenPointToRay(mousePos);
-            Physics.Raycast(ray, out RaycastHit hit, MaxDistance, _layerMask);
-            Transform hitTransform = hit.transform;
-
-            if (InputController.Lmb())
-            {
-                ISelectable selectable = null;
-
-                if (hitTransform != null)
-                {
-                    hitTransform.TryGetComponent(out selectable);
-                }
-
-                Click(selectable);
-                _highlighter.UpdateHighlighting();
-            }
-        }
-
-        private void Click(ISelectable selectable)
-        {
-            // Deselect if not hit anything
-            if (selectable == null)
-            {
-                _game.Deselect();
-                return;
-            }
-
-            // Select if clicked on current turn piece
-            if (_game.CanSelect(selectable))
-            {
-                _game.Select(selectable);
-                return;
-            }
-
-            // Exit early if no selected piece
-            if (_game.Selected == null)
-            {
-                return;
-            }
-
-            ConstructUci(selectable);
-        }
-
-        /// Construct Uci string of move. example: "b1a1q", "e2e4"
-        private void ConstructUci(ISelectable selectable)
-        {
-            Piece piece = _game.Selected.GetPiece();
-            Square fromSquare = _game.Selected.GetSquare();
-            Square toSquare = selectable.GetSquare();
-
-            string uci = string.Empty;
-            try
-            {
-                uci = $"{fromSquare.Address}{toSquare.Address}";
-            }
-            catch (NullReferenceException)
-            {
-                Debug.Log("Move to square is null");
-            }
-
-            if (CanPromote(piece, toSquare))
-            {
-                if (_isAutoPromoteToQueen)
-                {
-                    uci += "q";
-                    Move(uci);
-                    return;
-                }
-
-                _game.GameStateMachine.Pause();
-                _promotionPanel.RequestPromotedPiece(_game.CurrentTurnColor, pieceLetter =>
-                {
-                    _game.GameStateMachine.Play();
-                    uci += pieceLetter;
-                    Move(uci);
-                });
-            }
-            else
-            {
-                Move(uci);
-            }
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void Move(string uci)
-        {
-            _game.GameStateMachine.Move(uci);
-            _game.Deselect();
-        }
-
-        private static bool CanPromote(Piece piece, Square toSquare)
-        {
-            return piece is Pawn
-                   && toSquare?.Rank is "1" or "8"
-                   && (piece.CanMoveTo(toSquare, out _) || piece.CanCaptureAt(toSquare, out _));
         }
 
         public void StopPlayer()
         {
-            // Empty
+            if (isController)
+            {
+                _inputHandler.StopInput();
+            }
+        }
+
+        [ObserversRpc(runLocally: true)]
+        public void Move(string uci)
+        {
+            _game.GameStateMachine.Move(uci);
         }
     }
 }

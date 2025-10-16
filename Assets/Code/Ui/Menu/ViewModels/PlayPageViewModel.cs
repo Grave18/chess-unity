@@ -35,13 +35,13 @@ namespace Ui.Menu.ViewModels
 
         private void PlayOffline(object obj)
         {
-            gameSettingsContainer.SetupGameOffline();
+            gameSettingsContainer.SetupGameHumanVsHumanOffline();
             sceneLoader.LoadGame().Forget();
         }
 
         private void PlayWithComputer(object obj)
         {
-            gameSettingsContainer.SetupGameWithComputer();
+            gameSettingsContainer.SetupGameHumanVsComputerOffline();
             sceneLoader.LoadGame().Forget();
         }
 

@@ -125,8 +125,7 @@ namespace Settings
             Save();
         }
 
-        /// Two hotseat players
-        public void SetupGameOffline()
+        public void SetupGameHumanVsHumanOffline()
         {
             PlayerSettings player1 = gameSettings.Player1Settings;
             player1.PlayerType = PlayerType.Human;
@@ -138,7 +137,7 @@ namespace Settings
             Save();
         }
 
-        public void SetupGameWithComputer()
+        public void SetupGameHumanVsComputerOffline()
         {
             PlayerSettings humanPlayer = gameSettings.Player1Settings;
             humanPlayer.PlayerType = PlayerType.Human;
@@ -150,29 +149,30 @@ namespace Settings
             Save();
         }
 
-        public void SetupGameOnline(PieceColor playerColor)
+        public void SetupGameHumanVsHumanOnline(PieceColor playerColor)
         {
             gameSettings.PlayerColor = playerColor;
 
             PlayerSettings player1 = gameSettings.Player1Settings;
-            player1.PlayerType = PlayerType.Online;
+            player1.PlayerType = PlayerType.Human;
 
             PlayerSettings player2 = gameSettings.Player2Settings;
             player2.Name = "N/A";
-            player2.PlayerType = PlayerType.Online;
+            player2.PlayerType = PlayerType.Human;
 
             Save();
         }
 
-        public void SetupGameOnlineWithComputer(PieceColor playerColor)
+        public void SetupGameComputerVsComputerOnline(PieceColor playerColor)
         {
             gameSettings.PlayerColor = playerColor;
 
             PlayerSettings player1 = gameSettings.Player1Settings;
+            player1.Name = "Computer 1";
             player1.PlayerType = PlayerType.Computer;
 
             PlayerSettings player2 = gameSettings.Player2Settings;
-            player2.Name = "N/A";
+            player2.Name = "Computer 2";
             player2.PlayerType = PlayerType.Computer;
 
             Save();

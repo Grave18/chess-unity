@@ -42,11 +42,11 @@ namespace LobbyManagement
 
             if (isLoadComputerPlayers)
             {
-                gameSettingsContainer.SetupGameOnlineWithComputer(playerColor);
+                gameSettingsContainer.SetupGameComputerVsComputerOnline(playerColor);
             }
             else
             {
-                gameSettingsContainer.SetupGameOnline(playerColor);
+                gameSettingsContainer.SetupGameHumanVsHumanOnline(playerColor);
             }
 
             GameSettingsContainer.IsHost = isHost;
