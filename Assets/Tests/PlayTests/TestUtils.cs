@@ -15,7 +15,7 @@ namespace PlayTests
     public static class TestUtils
     {
         public static Game Game => Object.FindObjectOfType<Game>();
-        public static PlayerOffline PlayerOffline => Object.FindObjectOfType<Competitors>().CurrentPlayer as PlayerOffline;
+        public static IPlayer Player => Object.FindObjectOfType<Competitors>().CurrentPlayer;
         public static Board Board => Object.FindObjectOfType<Board>();
         public static GameSettingsContainer GameSettingsContainer => Object.FindObjectOfType<GameSettingsContainer>();
 
@@ -23,7 +23,7 @@ namespace PlayTests
         {
             yield return SceneManager.LoadSceneAsync("MainMenuScene");
 
-            GameSettingsContainer.SetupGameOffline();
+            GameSettingsContainer.SetupGameHumanVsHumanOffline();
 
             yield return SceneManager.LoadSceneAsync("GameScene", LoadSceneMode.Additive);
             yield return SceneManager.UnloadSceneAsync("MainMenuScene");
@@ -95,7 +95,7 @@ namespace PlayTests
 
         public static IEnumerator Move(string uci)
         {
-            PlayerOffline.Move(uci);
+            Player.Move(uci);
             return new WaitUntil(() => Game.GameStateMachine.StateName is "Idle" or "End Game");
         }
 
