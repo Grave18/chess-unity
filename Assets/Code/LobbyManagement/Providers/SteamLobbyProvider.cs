@@ -190,7 +190,7 @@ namespace LobbyManagement.Providers
             {
                 if (!SteamAPI.Init())
                 {
-                    PurrLogger.LogError("SteamAPI initialization failed.");
+                    PurrLogger.LogWarning("SteamAPI initialization failed.");
                     OnError?.Invoke("SteamAPI initialization failed.");
                     return;
                 }
