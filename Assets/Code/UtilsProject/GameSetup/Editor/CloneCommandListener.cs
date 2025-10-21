@@ -34,7 +34,7 @@ namespace UtilsProject.GameSetup
 
         private static void ExecuteLoadLocalhostCommand()
         {
-            LocalhostSetupLoader.LoadLocalhost();
+            LocalhostSetupLoader.PlayAndLoadLocalhost();
         }
     }
 }

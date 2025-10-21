@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System.Linq;
+using Cysharp.Threading.Tasks;
 using LobbyManagement;
 using Logic;
 using ParrelSync;
@@ -9,8 +10,8 @@ namespace UtilsProject.GameSetup
 {
     public static class LocalhostSetupLoader
     {
-        [MenuItem("Tools/GameSetup/Load Localhost ^#w")]
-        public static void LoadLocalhost()
+        [MenuItem("Tools/GameSetup/Play And Load Localhost ^#w")]
+        public static void PlayAndLoadLocalhost()
         {
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
             EditorApplication.EnterPlaymode();
@@ -31,18 +32,47 @@ namespace UtilsProject.GameSetup
 
             if (ClonesManager.IsClone())
             {
-                await StartClient(isLoadComputerPlayers);
+                await StartCloneClient(isLoadComputerPlayers);
             }
             else
             {
+                await OpenOrCreateAndOpenClone();
                 await StartHost(isLoadComputerPlayers);
             }
         }
 
-        private static async UniTask StartClient(bool isLoadComputerPlayers)
+        private static async UniTask StartCloneClient(bool isLoadComputerPlayers)
         {
             var onlineSceneSwitcher = Object.FindObjectOfType<OnlineSceneSwitcher>();
             await onlineSceneSwitcher.SetupAndSwitchScene(PieceColor.Black, isHost: false, isLocal: true, isLoadComputerPlayers);
+        }
+
+        private static async UniTask OpenOrCreateAndOpenClone()
+        {
+            string clonePath = ClonesManager.GetCloneProjectsPath().FirstOrDefault();
+
+            CreateCloneIfNotCreated(ref clonePath);
+            OpenCloneIfNotOpened(clonePath);
+
+            await UniTask.WaitUntil(() => ClonesManager.IsCloneProjectRunning(clonePath));
+        }
+
+        private static void CreateCloneIfNotCreated(ref string clonePath)
+        {
+            if (string.IsNullOrEmpty(clonePath))
+            {
+                Project cloneProject = ClonesManager.CreateCloneFromCurrent();
+                clonePath = cloneProject.projectPath;
+            }
+        }
+
+        private static void OpenCloneIfNotOpened(string clonePath)
+        {
+            // if cloned but not created fully?
+            if (!ClonesManager.IsCloneProjectRunning(clonePath))
+            {
+                ClonesManager.OpenProject(clonePath);
+            }
         }
 
         private static async UniTask StartHost(bool isLoadComputerPlayers)
