@@ -1,27 +1,27 @@
 ﻿using Logic.MovesBuffer;
 using PurrNet.StateMachine;
+using UnityEngine;
 
 namespace Logic.GameStates
 {
     public class PauseState : StateNode,IState
     {
+        [Header("References")]
+        [SerializeField] private Game game;
+
+        [Header("States")]
+        [SerializeField] private StateNode idleState;
+
         public string Name => "Pause";
-
-        protected Game Game { get; private set; }
-
-        public PauseState(Game game)
-        {
-            Game = game;
-        }
 
         public override void Enter()
         {
-            Game.FirePause();
+            game.FirePause();
         }
 
         public override void Exit()
         {
-            Game.FirePlay();
+            game.FirePlay();
         }
 
         public override void StateUpdate()
@@ -36,7 +36,7 @@ namespace Logic.GameStates
 
         public void Undo()
         {
-            if (Game.UciBuffer.CanUndo(out MoveData moveData))
+            if (game.UciBuffer.CanUndo(out MoveData moveData))
             {
                 // TODO: Game.GameStateMachine.SetState(new UndoState(Game, moveData));
             }
@@ -44,7 +44,7 @@ namespace Logic.GameStates
 
         public void Redo()
         {
-            if (Game.UciBuffer.CanRedo(out MoveData moveData))
+            if (game.UciBuffer.CanRedo(out MoveData moveData))
             {
                 // TODO: Game.GameStateMachine.SetState(new RedoState(Game, moveData));
             }
@@ -52,7 +52,7 @@ namespace Logic.GameStates
 
         public void Play()
         {
-            Game.GameStateMachine.SetState(new IdleState(Game));
+            game.GameStateMachine.SetState(idleState);
         }
 
         public void Pause()

@@ -898,6 +898,7 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
+  game: {fileID: 1216111693}
 --- !u!1 &152712386
 GameObject:
   m_ObjectHideFlags: 0
@@ -1231,7 +1232,7 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  _ownerAuth: 1
+  _ownerAuth: 0
   _states:
   - {fileID: 886104444}
   - {fileID: 1664484785}
@@ -3274,6 +3275,8 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
+  game: {fileID: 1216111693}
+  idleState: {fileID: 1664484785}
 --- !u!1 &826316352
 GameObject:
   m_ObjectHideFlags: 0
@@ -3782,6 +3785,7 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
+  game: {fileID: 1216111693}
 --- !u!1 &897090770
 GameObject:
   m_ObjectHideFlags: 0
@@ -4895,6 +4899,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d985ebac851bf4daa48ef5e8e8b15d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  warmupState: {fileID: 886104444}
+  idleState: {fileID: 1664484785}
 --- !u!1 &1227854461
 GameObject:
   m_ObjectHideFlags: 0
@@ -6560,6 +6566,10 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
+  game: {fileID: 1216111693}
+  endGameState: {fileID: 133831036}
+  pauseState: {fileID: 1754781640}
+  moveState: {fileID: 794642995}
 --- !u!1 &1670835132
 GameObject:
   m_ObjectHideFlags: 0
@@ -7171,6 +7181,8 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
+  game: {fileID: 1216111693}
+  idleState: {fileID: 1664484785}
 --- !u!1 &1759059225
 GameObject:
   m_ObjectHideFlags: 0

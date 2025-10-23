@@ -1,46 +1,49 @@
 ﻿using Logic.MovesBuffer;
 using PurrNet.StateMachine;
+using UnityEngine;
 
 namespace Logic.GameStates
 {
     public class IdleState : StateNode, IState
     {
-        public string Name => "Idle";
+        [Header("References")]
+        [SerializeField] private Game game;
 
-        private readonly Game _game;
+        [Header("States")]
+        [SerializeField] private StateNode endGameState;
+        [SerializeField] private StateNode pauseState;
+        [SerializeField] private StateNode<string> moveState;
+
         private bool _isRunning;
 
-        public IdleState(Game game)
-        {
-            _game = game;
-        }
-
+        public string Name => "Idle";
 
         public override void Enter()
         {
-            if (_game.IsEndGame)
+            if (game.IsEndGame)
             {
                 EndGame();
                 return;
             }
 
             _isRunning = true;
-            _game.Competitors.StartPlayer();
+            game.Competitors.StartPlayer();
         }
 
         public override void Exit()
         {
-            _game.Competitors.StopPlayer();
+            _isRunning = false;
+            game.Competitors.StopPlayer();
         }
 
         public void Move(string uci)
         {
-            _game.GameStateMachine.SetState(new MoveState(_game, uci));
+            game.GameStateMachine.SetState(moveState, uci);
         }
 
         public void Undo()
         {
-            if (_game.UciBuffer.CanUndo(out MoveData moveData))
+            if (game.UciBuffer.CanUndo(out MoveData moveData))
             {
                 // TODO _game.GameStateMachine.SetState(new UndoState(_game, moveData));
             }
@@ -48,7 +51,7 @@ namespace Logic.GameStates
 
         public void Redo()
         {
-            if (_game.UciBuffer.CanRedo(out MoveData moveData))
+            if (game.UciBuffer.CanRedo(out MoveData moveData))
             {
                 // TODO _game.GameStateMachine.SetState(new RedoState(_game, moveData));
             }
@@ -61,7 +64,7 @@ namespace Logic.GameStates
 
         public void Pause()
         {
-            _game.GameStateMachine.SetState(new PauseState(_game));
+            game.GameStateMachine.SetState(pauseState);
         }
 
         public override void StateUpdate()
@@ -71,18 +74,18 @@ namespace Logic.GameStates
                 return;
             }
 
-            if (_game.IsEndGame)
+            if (game.IsEndGame)
             {
                 EndGame();
             }
 
-            _game.Competitors.UpdatePlayer();
+            game.Competitors.UpdatePlayer();
         }
 
         private void EndGame()
         {
-            _game.GameStateMachine.SetState(new EndGameState(_game));
-            _game.Competitors.StopPlayer();
+            game.GameStateMachine.SetState(endGameState);
+            game.Competitors.StopPlayer();
         }
     }
 }

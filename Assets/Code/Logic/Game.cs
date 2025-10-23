@@ -3,11 +3,11 @@ using System.Linq;
 using ChessBoard;
 using ChessBoard.Pieces;
 using Cysharp.Threading.Tasks;
-using Logic.GameStates;
 using Logic.MenuStates;
 using Logic.MovesBuffer;
 using Logic.Players;
 using MainCamera;
+using PurrNet.StateMachine;
 using Settings;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,6 +16,9 @@ namespace Logic
 {
     public class Game : MonoBehaviour
     {
+        [SerializeField] private StateNode warmupState;
+        [SerializeField] private StateNode idleState;
+
         public GameStateMachine GameStateMachine { get; private set; }
         public MenuStateMachine MenuStateMachine { get; private set; }
         public Competitors Competitors { get; private set; }
@@ -94,13 +97,14 @@ namespace Logic
 
         public async UniTask StartGame()
         {
-            MenuStateMachine.SetState<PlayState>();
-            GameStateMachine.SetState(new WarmUpState(this));
-
-            bool isRotateCameraOnStart = _gameSettingsContainer.IsRotateCameraOnStart;
-            await _cameraController.RotateToStartPosition(isRotateCameraOnStart);
-
-            GameStateMachine.SetState(new IdleState(this));
+            // TODO: refactor
+            // MenuStateMachine.SetState<PlayState>();
+            // GameStateMachine.SetState(warmupState);
+            //
+            // bool isRotateCameraOnStart = _gameSettingsContainer.IsRotateCameraOnStart;
+            // await _cameraController.RotateToStartPosition(isRotateCameraOnStart);
+            //
+            // GameStateMachine.SetState(idleState);
         }
 
         public void ResetGameState()

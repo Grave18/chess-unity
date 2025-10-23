@@ -1,28 +1,25 @@
 ﻿using PurrNet.StateMachine;
+using UnityEngine;
 
 namespace Logic.GameStates
 {
     public class WarmUpState : StateNode, IState
     {
+        [Header("References")]
+        [SerializeField] private Game game;
+
         public string Name => "WarmUp";
-
-        protected Game Game { get; private set; }
-
-        public WarmUpState(Game game)
-        {
-            Game = game;
-        }
 
         public override void Enter()
         {
-            Game.ResetGameState();
-            Game.PreformCalculations();
-            Game.FireWarmup();
+            game.ResetGameState();
+            game.PreformCalculations();
+            game.FireWarmup();
         }
 
         public override void Exit()
         {
-            Game.FireStart();
+            game.FireStart();
         }
 
         public override void StateUpdate()

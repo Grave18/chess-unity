@@ -1,21 +1,19 @@
 ﻿using Logic.MovesBuffer;
 using PurrNet.StateMachine;
+using UnityEngine;
 
 namespace Logic.GameStates
 {
     public class EndGameState : StateNode, IState
     {
-        protected Game Game { get; private set; }
-        public string Name => "End Game";
+        [Header("References")]
+        [SerializeField] private Game game;
 
-        public EndGameState(Game game)
-        {
-            Game = game;
-        }
+        public string Name => "End Game";
 
         public override void Enter()
         {
-            Game.FireEnd();
+            game.FireEnd();
         }
 
         public override void Exit()
@@ -35,7 +33,7 @@ namespace Logic.GameStates
 
         public void Undo()
         {
-            if (Game.UciBuffer.CanUndo(out MoveData moveData))
+            if (game.UciBuffer.CanUndo(out MoveData moveData))
             {
                 // TODO: Game.GameStateMachine.SetState(new UndoState(Game, moveData), isSetPreviousState:false);
             }
