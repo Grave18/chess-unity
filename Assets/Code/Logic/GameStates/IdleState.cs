@@ -4,49 +4,51 @@ namespace Logic.GameStates
 {
     public class IdleState : GameState
     {
+        private readonly Game _game;
         private bool _isRunning;
 
-        public IdleState(Game game) : base(game)
+        public IdleState(Game game)
         {
+            _game = game;
         }
 
         public override string Name => "Idle";
 
         public override void Enter()
         {
-            if (Game.IsEndGame)
+            if (_game.IsEndGame)
             {
                 EndGame();
                 return;
             }
 
             _isRunning = true;
-            Game.Competitors.StartPlayer();
+            _game.Competitors.StartPlayer();
         }
 
         public override void Exit()
         {
-            Game.Competitors.StopPlayer();
+            _game.Competitors.StopPlayer();
         }
 
         public override void Move(string uci)
         {
-            Game.GameStateMachine.SetState(new MoveState(Game, uci));
+            _game.GameStateMachine.SetState(new MoveState(_game, uci));
         }
 
         public override void Undo()
         {
-            if (Game.UciBuffer.CanUndo(out MoveData moveData))
+            if (_game.UciBuffer.CanUndo(out MoveData moveData))
             {
-                Game.GameStateMachine.SetState(new UndoState(Game, moveData));
+                _game.GameStateMachine.SetState(new UndoState(_game, moveData));
             }
         }
 
         public override void Redo()
         {
-            if (Game.UciBuffer.CanRedo(out MoveData moveData))
+            if (_game.UciBuffer.CanRedo(out MoveData moveData))
             {
-                Game.GameStateMachine.SetState(new RedoState(Game, moveData));
+                _game.GameStateMachine.SetState(new RedoState(_game, moveData));
             }
         }
 
@@ -57,7 +59,7 @@ namespace Logic.GameStates
 
         public override void Pause()
         {
-            Game.GameStateMachine.SetState(new PauseState(Game));
+            _game.GameStateMachine.SetState(new PauseState(_game));
         }
 
         public override void Update()
@@ -67,18 +69,18 @@ namespace Logic.GameStates
                 return;
             }
 
-            if (Game.IsEndGame)
+            if (_game.IsEndGame)
             {
                 EndGame();
             }
 
-            Game.Competitors.UpdatePlayer();
+            _game.Competitors.UpdatePlayer();
         }
 
         private void EndGame()
         {
-            Game.GameStateMachine.SetState(new EndGameState(Game));
-            Game.Competitors.StopPlayer();
+            _game.GameStateMachine.SetState(new EndGameState(_game));
+            _game.Competitors.StopPlayer();
         }
     }
 }

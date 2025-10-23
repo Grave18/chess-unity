@@ -3,12 +3,6 @@
     public abstract class GameState
     {
         public abstract string Name { get; }
-        protected Game Game { get; private set; }
-
-        protected GameState(Game game)
-        {
-            Game = game;
-        }
 
         public abstract void Enter();
         public abstract void Update();

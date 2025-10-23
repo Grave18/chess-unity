@@ -2,11 +2,12 @@
 {
     public class WarmUpState : GameState
     {
+        protected Game Game { get; private set; }
         public override string Name => "WarmUp";
 
-        public WarmUpState(Game game) : base(game)
+        public WarmUpState(Game game)
         {
-
+            Game = game;
         }
 
         public override void Enter()

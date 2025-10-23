@@ -4,8 +4,11 @@ namespace Logic.GameStates
 {
     public class PauseState : GameState
     {
-        public PauseState(Game game) : base(game)
+        protected Game Game { get; private set; }
+
+        public PauseState(Game game)
         {
+            Game = game;
         }
 
         public override string Name => "Pause";

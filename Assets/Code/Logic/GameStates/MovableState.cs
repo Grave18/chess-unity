@@ -5,13 +5,14 @@ namespace Logic.GameStates
 {
     public abstract class MovableState : GameState
     {
+        protected Game Game { get; private set; }
         protected Turn Turn;
         protected abstract float T { get; set; }
         protected abstract float SoundT { get; }
 
-        protected MovableState(Game game) : base(game)
+        protected MovableState(Game game)
         {
-
+            Game = game;
         }
 
         protected void PlaySound(float delta)
