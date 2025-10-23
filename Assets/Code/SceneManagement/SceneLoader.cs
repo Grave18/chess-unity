@@ -50,10 +50,11 @@ namespace SceneManagement
             }
 
             await GameInitialization.Instance.Init();
-            await GameInitialization.Instance.StartGame();
 
             await LoadingSceneFader.Instance.UnFade();
             await SceneManager.UnloadSceneAsync(loadingScene);
+
+            await GameInitialization.Instance.StartGame();
         }
 
         public async UniTask LoadGameOnline()
@@ -72,10 +73,11 @@ namespace SceneManagement
             await OnlineInitialization.Instance.LoadGame();
 
             await GameInitialization.Instance.Init();
-            await GameInitialization.Instance.StartGame();
 
             await LoadingSceneFader.Instance.UnFade();
             await SceneManager.UnloadSceneAsync(loadingScene);
+
+            await GameInitialization.Instance.StartGame();
         }
 
         private static bool IsSceneLoaded(SceneReference sceneReference)

@@ -11,12 +11,13 @@
         }
 
         public abstract void Enter();
+        public abstract void Update();
         public abstract void Exit();
+
         public abstract void Move(string uci);
         public abstract void Undo();
         public abstract void Redo();
         public abstract void Play();
         public abstract void Pause();
-        public abstract void Update();
     }
 }

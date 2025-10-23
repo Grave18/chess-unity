@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using LobbyManagement;
 using Logic;
 using Logic.Players;
@@ -38,7 +37,7 @@ namespace Network
             }
         }
 
-        public async Task LoadGame()
+        public async UniTask LoadGame()
         {
             await onlineSceneLoader.LoadGame();
         }
@@ -84,12 +83,9 @@ namespace Network
             playerOnlineBlack.GiveOwnership(player);
         }
 
-        private async Task ExchangeDataBetweenPlayers()
+        private async UniTask ExchangeDataBetweenPlayers()
         {
-            while (playersDataExchanger.ObserversCount < 2 && !Application.exitCancellationToken.IsCancellationRequested)
-            {
-                await Task.Delay(100);
-            }
+            await UniTask.WaitWhile(() => playersDataExchanger.ObserversCount < 2);
 
             await playersDataExchanger.Exchange();
         }
