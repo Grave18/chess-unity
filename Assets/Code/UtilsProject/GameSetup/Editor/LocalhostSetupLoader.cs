@@ -4,6 +4,7 @@ using LobbyManagement;
 using Logic;
 using ParrelSync;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace UtilsProject.GameSetup
@@ -13,8 +14,19 @@ namespace UtilsProject.GameSetup
         [MenuItem("Tools/GameSetup/Play And Load Localhost ^#w")]
         public static void PlayAndLoadLocalhost()
         {
+            LoadScene("MainMenuScene");
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
             EditorApplication.EnterPlaymode();
+        }
+
+        private static void LoadScene(string scene)
+        {
+            if (!ClonesManager.IsClone())
+            {
+                EditorSceneManager.SaveOpenScenes();
+            }
+
+            EditorSceneManager.OpenScene($"Assets/Assets/Scenes/{scene}.unity");
         }
 
         private static void OnPlayModeStateChanged(PlayModeStateChange state)
