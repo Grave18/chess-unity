@@ -1,9 +1,12 @@
 ﻿using Logic.MovesBuffer;
+using PurrNet.StateMachine;
 
 namespace Logic.GameStates
 {
-    public class PauseState : GameState
+    public class PauseState : StateNode,IState
     {
+        public string Name => "Pause";
+
         protected Game Game { get; private set; }
 
         public PauseState(Game game)
@@ -11,7 +14,6 @@ namespace Logic.GameStates
             Game = game;
         }
 
-        public override string Name => "Pause";
         public override void Enter()
         {
             Game.FirePause();
@@ -22,40 +24,40 @@ namespace Logic.GameStates
             Game.FirePlay();
         }
 
-        public override void Move(string uci)
+        public override void StateUpdate()
+        {
+            // Nothing to update
+        }
+
+        public void Move(string uci)
         {
             // Can't move from Pause
         }
 
-        public override void Undo()
+        public void Undo()
         {
             if (Game.UciBuffer.CanUndo(out MoveData moveData))
             {
-                Game.GameStateMachine.SetState(new UndoState(Game, moveData));
+                // TODO: Game.GameStateMachine.SetState(new UndoState(Game, moveData));
             }
         }
 
-        public override void Redo()
+        public void Redo()
         {
             if (Game.UciBuffer.CanRedo(out MoveData moveData))
             {
-                Game.GameStateMachine.SetState(new RedoState(Game, moveData));
+                // TODO: Game.GameStateMachine.SetState(new RedoState(Game, moveData));
             }
         }
 
-        public override void Play()
+        public void Play()
         {
             Game.GameStateMachine.SetState(new IdleState(Game));
         }
 
-        public override void Pause()
+        public void Pause()
         {
             // Already paused
-        }
-
-        public override void Update()
-        {
-            // Nothing to update
         }
     }
 }

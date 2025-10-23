@@ -1,11 +1,12 @@
 ﻿using Logic.MovesBuffer;
+using PurrNet.StateMachine;
 
 namespace Logic.GameStates
 {
-    public class EndGameState : GameState
+    public class EndGameState : StateNode, IState
     {
         protected Game Game { get; private set; }
-        public override string Name => "End Game";
+        public string Name => "End Game";
 
         public EndGameState(Game game)
         {
@@ -22,35 +23,35 @@ namespace Logic.GameStates
             // Empty
         }
 
-        public override void Move(string uci)
+        public override void StateUpdate()
         {
             // Empty
         }
 
-        public override void Undo()
+        public void Move(string uci)
+        {
+            // Empty
+        }
+
+        public void Undo()
         {
             if (Game.UciBuffer.CanUndo(out MoveData moveData))
             {
-                Game.GameStateMachine.SetState(new UndoState(Game, moveData), isSetPreviousState:false);
+                // TODO: Game.GameStateMachine.SetState(new UndoState(Game, moveData), isSetPreviousState:false);
             }
         }
 
-        public override void Redo()
+        public void Redo()
         {
             // Empty
         }
 
-        public override void Play()
+        public void Play()
         {
             // Empty
         }
 
-        public override void Pause()
-        {
-            // Empty
-        }
-
-        public override void Update()
+        public void Pause()
         {
             // Empty
         }

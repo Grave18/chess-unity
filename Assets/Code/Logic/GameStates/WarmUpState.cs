@@ -1,9 +1,12 @@
-﻿namespace Logic.GameStates
+﻿using PurrNet.StateMachine;
+
+namespace Logic.GameStates
 {
-    public class WarmUpState : GameState
+    public class WarmUpState : StateNode, IState
     {
+        public string Name => "WarmUp";
+
         protected Game Game { get; private set; }
-        public override string Name => "WarmUp";
 
         public WarmUpState(Game game)
         {
@@ -22,32 +25,32 @@
             Game.FireStart();
         }
 
-        public override void Move(string uci)
+        public override void StateUpdate()
         {
             // Empty
         }
 
-        public override void Undo()
+        public void Move(string uci)
         {
             // Empty
         }
 
-        public override void Redo()
+        public void Undo()
         {
             // Empty
         }
 
-        public override void Play()
+        public void Redo()
         {
             // Empty
         }
 
-        public override void Pause()
+        public void Play()
         {
             // Empty
         }
 
-        public override void Update()
+        public void Pause()
         {
             // Empty
         }

@@ -1,9 +1,12 @@
 ﻿using Logic.MovesBuffer;
+using PurrNet.StateMachine;
 
 namespace Logic.GameStates
 {
-    public class IdleState : GameState
+    public class IdleState : StateNode, IState
     {
+        public string Name => "Idle";
+
         private readonly Game _game;
         private bool _isRunning;
 
@@ -12,7 +15,6 @@ namespace Logic.GameStates
             _game = game;
         }
 
-        public override string Name => "Idle";
 
         public override void Enter()
         {
@@ -31,38 +33,38 @@ namespace Logic.GameStates
             _game.Competitors.StopPlayer();
         }
 
-        public override void Move(string uci)
+        public void Move(string uci)
         {
             _game.GameStateMachine.SetState(new MoveState(_game, uci));
         }
 
-        public override void Undo()
+        public void Undo()
         {
             if (_game.UciBuffer.CanUndo(out MoveData moveData))
             {
-                _game.GameStateMachine.SetState(new UndoState(_game, moveData));
+                // TODO _game.GameStateMachine.SetState(new UndoState(_game, moveData));
             }
         }
 
-        public override void Redo()
+        public void Redo()
         {
             if (_game.UciBuffer.CanRedo(out MoveData moveData))
             {
-                _game.GameStateMachine.SetState(new RedoState(_game, moveData));
+                // TODO _game.GameStateMachine.SetState(new RedoState(_game, moveData));
             }
         }
 
-        public override void Play()
+        public void Play()
         {
             // Already playing
         }
 
-        public override void Pause()
+        public void Pause()
         {
             _game.GameStateMachine.SetState(new PauseState(_game));
         }
 
-        public override void Update()
+        public override void StateUpdate()
         {
             if (!_isRunning)
             {

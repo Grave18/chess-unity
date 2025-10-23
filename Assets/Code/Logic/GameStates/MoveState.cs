@@ -4,28 +4,34 @@ using ChessBoard.Pieces;
 using Logic.Moves;
 using Logic.MovesBuffer;
 using Notation;
+using PurrNet.StateMachine;
+using Sound;
 using UnityEngine;
 
 namespace Logic.GameStates
 {
-    public class MoveState : MovableState
+    public class MoveState : StateNode<string>, IState
     {
+        public string Name => "Move";
+        protected Game Game { get; private set; }
+
         private const float MoveTimeSec = 0.3f;
         private readonly string _uci;
 
         private bool _isRunning;
         private MoveData _moveData;
 
-        public override string Name => "Move";
-        protected override float T { get; set; } = 0f;
-        protected override float SoundT => 0.6f;
+        protected Turn Turn;
+        protected float T { get; set; } = 0f;
+        protected float SoundT => 0.6f;
 
-        public MoveState(Game game, string uci) : base(game)
+        public MoveState(Game game, string uci)
         {
+            Game = game;
             _uci = uci;
         }
 
-        public override void Enter()
+        public override void Enter(string uci)
         {
             ParsedUci parsedUci = GetParsedUci(_uci);
             bool isValid = ValidateMove(parsedUci);
@@ -187,32 +193,32 @@ namespace Logic.GameStates
             // Empty
         }
 
-        public override void Move(string uci)
+        public void Move(string uci)
         {
             // Empty
         }
 
-        public override void Undo()
+        public void Undo()
         {
             // Not Undo
         }
 
-        public override void Redo()
+        public void Redo()
         {
             // Not Redo
         }
 
-        public override void Play()
+        public void Play()
         {
             // It is not paused
         }
 
-        public override void Pause()
+        public void Pause()
         {
             // Maybe implement pause from Move
         }
 
-        public override void Update()
+        public override void StateUpdate()
         {
             if (!_isRunning)
             {
@@ -260,5 +266,23 @@ namespace Logic.GameStates
         {
             _moveData.AlgebraicNotation += Algebraic.GetCheck(Game.CheckType);
         }
+
+        protected void PlaySound(float delta)
+         {
+             // Not 0.5 sec because of duplicate sound
+             float halfDelta = delta*0.525f;
+             if (T >= SoundT - halfDelta && T <= SoundT + halfDelta)
+             {
+                 Turn.PlaySound();
+             }
+         }
+
+         protected void PlayCheckSound()
+         {
+             if (Game.IsCheck)
+             {
+                 EffectsPlayer.Instance.PlayCheckSound();
+             }
+         }
     }
 }
