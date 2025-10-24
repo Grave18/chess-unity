@@ -65,6 +65,7 @@ namespace Logic
         // Events and invokers
         public event UnityAction OnWarmup;
         public event UnityAction OnStart;
+        public event UnityAction OnIdle;
         public event UnityAction<PieceColor> OnStartWithColor;
         public event UnityAction OnEnd;
         public event UnityAction OnEndMove;
@@ -74,6 +75,7 @@ namespace Logic
 
         public void FireWarmup() => OnWarmup?.Invoke();
         public void FireStart() { OnStart?.Invoke(); OnStartWithColor?.Invoke(CurrentTurnColor); }
+        public void FireIdle() => OnIdle?.Invoke();
         public void FireEnd() => OnEnd?.Invoke();
         public void FireEndMove() { OnEndMove?.Invoke(); OnEndMoveWithColor?.Invoke(CurrentTurnColor); }
         public void FirePlay() => OnPlay?.Invoke();

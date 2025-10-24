@@ -20,16 +20,22 @@ namespace UnityUi.InGame
         {
             game.OnWarmup += UpdateNotificationText;
             game.OnStart += UpdateNotificationText;
+            game.OnIdle += UpdateNotificationText;
             game.OnEndMove += UpdateNotificationText;
             game.OnEnd += UpdateNotificationText;
+            game.OnPause += Pause;
+            game.OnWarmup += Warmup;
         }
 
         private void OnDisable()
         {
             game.OnWarmup -= UpdateNotificationText;
             game.OnStart -= UpdateNotificationText;
+            game.OnIdle -= UpdateNotificationText;
             game.OnEndMove -= UpdateNotificationText;
             game.OnEnd -= UpdateNotificationText;
+            game.OnPause -= Pause;
+            game.OnWarmup -= Warmup;
         }
 
         private void UpdateNotificationText()
@@ -58,6 +64,16 @@ namespace UnityUi.InGame
             {
                 SetPanel(text: "", "", isShowHeader: false, isShowAdditional: false);
             }
+        }
+
+        private void Pause()
+        {
+            SetPanel(text: "Pause", additional: "", isShowHeader: true, isShowAdditional: false);
+        }
+
+        private void Warmup()
+        {
+            SetPanel(text: "Warmup", additional: "", isShowHeader: true, isShowAdditional: false);
         }
 
         private void SetPanel(string text, string additional, bool isShowHeader, bool isShowAdditional)

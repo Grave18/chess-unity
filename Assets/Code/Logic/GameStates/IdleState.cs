@@ -30,6 +30,8 @@ namespace Logic.GameStates
 
             _isRunning = true;
             game.Competitors.StartPlayer();
+
+            game.FireIdle();
         }
 
         public override void Exit()
