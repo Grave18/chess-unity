@@ -41,19 +41,6 @@ namespace Logic.Players
 
         public void Move(string uci)
         {
-            if (isServer)
-            {
-                _game.GameStateMachine.Move(uci);
-            }
-            else
-            {
-                Move_ServerRpc(uci);
-            }
-        }
-
-        [ServerRpc]
-        private void Move_ServerRpc(string uci)
-        {
             _game.GameStateMachine.Move(uci);
         }
     }

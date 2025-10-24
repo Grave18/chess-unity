@@ -8,9 +8,10 @@ namespace Logic.Players
     public class GameStateMachine : NetworkBehaviour
     {
         [SerializeField] private StateMachine stateMachine;
+        [SerializeField] private StateNode warmupState;
 
-        private IState State => stateMachine.currentStateNode as IState;
         public string StateName => State?.Name ?? "No State";
+        private IState State => stateMachine.currentStateNode as IState;
 
         public void Init(Game game)
         {
@@ -19,14 +20,34 @@ namespace Logic.Players
 
         public void SetState(StateNode state)
         {
+            if (!isServer)
+            {
+                return;
+            }
+
             stateMachine.SetState(state);
         }
 
         public void SetState<T>(StateNode<T> state, T data)
         {
+            if (!isServer)
+            {
+                return;
+            }
+
             stateMachine.SetState(state, data);
         }
 
+        [ServerRpc(requireOwnership: false)]
+        public void Reset()
+        {
+            if (State is not WarmUpState)
+            {
+                SetState(warmupState);
+            }
+        }
+
+        [ServerRpc(requireOwnership: false)]
         public void Move(string uci)
         {
             State?.Move(uci);
@@ -42,11 +63,13 @@ namespace Logic.Players
             State?.Redo();
         }
 
+        [ServerRpc(requireOwnership: false)]
         public void Play()
         {
             State?.Play();
         }
 
+        [ServerRpc(requireOwnership: false)]
         public void Pause()
         {
             State?.Pause();

@@ -109,6 +109,7 @@ namespace Logic
             CurrentTurnColor = _startingColor;
             Selected = null;
             UciBuffer.Clear();
+            GameStateMachine.Reset();
         }
 
         public void ChangeTurn()
