@@ -33,6 +33,9 @@ namespace Logic.GameStates
 
         public override void Enter(string uci)
         {
+            Debug.Log("State: " + Name);
+
+            T = 0f;
             _uci = uci;
             ParsedUci parsedUci = GetParsedUci(_uci);
             bool isValid = ValidateMove(parsedUci);
@@ -191,7 +194,16 @@ namespace Logic.GameStates
 
         public override void Exit()
         {
-            T = 0f;
+            Turn.Progress(1);
+            Turn.End();
+
+            game.ChangeTurn();
+            game.UciBuffer.Add(_moveData);
+            game.PreformCalculations();
+            UpdateAlgebraicNotation();
+            PlayCheckSound();
+
+            game.FireEndMove();
         }
 
         public override void StateUpdate()
@@ -201,7 +213,7 @@ namespace Logic.GameStates
                 return;
             }
 
-            if (IsProgressMove())
+            if (CanProgressMove())
             {
                 ProgressMove();
             }
@@ -211,7 +223,7 @@ namespace Logic.GameStates
             }
         }
 
-        private bool IsProgressMove()
+        private bool CanProgressMove()
         {
             return T < 1;
         }
@@ -227,15 +239,10 @@ namespace Logic.GameStates
 
         private void EndMove()
         {
-            Turn.End();
-
-            game.ChangeTurn();
-            game.UciBuffer.Add(_moveData);
-            game.PreformCalculations();
-            UpdateAlgebraicNotation();
-            game.FireEndMove();
-            game.GameStateMachine.SetState(idleState);
-            PlayCheckSound();
+            // if (isController)
+            {
+                game.GameStateMachine.SetState(idleState);
+            }
         }
 
         private void UpdateAlgebraicNotation()

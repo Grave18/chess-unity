@@ -97,14 +97,8 @@ namespace Logic
 
         public async UniTask StartGame()
         {
-            // TODO: refactor
-            // MenuStateMachine.SetState<PlayState>();
-            // GameStateMachine.SetState(warmupState);
-            //
-            // bool isRotateCameraOnStart = _gameSettingsContainer.IsRotateCameraOnStart;
-            // await _cameraController.RotateToStartPosition(isRotateCameraOnStart);
-            //
-            // GameStateMachine.SetState(idleState);
+            ResetGameState();
+            PreformCalculations();
         }
 
         public void ResetGameState()

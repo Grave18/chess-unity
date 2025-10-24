@@ -20,6 +20,8 @@ namespace Logic.GameStates
 
         public override void Enter()
         {
+            Debug.Log("State: " + Name);
+
             if (game.IsEndGame)
             {
                 EndGame();

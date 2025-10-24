@@ -1,4 +1,7 @@
-﻿using PurrNet.StateMachine;
+﻿using Cysharp.Threading.Tasks;
+using MainCamera;
+using PurrNet.StateMachine;
+using Settings;
 using UnityEngine;
 
 namespace Logic.GameStates
@@ -7,13 +10,28 @@ namespace Logic.GameStates
     {
         [Header("References")]
         [SerializeField] private Game game;
+        [SerializeField] private GameSettingsContainer gameSettingsContainer;
+        [SerializeField] private CameraController cameraController;
+
+        [Header("States")]
+        [SerializeField] private StateNode idleState;
+
+        [Header("Settings")]
+        [SerializeField] private float warmupTimeSec = 3f;
+
+        private float t;
 
         public string Name => "WarmUp";
 
         public override void Enter()
         {
-            game.ResetGameState();
-            game.PreformCalculations();
+            Debug.Log("State: " + Name);
+
+            t = warmupTimeSec;
+
+            bool isRotateCameraOnStart = gameSettingsContainer.IsRotateCameraOnStart;
+            cameraController.RotateToStartPosition(isRotateCameraOnStart).Forget();
+
             game.FireWarmup();
         }
 
@@ -24,7 +42,17 @@ namespace Logic.GameStates
 
         public override void StateUpdate()
         {
-            // Empty
+            if (t <= 0f)
+            {
+                return;
+            }
+
+            t -= Time.deltaTime;
+
+            if (t <= 0f)
+            {
+                game.GameStateMachine.SetState(idleState);
+            }
         }
 
         public void Move(string uci)

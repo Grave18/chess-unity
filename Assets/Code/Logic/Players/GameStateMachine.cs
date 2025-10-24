@@ -1,10 +1,11 @@
 ﻿using Logic.GameStates;
+using PurrNet;
 using PurrNet.StateMachine;
 using UnityEngine;
 
 namespace Logic.Players
 {
-    public class GameStateMachine : MonoBehaviour
+    public class GameStateMachine : NetworkBehaviour
     {
         [SerializeField] private StateMachine stateMachine;
 

@@ -3786,6 +3786,10 @@ MonoBehaviour:
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
   game: {fileID: 1216111693}
+  gameSettingsContainer: {fileID: 1470752476}
+  cameraController: {fileID: 330585549}
+  idleState: {fileID: 1664484785}
+  warmupTimeSec: 3
 --- !u!1 &897090770
 GameObject:
   m_ObjectHideFlags: 0
