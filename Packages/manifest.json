@@ -1,5 +1,15 @@
 {
+    "scopedRegistries": [
+        {
+            "name": "package.openupm.com",
+            "url": "https://package.openupm.com",
+            "scopes": [
+                "net.tnrd.serializableinterface"
+            ]
+        }
+    ],
   "dependencies": {
+    "net.tnrd.serializableinterface": "2.2.1",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
     "com.rlabrecque.steamworks.net": "https://github.com/rlabrecque/Steamworks.NET.git?path=/com.rlabrecque.steamworks.net#2024.8.0",
     "com.unity.2d.sprite": "1.0.0",
