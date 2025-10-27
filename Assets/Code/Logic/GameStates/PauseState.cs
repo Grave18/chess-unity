@@ -1,16 +1,17 @@
 ﻿using Logic.MovesBuffer;
 using PurrNet.StateMachine;
+using TNRD;
 using UnityEngine;
 
 namespace Logic.GameStates
 {
-    public class PauseState : StateNode,IState
+    public class PauseState : StateNode,IGameState
     {
         [Header("References")]
         [SerializeField] private Game game;
 
         [Header("States")]
-        [SerializeField] private StateNode idleState;
+        [SerializeField] private SerializableInterface<IGameState> idleState;
 
         public string Name => "Pause";
 
@@ -52,7 +53,7 @@ namespace Logic.GameStates
 
         public void Play()
         {
-            game.GameStateMachine.SetState(idleState);
+            game.GameStateMachine.SetState(idleState.Value);
         }
 
         public void Pause()

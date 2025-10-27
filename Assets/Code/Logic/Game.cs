@@ -19,7 +19,7 @@ namespace Logic
         [SerializeField] private StateNode warmupState;
         [SerializeField] private StateNode idleState;
 
-        public GameStateMachine GameStateMachine { get; private set; }
+        public GameStateMachineOnline GameStateMachine { get; private set; }
         public MenuStateMachine MenuStateMachine { get; private set; }
         public Competitors Competitors { get; private set; }
         public Board Board { get; private set; }
@@ -82,7 +82,7 @@ namespace Logic
         public void FirePause() => OnPause?.Invoke();
 
         public void Init(Board board, Competitors competitors, CameraController cameraController, UciBuffer commandUciBuffer,
-            PieceColor color, GameSettingsContainer gameSettingsContainer, GameStateMachine gameStateMachine, MenuStateMachine menuStateMachine)
+            PieceColor color, GameSettingsContainer gameSettingsContainer, GameStateMachineOnline gameStateMachine, MenuStateMachine menuStateMachine)
         {
             Board = board;
             Competitors = competitors;
@@ -109,7 +109,7 @@ namespace Logic
             CurrentTurnColor = _startingColor;
             Selected = null;
             UciBuffer.Clear();
-            GameStateMachine.Reset();
+            GameStateMachine.ResetState();
         }
 
         public void ChangeTurn()

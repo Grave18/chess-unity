@@ -1,6 +1,6 @@
 ﻿namespace Logic.GameStates
 {
-    public interface IState
+    public interface IGameState
     {
         string Name { get; }
 

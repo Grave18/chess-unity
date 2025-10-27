@@ -1200,7 +1200,16 @@ MonoBehaviour:
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
   stateMachine: {fileID: 231309767}
-  warmupState: {fileID: 886104444}
+  warmupState:
+    mode: 0
+    unityReference: {fileID: 886104444}
+    rawReference:
+      rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!4 &231309766
 Transform:
   m_ObjectHideFlags: 0
@@ -3423,7 +3432,16 @@ MonoBehaviour:
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
   game: {fileID: 1216111693}
-  idleState: {fileID: 1664484785}
+  idleState:
+    mode: 0
+    unityReference: {fileID: 1664484785}
+    rawReference:
+      rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!1 &826316352
 GameObject:
   m_ObjectHideFlags: 0
@@ -3764,9 +3782,9 @@ MonoBehaviour:
   competitors: {fileID: 1739655008}
   highlighter: {fileID: 1544682202}
   uciBuffer: {fileID: 2060320542}
+  inputHuman: {fileID: 865359495}
   gameStateMachine: {fileID: 231309765}
   menuStateMachine: {fileID: 2146145379}
-  inputHuman: {fileID: 865359495}
   promotionPanel: {fileID: 59947144}
   whiteClockPrefab: {fileID: 7944437879434264550, guid: e028a4c506fb2ee40a5c18ae5bf50d90,
     type: 3}
@@ -3935,8 +3953,17 @@ MonoBehaviour:
   game: {fileID: 1216111693}
   gameSettingsContainer: {fileID: 1470752476}
   cameraController: {fileID: 330585549}
-  idleState: {fileID: 1664484785}
+  idleState:
+    mode: 0
+    unityReference: {fileID: 1664484785}
+    rawReference:
+      rid: -2
   warmupTimeSec: 3
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!1 &897090770
 GameObject:
   m_ObjectHideFlags: 0
@@ -6718,9 +6745,26 @@ MonoBehaviour:
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
   game: {fileID: 1216111693}
-  endGameState: {fileID: 133831036}
-  pauseState: {fileID: 1754781640}
-  moveState: {fileID: 794642995}
+  endGameState:
+    mode: 0
+    unityReference: {fileID: 133831036}
+    rawReference:
+      rid: -2
+  pauseState:
+    mode: 0
+    unityReference: {fileID: 1754781640}
+    rawReference:
+      rid: -2
+  moveState:
+    mode: 0
+    unityReference: {fileID: 794642995}
+    rawReference:
+      rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!1 &1670835132
 GameObject:
   m_ObjectHideFlags: 0
@@ -7333,7 +7377,16 @@ MonoBehaviour:
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
   game: {fileID: 1216111693}
-  idleState: {fileID: 1664484785}
+  idleState:
+    mode: 0
+    unityReference: {fileID: 1664484785}
+    rawReference:
+      rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!1 &1759059225
 GameObject:
   m_ObjectHideFlags: 0

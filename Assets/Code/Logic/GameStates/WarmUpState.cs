@@ -2,11 +2,12 @@
 using MainCamera;
 using PurrNet.StateMachine;
 using Settings;
+using TNRD;
 using UnityEngine;
 
 namespace Logic.GameStates
 {
-    public class WarmUpState : StateNode, IState
+    public class WarmUpState : StateNode, IGameState
     {
         [Header("References")]
         [SerializeField] private Game game;
@@ -14,7 +15,7 @@ namespace Logic.GameStates
         [SerializeField] private CameraController cameraController;
 
         [Header("States")]
-        [SerializeField] private StateNode idleState;
+        [SerializeField] private SerializableInterface<IGameState> idleState;
 
         [Header("Settings")]
         [SerializeField] private float warmupTimeSec = 3f;
@@ -51,7 +52,7 @@ namespace Logic.GameStates
 
             if (t <= 0f)
             {
-                game.GameStateMachine.SetState(idleState);
+                game.GameStateMachine.SetState(idleState.Value);
             }
         }
 

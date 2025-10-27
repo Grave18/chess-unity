@@ -1,49 +1,53 @@
 ﻿using Logic.GameStates;
 using PurrNet;
 using PurrNet.StateMachine;
+using TNRD;
 using UnityEngine;
 
 namespace Logic.Players
 {
-    public class GameStateMachine : NetworkBehaviour
+    public class GameStateMachineOnline : NetworkBehaviour
     {
+        [Header("References")]
         [SerializeField] private StateMachine stateMachine;
-        [SerializeField] private StateNode warmupState;
+
+        [Header("States")]
+        [SerializeField] private SerializableInterface<IGameState> warmupState;
 
         public string StateName => State?.Name ?? "No State";
-        private IState State => stateMachine.currentStateNode as IState;
+        private IGameState State => stateMachine.currentStateNode as IGameState;
 
         public void Init(Game game)
         {
             _game = game;
         }
 
-        public void SetState(StateNode state)
+        public void SetState(IGameState state)
         {
             if (!isServer)
             {
                 return;
             }
 
-            stateMachine.SetState(state);
+            stateMachine.SetState(state as StateNode);
         }
 
-        public void SetState<T>(StateNode<T> state, T data)
+        public void SetState<T>(IGameState state, T data)
         {
             if (!isServer)
             {
                 return;
             }
 
-            stateMachine.SetState(state, data);
+            stateMachine.SetState(state as StateNode<T>, data);
         }
 
         [ServerRpc(requireOwnership: false)]
-        public void Reset()
+        public void ResetState()
         {
             if (State is not WarmUpState)
             {
-                SetState(warmupState);
+                SetState(warmupState.Value);
             }
         }
 

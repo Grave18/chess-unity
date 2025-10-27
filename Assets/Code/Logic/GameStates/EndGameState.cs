@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Logic.GameStates
 {
-    public class EndGameState : StateNode, IState
+    public class EndGameState : StateNode, IGameState
     {
         [Header("References")]
         [SerializeField] private Game game;

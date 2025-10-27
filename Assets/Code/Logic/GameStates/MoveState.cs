@@ -6,17 +6,18 @@ using Logic.MovesBuffer;
 using Notation;
 using PurrNet.StateMachine;
 using Sound;
+using TNRD;
 using UnityEngine;
 
 namespace Logic.GameStates
 {
-    public class MoveState : StateNode<string>, IState
+    public class MoveState : StateNode<string>, IGameState
     {
         [Header("References")]
         [SerializeField] private Game game;
 
         [Header("States")]
-        [SerializeField] private StateNode idleState;
+        [SerializeField] private SerializableInterface<IGameState> idleState;
 
         private const float MoveTimeSec = 0.3f;
         private string _uci;
@@ -189,7 +190,7 @@ namespace Logic.GameStates
         private void Abort(string uci)
         {
             Debug.Log($"{uci}: invalid move");
-            game.GameStateMachine.SetState(idleState);
+            game.GameStateMachine.SetState(idleState.Value);
         }
 
         public override void Exit()
@@ -241,7 +242,7 @@ namespace Logic.GameStates
         {
             // if (isController)
             {
-                game.GameStateMachine.SetState(idleState);
+                game.GameStateMachine.SetState(idleState.Value);
             }
         }
 

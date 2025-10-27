@@ -1,18 +1,19 @@
 ﻿using Logic.MovesBuffer;
 using PurrNet.StateMachine;
+using TNRD;
 using UnityEngine;
 
 namespace Logic.GameStates
 {
-    public class IdleState : StateNode, IState
+    public class IdleState : StateNode, IGameState
     {
         [Header("References")]
         [SerializeField] private Game game;
 
         [Header("States")]
-        [SerializeField] private StateNode endGameState;
-        [SerializeField] private StateNode pauseState;
-        [SerializeField] private StateNode<string> moveState;
+        [SerializeField] private SerializableInterface<IGameState> endGameState;
+        [SerializeField] private SerializableInterface<IGameState> pauseState;
+        [SerializeField] private SerializableInterface<IGameState> moveState;
 
         private bool _isRunning;
 
@@ -42,7 +43,7 @@ namespace Logic.GameStates
 
         public void Move(string uci)
         {
-            game.GameStateMachine.SetState(moveState, uci);
+            game.GameStateMachine.SetState(moveState.Value, uci);
         }
 
         public void Undo()
@@ -68,7 +69,7 @@ namespace Logic.GameStates
 
         public void Pause()
         {
-            game.GameStateMachine.SetState(pauseState);
+            game.GameStateMachine.SetState(pauseState.Value);
         }
 
         public override void StateUpdate()
@@ -88,7 +89,7 @@ namespace Logic.GameStates
 
         private void EndGame()
         {
-            game.GameStateMachine.SetState(endGameState);
+            game.GameStateMachine.SetState(endGameState.Value);
             game.Competitors.StopPlayer();
         }
     }

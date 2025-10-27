@@ -40,9 +40,11 @@ namespace Initialization
         [SerializeField] private Competitors competitors;
         [SerializeField] private Highlighter highlighter;
         [SerializeField] private UciBuffer uciBuffer;
-        [SerializeField] private GameStateMachine gameStateMachine;
-        [SerializeField] private MenuStateMachine menuStateMachine;
         [SerializeField] private InputHuman inputHuman;
+
+        [Header("State machines")]
+        [SerializeField] private GameStateMachineOnline gameStateMachine;
+        [SerializeField] private MenuStateMachine menuStateMachine;
 
         [Header("Ui")]
         [SerializeField] private PromotionPanel promotionPanel;
