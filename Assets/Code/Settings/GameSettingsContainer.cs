@@ -24,10 +24,13 @@ namespace Settings
         public static string GameSettingsKey => ClonesManager.IsClone() ? "GameSettingsClone" : "GameSettings";
         private static string IsHostServerKey => ClonesManager.IsClone() ? "IsServerClone" : "IsServer";
         private static string IsLocalServerKey => ClonesManager.IsClone() ? "IsLocalClone" : "IsLocal";
+        private static string IsOnlineComputerVsComputerKey => ClonesManager.IsClone() ? "IsOnlineComputerVsComputerClone" : "IsOnlineComputerVsComputer";
+        
 #else
         public static string GameSettingsKey => "GameSettings";
         private static string IsHostServerKey => "IsServer";
         private static string IsLocalServerKey => "IsLocal";
+        private static string IsOnlineComputerVsComputerKey => "IsOnlineComputerVsComputer";
 #endif
 
         public static bool IsHost
@@ -40,6 +43,13 @@ namespace Settings
         {
             get => PlayerPrefs.GetInt(IsLocalServerKey, 0) == 1;
             set => PlayerPrefs.SetInt(IsLocalServerKey, value ? 1 : 0);
+        }
+        // end todo
+        
+        public static bool IsOnlineComputerVsComputer
+        {
+            get => PlayerPrefs.GetInt(IsOnlineComputerVsComputerKey, 0) == 1;
+            set => PlayerPrefs.SetInt(IsOnlineComputerVsComputerKey, value ? 1 : 0);
         }
         // end todo
 

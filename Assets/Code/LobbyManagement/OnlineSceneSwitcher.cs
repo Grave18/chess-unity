@@ -32,17 +32,17 @@ namespace LobbyManagement
             SetupAndSwitchScene(playerColor, isLobbyOwner).Forget();
         }
 
-        public async UniTask SetupAndSwitchScene(PieceColor playerColor, bool isHost, bool isLocal = false,
-            bool isLoadComputerPlayers = false)
+        public async UniTask SetupAndSwitchScene(PieceColor playerColor, bool isHost, bool isLocal = false)
         {
             if (!isHost)
             {
                 await UniTask.WaitForSeconds(1f, ignoreTimeScale: true);
             }
 
-            if (isLoadComputerPlayers)
+            if (GameSettingsContainer.IsOnlineComputerVsComputer)
             {
                 gameSettingsContainer.SetupGameComputerVsComputerOnline(playerColor);
+                GameSettingsContainer.IsOnlineComputerVsComputer = false;
             }
             else
             {

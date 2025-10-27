@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using LobbyManagement;
 using Logic;
 using ParrelSync;
+using Settings;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -38,25 +39,25 @@ namespace UtilsProject.GameSetup
             }
         }
 
-        public static async UniTask Load(bool isLoadComputerPlayers = false)
+        public static async UniTask Load()
         {
             await UniTask.WaitForSeconds(1f, ignoreTimeScale: true);
 
             if (ClonesManager.IsClone())
             {
-                await StartCloneClient(isLoadComputerPlayers);
+                await StartCloneClient();
             }
             else
             {
                 await OpenOrCreateAndOpenClone();
-                await StartHost(isLoadComputerPlayers);
+                await StartHost();
             }
         }
 
-        private static async UniTask StartCloneClient(bool isLoadComputerPlayers)
+        private static async UniTask StartCloneClient()
         {
             var onlineSceneSwitcher = Object.FindObjectOfType<OnlineSceneSwitcher>();
-            await onlineSceneSwitcher.SetupAndSwitchScene(PieceColor.Black, isHost: false, isLocal: true, isLoadComputerPlayers);
+            await onlineSceneSwitcher.SetupAndSwitchScene(PieceColor.Black, isHost: false, isLocal: true);
         }
 
         private static async UniTask OpenOrCreateAndOpenClone()
@@ -87,12 +88,19 @@ namespace UtilsProject.GameSetup
             }
         }
 
-        private static async UniTask StartHost(bool isLoadComputerPlayers)
+        private static async UniTask StartHost()
         {
-            CloneCommandSender.Send("StartLocalhost");
+            if (GameSettingsContainer.IsOnlineComputerVsComputer)
+            {
+                CloneCommandSender.Send("StartLocalhostComputers");
+            }
+            else
+            {
+                CloneCommandSender.Send("StartLocalhost");
+            }
 
             var onlineSceneSwitcher = Object.FindObjectOfType<OnlineSceneSwitcher>();
-            await onlineSceneSwitcher.SetupAndSwitchScene(PieceColor.White, isHost: true, isLocal: true, isLoadComputerPlayers);
+            await onlineSceneSwitcher.SetupAndSwitchScene(PieceColor.White, isHost: true, isLocal: true);
         }
     }
 }

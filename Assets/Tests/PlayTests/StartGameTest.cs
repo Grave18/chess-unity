@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using Cysharp.Threading.Tasks;
-using Logic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,13 +18,13 @@ namespace PlayTests
         {
             yield return SceneManager.LoadSceneAsync("MainMenuScene");
             GameSettingsContainer.SetCurrentFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-            GameSettingsContainer.SetupGameComputerVsComputerOnline(PieceColor.White);
 
-            yield return LocalhostSetupLoader.Load(isLoadComputerPlayers: true).ToCoroutine();
+            Settings.GameSettingsContainer.IsOnlineComputerVsComputer = true;
+            yield return LocalhostSetupLoader.Load().ToCoroutine();
 
-            yield return new WaitUntil(() => TestUtils.Game.IsEndGame);
+            yield return new WaitUntil(() => Game.IsEndGame);
 
-            Assert.IsTrue(TestUtils.Game.IsEndGame, "Game must be ended");
+            Assert.IsTrue(Game.IsEndGame, "Game must be ended");
 
             CloneCommandSender.Send("ExitPlaymode");
         }

@@ -1,4 +1,5 @@
 ﻿using ParrelSync;
+using Settings;
 using UnityEditor;
 using UnityEngine;
 
@@ -22,7 +23,11 @@ namespace UtilsProject.GameSetup
             switch (command)
             {
                 case "StartLocalhost":
-                    ExecuteLoadLocalhostCommand();
+                    LocalhostSetupLoader.PlayAndLoadLocalhost();
+                    break;
+                case "StartLocalhostComputers":
+                    LocalhostSetupLoader.PlayAndLoadLocalhost();
+                    GameSettingsContainer.IsOnlineComputerVsComputer = true;
                     break;
                 case "ExitPlaymode":
                     EditorApplication.ExitPlaymode();
@@ -30,11 +35,6 @@ namespace UtilsProject.GameSetup
             }
 
             PlayerPrefs.SetString("CommandToClone", string.Empty);
-        }
-
-        private static void ExecuteLoadLocalhostCommand()
-        {
-            LocalhostSetupLoader.PlayAndLoadLocalhost();
         }
     }
 }
