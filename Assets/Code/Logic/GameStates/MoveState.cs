@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Logic.GameStates
 {
-    public class MoveState : StateNode<string>, IGameState
+    public class MoveState : StateNode<string>, IGameState<string>
     {
         [Header("References")]
         [SerializeField] private Game game;
@@ -240,10 +240,7 @@ namespace Logic.GameStates
 
         private void EndMove()
         {
-            // if (isController)
-            {
-                game.GameStateMachine.SetState(idleState.Value);
-            }
+            game.GameStateMachine.SetState(idleState.Value);
         }
 
         private void UpdateAlgebraicNotation()

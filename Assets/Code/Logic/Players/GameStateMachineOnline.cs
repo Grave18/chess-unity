@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Logic.Players
 {
-    public class GameStateMachineOnline : NetworkBehaviour
+    public class GameStateMachineOnline : NetworkBehaviour, IGameStateMachine
     {
         [Header("References")]
         [SerializeField] private StateMachine stateMachine;
@@ -16,11 +16,6 @@ namespace Logic.Players
 
         public string StateName => State?.Name ?? "No State";
         private IGameState State => stateMachine.currentStateNode as IGameState;
-
-        public void Init(Game game)
-        {
-            _game = game;
-        }
 
         public void SetState(IGameState state)
         {
@@ -32,7 +27,7 @@ namespace Logic.Players
             stateMachine.SetState(state as StateNode);
         }
 
-        public void SetState<T>(IGameState state, T data)
+        public void SetState<T>(IGameState<T> state, T data)
         {
             if (!isServer)
             {
@@ -57,16 +52,6 @@ namespace Logic.Players
             State?.Move(uci);
         }
 
-        public void Undo()
-        {
-            State?.Undo();
-        }
-
-        public void Redo()
-        {
-            State?.Redo();
-        }
-
         [ServerRpc(requireOwnership: false)]
         public void Play()
         {
@@ -79,27 +64,8 @@ namespace Logic.Players
             State?.Pause();
         }
 
-        // TODO: remove or refactor
-        private Game _game;
-        // private IState _previousState;
-
-        // public void SetPreviousState()
-        // {
-        //     if (_previousState != null)
-        //     {
-        //         SetState(_previousState);
-        //         _previousState = null;
-        //     }
-        //     else
-        //     {
-        //         SetState(new IdleState(_game));
-        //         Debug.Log("Go to default Idle state");
-        //     }
-        // }
-
-        // private void Update()
-        // {
-        //     _state?.StateUpdate();
-        // }
+        // Unused
+        public void Undo() { }
+        public void Redo() { }
     }
 }

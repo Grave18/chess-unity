@@ -13,7 +13,7 @@ namespace Logic.GameStates
         [Header("States")]
         [SerializeField] private SerializableInterface<IGameState> endGameState;
         [SerializeField] private SerializableInterface<IGameState> pauseState;
-        [SerializeField] private SerializableInterface<IGameState> moveState;
+        [SerializeField] private SerializableInterface<IGameState<string>> moveState;
 
         private bool _isRunning;
 

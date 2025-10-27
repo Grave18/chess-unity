@@ -12,6 +12,7 @@ using Network;
 using Notation;
 using Settings;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityUi.InGame.BoardUi;
 using UnityUi.InGame.ClockUi;
 using UnityUi.InGame.Promotion;
@@ -43,7 +44,9 @@ namespace Initialization
         [SerializeField] private InputHuman inputHuman;
 
         [Header("State machines")]
-        [SerializeField] private GameStateMachineOnline gameStateMachine;
+        [FormerlySerializedAs("gameStateMachine")]
+        [SerializeField] private GameStateMachineOnline gameStateMachineOnline;
+        [SerializeField] private GameStateMachineOffline gameStateMachineOffline;
         [SerializeField] private MenuStateMachine menuStateMachine;
 
         [Header("Ui")]
@@ -61,6 +64,7 @@ namespace Initialization
         private PieceColor _turnColor;
         private FenFromString _fenFromString;
         private IClock _clock;
+        private IGameStateMachine _gameStateMachine;
 
         private bool IsVsPlayer => _gameSettings.Player1Settings.PlayerType == PlayerType.Human
                                    && _gameSettings.Player2Settings.PlayerType == PlayerType.Human;
@@ -69,6 +73,7 @@ namespace Initialization
         {
             InitSettingsContainer();
             InitUciBuffer();
+            InitGameStateMachine();
             InitGame();
             InitClock();
             InitCamera();
@@ -100,11 +105,23 @@ namespace Initialization
             uciBuffer.Init(fenFromBoard, _fenFromString);
         }
 
+        private void InitGameStateMachine()
+        {
+            if (OnlineInstanceHandler.IsOnline)
+            {
+                _gameStateMachine = gameStateMachineOnline;
+            }
+            else
+            {
+                gameStateMachineOffline.Init(game);
+                _gameStateMachine = gameStateMachineOffline;
+            }
+        }
+
         private void InitGame()
         {
-            gameStateMachine.Init(game);
             game.Init(board, competitors, cameraController, uciBuffer,
-                _turnColor, gameSettingsContainer, gameStateMachine, menuStateMachine);
+                _turnColor, gameSettingsContainer, _gameStateMachine, menuStateMachine);
         }
 
         private void InitHighlighter()
