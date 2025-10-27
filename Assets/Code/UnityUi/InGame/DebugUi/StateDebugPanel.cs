@@ -1,4 +1,6 @@
+using Network;
 using PurrNet;
+using Settings;
 using TMPro;
 using UnityEngine;
 
@@ -6,30 +8,49 @@ namespace UnityUi.InGame.DebugUi
 {
     public class StateDebugPanel : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] private Logic.Game game;
+        [SerializeField] private GameSettingsContainer gameSettingsContainer;
 
+        [Header("Ui texts")]
         [SerializeField] private TMP_Text authorityText;
         [SerializeField] private TMP_Text stateText;
         [SerializeField] private TMP_Text turnText;
         [SerializeField] private TMP_Text checkText;
+        [SerializeField] private TMP_Text playerTypeText;
 
         private void Update()
         {
-            string authority = "Offline";
-            if (InstanceHandler.NetworkManager != null)
-            {
-                authority = InstanceHandler.NetworkManager.isServer ? "Server" : "Client";
-            }
-            authorityText.text = "Authority: " + authority;
-
             if (!game)
             {
                 return;
             }
 
+            authorityText.text = "Authority: " + GetAuthority();
             stateText.text = "State: " + game.GameStateMachine?.StateName;
             turnText.text = "Turn: " + game.CurrentTurnColor;
             checkText.text = "Check: " + game.CheckType;
+            playerTypeText.text = "Player: " + gameSettingsContainer.GameSettings.Player1Settings.PlayerType;
+        }
+
+        private static string GetAuthority()
+        {
+            if (InstanceHandler.NetworkManager == null || OnlineInstanceHandler.IsOffline)
+            {
+                return "Offline";
+            }
+
+            if (InstanceHandler.NetworkManager.isHost)
+            {
+                return "Host";
+            }
+
+            if (InstanceHandler.NetworkManager.isServer)
+            {
+                return "Server";
+            }
+
+            return "Client";
         }
     }
 }
