@@ -15,7 +15,7 @@ namespace Logic.Players
         [SerializeField] private SerializableInterface<IGameState> warmupState;
 
         public string StateName => State?.Name ?? "No State";
-        private IGameState State => stateMachine.currentStateNode as IGameState;
+        public IGameState State => stateMachine.currentStateNode as IGameState;
 
         public void SetState(IGameState state)
         {

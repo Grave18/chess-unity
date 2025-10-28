@@ -9,9 +9,8 @@ namespace Logic.Players
         [Header("States")]
         [SerializeField] private SerializableInterface<IGameState> warmupState;
 
-        private IGameState _state;
-
-        public string StateName => _state?.Name ?? "No State";
+        public IGameState State { get; private set; }
+        public string StateName => State?.Name ?? "No State";
 
         public void Init(Game game)
         {
@@ -21,21 +20,21 @@ namespace Logic.Players
 
         public void SetState(IGameState state)
         {
-            _state?.Exit();
-            _state = state;
+            State?.Exit();
+            State = state;
             state?.Enter();
         }
 
         public void SetState<T>(IGameState<T> state, T data)
         {
-            _state?.Exit();
-            _state = state;
+            State?.Exit();
+            State = state;
             state?.Enter(data);
         }
 
         public void ResetState()
         {
-            if (_state is not WarmUpState)
+            if (State is not WarmUpState)
             {
                 SetState(warmupState.Value);
             }
@@ -43,32 +42,32 @@ namespace Logic.Players
 
         public void Move(string uci)
         {
-            _state?.Move(uci);
+            State?.Move(uci);
         }
 
         public void Undo()
         {
-            _state?.Undo();
+            State?.Undo();
         }
 
         public void Redo()
         {
-            _state?.Redo();
+            State?.Redo();
         }
 
         public void Play()
         {
-            _state?.Play();
+            State?.Play();
         }
 
         public void Pause()
         {
-            _state?.Pause();
+            State?.Pause();
         }
 
         private void Update()
         {
-            _state?.StateUpdate();
+            State?.StateUpdate();
         }
 
         // TODO: remove or refactor

@@ -11,6 +11,11 @@ namespace Logic.MenuStates
 
         private MenuState _currentState;
 
+        public void ResetState()
+        {
+            SetState<PlayState>();
+        }
+
         public void SetState<T>() where T : MenuState
         {
             _currentState?.OnExit();

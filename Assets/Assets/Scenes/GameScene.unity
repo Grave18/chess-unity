@@ -5098,7 +5098,7 @@ MonoBehaviour:
     unityReference: {fileID: 784571184}
     rawReference:
       rid: -2
-  warmupTimeSec: 3
+  warmupTimeSec: 1
   references:
     version: 2
     RefIds:

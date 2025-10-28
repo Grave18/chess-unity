@@ -4,6 +4,7 @@ namespace Logic.Players
 {
     public interface IGameStateMachine
     {
+        IGameState State { get; }
         string StateName { get; }
         void SetState(IGameState state);
         void SetState<T>(IGameState<T> state, T data);

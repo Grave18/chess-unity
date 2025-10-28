@@ -3,6 +3,7 @@ using System.Linq;
 using ChessBoard;
 using ChessBoard.Pieces;
 using Cysharp.Threading.Tasks;
+using Logic.GameStates;
 using Logic.MenuStates;
 using Logic.MovesBuffer;
 using Logic.Players;
@@ -101,15 +102,17 @@ namespace Logic
         {
             ResetGameState();
             PreformCalculations();
+            await UniTask.WaitUntil(() => GameStateMachine.State is not WarmUpState);
         }
 
-        public void ResetGameState()
+        private void ResetGameState()
         {
             CheckType = CheckType.None;
             CurrentTurnColor = _startingColor;
             Selected = null;
             UciBuffer.Clear();
             GameStateMachine.ResetState();
+            MenuStateMachine.ResetState();
         }
 
         public void ChangeTurn()
