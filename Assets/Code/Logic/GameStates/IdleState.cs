@@ -14,6 +14,8 @@ namespace Logic.GameStates
         [SerializeField] private SerializableInterface<IGameState> endGameState;
         [SerializeField] private SerializableInterface<IGameState> pauseState;
         [SerializeField] private SerializableInterface<IGameState<string>> moveState;
+        [SerializeField] private SerializableInterface<IGameState<MoveData>> undoState;
+        [SerializeField] private SerializableInterface<IGameState<MoveData>> redoState;
 
         private bool _isRunning;
 
@@ -50,7 +52,8 @@ namespace Logic.GameStates
         {
             if (game.UciBuffer.CanUndo(out MoveData moveData))
             {
-                // TODO _game.GameStateMachine.SetState(new UndoState(_game, moveData));
+                moveData.PreviousState = this;
+                game.GameStateMachine.SetState(undoState.Value, moveData);
             }
         }
 
@@ -58,7 +61,8 @@ namespace Logic.GameStates
         {
             if (game.UciBuffer.CanRedo(out MoveData moveData))
             {
-                // TODO _game.GameStateMachine.SetState(new RedoState(_game, moveData));
+                moveData.PreviousState = this;
+                game.GameStateMachine.SetState(redoState.Value, moveData);
             }
         }
 

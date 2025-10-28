@@ -1,5 +1,6 @@
 ﻿using ChessBoard.Info;
 using ChessBoard.Pieces;
+using Logic.GameStates;
 
 namespace Logic.MovesBuffer
 {
@@ -18,5 +19,7 @@ namespace Logic.MovesBuffer
         public Piece HiddenPawn;
         public Piece BeatenPiece;
         public CastlingInfo CastlingInfo;
+
+        public IGameState PreviousState;
     }
 }

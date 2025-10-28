@@ -20,24 +20,23 @@ namespace Logic.GameStates
         [SerializeField] private SerializableInterface<IGameState> idleState;
 
         private const float MoveTimeSec = 0.3f;
-        private string _uci;
+        private const float SoundT = 0.6f;
 
-        private bool _isRunning;
+        private string _uci;
         private MoveData _moveData;
+        private Turn _turn;
+        private float _t;
+        private bool _isRunning;
 
         public string Name => "Move";
-
-        // TODO: refactor this movable part
-        protected Turn Turn;
-        protected float T { get; set; } = 0f;
-        protected float SoundT => 0.6f;
 
         public override void Enter(string uci)
         {
             Debug.Log("State: " + Name);
 
-            T = 0f;
+            _t = 0f;
             _uci = uci;
+
             ParsedUci parsedUci = GetParsedUci(_uci);
             bool isValid = ValidateMove(parsedUci);
 
@@ -99,7 +98,7 @@ namespace Logic.GameStates
                 if (parsedUci.PromotedPieceType == PieceType.None)
                 {
                     _moveData.MoveType = MoveType.Move;
-                    Turn = new SimpleMove(game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
+                    _turn = new SimpleMove(game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
                 }
                 else
                 {
@@ -107,7 +106,7 @@ namespace Logic.GameStates
                     _moveData.HiddenPawn = piece;
                     promotedPiece = game.Board.GetSpawnedPiece(parsedUci.PromotedPieceType, game.CurrentTurnColor,
                         parsedUci.ToSquare);
-                    Turn = new MovePromotion(game,_moveData.HiddenPawn, parsedUci.FromSquare, parsedUci.ToSquare,
+                    _turn = new MovePromotion(game,_moveData.HiddenPawn, parsedUci.FromSquare, parsedUci.ToSquare,
                         promotedPiece);
                 }
 
@@ -127,7 +126,7 @@ namespace Logic.GameStates
                 if (parsedUci.PromotedPieceType == PieceType.None)
                 {
                     _moveData.MoveType = captureInfo.MoveType;
-                    Turn = new Capture(game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
+                    _turn = new Capture(game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
                         _moveData.IsFirstMove);
                 }
                 else
@@ -136,7 +135,7 @@ namespace Logic.GameStates
                     _moveData.HiddenPawn = piece;
                     promotedPiece = game.Board.GetSpawnedPiece(parsedUci.PromotedPieceType, game.CurrentTurnColor,
                         parsedUci.ToSquare);
-                    Turn = new CapturePromotion(game, piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece,
+                    _turn = new CapturePromotion(game, piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece,
                         _moveData.BeatenPiece);
                 }
 
@@ -151,7 +150,7 @@ namespace Logic.GameStates
             {
                 _moveData.MoveType = castlingInfo.MoveType;
                 _moveData.CastlingInfo = castlingInfo;
-                Turn = new Castling(game,_moveData.CastlingInfo, _moveData.IsFirstMove);
+                _turn = new Castling(game,_moveData.CastlingInfo, _moveData.IsFirstMove);
                 isValid = true;
             }
 
@@ -193,14 +192,14 @@ namespace Logic.GameStates
         {
             if (_isRunning)
             {
-                Turn.Progress(1);
-                Turn.End();
+                _turn.Progress(1);
+                _turn.End();
 
                 game.ChangeTurn();
                 game.UciBuffer.Add(_moveData);
                 game.PreformCalculations();
                 UpdateAlgebraicNotation();
-                PlayCheckSound();
+                PlayCheckSoundIfCheck();
             }
 
             game.FireEndMove();
@@ -219,27 +218,22 @@ namespace Logic.GameStates
             }
             else
             {
-                EndMove();
+                game.GameStateMachine.SetState(idleState.Value);
             }
         }
 
         private bool CanProgressMove()
         {
-            return T < 1;
+            return _t < 1;
         }
 
         private void ProgressMove()
         {
             float delta = Time.deltaTime / MoveTimeSec;
-            T += delta;
+            _t += delta;
 
-            Turn.Progress(T);
+            _turn.Progress(_t);
             PlaySound(delta);
-        }
-
-        private void EndMove()
-        {
-            game.GameStateMachine.SetState(idleState.Value);
         }
 
         private void UpdateAlgebraicNotation()
@@ -247,47 +241,47 @@ namespace Logic.GameStates
             _moveData.AlgebraicNotation += Algebraic.GetCheck(game.CheckType);
         }
 
-        protected void PlaySound(float delta)
+        private void PlaySound(float delta)
          {
              // Not 0.5 sec because of duplicate sound
              float halfDelta = delta*0.525f;
-             if (T >= SoundT - halfDelta && T <= SoundT + halfDelta)
+             if (_t >= SoundT - halfDelta && _t <= SoundT + halfDelta)
              {
-                 Turn.PlaySound();
+                 _turn.PlaySound();
              }
          }
 
-         protected void PlayCheckSound()
-         {
-             if (game.IsCheck)
-             {
-                 EffectsPlayer.Instance.PlayCheckSound();
-             }
-         }
+        private void PlayCheckSoundIfCheck()
+        {
+            if (game.IsCheck)
+            {
+                EffectsPlayer.Instance.PlayCheckSound();
+            }
+        }
 
-         public void Move(string uci)
-         {
-             // Empty
-         }
+        public void Move(string uci)
+        {
+         // Empty
+        }
 
-         public void Undo()
-         {
-             // Not Undo
-         }
+        public void Undo()
+        {
+         // Not Undo
+        }
 
-         public void Redo()
-         {
-             // Not Redo
-         }
+        public void Redo()
+        {
+         // Not Redo
+        }
 
-         public void Play()
-         {
-             // It is not paused
-         }
+        public void Play()
+        {
+         // It is not paused
+        }
 
-         public void Pause()
-         {
-             // Maybe implement pause from Move
+        public void Pause()
+        {
+         // Maybe implement pause from Move
          }
     }
 }
