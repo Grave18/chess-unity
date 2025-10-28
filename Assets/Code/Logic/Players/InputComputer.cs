@@ -1,6 +1,8 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Ai;
 using Settings;
+using UnityEngine;
 
 namespace Logic.Players
 {
@@ -25,7 +27,16 @@ namespace Logic.Players
 
         public async void StartInput()
         {
-            string uci = await _stockfish.GetUci(_playerSettings, _moveCts.Token);
+            string uci;
+            try
+            {
+                 uci = await _stockfish.GetUci(_playerSettings, _moveCts.Token);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(ex);
+                return;
+            }
 
             if (uci == null)
             {

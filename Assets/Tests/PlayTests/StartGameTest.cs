@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UtilsProject.GameSetup;
@@ -22,7 +21,10 @@ namespace PlayTests
             Settings.GameSettingsContainer.IsOnlineComputerVsComputer = true;
             yield return LocalhostSetupLoader.Load().ToCoroutine();
 
-            yield return new WaitUntil(() => Game.IsEndGame);
+            while (!Game.IsEndGame)
+            {
+                yield return null;
+            }
 
             Assert.IsTrue(Game.IsEndGame, "Game must be ended");
 
