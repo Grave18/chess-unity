@@ -43,11 +43,11 @@ namespace Logic.GameStates
 
             if (isValid)
             {
-                Run();
+                _isRunning = true;
             }
             else
             {
-                Abort(_uci);
+                AbortAndSetIdle(_uci);
             }
         }
 
@@ -182,27 +182,26 @@ namespace Logic.GameStates
             return counter;
         }
 
-        private void Run()
-        {
-            _isRunning = true;
-        }
-
-        private void Abort(string uci)
+        private void AbortAndSetIdle(string uci)
         {
             Debug.Log($"{uci}: invalid move");
+            _isRunning = false;
             game.GameStateMachine.SetState(idleState.Value);
         }
 
         public override void Exit()
         {
-            Turn.Progress(1);
-            Turn.End();
+            if (_isRunning)
+            {
+                Turn.Progress(1);
+                Turn.End();
 
-            game.ChangeTurn();
-            game.UciBuffer.Add(_moveData);
-            game.PreformCalculations();
-            UpdateAlgebraicNotation();
-            PlayCheckSound();
+                game.ChangeTurn();
+                game.UciBuffer.Add(_moveData);
+                game.PreformCalculations();
+                UpdateAlgebraicNotation();
+                PlayCheckSound();
+            }
 
             game.FireEndMove();
         }
