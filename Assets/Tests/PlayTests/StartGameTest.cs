@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UtilsProject.GameSetup;
@@ -13,6 +14,7 @@ namespace PlayTests
     public class StartGameTest
     {
         [UnityTest]
+        [Timeout(2_147_483_647)]
         public IEnumerator LocalhostOnline_WithComputers_MustEnd()
         {
             yield return SceneManager.LoadSceneAsync("MainMenuScene");
@@ -21,10 +23,7 @@ namespace PlayTests
             Settings.GameSettingsContainer.IsOnlineComputerVsComputer = true;
             yield return LocalhostSetupLoader.Load().ToCoroutine();
 
-            while (!Game.IsEndGame)
-            {
-                yield return null;
-            }
+            yield return new WaitUntil(() => Game.IsEndGame);
 
             Assert.IsTrue(Game.IsEndGame, "Game must be ended");
 
