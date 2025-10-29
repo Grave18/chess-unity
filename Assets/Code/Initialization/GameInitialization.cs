@@ -12,7 +12,6 @@ using Network;
 using Notation;
 using Settings;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityUi.InGame.BoardUi;
 using UnityUi.InGame.ClockUi;
 using UnityUi.InGame.Promotion;
@@ -41,7 +40,6 @@ namespace Initialization
         [SerializeField] private Competitors competitors;
         [SerializeField] private Highlighter highlighter;
         [SerializeField] private UciBuffer uciBuffer;
-        [SerializeField] private InputHuman inputHuman;
 
         [Header("State machines")]
         [SerializeField] private GameStateMachineOnline gameStateMachineOnline;
@@ -212,7 +210,7 @@ namespace Initialization
 
             if (playerSettings.PlayerType == PlayerType.Human)
             {
-                inputHuman.Init(game, mainCamera, highlighter, layerMask, _gameSettings.IsAutoPromoteToQueen, promotionPanel);
+                var inputHuman = new InputHuman(game, mainCamera, highlighter, layerMask, _gameSettings.IsAutoPromoteToQueen, promotionPanel);
                 return inputHuman;
             }
 

@@ -8,22 +8,22 @@ using UnityUi.InGame.Promotion;
 
 namespace Logic.Players
 {
-    public class InputHuman : MonoBehaviour, IInputHandler
+    public class InputHuman : IInputHandler
     {
         private const float MaxDistance = 100;
 
-        private Game _game;
-        private Camera _mainCamera;
-        private Highlighter _highlighter;
+        private readonly Game _game;
+        private readonly Camera _mainCamera;
+        private readonly Highlighter _highlighter;
 
-        private PromotionPanel _promotionPanel;
-        private bool _isAutoPromoteToQueen;
+        private readonly PromotionPanel _promotionPanel;
+        private readonly bool _isAutoPromoteToQueen;
 
-        private LayerMask _layerMask;
+        private readonly LayerMask _layerMask;
 
         private bool _isPlaying;
 
-        public void Init(Game game, Camera mainCamera, Highlighter highlighter, LayerMask layerMask,
+        public InputHuman(Game game, Camera mainCamera, Highlighter highlighter, LayerMask layerMask,
             bool isAutoPromoteToQueen, PromotionPanel promotionPanel)
         {
             _game = game;
