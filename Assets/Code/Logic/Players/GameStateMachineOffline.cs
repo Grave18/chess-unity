@@ -12,9 +12,8 @@ namespace Logic.Players
         public IGameState State { get; private set; }
         public string StateName => State?.Name ?? "No State";
 
-        public void Init(Game game)
+        public void Init()
         {
-            _game = game;
             SetState(warmupState.Value);
         }
 
@@ -69,23 +68,5 @@ namespace Logic.Players
         {
             State?.StateUpdate();
         }
-
-        // TODO: remove or refactor
-        private Game _game;
-        // private IState _previousState;
-
-        // public void SetPreviousState()
-        // {
-        //     if (_previousState != null)
-        //     {
-        //         SetState(_previousState);
-        //         _previousState = null;
-        //     }
-        //     else
-        //     {
-        //         SetState(new IdleState(_game));
-        //         Debug.Log("Go to default Idle state");
-        //     }
-        // }
     }
 }

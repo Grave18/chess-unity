@@ -110,7 +110,7 @@ namespace Initialization
             }
             else
             {
-                gameStateMachineOffline.Init(game);
+                gameStateMachineOffline.Init();
                 _gameStateMachine = gameStateMachineOffline;
             }
         }
