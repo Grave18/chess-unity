@@ -13,7 +13,6 @@ namespace Logic.Players
         private const float MaxDistance = 100;
 
         private Game _game;
-        private IPlayer _player;
         private Camera _mainCamera;
         private Highlighter _highlighter;
 
@@ -33,11 +32,6 @@ namespace Logic.Players
             _layerMask = layerMask;
             _isAutoPromoteToQueen = isAutoPromoteToQueen;
             _promotionPanel = promotionPanel;
-        }
-
-        public void SetPlayer(IPlayer player)
-        {
-            _player = player;
         }
 
         public void StartInput()
@@ -119,7 +113,7 @@ namespace Logic.Players
                 if (_isAutoPromoteToQueen)
                 {
                     uci += "q";
-                    _player.Move(uci);
+                    _game.GameStateMachine.Move(uci);
                     _game.Deselect();
                     return;
                 }
@@ -129,13 +123,13 @@ namespace Logic.Players
                 {
                     _game.GameStateMachine.Play();
                     uci += pieceLetter;
-                    _player.Move(uci);
+                    _game.GameStateMachine.Move(uci);
                     _game.Deselect();
                 });
             }
             else
             {
-                _player.Move(uci);
+                _game.GameStateMachine.Move(uci);
                 _game.Deselect();
             }
         }

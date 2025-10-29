@@ -95,7 +95,7 @@ namespace PlayTests
 
         public static IEnumerator Move(string uci)
         {
-            Player.Move(uci);
+            Game.GameStateMachine.Move(uci);
             return new WaitUntil(() => Game.GameStateMachine.StateName is "Idle" or "End Game");
         }
 

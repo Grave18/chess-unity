@@ -8,21 +8,17 @@ namespace Logic.Players
 {
     public class InputComputer : IInputHandler
     {
+        private readonly Game _game;
         private readonly Stockfish _stockfish;
         private readonly PlayerSettings _playerSettings;
 
-        private IPlayer _player;
         private CancellationTokenSource _moveCts = new();
 
-        public InputComputer(PlayerSettings playerSettings, Stockfish stockfish)
+        public InputComputer(Game game, PlayerSettings playerSettings, Stockfish stockfish)
         {
+            _game = game;
             _playerSettings = playerSettings;
             _stockfish = stockfish;
-        }
-
-        public void SetPlayer(IPlayer player)
-        {
-            _player = player;
         }
 
         public async void StartInput()
@@ -43,7 +39,7 @@ namespace Logic.Players
                 return;
             }
 
-            _player.Move(uci);
+            _game.GameStateMachine.Move(uci);
         }
 
         public void UpdateInput()

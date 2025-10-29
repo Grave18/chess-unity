@@ -44,7 +44,6 @@ namespace Initialization
         [SerializeField] private InputHuman inputHuman;
 
         [Header("State machines")]
-        [FormerlySerializedAs("gameStateMachine")]
         [SerializeField] private GameStateMachineOnline gameStateMachineOnline;
         [SerializeField] private GameStateMachineOffline gameStateMachineOffline;
         [SerializeField] private MenuStateMachine menuStateMachine;
@@ -196,22 +195,6 @@ namespace Initialization
             competitors.Init(game, playerWhite, playerBlack, _turnColor);
         }
 
-        private void InitAi()
-        {
-            if (IsNeedToConfigureAi())
-            {
-                _stockfish = new Stockfish(uciBuffer, _gameSettings.CurrentFen);
-                _ = _stockfish.Start();
-            }
-        }
-
-        private bool IsNeedToConfigureAi()
-        {
-            return _stockfish == null
-                   && (_gameSettings.Player1Settings.PlayerType == PlayerType.Computer
-                       || _gameSettings.Player2Settings.PlayerType == PlayerType.Computer);
-        }
-
         private IPlayer ConstructPlayer(PlayerSettings playerSettings, PieceColor color)
         {
             IInputHandler inputHandler = GetInput(playerSettings);
@@ -224,7 +207,7 @@ namespace Initialization
         {
             if (playerSettings.PlayerType == PlayerType.Computer)
             {
-                return new InputComputer(playerSettings, _stockfish);
+                return new InputComputer(game, playerSettings, _stockfish);
             }
 
             if (playerSettings.PlayerType == PlayerType.Human)
@@ -245,20 +228,36 @@ namespace Initialization
                 if (color == PieceColor.White)
                 {
                     player = OnlineInstanceHandler.PlayerWhite;
-                    OnlineInstanceHandler.PlayerWhite.Init(game, inputHandler);
+                    OnlineInstanceHandler.PlayerWhite.Init(inputHandler);
                 }
                 else if (color == PieceColor.Black)
                 {
                     player = OnlineInstanceHandler.PlayerBlack;
-                    OnlineInstanceHandler.PlayerBlack.Init(game, inputHandler);
+                    OnlineInstanceHandler.PlayerBlack.Init(inputHandler);
                 }
             }
             else
             {
-                player = new PlayerOffline(game, inputHandler);
+                player = new PlayerOffline(inputHandler);
             }
 
             return player;
+        }
+
+        private void InitAi()
+        {
+            if (IsNeedToConfigureAi())
+            {
+                _stockfish = new Stockfish(uciBuffer, _gameSettings.CurrentFen);
+                _ = _stockfish.Start();
+            }
+        }
+
+        private bool IsNeedToConfigureAi()
+        {
+            return _stockfish == null
+                   && (_gameSettings.Player1Settings.PlayerType == PlayerType.Computer
+                       || _gameSettings.Player2Settings.PlayerType == PlayerType.Computer);
         }
 
         private void OnDestroy()

@@ -2,15 +2,11 @@ namespace Logic.Players
 {
     public class PlayerOffline : IPlayer
     {
-        private readonly Game _game;
         private readonly IInputHandler _inputHandler;
 
-        public PlayerOffline(Game game, IInputHandler inputHandler)
+        public PlayerOffline(IInputHandler inputHandler)
         {
-            _game = game;
             _inputHandler = inputHandler;
-
-            _inputHandler.SetPlayer(this);
         }
 
         public void StartPlayer()
@@ -26,11 +22,6 @@ namespace Logic.Players
         public void StopPlayer()
         {
             _inputHandler.StopInput();
-        }
-
-        public void Move(string uci)
-        {
-            _game.GameStateMachine.Move(uci);
         }
     }
 }

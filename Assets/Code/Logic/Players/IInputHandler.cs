@@ -5,6 +5,5 @@
         public void StartInput();
         void UpdateInput();
         public void StopInput();
-        void SetPlayer(IPlayer player);
     }
 }
