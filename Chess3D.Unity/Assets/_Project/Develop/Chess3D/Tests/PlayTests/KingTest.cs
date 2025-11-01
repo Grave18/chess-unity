@@ -1,7 +1,7 @@
 using System.Collections;
-using ChessBoard;
-using ChessBoard.Pieces;
-using Logic;
+using Chess3D.Runtime.ChessBoard;
+using Chess3D.Runtime.ChessBoard.Pieces;
+using Chess3D.Runtime.Logic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;

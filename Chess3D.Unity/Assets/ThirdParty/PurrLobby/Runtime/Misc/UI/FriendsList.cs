@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LobbyManagement;
 using UnityEngine;
+using FriendItem = Chess3D.Runtime.LobbyManagement.FriendItem;
 
 namespace PurrLobby
 {

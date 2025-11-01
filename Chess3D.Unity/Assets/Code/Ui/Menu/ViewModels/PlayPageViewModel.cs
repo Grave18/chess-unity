@@ -1,10 +1,11 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using Chess3D.Runtime.LobbyManagement;
+using Chess3D.Runtime.Logic;
+using Chess3D.Runtime.SceneManagement;
+using Chess3D.Runtime.Settings;
+using Cysharp.Threading.Tasks;
 using LobbyManagement;
-using Logic;
-using Settings;
 using Ui.Auxiliary;
 using MvvmTool;
-using SceneManagement;
 using UnityEngine;
 
 namespace Ui.Menu.ViewModels

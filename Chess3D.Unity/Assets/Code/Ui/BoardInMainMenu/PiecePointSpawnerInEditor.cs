@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using ChessBoard;
+using Chess3D.Runtime.ChessBoard;
 using EditorCools;
 using UnityEngine;
 

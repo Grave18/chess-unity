@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Chess3D.Runtime.LobbyManagement;
 using LobbyManagement;
 using UnityEngine;
 

@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using ChessBoard.Pieces;
+using Chess3D.Runtime.ChessBoard.Pieces;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 

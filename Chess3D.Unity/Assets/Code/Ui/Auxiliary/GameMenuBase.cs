@@ -2,13 +2,12 @@
 #define NOESIS
 using UnityEngine;
 using Noesis;
+using Chess3D.Runtime.UtilsCommon.ObjectCreation;
 
 #else
 using System;
 using System.Windows.Controls;
 #endif
-
-using UtilsCommon.ObjectCreation;
 
 namespace Ui.Auxiliary
 {

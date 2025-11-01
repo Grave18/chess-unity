@@ -1,10 +1,12 @@
-﻿using Network;
-using Notation;
-using Settings;
+﻿using Chess3D.Runtime.Logic;
+using Chess3D.Runtime.Network;
+using Chess3D.Runtime.Notation;
+using Chess3D.Runtime.SceneManagement;
+using Chess3D.Runtime.Settings;
+using Chess3D.Runtime.Sound;
+using Network;
 using MvvmTool;
 using PurrNet;
-using SceneManagement;
-using Sound;
 using UnityEngine;
 
 namespace Ui.InGame.ViewModels
@@ -12,7 +14,7 @@ namespace Ui.InGame.ViewModels
     public partial class InGamePageViewModel : NetworkBehaviour
     {
         [SerializeField] private SceneLoader sceneLoader;
-        [SerializeField] private Logic.Game game;
+        [SerializeField] private Game game;
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
         [SerializeField] private FenFromBoard fenFromBoard;
         [SerializeField] private PopupViewModel popupViewModel;

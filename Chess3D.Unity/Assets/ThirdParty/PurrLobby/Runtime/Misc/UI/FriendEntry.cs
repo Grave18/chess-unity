@@ -4,6 +4,7 @@ using PurrNet.Logging;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using FriendItem = Chess3D.Runtime.LobbyManagement.FriendItem;
 
 namespace PurrLobby
 {

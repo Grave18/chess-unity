@@ -1,12 +1,12 @@
 ﻿using System.Collections;
-using ChessBoard;
-using ChessBoard.Pieces;
+using Chess3D.Runtime.ChessBoard;
+using Chess3D.Runtime.ChessBoard.Pieces;
+using Chess3D.Runtime.Initialization;
+using Chess3D.Runtime.Logic;
+using Chess3D.Runtime.Logic.Players;
+using Chess3D.Runtime.Settings;
 using Cysharp.Threading.Tasks;
-using Initialization;
-using Logic;
-using Logic.Players;
 using NUnit.Framework;
-using Settings;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

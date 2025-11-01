@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Chess3D.Runtime.LobbyManagement;
 using LobbyManagement;
 using PurrNet.Logging;
 using UnityEngine;

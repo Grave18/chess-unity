@@ -1,11 +1,10 @@
 ﻿using System.Collections;
+using Chess3D.Runtime.UtilsProject.GameSetup.Editor;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
-using UtilsProject.GameSetup;
-
 using static PlayTests.TestUtils;
 
 namespace PlayTests
@@ -20,7 +19,7 @@ namespace PlayTests
             yield return SceneManager.LoadSceneAsync("MainMenuScene");
             GameSettingsContainer.SetCurrentFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
-            Settings.GameSettingsContainer.IsOnlineComputerVsComputer = true;
+            Chess3D.Runtime.Settings.GameSettingsContainer.IsOnlineComputerVsComputer = true;
             yield return LocalhostSetupLoader.Load().ToCoroutine();
 
             yield return new WaitUntil(() => Game.IsEndGame);

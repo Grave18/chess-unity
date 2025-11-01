@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Notation;
-using Settings;
+using Chess3D.Runtime.Notation;
+using Chess3D.Runtime.Settings;
 using Ui.Auxiliary;
 using MvvmTool;
 using UnityEngine;

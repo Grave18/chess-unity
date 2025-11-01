@@ -1,13 +1,15 @@
-﻿using Cysharp.Threading.Tasks;
-using Logic.MenuStates;
-using Notation;
-using Settings;
+﻿using Chess3D.Runtime.Logic;
+using Chess3D.Runtime.Logic.MenuStates;
+using Chess3D.Runtime.Network;
+using Chess3D.Runtime.Notation;
+using Chess3D.Runtime.SceneManagement;
+using Chess3D.Runtime.Settings;
+using Chess3D.Runtime.UtilsCommon.Singleton;
+using Cysharp.Threading.Tasks;
 using MvvmTool;
 using Network;
-using SceneManagement;
 using Ui.Auxiliary;
 using UnityEngine;
-using UtilsCommon.Singleton;
 
 namespace Ui.InGame.ViewModels
 {
@@ -15,7 +17,7 @@ namespace Ui.InGame.ViewModels
     public partial class PopupViewModel : SingletonBehaviour<PopupViewModel>
     {
         [SerializeField] private SceneLoader sceneLoader;
-        [SerializeField] private Logic.Game game;
+        [SerializeField] private Game game;
         [SerializeField] private GameSettingsContainer gameSettingsContainer;
         [SerializeField] private FenFromBoard fenFromBoard;
         [SerializeField] private MenuStateMachine menuStateMachine;

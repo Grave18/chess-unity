@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Settings;
+using Chess3D.Runtime.Settings;
 using Ui.Auxiliary;
 using Ui.BoardInMainMenu;
 using UnityEngine;

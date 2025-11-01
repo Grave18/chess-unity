@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using ChessBoard.Info;
+using Chess3D.Runtime.ChessBoard.Info;
+using Chess3D.Runtime.Logic;
+using Chess3D.Runtime.Settings;
 using EditorCools;
-using Logic;
-using Settings;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;

@@ -1,5 +1,5 @@
+using Chess3D.Runtime.UtilsCommon.Mathematics;
 using NUnit.Framework;
-using UtilsCommon.Mathematics;
 
 namespace EditorTests
 {

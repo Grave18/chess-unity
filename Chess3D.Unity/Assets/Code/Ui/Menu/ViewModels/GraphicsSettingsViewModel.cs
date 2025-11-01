@@ -3,9 +3,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Chess3D.Runtime.Settings;
 using Ui.Auxiliary;
 using MvvmTool;
-using Settings;
 using UnityEngine;
 
 namespace Ui.Menu.ViewModels
