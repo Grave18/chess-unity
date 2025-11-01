@@ -41,7 +41,7 @@ namespace Ui.Menu.Pages
 
         private void InitializeComponent()
         {
-            Noesis.GUI.LoadComponent(this, "Assets/Code/Ui/Menu/Pages/LobbyPage.xaml");
+            Noesis.GUI.LoadComponent(this, XamlUtils.GetXamlPathFromFilePath());
 
             Back = FindName("Back") as Button;
         }

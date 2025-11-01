@@ -108,7 +108,7 @@ namespace Ui.Menu.Pages
 
         private void InitializeComponent()
         {
-            GUI.LoadComponent(this, "Assets/Code/Ui/Menu/Pages/PlayPage.xaml");
+            GUI.LoadComponent(this, XamlUtils.GetXamlPathFromFilePath());
 
             Root = FindName("Root") as Grid;
 

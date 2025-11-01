@@ -64,7 +64,7 @@ namespace Ui.InGame.Pages
 
         private void InitializeComponent()
         {
-            GUI.LoadComponent(this, "Assets/Code/Ui/InGame/Pages/InGameSettingsPage.xaml");
+            GUI.LoadComponent(this, XamlUtils.GetXamlPathFromFilePath());
 
             GraphicsSettingsTab = FindName("GraphicsSettingsTab") as TabItem;
             AudioSettingsTab = FindName("AudioSettingsTab") as TabItem;

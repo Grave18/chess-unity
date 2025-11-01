@@ -40,7 +40,7 @@ namespace Ui.Menu
 
         private void InitializeComponent()
         {
-            GUI.LoadComponent(this, "Assets/Code/Ui/Menu/MainGameMenu.xaml");
+            GUI.LoadComponent(this, XamlUtils.GetXamlPathFromFilePath());
 
             ContentControl = FindName("ContentControl") as ContentControl;
         }

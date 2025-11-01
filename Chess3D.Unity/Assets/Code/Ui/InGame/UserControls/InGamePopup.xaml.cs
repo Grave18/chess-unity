@@ -62,7 +62,7 @@ namespace Ui.InGame.UserControls
 
         private void InitializeComponent()
         {
-            GUI.LoadComponent(this, "Assets/Code/Ui/InGame/UserControls/InGamePopup.xaml");
+            GUI.LoadComponent(this, XamlUtils.GetXamlPathFromFilePath());
 
             Popup = FindName(nameof(Popup)) as Popup;
             PopupYesButton = FindName(nameof(PopupYesButton)) as Button;

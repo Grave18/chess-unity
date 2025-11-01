@@ -38,7 +38,7 @@ namespace Ui.Menu.Pages
 
         private void InitializeComponent()
         {
-            Noesis.GUI.LoadComponent(this, "Assets/Code/Ui/Menu/Pages/FindGamePage.xaml");
+            Noesis.GUI.LoadComponent(this, XamlUtils.GetXamlPathFromFilePath());
         }
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)

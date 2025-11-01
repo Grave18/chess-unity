@@ -61,7 +61,7 @@ namespace Ui.Menu.UserControls
 #if NOESIS
         private void InitializeComponent()
         {
-            GUI.LoadComponent(this, "Assets/Code/Ui/Menu/UserControls/DropdownUserControl.xaml");
+            GUI.LoadComponent(this, XamlUtils.GetXamlPathFromFilePath());
         }
 #endif
     }

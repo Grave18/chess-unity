@@ -47,7 +47,7 @@ namespace Ui.InGame.Pages
 
         private void InitializeComponent()
         {
-            GUI.LoadComponent(this, "Assets/Code/Ui/InGame/Pages/InGamePage.xaml");
+            GUI.LoadComponent(this, XamlUtils.GetXamlPathFromFilePath());
 
             ResumeButton = FindName("ResumeButton") as Button;
         }

@@ -55,7 +55,7 @@ namespace Ui.Menu.Pages
 #if NOESIS
         private void InitializeComponent()
         {
-            GUI.LoadComponent(this, "Assets/Code/Ui/Menu/Pages/BoardPage.xaml");
+            GUI.LoadComponent(this, XamlUtils.GetXamlPathFromFilePath());
         }
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)

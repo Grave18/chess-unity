@@ -2,7 +2,6 @@
 #define NOESIS
 using Noesis;
 using Ui.Menu.ViewModels;
-using UnityEngine;
 using GUI = Noesis.GUI;
 
 #else
@@ -13,6 +12,8 @@ using System.Windows.Input;
 #endif
 
 using Ui.Auxiliary;
+using EventArgs = Noesis.EventArgs;
+using Object = UnityEngine.Object;
 
 namespace Ui.Menu.Pages
 {
@@ -62,7 +63,7 @@ namespace Ui.Menu.Pages
 
         private void InitializeComponent()
         {
-            GUI.LoadComponent(this, "Assets/Code/Ui/Menu/Pages/SettingsPage.xaml");
+            GUI.LoadComponent(this, XamlUtils.GetXamlPathFromFilePath());
 
             GameSettingsTab = FindName("GameSettingsTab") as TabItem;
             GraphicsSettingsTab = FindName("GraphicsSettingsTab") as TabItem;

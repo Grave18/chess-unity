@@ -69,7 +69,7 @@ namespace Ui.InGame
 
         private void InitializeComponent()
         {
-            GUI.LoadComponent(this, "Assets/Code/Ui/InGame/InGameMenu.xaml");
+            GUI.LoadComponent(this, XamlUtils.GetXamlPathFromFilePath());
 
             ContentControl = FindName("ContentControl") as ContentControl;
             SlidingPanel = FindName("SlidingPanel") as UIElement;

@@ -133,7 +133,7 @@ namespace Ui.Menu.Pages
 
         private void InitializeComponent()
         {
-            GUI.LoadComponent(this, "Assets/Code/Ui/Menu/Pages/MainPage.xaml");
+            GUI.LoadComponent(this, XamlUtils.GetXamlPathFromFilePath());
 
             Popup = FindName("Popup") as Popup;
             PopupText = FindName("PopupText") as TextBlock;
