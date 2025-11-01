@@ -1,0 +1,51 @@
+<UserControl x:Class="Ui.Menu.UserControls.FenTextBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Ui.Menu.UserControls"
+             mc:Ignorable="d"
+             d:DesignHeight="200" d:DesignWidth="640">
+
+    <!-- Fen Text Box -->
+    <Grid HorizontalAlignment="Stretch"
+          Margin="0 10 0 10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0"
+                   Text="Fen"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left"
+                   FontSize="30" />
+        <Button Grid.Row="0" Grid.Column="1"
+                Name="ResetButton"
+                Margin="0 0 5 5"
+                Content="Reset"
+                Command="{Binding GetDefaultFenCommand}"
+                Style="{StaticResource FenButtonStyle}" />
+        <Button Grid.Row="0" Grid.Column="2"
+                Margin="5 0 0 5"
+                Content="Saved"
+                Command="{Binding GetSavedFenCommand}"
+                Style="{StaticResource FenButtonStyle}" />
+        <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                 Margin="0 5 0 0"
+                 MinHeight="50"
+                 VerticalContentAlignment="Center"
+                 FontWeight="Bold"
+                 FontSize="{StaticResource SmallFontSize>}"
+                 Text="{Binding CurrentFen, Mode=TwoWay}"
+                 Style="{StaticResource FenTextBoxStyle}">
+            <d:TextBox.Text>
+                rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+            </d:TextBox.Text>
+        </TextBox>
+    </Grid>
+</UserControl>

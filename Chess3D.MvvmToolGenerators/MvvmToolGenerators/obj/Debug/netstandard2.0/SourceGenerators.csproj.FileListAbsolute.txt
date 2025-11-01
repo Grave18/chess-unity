@@ -1,0 +1,11 @@
+D:\dev\unity\portfolio\chess_3d\Assets\SourceGenerator\SourceGenerators~\SourceGenerators\bin\Debug\netstandard2.0\SourceGenerators.deps.json
+D:\dev\unity\portfolio\chess_3d\Assets\SourceGenerator\SourceGenerators~\SourceGenerators\bin\Debug\netstandard2.0\SourceGenerators.dll
+D:\dev\unity\portfolio\chess_3d\Assets\SourceGenerator\SourceGenerators~\SourceGenerators\bin\Debug\netstandard2.0\SourceGenerators.pdb
+D:\dev\unity\portfolio\chess_3d\Assets\SourceGenerator\SourceGenerators~\SourceGenerators\obj\Debug\netstandard2.0\SourceGenerators.csproj.AssemblyReference.cache
+D:\dev\unity\portfolio\chess_3d\Assets\SourceGenerator\SourceGenerators~\SourceGenerators\obj\Debug\netstandard2.0\SourceGenerators.GeneratedMSBuildEditorConfig.editorconfig
+D:\dev\unity\portfolio\chess_3d\Assets\SourceGenerator\SourceGenerators~\SourceGenerators\obj\Debug\netstandard2.0\SourceGenerators.AssemblyInfoInputs.cache
+D:\dev\unity\portfolio\chess_3d\Assets\SourceGenerator\SourceGenerators~\SourceGenerators\obj\Debug\netstandard2.0\SourceGenerators.AssemblyInfo.cs
+D:\dev\unity\portfolio\chess_3d\Assets\SourceGenerator\SourceGenerators~\SourceGenerators\obj\Debug\netstandard2.0\SourceGenerators.csproj.CoreCompileInputs.cache
+D:\dev\unity\portfolio\chess_3d\Assets\SourceGenerator\SourceGenerators~\SourceGenerators\obj\Debug\netstandard2.0\SourceGenerators.sourcelink.json
+D:\dev\unity\portfolio\chess_3d\Assets\SourceGenerator\SourceGenerators~\SourceGenerators\obj\Debug\netstandard2.0\SourceGenerators.dll
+D:\dev\unity\portfolio\chess_3d\Assets\SourceGenerator\SourceGenerators~\SourceGenerators\obj\Debug\netstandard2.0\SourceGenerators.pdb

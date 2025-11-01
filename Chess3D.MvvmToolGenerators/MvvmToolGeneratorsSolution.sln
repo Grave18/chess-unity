@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmToolGenerators", "MvvmToolGenerators\MvvmToolGenerators.csproj", "{27123106-A4AF-4C97-9274-2C89279243E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmToolGenerators.Sample", "MvvmToolGenerators.Sample\MvvmToolGenerators.Sample.csproj", "{9D84517D-5A8A-4AB6-8E0F-63F17D462091}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmToolGenerators.Tests", "MvvmToolGenerators.Tests\MvvmToolGenerators.Tests.csproj", "{5EC12162-F9A7-456C-B4EB-5D8DD49BDF0F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{27123106-A4AF-4C97-9274-2C89279243E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27123106-A4AF-4C97-9274-2C89279243E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27123106-A4AF-4C97-9274-2C89279243E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27123106-A4AF-4C97-9274-2C89279243E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D84517D-5A8A-4AB6-8E0F-63F17D462091}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D84517D-5A8A-4AB6-8E0F-63F17D462091}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D84517D-5A8A-4AB6-8E0F-63F17D462091}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D84517D-5A8A-4AB6-8E0F-63F17D462091}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EC12162-F9A7-456C-B4EB-5D8DD49BDF0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EC12162-F9A7-456C-B4EB-5D8DD49BDF0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EC12162-F9A7-456C-B4EB-5D8DD49BDF0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EC12162-F9A7-456C-B4EB-5D8DD49BDF0F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
