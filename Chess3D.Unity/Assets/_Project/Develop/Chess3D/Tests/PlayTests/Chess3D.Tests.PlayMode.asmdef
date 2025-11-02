@@ -1,5 +1,5 @@
 {
-    "name": "PlayTests",
+    "name": "Chess3D.Tests.PlayMode",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
