@@ -1,5 +1,5 @@
 {
-    "name": "ThirdParty.Common",
+    "name": "ThirdParty.Runtime",
     "rootNamespace": "",
     "references": [],
     "includePlatforms": [],

@@ -17,8 +17,7 @@
         "Unity.Addressables.Editor",
         "ParrelSync",
         "TNRD.SerializableInterface",
-        "ThirdParty.Common",
-        "ThirdParty.NoesisGUI"
+        "ThirdParty.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
