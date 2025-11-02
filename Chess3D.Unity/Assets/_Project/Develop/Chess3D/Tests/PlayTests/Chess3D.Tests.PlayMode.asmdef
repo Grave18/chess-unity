@@ -4,9 +4,9 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "MainAssembly",
         "UniTask",
-        "PurrNet.Runtime"
+        "PurrNet.Runtime",
+        "Chess3D.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

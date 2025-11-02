@@ -1,5 +1,5 @@
 {
-    "name": "MainAssembly",
+    "name": "Chess3D.Runtime",
     "rootNamespace": "",
     "references": [
         "UnityEngine.UI",
