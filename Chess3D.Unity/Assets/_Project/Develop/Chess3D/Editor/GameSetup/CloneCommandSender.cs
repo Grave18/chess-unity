@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Chess3D.Runtime.UtilsProject.GameSetup.Editor
+namespace Chess3D.Editor.GameSetup
 {
     public static class CloneCommandSender
     {

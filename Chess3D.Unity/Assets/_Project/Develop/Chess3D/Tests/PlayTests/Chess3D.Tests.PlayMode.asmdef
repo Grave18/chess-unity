@@ -6,7 +6,8 @@
         "UnityEditor.TestRunner",
         "UniTask",
         "PurrNet.Runtime",
-        "Chess3D.Runtime"
+        "Chess3D.Runtime",
+        "Chess3D.Editor"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

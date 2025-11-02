@@ -3,7 +3,7 @@ using ParrelSync;
 using UnityEditor;
 using UnityEngine;
 
-namespace Chess3D.Runtime.UtilsProject.GameSetup.Editor
+namespace Chess3D.Editor.GameSetup
 {
     [InitializeOnLoad]
     public class CloneCommandListener

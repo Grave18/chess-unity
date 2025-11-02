@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using Chess3D.Runtime.UtilsProject.GameSetup.Editor;
+using Chess3D.Editor.GameSetup;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;

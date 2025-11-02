@@ -2,8 +2,11 @@
 using System.Globalization;
 using Chess3D.Runtime.Ai;
 using Chess3D.Runtime.Logic;
-using ParrelSync;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using ParrelSync;
+#endif
 
 namespace Chess3D.Runtime.Settings
 {
@@ -22,7 +25,7 @@ namespace Chess3D.Runtime.Settings
         private static string IsHostServerKey => ClonesManager.IsClone() ? "IsServerClone" : "IsServer";
         private static string IsLocalServerKey => ClonesManager.IsClone() ? "IsLocalClone" : "IsLocal";
         private static string IsOnlineComputerVsComputerKey => ClonesManager.IsClone() ? "IsOnlineComputerVsComputerClone" : "IsOnlineComputerVsComputer";
-        
+
 #else
         public static string GameSettingsKey => "GameSettings";
         private static string IsHostServerKey => "IsServer";
@@ -42,7 +45,7 @@ namespace Chess3D.Runtime.Settings
             set => PlayerPrefs.SetInt(IsLocalServerKey, value ? 1 : 0);
         }
         // end todo
-        
+
         public static bool IsOnlineComputerVsComputer
         {
             get => PlayerPrefs.GetInt(IsOnlineComputerVsComputerKey, 0) == 1;

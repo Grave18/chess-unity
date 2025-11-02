@@ -2,7 +2,7 @@
 using UnityEditor.Build;
 using UnityEngine;
 
-namespace Chess3D.Runtime.UtilsProject.Editor
+namespace Chess3D.Editor
 {
     public class PlatformHelper
     {
