@@ -47,7 +47,7 @@ public partial class RelayCommandTest
     }
 
     [RelayCommand(CanExecute = nameof(TestMethodAttr4_CanExecute))]
-    private void TestMethodAttr4()
+    private void TestMethodAttr4(int i)
     {
         TestPropAttr0++;
         TestPropAttr1++;
