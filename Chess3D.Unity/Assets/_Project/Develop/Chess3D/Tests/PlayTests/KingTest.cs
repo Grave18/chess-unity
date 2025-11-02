@@ -5,10 +5,9 @@ using Chess3D.Runtime.Logic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using static Chess3D.Tests.PlayTests.TestUtils;
 
-using static PlayTests.TestUtils;
-
-namespace PlayTests
+namespace Chess3D.Tests.PlayTests
 {
     [TestFixture]
     public class KingTest

@@ -4,9 +4,8 @@ using Chess3D.Runtime.ChessBoard.Pieces;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-
-using static PlayTests.TestUtils;
-namespace PlayTests
+using static Chess3D.Tests.PlayTests.TestUtils;
+namespace Chess3D.Tests.PlayTests
 {
     [TestFixture]
     public class PawnTest

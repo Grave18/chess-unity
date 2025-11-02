@@ -2,10 +2,9 @@
 using Chess3D.Runtime.ChessBoard.Pieces;
 using NUnit.Framework;
 using UnityEngine.TestTools;
+using static Chess3D.Tests.PlayTests.TestUtils;
 
-using static PlayTests.TestUtils;
-
-namespace PlayTests
+namespace Chess3D.Tests.PlayTests
 {
     [TestFixture]
     public class QueenTest

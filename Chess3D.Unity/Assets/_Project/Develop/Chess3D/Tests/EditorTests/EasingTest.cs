@@ -1,7 +1,7 @@
 using Chess3D.Runtime.UtilsCommon.Mathematics;
 using NUnit.Framework;
 
-namespace EditorTests
+namespace Chess3D.Tests.EditorTests
 {
     public class EasingTest
     {

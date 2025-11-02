@@ -5,9 +5,9 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
-using static PlayTests.TestUtils;
+using static Chess3D.Tests.PlayTests.TestUtils;
 
-namespace PlayTests
+namespace Chess3D.Tests.PlayTests
 {
     [TestFixture]
     public class StartGameTest

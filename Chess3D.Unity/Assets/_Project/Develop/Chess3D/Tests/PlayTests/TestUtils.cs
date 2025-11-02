@@ -10,7 +10,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace PlayTests
+namespace Chess3D.Tests.PlayTests
 {
     public static class TestUtils
     {
