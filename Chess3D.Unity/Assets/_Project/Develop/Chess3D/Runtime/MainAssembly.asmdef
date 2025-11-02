@@ -16,7 +16,9 @@
         "com.rlabrecque.steamworks.net",
         "Unity.Addressables.Editor",
         "ParrelSync",
-        "TNRD.SerializableInterface"
+        "TNRD.SerializableInterface",
+        "ThirdParty.Common",
+        "ThirdParty.NoesisGUI"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
