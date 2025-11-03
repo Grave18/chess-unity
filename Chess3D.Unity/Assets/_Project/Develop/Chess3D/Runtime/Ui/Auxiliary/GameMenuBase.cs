@@ -1,8 +1,8 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
+using Chess3D.Runtime.Utilities.Common.ObjectCreation;
 using UnityEngine;
 using Noesis;
-using Chess3D.Runtime.UtilsCommon.ObjectCreation;
 
 #else
 using System;

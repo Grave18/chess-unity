@@ -1,9 +1,9 @@
-﻿using Chess3D.Runtime.Logic;
-using Chess3D.Runtime.Network;
-using Chess3D.Runtime.Notation;
-using Chess3D.Runtime.SceneManagement;
-using Chess3D.Runtime.Settings;
-using Chess3D.Runtime.Sound;
+﻿using Chess3D.Runtime;
+using Chess3D.Runtime.Bootstrap.Settings;
+using Chess3D.Runtime.Core.Logic;
+using Chess3D.Runtime.Core.Notation;
+using Chess3D.Runtime.Core.Sound;
+using Chess3D.Runtime.Online;
 using Network;
 using MvvmTool;
 using PurrNet;

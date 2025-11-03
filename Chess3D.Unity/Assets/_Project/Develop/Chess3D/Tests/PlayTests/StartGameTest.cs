@@ -19,7 +19,7 @@ namespace Chess3D.Tests.PlayTests
             yield return SceneManager.LoadSceneAsync("MainMenuScene");
             GameSettingsContainer.SetCurrentFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
-            Chess3D.Runtime.Settings.GameSettingsContainer.IsOnlineComputerVsComputer = true;
+            Runtime.Bootstrap.Settings.GameSettingsContainer.IsOnlineComputerVsComputer = true;
             yield return LocalhostSetupLoader.Load().ToCoroutine();
 
             yield return new WaitUntil(() => Game.IsEndGame);

@@ -1,10 +1,10 @@
 ﻿using System.Collections;
-using Chess3D.Runtime.ChessBoard;
-using Chess3D.Runtime.ChessBoard.Pieces;
-using Chess3D.Runtime.Initialization;
-using Chess3D.Runtime.Logic;
-using Chess3D.Runtime.Logic.Players;
-using Chess3D.Runtime.Settings;
+using Chess3D.Runtime.Bootstrap.Settings;
+using Chess3D.Runtime.Core.ChessBoard;
+using Chess3D.Runtime.Core.ChessBoard.Pieces;
+using Chess3D.Runtime.Core.Initialization;
+using Chess3D.Runtime.Core.Logic;
+using Chess3D.Runtime.Core.Logic.Players;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;

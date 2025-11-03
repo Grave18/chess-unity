@@ -1,5 +1,5 @@
 ﻿using System;
-using Chess3D.Runtime.Logic.MenuStates;
+using Chess3D.Runtime.Core.Logic.MenuStates;
 using MvvmTool;
 using UnityEngine;
 

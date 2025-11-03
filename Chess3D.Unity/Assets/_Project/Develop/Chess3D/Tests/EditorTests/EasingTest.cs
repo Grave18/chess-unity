@@ -1,4 +1,4 @@
-using Chess3D.Runtime.UtilsCommon.Mathematics;
+using Chess3D.Runtime.Utilities.Common.Mathematics;
 using NUnit.Framework;
 
 namespace Chess3D.Tests.EditorTests

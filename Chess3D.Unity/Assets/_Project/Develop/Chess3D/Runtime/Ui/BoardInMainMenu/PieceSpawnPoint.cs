@@ -1,5 +1,5 @@
-﻿using Chess3D.Runtime.ChessBoard.Info;
-using Chess3D.Runtime.Logic;
+﻿using Chess3D.Runtime.Core.ChessBoard.Info;
+using Chess3D.Runtime.Core.Logic;
 using UnityEngine;
 
 namespace Ui.BoardInMainMenu

@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Chess3D.Runtime.Settings;
+using Chess3D.Runtime.Bootstrap.Settings;
 using Ui.Auxiliary;
 using MvvmTool;
 using UnityEngine;

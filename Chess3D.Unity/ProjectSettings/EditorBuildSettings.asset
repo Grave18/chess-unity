@@ -5,23 +5,23 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
+    path: Assets/_Project/Scenes/0.Bootsrap.unity
+    guid: 29f6afc1004e70c449f4e1ba5b989f7b
+  - enabled: 1
     path: Assets/_Project/Scenes/1.Logo.unity
     guid: 641a03872c94e304fa6050a0a6258746
   - enabled: 1
-    path: Assets/_Project/Scenes/MainMenuScene.unity
+    path: Assets/_Project/Scenes/2.Menu.unity
     guid: f5813c29fb055e041a0f2e1ef2f44bb1
   - enabled: 1
-    path: Assets/_Project/Scenes/GameScene.unity
+    path: Assets/_Project/Scenes/3.Core.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/_Project/Scenes/OnlineScene.unity
+    path: Assets/_Project/Scenes/4.Online.unity
     guid: 9c0b0537b08d3e04c89049f71e9c8f25
   - enabled: 1
-    path: Assets/_Project/Scenes/BlankScene.unity
-    guid: 38369a9a32eb9a54fac212dab2a3449e
-  - enabled: 1
-    path: Assets/_Project/Scenes/LoadingScene.unity
+    path: Assets/_Project/Scenes/5.LoadScreen.unity
     guid: 1841843d7597d594aa5a1ba286cb2cdc
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: a487de2a43d04144e936ccb5e4e53abc,

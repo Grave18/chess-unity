@@ -1,4 +1,4 @@
-﻿using Chess3D.Runtime.Settings;
+﻿using Chess3D.Runtime.Bootstrap.Settings;
 using ParrelSync;
 using UnityEditor;
 using UnityEngine;

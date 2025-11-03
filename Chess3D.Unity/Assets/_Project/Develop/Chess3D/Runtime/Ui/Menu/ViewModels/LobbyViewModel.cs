@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Chess3D.Runtime.LobbyManagement;
+using Chess3D.Runtime.Menu.LobbyManagement;
 using LobbyManagement;
 using MvvmTool;
 using UnityEngine;
-using FriendItem = Chess3D.Runtime.LobbyManagement.FriendItem;
+using FriendItem = Chess3D.Runtime.Menu.LobbyManagement.FriendItem;
 
 namespace Ui.Menu.ViewModels
 {

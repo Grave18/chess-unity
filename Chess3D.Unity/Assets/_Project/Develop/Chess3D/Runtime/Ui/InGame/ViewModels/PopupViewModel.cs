@@ -1,10 +1,10 @@
-﻿using Chess3D.Runtime.Logic;
-using Chess3D.Runtime.Logic.MenuStates;
-using Chess3D.Runtime.Network;
-using Chess3D.Runtime.Notation;
-using Chess3D.Runtime.SceneManagement;
-using Chess3D.Runtime.Settings;
-using Chess3D.Runtime.UtilsCommon.Singleton;
+﻿using Chess3D.Runtime;
+using Chess3D.Runtime.Bootstrap.Settings;
+using Chess3D.Runtime.Core.Logic;
+using Chess3D.Runtime.Core.Logic.MenuStates;
+using Chess3D.Runtime.Core.Notation;
+using Chess3D.Runtime.Online;
+using Chess3D.Runtime.Utilities.Common.Singleton;
 using Cysharp.Threading.Tasks;
 using MvvmTool;
 using Network;

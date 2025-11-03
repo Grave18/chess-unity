@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using Chess3D.Runtime.Logic;
+using Chess3D.Runtime.Core.Logic;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 using static Chess3D.Tests.PlayTests.TestUtils;

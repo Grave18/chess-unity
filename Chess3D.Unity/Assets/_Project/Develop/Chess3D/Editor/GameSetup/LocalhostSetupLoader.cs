@@ -1,7 +1,7 @@
 ﻿using System.Linq;
-using Chess3D.Runtime.LobbyManagement;
-using Chess3D.Runtime.Logic;
-using Chess3D.Runtime.Settings;
+using Chess3D.Runtime.Bootstrap.Settings;
+using Chess3D.Runtime.Core.Logic;
+using Chess3D.Runtime.Menu.LobbyManagement;
 using Cysharp.Threading.Tasks;
 using ParrelSync;
 using UnityEditor;

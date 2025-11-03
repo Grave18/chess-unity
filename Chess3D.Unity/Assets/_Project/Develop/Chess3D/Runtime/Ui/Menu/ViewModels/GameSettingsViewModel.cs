@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Chess3D.Runtime.Ai;
-using Chess3D.Runtime.Settings;
+using Chess3D.Runtime.Bootstrap.Settings;
+using Chess3D.Runtime.Core.Ai;
 using Ui.Auxiliary;
 using UnityEngine;
 
