@@ -2851,6 +2851,9 @@ MonoBehaviour:
     CustomFen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     IsAutoPromoteToQueen: 0
     IsAutorotateCamera: 0
+    IsRotateCameraOnStart: 1
+    FiftyMoveRuleCount: 50
+    ThreefoldRepetitionCount: 3
     PiecesModelAddress: 
     BoardModelAddress: 
 --- !u!1 &1222302776

@@ -17,7 +17,8 @@
         "Unity.Addressables.Editor",
         "ParrelSync",
         "TNRD.SerializableInterface",
-        "ThirdParty.Runtime"
+        "ThirdParty.Runtime",
+        "VContainer"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
