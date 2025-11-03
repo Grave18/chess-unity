@@ -223,6 +223,13 @@
       },
       "hash": "06b5b26968d533dd896bf1015d71f18f582a46a9"
     },
+    "jp.hadashikick.vcontainer": {
+      "version": "1.17.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://package.openupm.com"
+    },
     "net.tnrd.serializableinterface": {
       "version": "2.2.1",
       "depth": 0,
