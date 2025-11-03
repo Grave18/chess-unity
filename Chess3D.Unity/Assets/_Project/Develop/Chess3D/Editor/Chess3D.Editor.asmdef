@@ -2,9 +2,9 @@
     "name": "Chess3D.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:fc740db1be133ec448b856633ffb975e",
-        "GUID:f51ebe6a0ceec4240a699833d6309b23",
-        "GUID:894a6cc6ed5cd2645bb542978cbed6a9"
+        "Chess3D.Runtime",
+        "UniTask",
+        "ParrelSync"
     ],
     "includePlatforms": [
         "Editor",
@@ -14,7 +14,7 @@
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
-    "autoReferenced": true,
+    "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false

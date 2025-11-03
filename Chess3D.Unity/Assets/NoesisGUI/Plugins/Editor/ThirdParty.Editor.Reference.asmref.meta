@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: 6083e64ad30b86d40a0896ce084c0e33
+labels:
+- Asmdef
 AssemblyDefinitionReferenceImporter:
   externalObjects: {}
   userData: 
