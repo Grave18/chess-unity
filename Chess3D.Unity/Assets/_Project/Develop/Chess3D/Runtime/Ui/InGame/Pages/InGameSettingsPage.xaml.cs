@@ -1,22 +1,28 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
 using Noesis;
+using UnityEngine.Scripting;
+using Chess3D.Runtime.Core;
+using Chess3D.Runtime.Menu.UI.ViewModels;
 using GUI = Noesis.GUI;
 using Object = UnityEngine.Object;
 using EventArgs = Noesis.EventArgs;
+
 #else
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using EventArgs = System.EventArgs;
 #endif
 
-using System.Windows.Input;
-using Chess3D.Runtime.Menu.UI.ViewModels;
 using Ui.Auxiliary;
 
 namespace Ui.InGame.Pages
 {
+#if NOESIS
+    [Preserve]
+#endif
     public partial class InGameSettingsPage : UserControl
     {
         public InGameSettingsPage()
@@ -25,22 +31,22 @@ namespace Ui.InGame.Pages
             Loaded += OnLoaded;
             InitializeComponent();
 
-            this.KeyDown += OnKeyDown;
+            KeyDown += OnKeyDown;
         }
 
         private void OnInitialized(object sender, EventArgs args)
         {
 #if NOESIS
-            DataContext = Object.FindAnyObjectByType<SettingsPageViewModel>();
-            GraphicsSettingsTab.DataContext = Object.FindAnyObjectByType<GraphicsSettingsViewModel>();
-            AudioSettingsTab.DataContext = Object.FindAnyObjectByType<AudioSettingsViewModel>();
+            DataContext = ServiceLocator.Resolve<SettingsPageViewModel>();
+            GraphicsSettingsTab.DataContext = ServiceLocator.Resolve<GraphicsSettingsViewModel>();
+            AudioSettingsTab.DataContext = ServiceLocator.Resolve<AudioSettingsViewModel>();
 #endif
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            this.Focusable = true;
-            this.Focus();
+            Focusable = true;
+            Focus();
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)

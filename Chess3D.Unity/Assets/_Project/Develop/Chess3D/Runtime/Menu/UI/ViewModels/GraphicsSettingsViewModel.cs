@@ -1,90 +1,41 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using Chess3D.Runtime.Bootstrap.Settings;
+using Chess3D.Runtime.Utilities;
+using Cysharp.Threading.Tasks;
 using MvvmTool;
 using Ui.Auxiliary;
 using UnityEngine;
+using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
-    public class GraphicsSettingsViewModel : MonoBehaviour, INotifyPropertyChanged
+    [Preserve]
+    [INotifyPropertyChanged]
+    public partial class GraphicsSettingsViewModel: ILoadUnit
     {
-        [SerializeField] private GraphicsSettingsContainer graphicsSettingsContainer;
-
-        public DelegateCommand ApplySettingsCommand { get; set; }
-
         public ObservableCollection<FullscreenModeUi> FullscreenModes { get; set; }
         public ObservableCollection<ResolutionUi> Resolutions { get; set; }
         public ObservableCollection<string> Qualities { get; set; }
 
-        private FullscreenModeUi _selectedFullscreenMode;
-        public FullscreenModeUi SelectedFullscreenMode
+        [ObservableProperty] private FullscreenModeUi _selectedFullscreenMode;
+        [ObservableProperty] private ResolutionUi _selectedResolution;
+        [ObservableProperty] private string _selectedQuality;
+
+        private readonly ISettingsService _settingsService;
+
+        private bool _isNeedToApplySettings;
+
+        public GraphicsSettingsViewModel(ISettingsService settingsService)
         {
-            get => _selectedFullscreenMode;
-            set
-            {
-                if (SetField(ref _selectedFullscreenMode, value))
-                {
-                    graphicsSettingsContainer.SetFullScreenMode(_selectedFullscreenMode.Index);
-                    ApplySettingsCommand.RaiseCanExecuteChanged();
-                    LogUi.Debug($"Fullscreen mode changed to {_selectedFullscreenMode}");
-                }
-            }
+            _settingsService = settingsService;
         }
 
-        private ResolutionUi _selectedResolution;
-        public ResolutionUi SelectedResolution
+        public UniTask Load()
         {
-            get => _selectedResolution;
-            set
-            {
-                if (SetField(ref _selectedResolution, value))
-                {
-                    graphicsSettingsContainer.SetResolution(_selectedResolution);
-                    ApplySettingsCommand.RaiseCanExecuteChanged();
-                    LogUi.Debug($"Resolution changed to {_selectedResolution}");
-                }
-            }
-        }
-
-        private string _selectedQuality;
-        public string SelectedQuality
-        {
-            get => _selectedQuality;
-            set
-            {
-                if (SetField(ref _selectedQuality, value))
-                {
-                    graphicsSettingsContainer.SetQuality(_selectedQuality);
-                    ApplySettingsCommand.RaiseCanExecuteChanged();
-                    LogUi.Debug($"Quality changed to {_selectedQuality}");
-                }
-            }
-        }
-
-        private void Awake()
-        {
-            ApplySettingsCommand = new DelegateCommand(CanExecuteApply, ApplySettings);
-
             InitFullScreenMode();
             InitResolution();
             InitQuality();
-        }
-
-        private bool CanExecuteApply(object arg)
-        {
-            bool isNeedToApplySettings = graphicsSettingsContainer.IsNeedToApplySettings();
-            return isNeedToApplySettings;
-        }
-
-        private void ApplySettings(object obj)
-        {
-            graphicsSettingsContainer.ApplySettings();
-            ApplySettingsCommand.RaiseCanExecuteChanged();
-            LogUi.Debug("Settings applied");
+            return UniTask.CompletedTask;
         }
 
         private void InitFullScreenMode()
@@ -96,10 +47,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
                 new("Windowed", 3),
             };
 
-            _selectedFullscreenMode = FullscreenModes.FirstOrDefault(IsIndexMatch);
-            return;
-
-            bool IsIndexMatch(FullscreenModeUi x) => x.Index == graphicsSettingsContainer.GetFullScreenMode();
+            _selectedFullscreenMode = FullscreenModes.FirstOrDefault(mode => mode.Index == _settingsService.S.GraphicsSettings.FullScreenMode);
         }
 
         private void InitResolution()
@@ -110,33 +58,64 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
                 Reverse();
 
             Resolutions = new ObservableCollection<ResolutionUi>(availableResolutions);
-            _selectedResolution = graphicsSettingsContainer.GetResolution();
+            _selectedResolution = Resolutions.FirstOrDefault(res => res.Width == _settingsService.S.GraphicsSettings.Width && res.Height == _settingsService.S.GraphicsSettings.Height);
         }
 
         private void InitQuality()
         {
             string[] levelsForPlatform = QualitySettings.names;
+
             Qualities = new ObservableCollection<string>(levelsForPlatform);
-            _selectedQuality = graphicsSettingsContainer.GetQualityString();
+            _selectedQuality = Qualities.FirstOrDefault(quality =>
+            {
+                string name = _settingsService.S.GraphicsSettings.Quality < QualitySettings.names.Length
+                    ? QualitySettings.names[_settingsService.S.GraphicsSettings.Quality]
+                    : QualitySettings.names.FirstOrDefault();
+                return quality == name;
+            });
         }
 
-        #region ViewModelImplimentation
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        partial void OnSelectedFullscreenModeChanged(FullscreenModeUi value)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            _settingsService.S.GraphicsSettings.FullScreenMode = value.Index;
+            _isNeedToApplySettings = true;
+            ApplySettingsCommand.NotifyCanExecuteChanged();
         }
 
-        private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+        partial void OnSelectedResolutionChanged(ResolutionUi value)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
+            _settingsService.S.GraphicsSettings.Height = value.Height;
+            _settingsService.S.GraphicsSettings.Width = value.Width;
+            _isNeedToApplySettings = true;
+            ApplySettingsCommand.NotifyCanExecuteChanged();
         }
 
-        #endregion Implimentation
+        partial void OnSelectedQualityChanged(string value)
+        {
+            _settingsService.S.GraphicsSettings.Quality = QualitySettings.names.ToList().IndexOf(value);
+            _isNeedToApplySettings = true;
+            ApplySettingsCommand.NotifyCanExecuteChanged();
+        }
+
+        private bool CanExecuteApply()
+        {
+            return _isNeedToApplySettings;
+        }
+
+        [RelayCommand(CanExecute = nameof(CanExecuteApply))]
+        private void ApplySettings()
+        {
+            int width = _settingsService.S.GraphicsSettings.Width;
+            int height = _settingsService.S.GraphicsSettings.Height;
+            int fullScreenMode = _settingsService.S.GraphicsSettings.FullScreenMode;
+            int qualityIndex = _settingsService.S.GraphicsSettings.Quality;
+
+            Screen.SetResolution(width, height, (FullScreenMode)fullScreenMode);
+            QualitySettings.SetQualityLevel(qualityIndex);
+
+            _isNeedToApplySettings = false;
+            _settingsService.Save();
+            ApplySettingsCommand.NotifyCanExecuteChanged();
+        }
     }
 }

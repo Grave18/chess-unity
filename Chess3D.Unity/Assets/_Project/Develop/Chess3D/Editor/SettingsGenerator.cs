@@ -22,8 +22,8 @@ namespace Chess3D.Editor
                 },
                 GraphicsSettings = new GraphicsSettings
                 {
-                    Width = 800,
-                    Height = 600,
+                    Width = 0,
+                    Height = 0,
                     FullScreenMode = 0,
                     Quality = 2,
                 },

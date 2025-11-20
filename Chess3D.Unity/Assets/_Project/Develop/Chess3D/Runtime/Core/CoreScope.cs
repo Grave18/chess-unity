@@ -20,6 +20,7 @@ using Chess3D.Runtime.Core.Ui.BoardUi;
 using Chess3D.Runtime.Core.Ui.ClockUi;
 using Chess3D.Runtime.Core.Ui.DebugUi;
 using Chess3D.Runtime.Core.Ui.Promotion;
+using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Online;
 using PauseState = Chess3D.Runtime.Core.Logic.GameStates.PauseState;
 
@@ -112,12 +113,16 @@ namespace Chess3D.Runtime.Core
             builder.RegisterComponentInNewPrefab(whiteClockPrefab, Lifetime.Scoped).Keyed(PieceColor.White);
             builder.RegisterComponentInNewPrefab(blackClockPrefab, Lifetime.Scoped).Keyed(PieceColor.Black);
             // VMs
-            builder.RegisterComponent(inGamePageViewModel);
             builder.Register<InGameMenuViewModel>(Lifetime.Scoped);
+            builder.RegisterComponent(inGamePageViewModel);
             builder.Register<PopupViewModel>(Lifetime.Scoped);
+            builder.Register<SettingsPageViewModel>(Lifetime.Scoped);
+            builder.Register<GraphicsSettingsViewModel>(Lifetime.Scoped);
 
             // Online
             builder.RegisterComponentOnNewGameObject<ConnectionTerminator>(Lifetime.Scoped);
+
+            builder.RegisterBuildCallback(ServiceLocator.Initialize);
 
             builder.RegisterEntryPoint<CoreFlow>();
 

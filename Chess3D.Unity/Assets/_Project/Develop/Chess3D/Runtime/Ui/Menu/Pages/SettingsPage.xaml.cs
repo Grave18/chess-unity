@@ -1,7 +1,11 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
 using Noesis;
+using Chess3D.Runtime.Core;
+using Chess3D.Runtime.Menu.UI.ViewModels;
+using UnityEngine.Scripting;
 using GUI = Noesis.GUI;
+using EventArgs = Noesis.EventArgs;
 
 #else
 using System;
@@ -10,13 +14,13 @@ using System.Windows.Controls;
 using System.Windows.Input;
 #endif
 
-using Chess3D.Runtime.Menu.UI.ViewModels;
 using Ui.Auxiliary;
-using EventArgs = Noesis.EventArgs;
-using Object = UnityEngine.Object;
 
 namespace Ui.Menu.Pages
 {
+#if NOESIS
+    [Preserve]
+#endif
     public partial class SettingsPage : UserControl
     {
         public SettingsPage()
@@ -28,12 +32,12 @@ namespace Ui.Menu.Pages
 
         private void OnInitialized(object sender, EventArgs args)
         {
-            #if NOESIS
-                DataContext = Object.FindAnyObjectByType<SettingsPageViewModel>();
-                GameSettingsTab.DataContext = Object.FindAnyObjectByType<GameSettingsViewModel>();
-                GraphicsSettingsTab.DataContext = Object.FindAnyObjectByType<GraphicsSettingsViewModel>();
-                AudioSettingsTab.DataContext = Object.FindAnyObjectByType<AudioSettingsViewModel>();
-            #endif
+#if NOESIS
+            DataContext = ServiceLocator.Resolve<SettingsPageViewModel>();
+            GameSettingsTab.DataContext = ServiceLocator.Resolve<GameSettingsViewModel>();
+            GraphicsSettingsTab.DataContext = ServiceLocator.Resolve<GraphicsSettingsViewModel>();
+            AudioSettingsTab.DataContext = ServiceLocator.Resolve<AudioSettingsViewModel>();
+#endif
         }
 
         private void OnLoaded(object sender, RoutedEventArgs args)

@@ -4,6 +4,7 @@ using Noesis;
 using EventArgs = Noesis.EventArgs;
 using GUI = Noesis.GUI;
 using Object = UnityEngine.Object;
+using InGameMenuViewModel = Chess3D.Runtime.Core.Ui.ViewModels.InGameMenuViewModel;
 
 #else
 using System;
@@ -12,8 +13,9 @@ using System.Windows;
 using System.Windows.Input;
 #endif
 
+using Chess3D.Runtime.Core;
+using Chess3D.Runtime.Core.Ui;
 using Ui.Auxiliary;
-using InGameMenuViewModel = Chess3D.Runtime.Core.Ui.ViewModels.InGameMenuViewModel;
 
 namespace Ui.InGame
 {
@@ -24,7 +26,6 @@ namespace Ui.InGame
             Initialized += OnInitialized;
             Loaded += OnLoaded;
             InitializeComponent();
-
             this.KeyDown += OnKeyDown;
         }
 
@@ -36,8 +37,7 @@ namespace Ui.InGame
         private void OnInitialized(object sender, EventArgs args)
         {
 #if NOESIS
-            // TODO: Refactor to use container
-            // DataContext = Object.FindAnyObjectByType<InGameMenuViewModel>();
+            DataContext = ServiceLocator.Resolve<InGameMenuViewModel>();
 #endif
         }
 

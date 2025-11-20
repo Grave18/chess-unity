@@ -12,6 +12,7 @@ using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Core.Ui.BoardUi;
 using Chess3D.Runtime.Core.Ui.ClockUi;
 using Chess3D.Runtime.Core.Ui.DebugUi;
+using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using VContainer;
@@ -37,12 +38,13 @@ namespace Chess3D.Runtime.Core
         private readonly CameraController _cameraController;
         private readonly NameCanvas _nameCanvas;
         private readonly IInputHandler _inputHandler;
+        private readonly GraphicsSettingsViewModel _graphicsSettingsViewModel;
 
         public CoreFlow(IObjectResolver resolver, LoadingService loadingService, SceneManager sceneManager,
             FenFromString fenFromString, IGameStateMachine gameStateMachineOffline, MenuStateMachine menuStateMachine,
             Assets assets, Board board, Game game, UciBuffer uciBuffer, Competitors competitors, IClock clock,
             CameraController cameraController, NameCanvas nameCanvas, IInputHandler inputHandler,
-            StateDebugPanel stateDebugPanel, BufferDebugPanel bufferDebugPanel)
+            StateDebugPanel stateDebugPanel, BufferDebugPanel bufferDebugPanel, GraphicsSettingsViewModel graphicsSettingsViewModel)
         {
             _resolver = resolver;
             _loadingService = loadingService;
@@ -59,6 +61,7 @@ namespace Chess3D.Runtime.Core
             _cameraController = cameraController;
             _nameCanvas = nameCanvas;
             _inputHandler = inputHandler;
+            _graphicsSettingsViewModel = graphicsSettingsViewModel;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = new())
@@ -79,7 +82,7 @@ namespace Chess3D.Runtime.Core
 
             await _loadingService.BeginLoading(_nameCanvas);
             await _loadingService.BeginLoading(_menuStateMachine);
-
+            await _loadingService.BeginLoading(_graphicsSettingsViewModel);
             SpawnClockPanel();
 
             await _loadingService.BeginLoading(_gameStateMachineOffline, _resolver.Resolve<WarmUpState>());

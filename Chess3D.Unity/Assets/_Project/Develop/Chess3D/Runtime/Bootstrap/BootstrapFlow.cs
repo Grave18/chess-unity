@@ -12,17 +12,22 @@ namespace Chess3D.Runtime.Bootstrap
         private readonly LoadingService _loadingService;
         private readonly SceneManager _sceneManager;
         private readonly SettingsService _settingsService;
+        private readonly ApplicationConfigurationLoadUnit _applicationConfigurationLoadUnit;
 
-        public BootstrapFlow(LoadingService loadingService, SceneManager sceneManager, SettingsService settingsService)
+        public BootstrapFlow(LoadingService loadingService, SceneManager sceneManager, SettingsService settingsService,
+            ApplicationConfigurationLoadUnit applicationConfigurationLoadUnit)
         {
             _loadingService = loadingService;
             _sceneManager = sceneManager;
             _settingsService = settingsService;
+            _applicationConfigurationLoadUnit = applicationConfigurationLoadUnit;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = new())
         {
             await _loadingService.BeginLoading(_settingsService);
+            await _loadingService.BeginLoading(_applicationConfigurationLoadUnit);
+
             await _sceneManager.LoadScene(RuntimeConstants.Scenes.Core);
         }
     }
