@@ -1,17 +1,15 @@
-using Chess3D.Runtime.Bootstrap.Settings;
+using Chess3D.Runtime.Core.Logic;
+using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Online;
 using PurrNet;
 using TMPro;
 using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Ui.DebugUi
 {
     public class StateDebugPanel : MonoBehaviour
     {
-        [Header("References")]
-        [SerializeField] private Logic.Game game;
-        // [SerializeField] private GameSettingsContainer gameSettingsContainer;
-
         [Header("Ui texts")]
         [SerializeField] private TMP_Text authorityText;
         [SerializeField] private TMP_Text stateText;
@@ -19,18 +17,30 @@ namespace Chess3D.Runtime.Core.Ui.DebugUi
         [SerializeField] private TMP_Text checkText;
         [SerializeField] private TMP_Text playerTypeText;
 
+        private Game _game;
+        private IGameStateMachine _gameStateMachine;
+        private ISettingsService _settingsService;
+
+        [Inject]
+        public void Construct(Game game, IGameStateMachine gameStateMachine, ISettingsService settingsService)
+        {
+            _game = game;
+            _gameStateMachine = gameStateMachine;
+            _settingsService = settingsService;
+        }
+
         private void Update()
         {
-            // if (!game)
-            // {
-            //     return;
-            // }
-            //
-            // authorityText.text = "Authority: " + GetAuthority();
-            // stateText.text = "State: " + game.GameStateMachine?.StateName;
-            // turnText.text = "Turn: " + game.CurrentTurnColor;
-            // checkText.text = "Check: " + game.CheckType;
-            // playerTypeText.text = "Player: " + gameSettingsContainer.GameSettings.Player1Settings.PlayerType;
+            if (_game is null)
+            {
+                return;
+            }
+
+            authorityText.text = "Authority: " + GetAuthority();
+            stateText.text = "State: " + _gameStateMachine?.StateName;
+            turnText.text = "Turn: " + _game.CurrentTurnColor;
+            checkText.text = "Check: " + _game.CheckType;
+            playerTypeText.text = "Player: " + _settingsService.S.GameSettings.PlayerWhite.PlayerType;
         }
 
         private static string GetAuthority()

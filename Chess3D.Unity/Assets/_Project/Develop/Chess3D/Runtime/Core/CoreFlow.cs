@@ -11,9 +11,9 @@ using Chess3D.Runtime.Core.MainCamera;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Core.Ui.BoardUi;
 using Chess3D.Runtime.Core.Ui.ClockUi;
+using Chess3D.Runtime.Core.Ui.DebugUi;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
@@ -41,7 +41,8 @@ namespace Chess3D.Runtime.Core
         public CoreFlow(IObjectResolver resolver, LoadingService loadingService, SceneManager sceneManager,
             FenFromString fenFromString, IGameStateMachine gameStateMachineOffline, MenuStateMachine menuStateMachine,
             Assets assets, Board board, Game game, UciBuffer uciBuffer, Competitors competitors, IClock clock,
-            CameraController cameraController, NameCanvas nameCanvas, IInputHandler inputHandler)
+            CameraController cameraController, NameCanvas nameCanvas, IInputHandler inputHandler,
+            StateDebugPanel stateDebugPanel, BufferDebugPanel bufferDebugPanel)
         {
             _resolver = resolver;
             _loadingService = loadingService;

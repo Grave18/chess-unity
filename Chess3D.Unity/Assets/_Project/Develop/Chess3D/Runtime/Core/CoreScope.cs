@@ -18,6 +18,7 @@ using Chess3D.Runtime.Core.Sound;
 using Chess3D.Runtime.Core.Ui;
 using Chess3D.Runtime.Core.Ui.BoardUi;
 using Chess3D.Runtime.Core.Ui.ClockUi;
+using Chess3D.Runtime.Core.Ui.DebugUi;
 using Chess3D.Runtime.Core.Ui.Promotion;
 using Chess3D.Runtime.Online;
 using PauseState = Chess3D.Runtime.Core.Logic.GameStates.PauseState;
@@ -35,6 +36,8 @@ namespace Chess3D.Runtime.Core
 
         [Header("Ui")]
         [SerializeField] private GameCanvas gameCanvas;
+        [SerializeField] private StateDebugPanel stateDebugPanelPrefab;
+        [SerializeField] private BufferDebugPanel bufferDebugPanelPrefab;
         [SerializeField] private NameCanvas nameCanvas;
         [SerializeField] private PromotionPanel promotionPanel;
         [SerializeField] private NotificationPanel notificationPanel;
@@ -117,6 +120,12 @@ namespace Chess3D.Runtime.Core
             builder.RegisterComponentOnNewGameObject<ConnectionTerminator>(Lifetime.Scoped);
 
             builder.RegisterEntryPoint<CoreFlow>();
+
+#if !GRAVEBOX_PROD
+            // Debug Ui
+            builder.RegisterComponentInNewPrefab(stateDebugPanelPrefab, Lifetime.Scoped).UnderTransform(gameCanvas.transform);
+            builder.RegisterComponentInNewPrefab(bufferDebugPanelPrefab, Lifetime.Scoped).UnderTransform(gameCanvas.transform);
+#endif
         }
 
         private static Func<IPlayer> PlayerFactory(IObjectResolver resolver)
