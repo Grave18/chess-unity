@@ -1,20 +1,21 @@
 ﻿using Chess3D.Runtime.Core.Logic.GameStates;
-using TNRD;
-using UnityEngine;
+using Cysharp.Threading.Tasks;
+using UnityEngine.Scripting;
+using VContainer.Unity;
 
 namespace Chess3D.Runtime.Core.Logic.Players
 {
-    public class GameStateMachineOffline : MonoBehaviour, IGameStateMachine
+    [Preserve]
+    public sealed class GameStateMachineOffline : IGameStateMachine, ITickable
     {
-        [Header("States")]
-        [SerializeField] private SerializableInterface<IGameState> warmupState;
-
         public IGameState State { get; private set; }
+
         public string StateName => State?.Name ?? "No State";
 
-        public void Init()
+        public async UniTask Load(IGameState warmupState)
         {
-            SetState(warmupState.Value);
+            SetState(warmupState);
+            await UniTask.WaitUntil(() => State is not WarmUpState);
         }
 
         public void SetState(IGameState state)
@@ -29,14 +30,6 @@ namespace Chess3D.Runtime.Core.Logic.Players
             State?.Exit();
             State = state;
             state?.Enter(data);
-        }
-
-        public void ResetState()
-        {
-            if (State is not WarmUpState)
-            {
-                SetState(warmupState.Value);
-            }
         }
 
         public void Move(string uci)
@@ -64,7 +57,7 @@ namespace Chess3D.Runtime.Core.Logic.Players
             State?.Pause();
         }
 
-        private void Update()
+        public void Tick()
         {
             State?.StateUpdate();
         }

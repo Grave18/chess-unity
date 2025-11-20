@@ -1,4 +1,3 @@
-using Chess3D.Runtime.Core.Initialization;
 using Chess3D.Runtime.LoadScreen;
 using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities.Common.SceneTool;
@@ -6,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// TODO: Delete this
 namespace Chess3D.Runtime
 {
     public class SceneLoader : MonoBehaviour
@@ -49,12 +49,12 @@ namespace Chess3D.Runtime
                 await UniTask.NextFrame();
             }
 
-            await GameInitialization.Instance.Init();
+            // await GameInitialization.Instance.Init();
 
             await LoadingSceneFader.Instance.UnFade();
             await SceneManager.UnloadSceneAsync(loadingScene);
 
-            await GameInitialization.Instance.StartGame();
+            // await GameInitialization.Instance.StartGame();
         }
 
         public async UniTask LoadGameOnline()
@@ -72,12 +72,12 @@ namespace Chess3D.Runtime
             await OnlineInitialization.Instance.Init();
             await OnlineInitialization.Instance.LoadGame();
 
-            await GameInitialization.Instance.Init();
+            // await GameInitialization.Instance.Init();
 
             await LoadingSceneFader.Instance.UnFade();
             await SceneManager.UnloadSceneAsync(loadingScene);
 
-            await GameInitialization.Instance.StartGame();
+            // await GameInitialization.Instance.StartGame();
         }
 
         private static bool IsSceneLoaded(SceneReference sceneReference)

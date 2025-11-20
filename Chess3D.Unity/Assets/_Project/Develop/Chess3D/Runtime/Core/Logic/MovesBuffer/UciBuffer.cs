@@ -2,14 +2,21 @@
 using System.Linq;
 using System.Text;
 using Chess3D.Runtime.Core.Notation;
-using UnityEngine;
+using Chess3D.Runtime.Utilities;
+using Cysharp.Threading.Tasks;
 using UnityEngine.Events;
+using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Core.Logic.MovesBuffer
 {
-    public class UciBuffer : MonoBehaviour
+    [Preserve]
+    public class UciBuffer : ILoadUnit
     {
-        // State be cleared
+        private readonly FenFromBoard _fenFromBoard;
+        private readonly FenFromString _fenFromString;
+        private readonly int _initialHalfMoveClock;
+        private readonly int _initialFullMoveCounter;
+
         private LinkedListNode<MoveData> _head;
         private readonly LinkedList<MoveData> _buffer = new();
         private readonly Dictionary<string, int> _threefoldRepetition = new();
@@ -19,10 +26,6 @@ namespace Chess3D.Runtime.Core.Logic.MovesBuffer
         public event UnityAction<MoveData> OnRedo;
         public event UnityAction<MoveData> OnDelete;
 
-        private int _initialHalfMoveClock = 0;
-        private int _initialFullMoveCounter = 1;
-        private FenFromBoard _fenFromBoard;
-
         /// Returns half moves of the 50 moves rule
         public int HalfMoveClock => _head != null ? _head.Value.HalfMoveClock : _initialHalfMoveClock;
         public int FullMoveCounter => _head != null ? _head.Value.FullMoveCounter : _initialFullMoveCounter;
@@ -30,24 +33,42 @@ namespace Chess3D.Runtime.Core.Logic.MovesBuffer
         /// Returns max repetition of the same position
         public int ThreefoldRepetitionCount => _threefoldRepetition.Values.Count > 0 ? _threefoldRepetition.Values.Max() : 0;
 
-        public void Init(FenFromBoard fenFromBoard, FenFromString fenFromString)
+        public UciBuffer(FenFromBoard fenFromBoard, FenFromString fenFromString)
         {
             _fenFromBoard = fenFromBoard;
+            _fenFromString = fenFromString;
             _initialHalfMoveClock = fenFromString.HalfMoveClock;
             _initialFullMoveCounter = fenFromString.FullMoveCounter;
-
-            AddInitialPositionToThreefoldRule(fenFromString);
         }
 
-        private void AddInitialPositionToThreefoldRule(FenFromString fenFromString)
+        public UniTask Load()
         {
-            string shortFen = fenFromString.GetShort();
+            _head = null;
+            _buffer.Clear();
+            AddInitialPositionToThreefoldRule();
+            // ResetThreefoldRule();
 
+            return UniTask.CompletedTask;
+        }
+
+        private void AddInitialPositionToThreefoldRule()
+        {
+            _threefoldRepetition.Clear();
+
+            string shortFen = _fenFromString.GetShort();
             if (!_threefoldRepetition.TryAdd(shortFen, 1))
             {
                 _threefoldRepetition[shortFen] += 1;
             }
         }
+
+        // private void ResetThreefoldRule()
+        // {
+        //     string shortFen = _fenFromBoard.GetShort();
+        //
+        //     _threefoldRepetition.Clear();
+        //     _threefoldRepetition.Add(shortFen, 1);
+        // }
 
         public void Add(MoveData moveData)
         {
@@ -191,21 +212,6 @@ namespace Chess3D.Runtime.Core.Logic.MovesBuffer
             }
 
             return sb.ToString();
-        }
-
-        public void Clear()
-        {
-            _head = null;
-            _buffer.Clear();
-            ResetThreefoldRule();
-        }
-
-        private void ResetThreefoldRule()
-        {
-            string shortFen = _fenFromBoard.GetShort();
-
-            _threefoldRepetition.Clear();
-            _threefoldRepetition.Add(shortFen, 1);
         }
     }
 }

@@ -17,9 +17,9 @@ namespace Chess3D.Runtime.Core.ChessBoard.Pieces
         {
             foreach (Vector2Int offset in moves)
             {
-                Square square = Game.GetSquareRel(pieceColor, currentSquare, offset);
+                Square square = Board.GetSquareRel(pieceColor, currentSquare, offset);
 
-                if (square == Game.NullSquare)
+                if (square == Board.NullSquare)
                 {
                     continue;
                 }

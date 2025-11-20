@@ -1,20 +1,43 @@
 ﻿using Chess3D.Runtime.Core.Logic.MovesBuffer;
+using Chess3D.Runtime.Core.Logic.Players;
 using PurrNet.StateMachine;
-using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
     public class EndGameState : StateNode, IGameState
     {
-        [Header("References")]
-        [SerializeField] private Game game;
+        private IGameStateMachine _gameStateMachine;
+        private CoreEvents _coreEvents;
+        private UciBuffer _uciBuffer;
+        private UndoState _undoState;
+
+        [Inject]
+        public void Construct(IGameStateMachine gameStateMachine, CoreEvents coreEvents, UciBuffer uciBuffer, UndoState undoState)
+        {
+            _gameStateMachine = gameStateMachine;
+            _coreEvents = coreEvents;
+            _uciBuffer = uciBuffer;
+            _undoState = undoState;
+        }
 
         public string Name => "End Game";
 
         public override void Enter()
         {
-            game.FireEnd();
+            _coreEvents.FireEnd();
         }
+
+        public void Undo()
+        {
+            if (_uciBuffer.CanUndo(out MoveData moveData))
+            {
+                moveData.PreviousState = this;
+                _gameStateMachine.SetState(_undoState, moveData);
+            }
+        }
+
+#region unused
 
         public override void Exit()
         {
@@ -31,14 +54,6 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             // Empty
         }
 
-        public void Undo()
-        {
-            if (game.UciBuffer.CanUndo(out MoveData moveData))
-            {
-                // TODO: Game.GameStateMachine.SetState(new UndoState(Game, moveData), isSetPreviousState:false);
-            }
-        }
-
         public void Redo()
         {
             // Empty
@@ -53,5 +68,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         {
             // Empty
         }
+
+#endregion
     }
 }

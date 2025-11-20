@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Chess3D.Runtime;
 using Chess3D.Runtime.Bootstrap.Settings;
 using Ui.Auxiliary;
 using Ui.BoardInMainMenu;
@@ -12,7 +13,9 @@ namespace Ui.Menu.ViewModels
     public class BoardPageViewModel : MonoBehaviour, INotifyPropertyChanged
     {
         [SerializeField] private VisualBoardSpawner visualBoardSpawner;
-        [SerializeField] private GameSettingsContainer gameSettingsContainer;
+
+        // TODO: Add DI dependency
+        private SettingsService _settingsService;
 
         public ObservableCollection<string> Pieces { get; set; } = new();
         public ObservableCollection<string> Boards { get; set; } = new();
@@ -25,7 +28,8 @@ namespace Ui.Menu.ViewModels
             {
                 if (SetField(ref _selectedPiece, value))
                 {
-                    gameSettingsContainer.SetPieceModelAddress(value);
+                    _settingsService.S.GameSettings.PiecesModelAddress = value;
+                    _settingsService.Save();
                     visualBoardSpawner.SpawnPieces(value);
 
                     LogUi.Debug($"{nameof(SelectedPiece)} changed to {value}");
@@ -42,7 +46,8 @@ namespace Ui.Menu.ViewModels
             {
                 if (SetField(ref _selectedBoard, value))
                 {
-                    gameSettingsContainer.SetBoardModelAddress(value);
+                    _settingsService.S.GameSettings.BoardModelAddress = value;
+                    _settingsService.Save();
                     visualBoardSpawner.SpawnBoard(value);
 
                     LogUi.Debug($"{nameof(SelectedBoard)} changed to {value}");
@@ -58,7 +63,7 @@ namespace Ui.Menu.ViewModels
 
         private void InitPieces()
         {
-            _selectedPiece = gameSettingsContainer.GetPieceModelAddress();
+            _selectedPiece = _settingsService.S.GameSettings.PiecesModelAddress;
 
             Pieces = new ObservableCollection<string>
             {
@@ -69,7 +74,7 @@ namespace Ui.Menu.ViewModels
 
         private void InitBoards()
         {
-            _selectedBoard = gameSettingsContainer.GetBoardModelAddress();
+            _selectedBoard = _settingsService.S.GameSettings.BoardModelAddress;
 
             Boards = new ObservableCollection<string>
             {

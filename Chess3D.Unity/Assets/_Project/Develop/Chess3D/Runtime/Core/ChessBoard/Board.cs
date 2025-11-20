@@ -1,53 +1,66 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Chess3D.Runtime.Core.AssetManagement;
 using Chess3D.Runtime.Core.ChessBoard.Info;
 using Chess3D.Runtime.Core.ChessBoard.Pieces;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Core.Logic.MovesBuffer;
-using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.Notation;
+using Chess3D.Runtime.Utilities;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.ChessBoard
 {
-    public class Board : MonoBehaviour
+    public sealed class Board : MonoBehaviour, ILoadUnit
     {
-        [Header("References")]
-        [SerializeField] private Competitors competitors;
-        [SerializeField] private BeatenPieces beatenPieces;
-        [SerializeField] private Transform piecesParent;
-        [SerializeField] private Transform squaresParent;
-        [SerializeField] private Square nullSquare;
-
         public HashSet<Piece> WhitePieces { get; } = new();
         public HashSet<Piece> BlackPieces { get; } = new();
         public List<Square> Squares { get; } = new();
-        private Dictionary<string, Square> SquaresHash { get; } = new();
 
-        // Initialisation
-        private Game _game;
+        // Inject part
+        private PieceFactory pieceFactory;
+        private Assets _assets;
         private UciBuffer _commandUciBuffer;
-        private GameObject _boardPrefab;
-        private IList<GameObject> _piecePrefabs;
         private FenFromString _fenFromString;
-        private PieceColor _turnColor;
+        private SettingsService _settingsService;
+        [SerializeField] private Transform piecesParent;
+        [SerializeField] private Transform squaresParent;
+        [SerializeField] private BeatenPieces beatenPieces;
+        // TODO: remove this
+        [SerializeField] private Square nullSquare;
 
+        private Dictionary<string, Square> SquaresHash { get; } = new();
         private GameObject _boardInstance;
-
-        public Square NullSquare => nullSquare;
 
         private const int Width = 8;
         private const int Height = 8;
 
-        public void Init(Game game, UciBuffer commandUciBuffer, FenFromString fenFromString, GameObject boardPrefab,
-            IList<GameObject> piecePrefabs, PieceColor turnColor)
+        public Square NullSquare => nullSquare;
+        public Transform PiecesParent => piecesParent;
+
+        [Inject]
+        public void Construct(PieceFactory pieceFactory, Assets assets, UciBuffer commandUciBuffer, FenFromString fenFromString, SettingsService settingsService)
         {
-            _game = game;
+            this.pieceFactory = pieceFactory;
+            _assets = assets;
             _commandUciBuffer = commandUciBuffer;
-            _boardPrefab = boardPrefab;
-            _piecePrefabs = piecePrefabs;
             _fenFromString = fenFromString;
-            _turnColor = turnColor;
+            _settingsService = settingsService;
+        }
+
+        public UniTask Load()
+        {
+            DestroyBoardAndPieces();
+            beatenPieces.Clear();
+            FindAllSquares();
+            HashSquares();
+            SpawnBoard();
+            SpawnAllPieces();
+            RotateBoard();
+
+            return UniTask.CompletedTask;
         }
 
         /// Add piece to the board. Add it to the list of the corresponding color
@@ -145,6 +158,7 @@ namespace Chess3D.Runtime.Core.ChessBoard
                 "k" => PieceType.King,
                 _ => PieceType.None,
             };
+
             return pieceType;
         }
 
@@ -182,28 +196,10 @@ namespace Chess3D.Runtime.Core.ChessBoard
             }
 
             // The (0, 1) to (0, -1) swapped because we find square for previous turn
-            Square pawnToSquare = GetSquareRel(_turnColor, epSquare, new Vector2Int(0, -1));
+            Square pawnToSquare = GetSquareRel(_fenFromString.TurnColor, epSquare, new Vector2Int(0, -1));
             Piece pawn = pawnToSquare.GetPiece();
 
             return new EnPassantInfo(pawn, epSquare);
-        }
-
-        public Piece GetSpawnedPiece(PieceType pieceType, PieceColor pieceColor, Square square)
-        {
-            GameObject piecePrefab = GetPrefabOfPiece(pieceType, pieceColor);
-            Piece pieceInstance = InstantiatePiece(piecePrefab, square);
-
-            return pieceInstance;
-        }
-
-        public void Build()
-        {
-            DestroyBoardAndPieces();
-            beatenPieces.Clear();
-            FindAllSquares();
-            HashSquares();
-            SpawnBoard();
-            SpawnAllPieces();
         }
 
         private void DestroyBoardAndPieces()
@@ -237,74 +233,31 @@ namespace Chess3D.Runtime.Core.ChessBoard
 
         private void SpawnBoard()
         {
-            _boardInstance = Instantiate(_boardPrefab, transform);
+            _boardInstance = Instantiate(_assets.Prefabs.Board, transform);
+        }
+
+        private void RotateBoard()
+        {
+            if (_settingsService.S.GameSettings.PlayerColor == PieceColor.White)
+            {
+                transform.localRotation = Quaternion.identity;
+                beatenPieces.gameObject.transform.localScale = Vector3.one;
+            }
+            else if (_settingsService.S.GameSettings.PlayerColor == PieceColor.Black)
+            {
+                transform.localRotation = Quaternion.Euler(0, 180, 0);
+                beatenPieces.gameObject.transform.localScale = new Vector3(-1, 1, 1);
+            }
         }
 
         private void SpawnAllPieces()
         {
             foreach (PieceInfo pieceInfo in _fenFromString.PieceInfos)
             {
-                Piece piece = GetSpawnedPiece(pieceInfo);
+                Piece piece = pieceFactory.Create(pieceInfo);
                 AddPiece(piece);
                 piece.gameObject.SetActive(true);
             }
-        }
-
-        private Piece GetSpawnedPiece(PieceInfo pieceInfo)
-        {
-            GameObject piecePrefab = GetPrefabOfPiece(pieceInfo.PieceType, pieceInfo.PieceColor);
-            Square square = Squares[pieceInfo.SquareNum];
-            Piece pieceInstance = InstantiatePiece(piecePrefab, square);
-            pieceInstance.IsFirstMove = pieceInfo.IsFirstMove;
-
-            return pieceInstance;
-        }
-
-        private GameObject GetPrefabOfPiece(PieceType pieceType, PieceColor pieceColor)
-        {
-            GameObject piecePrefab = pieceColor switch
-            {
-                PieceColor.Black => pieceType switch
-                {
-                    PieceType.Bishop => _piecePrefabs[0],
-                    PieceType.King => _piecePrefabs[1],
-                    PieceType.Knight => _piecePrefabs[2],
-                    PieceType.Pawn => _piecePrefabs[3],
-                    PieceType.Queen => _piecePrefabs[4],
-                    PieceType.Rook => _piecePrefabs[5],
-                    _ => null,
-                },
-                PieceColor.White => pieceType switch
-                {
-                    PieceType.Bishop => _piecePrefabs[6],
-                    PieceType.King => _piecePrefabs[7],
-                    PieceType.Knight => _piecePrefabs[8],
-                    PieceType.Pawn => _piecePrefabs[9],
-                    PieceType.Queen => _piecePrefabs[10],
-                    PieceType.Rook => _piecePrefabs[11],
-                    _ => null,
-                },
-                _ => null,
-            };
-
-            return piecePrefab;
-        }
-
-        private Piece InstantiatePiece(GameObject piecePrefab, Square square)
-        {
-            if (!piecePrefab)
-            {
-                return null;
-            }
-
-            GameObject pieceInstance = Instantiate(piecePrefab, square.transform.position,
-                piecePrefab.transform.rotation, piecesParent);
-            var piece = pieceInstance.GetComponent<Piece>();
-            pieceInstance.SetActive(false);
-
-            piece.Init(_game, this, square);
-
-            return piece;
         }
 
         private void DestroyPieces()

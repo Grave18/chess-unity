@@ -90,14 +90,14 @@ namespace Chess3D.Editor.GameSetup
 
         private static async UniTask StartHost()
         {
-            if (GameSettingsContainer.IsOnlineComputerVsComputer)
-            {
-                CloneCommandSender.Send("StartLocalhostComputers");
-            }
-            else
-            {
-                CloneCommandSender.Send("StartLocalhost");
-            }
+            // if (GameSettingsContainer.IsOnlineComputerVsComputer)
+            // {
+            //     CloneCommandSender.Send("StartLocalhostComputers");
+            // }
+            // else
+            // {
+            //     CloneCommandSender.Send("StartLocalhost");
+            // }
 
             var onlineSceneSwitcher = Object.FindObjectOfType<OnlineSceneSwitcher>();
             await onlineSceneSwitcher.SetupAndSwitchScene(PieceColor.White, isHost: true, isLocal: true);

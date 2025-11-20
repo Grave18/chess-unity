@@ -3,7 +3,6 @@
 using Noesis;
 using UnityEngine;
 using GUI = Noesis.GUI;
-using Ui.InGame.ViewModels;
 
 #else
 using System;
@@ -15,6 +14,8 @@ using System.Windows.Input;
 #endif
 
 using Ui.Auxiliary;
+using InGameMenuViewModel = Chess3D.Runtime.Core.Ui.ViewModels.InGameMenuViewModel;
+using InGamePageViewModel = Chess3D.Runtime.Core.Ui.ViewModels.InGamePageViewModel;
 
 namespace Ui.InGame.Pages
 {
@@ -32,8 +33,9 @@ namespace Ui.InGame.Pages
         private void OnInitialized(object sender, EventArgs args)
         {
 #if NOESIS
+            // TODO: Refactor to use container
             DataContext = Object.FindAnyObjectByType<InGamePageViewModel>();
-            ResumeButton.DataContext = Object.FindAnyObjectByType<InGameMenuViewModel>();
+            // ResumeButton.DataContext = Object.FindAnyObjectByType<InGameMenuViewModel>();
 #endif
         }
 

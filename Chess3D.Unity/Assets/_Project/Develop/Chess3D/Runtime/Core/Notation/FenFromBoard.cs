@@ -4,26 +4,20 @@ using Chess3D.Runtime.Core.ChessBoard.Info;
 using Chess3D.Runtime.Core.ChessBoard.Pieces;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Core.Logic.MovesBuffer;
-using EditorCools;
-using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Notation
 {
-    public class FenFromBoard : MonoBehaviour
+    [UnityEngine.Scripting.Preserve]
+    public class FenFromBoard
     {
-        private Game _game;
-        private Board _board;
-        private UciBuffer _uciBuffer;
-        private string _fen;
+        private readonly IObjectResolver _resolver;
 
         private readonly StringBuilder _uciStringBuilder = new();
 
-        public void Init(Game game, Board board, UciBuffer uciBuffer, string fen)
+        public FenFromBoard(IObjectResolver resolver)
         {
-            _game = game;
-            _board = board;
-            _uciBuffer = uciBuffer;
-            _fen = fen;
+            _resolver = resolver;
         }
 
         public string Get()
@@ -34,8 +28,8 @@ namespace Chess3D.Runtime.Core.Notation
             AppendColor();
             AppendCastling();
             AppendEnPassantSquare();
-            AppendHalfMove();
-            AppendFullMove();
+            AppendHalfMoveClock();
+            AppendFullMoveCounter();
 
             return _uciStringBuilder.ToString();
         }
@@ -55,7 +49,9 @@ namespace Chess3D.Runtime.Core.Notation
 
         private void AppendLetters()
         {
-            var squares = _board.Squares;
+            // TODO: Hidden dependency
+            var board = _resolver.Resolve<Board>();
+            var squares = board.Squares;
 
             int counter = 0;
             foreach (Square square in squares)
@@ -122,7 +118,9 @@ namespace Chess3D.Runtime.Core.Notation
 
         private void AppendColor()
         {
-            string color = _game.CurrentTurnColor switch
+            // TODO: hidden dependency
+            var game = _resolver.Resolve<Game>();
+            string color = game.CurrentTurnColor switch
             {
                 PieceColor.White => " w",
                 PieceColor.Black => " b",
@@ -154,48 +152,40 @@ namespace Chess3D.Runtime.Core.Notation
 
         private bool IsPieceFirstMove(string squareAddress)
         {
-            Piece piece = _board.GetSquare(squareAddress).GetPiece();
+            // TODO: Hidden dependency
+            var board = _resolver.Resolve<Board>();
+            Piece piece = board.GetSquare(squareAddress).GetPiece();
             bool pieceIsFirstMove = piece != null && piece.IsFirstMove;
             return pieceIsFirstMove;
         }
 
         private void AppendEnPassantSquare()
         {
-            EnPassantInfo enPassantInfo = _board.GetEnPassantInfo();
+            // TODO: Hidden dependency
+            var board = _resolver.Resolve<Board>();
+            EnPassantInfo enPassantInfo = board.GetEnPassantInfo();
             string enPassant = enPassantInfo != null
                 ? $" {enPassantInfo.Square.Address}"
                 : " -";
             _uciStringBuilder.Append(enPassant);
         }
 
-        private void AppendHalfMove()
+        private void AppendHalfMoveClock()
         {
-            int halfMoveClock = _uciBuffer.HalfMoveClock;
+            // TODO: hidden dependency
+            var uciBuffer = _resolver.Resolve<UciBuffer>();
+            int halfMoveClock = uciBuffer.HalfMoveClock;
 
             _uciStringBuilder.Append($" {halfMoveClock}");
         }
 
-        private void AppendFullMove()
+        private void AppendFullMoveCounter()
         {
-            int fullMoveCounter = _uciBuffer.FullMoveCounter;
+            // TODO: hidden dependency
+            var uciBuffer = _resolver.Resolve<UciBuffer>();
+            int fullMoveCounter = uciBuffer.FullMoveCounter;
 
             _uciStringBuilder.Append($" {fullMoveCounter}");
         }
-
-#if UNITY_EDITOR
-
-        [Button(space: 10)]
-        public void ShowAndCopyToClipboard()
-        {
-            string uci = Get();
-
-            GUIUtility.systemCopyBuffer = uci;
-
-            Debug.Log($"<color=gray>{uci}</color>");
-            Debug.Log($"Is identical with preset: {uci == _fen}");
-        }
-
-#endif
-
     }
 }

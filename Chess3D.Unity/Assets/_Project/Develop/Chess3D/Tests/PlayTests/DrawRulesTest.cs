@@ -13,13 +13,13 @@ namespace Chess3D.Tests.PlayTests
         public IEnumerator Setup()
         {
             yield return TestSetup();
-            GameSettingsContainer.RestoreDefaultRules();
+            // GameSettingsContainer.RestoreDefaultRules();
         }
 
         [UnityTest]
         public IEnumerator FiftyMoveRule_WhenNormal_MustBeDraw()
         {
-            GameSettingsContainer.FiftyMoveRuleCount = 3;
+            // GameSettingsContainer.FiftyMoveRuleCount = 3;
             yield return InitGameWithPreset("rnbqkbnr/8/2p5/8/8/4P3/8/RNBQKBNR w KQq - 0 1");
 
             yield return Move("h1h3");
@@ -35,7 +35,7 @@ namespace Chess3D.Tests.PlayTests
         [UnityTest]
         public IEnumerator FiftyMoveRule_WhenLastIsCheckmate_MustBeCheckmate()
         {
-            GameSettingsContainer.FiftyMoveRuleCount = 3;
+            // GameSettingsContainer.FiftyMoveRuleCount = 3;
             yield return InitGameWithPreset("rnbqkbn1/8/8/8/8/8/r7/1NPPKPNR w - - 0 1");
 
             yield return Move("h1h8");
@@ -51,7 +51,7 @@ namespace Chess3D.Tests.PlayTests
         [UnityTest]
         public IEnumerator FiftyMoveRule_WhenPawnMove_MustNotBeDraw()
         {
-            GameSettingsContainer.FiftyMoveRuleCount = 3;
+            // GameSettingsContainer.FiftyMoveRuleCount = 3;
             yield return InitGameWithPreset("rnbqkbnr/8/2p5/8/8/4P3/8/RNBQKBNR w KQq - 0 1");
 
             yield return Move("h1h3");
@@ -67,7 +67,7 @@ namespace Chess3D.Tests.PlayTests
         [UnityTest]
         public IEnumerator FiftyMoveRule_WhenCapture_MustNotBeDraw()
         {
-            GameSettingsContainer.FiftyMoveRuleCount = 3;
+            // GameSettingsContainer.FiftyMoveRuleCount = 3;
             yield return InitGameWithPreset("rnbqkbnr/8/2p5/8/8/4P3/8/RNBQKBNR w KQq - 0 1");
 
             yield return Move("h1h3");

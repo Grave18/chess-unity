@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Chess3D.Runtime;
 using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.ChessBoard.Info;
 using Chess3D.Runtime.Core.Logic;
@@ -12,7 +13,8 @@ namespace Ui.BoardInMainMenu
     public class VisualBoardSpawner : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private GameSettingsContainer gameSettingsContainer;
+        // TODO: Add DI dependency
+        private SettingsService _settingsService;
 
         [Header("Board")]
         [SerializeField] private AssetLabelReference boardLabel;
@@ -30,11 +32,8 @@ namespace Ui.BoardInMainMenu
 
         private void Awake()
         {
-            string boardModelAddress = gameSettingsContainer.GetBoardModelAddress();
-            SpawnBoard(boardModelAddress);
-
-            string pieceModelAddress = gameSettingsContainer.GetPieceModelAddress();
-            SpawnPieces(pieceModelAddress);
+            SpawnBoard(_settingsService.S.GameSettings.BoardModelAddress);
+            SpawnPieces(_settingsService.S.GameSettings.PiecesModelAddress);
         }
 
         public void SpawnBoard(string boardModelAddress)

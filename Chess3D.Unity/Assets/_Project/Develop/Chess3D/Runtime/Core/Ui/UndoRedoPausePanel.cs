@@ -1,19 +1,14 @@
-﻿using Chess3D.Runtime.Bootstrap.Settings;
-using Chess3D.Runtime.Core.Initialization;
-using Chess3D.Runtime.Core.Logic;
+﻿using Chess3D.Runtime.Core.Logic;
+using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Online;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Ui
 {
     public class UndoRedoPausePanel : MonoBehaviour
     {
-        [Header("References")]
-        [SerializeField] private Game game;
-        [SerializeField] private GameInitialization gameInitialization;
-        [SerializeField] private GameSettingsContainer gameSettingsContainer;
-
         [Header("UI")]
         [SerializeField] private Button undo;
         [SerializeField] private Button redo;
@@ -24,7 +19,19 @@ namespace Chess3D.Runtime.Core.Ui
         [SerializeField] private Sprite playSprite;
         [SerializeField] private Sprite pauseSprite;
 
+        private CoreEvents _coreEvents;
+        private SettingsService _settingsService;
+        private IGameStateMachine _gameStateMachine;
+
         private bool _isPause;
+
+        [Inject]
+        public void Construct(CoreEvents coreEvents, SettingsService settingsService, IGameStateMachine gameStateMachine)
+        {
+            _coreEvents = coreEvents;
+            _settingsService = settingsService;
+            _gameStateMachine = gameStateMachine;
+        }
 
         private void Start()
         {
@@ -47,10 +54,11 @@ namespace Chess3D.Runtime.Core.Ui
 
         private void OnEnable()
         {
-            game.OnPlay += OnPlay;
-            game.OnPause += OnPause;
-            game.OnEndMoveWithColor += DisablePauseIfOnlineAndNotMoving;
-            game.OnStartWithColor += DisablePauseIfOnlineAndNotMoving;
+            _coreEvents.OnPlay += OnPlay;
+            _coreEvents.OnPause += OnPause;
+            // TODO: Refactor this mess
+            // _coreEvents.OnEndMoveWithColor += DisablePauseIfOnlineAndNotMoving;
+            // _coreEvents.OnStartWithColor += DisablePauseIfOnlineAndNotMoving;
             undo.onClick.AddListener(OnUndoPressed);
             redo.onClick.AddListener(OnRedoPressed);
             pause.onClick.AddListener(OnPlayPausePressed);
@@ -58,10 +66,10 @@ namespace Chess3D.Runtime.Core.Ui
 
         private void OnDisable()
         {
-            game.OnPlay -= OnPlay;
-            game.OnPause -= OnPause;
-            game.OnEndMoveWithColor -= DisablePauseIfOnlineAndNotMoving;
-            game.OnStartWithColor -= DisablePauseIfOnlineAndNotMoving;
+            _coreEvents.OnPlay -= OnPlay;
+            _coreEvents.OnPause -= OnPause;
+            // _coreEvents.OnEndMoveWithColor -= DisablePauseIfOnlineAndNotMoving;
+            // _coreEvents.OnStartWithColor -= DisablePauseIfOnlineAndNotMoving;
             undo.onClick.RemoveListener(OnUndoPressed);
             redo.onClick.RemoveListener(OnRedoPressed);
             pause.onClick.RemoveListener(OnPlayPausePressed);
@@ -71,8 +79,9 @@ namespace Chess3D.Runtime.Core.Ui
         {
             if (OnlineInstanceHandler.IsOnline)
             {
-                PieceColor playerColor = gameSettingsContainer.GameSettings.PlayerColor;
-                pause.interactable = playerColor == currentTurnColor;
+                // TODO: Refactor this mess
+                // PieceColor playerColor = _settingsService.GameSettings.PlayerColor;
+                // pause.interactable = playerColor == currentTurnColor;
             }
             else
             {
@@ -95,23 +104,23 @@ namespace Chess3D.Runtime.Core.Ui
 
         private void OnUndoPressed()
         {
-            game.GameStateMachine.Undo();
+            _gameStateMachine.Undo();
         }
 
         private void OnRedoPressed()
         {
-            game.GameStateMachine.Redo();
+            _gameStateMachine.Redo();
         }
 
         private void OnPlayPausePressed()
         {
             if (_isPause)
             {
-                game.GameStateMachine.Play();
+                _gameStateMachine.Play();
             }
             else
             {
-                game.GameStateMachine.Pause();
+                _gameStateMachine.Pause();
             }
         }
     }

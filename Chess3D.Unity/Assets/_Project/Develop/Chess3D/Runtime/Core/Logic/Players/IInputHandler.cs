@@ -1,6 +1,8 @@
-﻿namespace Chess3D.Runtime.Core.Logic.Players
+﻿using Chess3D.Runtime.Utilities;
+
+namespace Chess3D.Runtime.Core.Logic.Players
 {
-    public interface IInputHandler
+    public interface IInputHandler : ILoadUnit
     {
         public void StartInput();
         void UpdateInput();

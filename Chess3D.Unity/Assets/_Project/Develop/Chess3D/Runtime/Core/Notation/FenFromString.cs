@@ -1,24 +1,36 @@
 ﻿using System.Collections.Generic;
 using Chess3D.Runtime.Core.ChessBoard.Info;
 using Chess3D.Runtime.Core.Logic;
+using Chess3D.Runtime.Utilities;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Core.Notation
 {
-    public class FenFromString
+    [Preserve]
+    public sealed class FenFromString: ILoadUnit
     {
-        public PieceColor TurnColor { get; }
-        public int HalfMoveClock { get; }
-        public int FullMoveCounter { get; }
-        public IList<PieceInfo> PieceInfos { get; }
+        public PieceColor TurnColor { get; private set; }
+        public int HalfMoveClock { get; private set; }
+        public int FullMoveCounter { get; private set; }
+        public IList<PieceInfo> PieceInfos { get; private set; }
+
+        private readonly SettingsService _settingsService;
+        private FenSplit _fenSplit;
+
         public string EnPassantAddress => _fenSplit.EnPassant;
 
-        private readonly FenSplit _fenSplit;
 
         /// Fen string must be valid
-        public FenFromString(string fenString)
+        public FenFromString(SettingsService settingsService)
         {
-            string[] splitPreset = fenString.Split(' ');
+            _settingsService = settingsService;
+        }
+
+        public UniTask Load()
+        {
+            string[] splitPreset = _settingsService.S.GameSettings.CurrentFen.Split(' ');
 
             _fenSplit = new FenSplit
             {
@@ -34,6 +46,8 @@ namespace Chess3D.Runtime.Core.Notation
             HalfMoveClock = GetHalfMoveClock(_fenSplit.HalfMoveClock);
             FullMoveCounter = GetFullMoveCounter(_fenSplit.FullMoveCounter);
             PieceInfos = GetPiecesFromPreset();
+
+            return UniTask.CompletedTask;
         }
 
         public string GetShort()

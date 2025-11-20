@@ -1,6 +1,6 @@
 ﻿using PurrNet;
-using Ui.InGame.ViewModels;
 using UnityEngine;
+using PopupViewModel = Chess3D.Runtime.Core.Ui.ViewModels.PopupViewModel;
 
 namespace Chess3D.Runtime.Online
 {
@@ -34,7 +34,8 @@ namespace Chess3D.Runtime.Online
 
         private static void ClosePopup()
         {
-            PopupViewModel.Instance.ClosePopupToGame();
+            // TODO: Fix Popup in online
+            // PopupViewModel.Instance.ClosePopupToGame();
         }
 
         private void OnPlayerLeft(PlayerID player, bool asServer)
@@ -52,7 +53,7 @@ namespace Chess3D.Runtime.Online
 
         private static void OpenReconnectPopup()
         {
-            PopupViewModel.Instance.OpenReconnectPopup();
+            // PopupViewModel.Instance.OpenReconnectPopup();
         }
     }
 }

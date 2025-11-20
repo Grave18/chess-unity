@@ -24,7 +24,7 @@ namespace Chess3D.Runtime.Utilities
     public sealed class LoadingService
     {
         private readonly Stopwatch _watch =
-#if !COMPANYNAME_PROD
+#if !GRAVEBOX_PROD
             new();
 #else
             null;

@@ -10,7 +10,7 @@ namespace Chess3D.Runtime.Core.Ui.DebugUi
     {
         [Header("References")]
         [SerializeField] private Logic.Game game;
-        [SerializeField] private GameSettingsContainer gameSettingsContainer;
+        // [SerializeField] private GameSettingsContainer gameSettingsContainer;
 
         [Header("Ui texts")]
         [SerializeField] private TMP_Text authorityText;
@@ -21,16 +21,16 @@ namespace Chess3D.Runtime.Core.Ui.DebugUi
 
         private void Update()
         {
-            if (!game)
-            {
-                return;
-            }
-
-            authorityText.text = "Authority: " + GetAuthority();
-            stateText.text = "State: " + game.GameStateMachine?.StateName;
-            turnText.text = "Turn: " + game.CurrentTurnColor;
-            checkText.text = "Check: " + game.CheckType;
-            playerTypeText.text = "Player: " + gameSettingsContainer.GameSettings.Player1Settings.PlayerType;
+            // if (!game)
+            // {
+            //     return;
+            // }
+            //
+            // authorityText.text = "Authority: " + GetAuthority();
+            // stateText.text = "State: " + game.GameStateMachine?.StateName;
+            // turnText.text = "Turn: " + game.CurrentTurnColor;
+            // checkText.text = "Check: " + game.CheckType;
+            // playerTypeText.text = "Player: " + gameSettingsContainer.GameSettings.Player1Settings.PlayerType;
         }
 
         private static string GetAuthority()

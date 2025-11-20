@@ -1,7 +1,6 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
 using Noesis;
-using Ui.InGame.ViewModels;
 using EventArgs = Noesis.EventArgs;
 using GUI = Noesis.GUI;
 using Object = UnityEngine.Object;
@@ -14,6 +13,7 @@ using System.Windows.Input;
 #endif
 
 using Ui.Auxiliary;
+using InGameMenuViewModel = Chess3D.Runtime.Core.Ui.ViewModels.InGameMenuViewModel;
 
 namespace Ui.InGame
 {
@@ -36,7 +36,8 @@ namespace Ui.InGame
         private void OnInitialized(object sender, EventArgs args)
         {
 #if NOESIS
-            DataContext = Object.FindAnyObjectByType<InGameMenuViewModel>();
+            // TODO: Refactor to use container
+            // DataContext = Object.FindAnyObjectByType<InGameMenuViewModel>();
 #endif
         }
 

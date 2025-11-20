@@ -13,7 +13,7 @@ namespace Chess3D.Runtime.Online
         [SerializeField] private PlayerOnline playerOnlineWhite;
         [SerializeField] private PlayerOnline playerOnlineBlack;
         [SerializeField] private ClockOnline clockOnline;
-        [SerializeField] private GameSettingsContainer gameSettingsContainer;
+        // [SerializeField] private GameSettingsContainer gameSettingsContainer;
 
         public static bool IsOnline => Instance != null;
         public static bool IsOffline => !IsOnline;

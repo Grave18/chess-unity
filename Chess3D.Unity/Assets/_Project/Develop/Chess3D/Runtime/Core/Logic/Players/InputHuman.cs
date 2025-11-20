@@ -3,35 +3,46 @@ using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.ChessBoard.Pieces;
 using Chess3D.Runtime.Core.Highlighting;
 using Chess3D.Runtime.Core.InputManagement;
+using Chess3D.Runtime.Core.MainCamera;
 using Chess3D.Runtime.Core.Ui.Promotion;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.Players
 {
+    [UnityEngine.Scripting.Preserve]
     public class InputHuman : IInputHandler
     {
         private const float MaxDistance = 100;
 
         private readonly Game _game;
+        private readonly IGameStateMachine _gameStateMachine;
         private readonly Camera _mainCamera;
         private readonly Highlighter _highlighter;
-
+        private readonly SettingsService _settingsService;
         private readonly PromotionPanel _promotionPanel;
-        private readonly bool _isAutoPromoteToQueen;
 
-        private readonly LayerMask _layerMask;
-
+        // TODO: Move to config
+        private readonly LayerMask _layerMask = LayerMask.GetMask("Piece", "Square");
         private bool _isPlaying;
 
-        public InputHuman(Game game, Camera mainCamera, Highlighter highlighter, LayerMask layerMask,
-            bool isAutoPromoteToQueen, PromotionPanel promotionPanel)
+        public InputHuman(Game game, IGameStateMachine gameStateMachine,
+            SettingsService settingsService, [Key(CameraKeys.Main)] Camera mainCamera,
+            Highlighter highlighter, PromotionPanel promotionPanel)
         {
             _game = game;
             _highlighter = highlighter;
             _mainCamera = mainCamera;
-            _layerMask = layerMask;
-            _isAutoPromoteToQueen = isAutoPromoteToQueen;
+            _settingsService = settingsService;
             _promotionPanel = promotionPanel;
+            _gameStateMachine = gameStateMachine;
+        }
+
+        public UniTask Load()
+        {
+            // TODO: Remove
+            return UniTask.CompletedTask;
         }
 
         public void StartInput()
@@ -110,26 +121,26 @@ namespace Chess3D.Runtime.Core.Logic.Players
 
             if (CanPromote(piece, toSquare))
             {
-                if (_isAutoPromoteToQueen)
+                if (_settingsService.S.GameSettings.IsAutoPromoteToQueen)
                 {
                     uci += "q";
-                    _game.GameStateMachine.Move(uci);
+                    _gameStateMachine.Move(uci);
                     _game.Deselect();
                     return;
                 }
 
-                _game.GameStateMachine.Pause();
+                _gameStateMachine.Pause();
                 _promotionPanel.RequestPromotedPiece(_game.CurrentTurnColor, pieceLetter =>
                 {
-                    _game.GameStateMachine.Play();
+                    _gameStateMachine.Play();
                     uci += pieceLetter;
-                    _game.GameStateMachine.Move(uci);
+                    _gameStateMachine.Move(uci);
                     _game.Deselect();
                 });
             }
             else
             {
-                _game.GameStateMachine.Move(uci);
+                _gameStateMachine.Move(uci);
                 _game.Deselect();
             }
         }

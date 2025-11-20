@@ -1,34 +1,47 @@
-﻿using System.Collections.Generic;
-using Chess3D.Runtime.Bootstrap.Settings;
+﻿using System;
+using System.Collections.Generic;
+using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Core.AssetManagement
 {
-    public class Assets : MonoBehaviour
+    [Preserve]
+    public sealed class Assets : ILoadUnit, IDisposable
     {
-        [Header("References")]
-        [SerializeField] private GameSettingsContainer gameSettingsContainer;
+        public LoadedPrefabs Prefabs;
+
+        private readonly SettingsService _settingsService;
 
         private AsyncOperationHandle<GameObject> _boardHandle;
         private AsyncOperationHandle<IList<GameObject>> _piecesHandle;
 
-        public async UniTask<LoadedPrefabs> LoadPrefabs()
+        public Assets(SettingsService settingsService)
         {
-            string boardModelAddress = gameSettingsContainer.GetBoardModelAddress();
+            _settingsService = settingsService;
+        }
+
+        public async UniTask Load()
+        {
+            string boardModelAddress = _settingsService.S.GameSettings.BoardModelAddress;
             _boardHandle = Addressables.LoadAssetAsync<GameObject>(boardModelAddress);
             GameObject boardPrefab = await _boardHandle;
 
-            string piecesModelAddress = gameSettingsContainer.GetPieceModelAddress();
+            string piecesModelAddress = _settingsService.S.GameSettings.PiecesModelAddress;
             _piecesHandle =  Addressables.LoadAssetsAsync<GameObject>(piecesModelAddress, _ => { });
             IList<GameObject> piecePrefabs = await _piecesHandle;
 
-            return new LoadedPrefabs { BoardPrefab = boardPrefab, PiecesPrefabs = piecePrefabs };
+            Prefabs = new LoadedPrefabs
+            {
+                Board = boardPrefab,
+                Pieceses = piecePrefabs
+            };
         }
 
-        private void OnDestroy()
+        public void Dispose()
         {
             ReleaseAssets();
         }
@@ -49,7 +62,7 @@ namespace Chess3D.Runtime.Core.AssetManagement
 
     public struct LoadedPrefabs
     {
-        public GameObject BoardPrefab;
-        public IList<GameObject> PiecesPrefabs;
+        public GameObject Board;
+        public IList<GameObject> Pieceses;
     }
 }

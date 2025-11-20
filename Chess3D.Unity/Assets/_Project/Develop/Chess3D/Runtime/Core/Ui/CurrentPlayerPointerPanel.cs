@@ -6,26 +6,28 @@ namespace Chess3D.Runtime.Core.Ui
     public class CurrentPlayerPointerPanel : MonoBehaviour
     {
         private Logic.Game _game;
+        private CoreEvents _coreEvents;
         [SerializeField] private Image whiteImage;
         [SerializeField] private Image blackImage;
 
 
-        public void Init(Logic.Game game)
+        public void Construct(Logic.Game game, CoreEvents coreEvents)
         {
             _game = game;
+            _coreEvents = coreEvents;
 
-            _game.OnStart += Fade;
-            _game.OnEndMove += Fade;
+            _coreEvents.OnStart += Fade;
+            _coreEvents.OnEndMove += Fade;
         }
 
         private void OnDestroy()
         {
-            if (_game == null)
+            if (_coreEvents == null)
             {
                 return;
             }
-            _game.OnStart -= Fade;
-            _game.OnEndMove -= Fade;
+            _coreEvents.OnStart -= Fade;
+            _coreEvents.OnEndMove -= Fade;
         }
 
         private void Fade()

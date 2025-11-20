@@ -35,9 +35,9 @@ namespace Chess3D.Runtime.Core.ChessBoard.Pieces
             // Calculate Moves and Captures
             foreach (Vector2Int offset in moves)
             {
-                Square square = Game.GetSquareRel(pieceColor, currentSquare, offset);
+                Square square = Board.GetSquareRel(pieceColor, currentSquare, offset);
 
-                if (square == Game.NullSquare)
+                if (square == Board.NullSquare)
                 {
                     continue;
                 }
@@ -60,7 +60,7 @@ namespace Chess3D.Runtime.Core.ChessBoard.Pieces
             }
 
             // Add short castling. Do need absolute position
-            Square shortCastlingSquare = Game.GetSquareAbs(currentSquare, new Vector2Int(2, 0));
+            Square shortCastlingSquare = Board.GetSquareAbs(currentSquare, new Vector2Int(2, 0));
             if (CanCastlingShort(shortCastlingSquare, out CastlingInfo shortCastlingInfo))
             {
                 CastlingSquares.Add(shortCastlingInfo);
@@ -71,7 +71,7 @@ namespace Chess3D.Runtime.Core.ChessBoard.Pieces
             }
 
             // Add long castling. Do need absolute position
-            Square longCastlingSquare = Game.GetSquareAbs(currentSquare, new Vector2Int(-2, 0));
+            Square longCastlingSquare = Board.GetSquareAbs(currentSquare, new Vector2Int(-2, 0));
             if (CanCastleLong(longCastlingSquare, out CastlingInfo longCastlingInfo))
             {
                 CastlingSquares.Add(longCastlingInfo);
@@ -101,9 +101,9 @@ namespace Chess3D.Runtime.Core.ChessBoard.Pieces
         private bool CanCastlingShort(Square square, out CastlingInfo castlingInfo)
         {
             // Squares to the right
-            Square squarePlus1 = Game.GetSquareAbs(currentSquare, new Vector2Int(1, 0));
-            Square squarePlus2 = Game.GetSquareAbs(currentSquare, new Vector2Int(2, 0));
-            Square squareWithShortRook = Game.GetSquareAbs(currentSquare, new Vector2Int(3, 0));
+            Square squarePlus1 = Board.GetSquareAbs(currentSquare, new Vector2Int(1, 0));
+            Square squarePlus2 = Board.GetSquareAbs(currentSquare, new Vector2Int(2, 0));
+            Square squareWithShortRook = Board.GetSquareAbs(currentSquare, new Vector2Int(3, 0));
 
             // Conditions
             bool isSquaresHasNoPiece = !squarePlus1.HasPiece() && !squarePlus2.HasPiece() && squarePlus2.IsEqual(square);
@@ -129,10 +129,10 @@ namespace Chess3D.Runtime.Core.ChessBoard.Pieces
         private bool CanCastleLong(Square square, out CastlingInfo castlingInfo)
         {
             // Squares to the left
-            Square squareMinus1 = Game.GetSquareAbs(currentSquare, new Vector2Int(-1, 0));
-            Square squareMinus2 = Game.GetSquareAbs(currentSquare, new Vector2Int(-2, 0));
-            Square squareMinus3 = Game.GetSquareAbs(currentSquare, new Vector2Int(-3, 0));
-            Square squareWithLongRook = Game.GetSquareAbs(currentSquare, new Vector2Int(-4, 0));
+            Square squareMinus1 = Board.GetSquareAbs(currentSquare, new Vector2Int(-1, 0));
+            Square squareMinus2 = Board.GetSquareAbs(currentSquare, new Vector2Int(-2, 0));
+            Square squareMinus3 = Board.GetSquareAbs(currentSquare, new Vector2Int(-3, 0));
+            Square squareWithLongRook = Board.GetSquareAbs(currentSquare, new Vector2Int(-4, 0));
 
             // Conditions
             bool isSquaresHasNoPiece = !squareMinus1.HasPiece() && !squareMinus2.HasPiece()

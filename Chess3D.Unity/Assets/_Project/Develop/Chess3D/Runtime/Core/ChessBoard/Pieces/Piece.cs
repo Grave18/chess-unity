@@ -29,7 +29,7 @@ namespace Chess3D.Runtime.Core.ChessBoard.Pieces
         protected Game Game { get; private set; }
         protected Board Board { get; private set; }
 
-        public void Init(Game game, Board board, Square square)
+        public void Construct(Game game, Board board, Square square)
         {
             Game = game;
             Board = board;

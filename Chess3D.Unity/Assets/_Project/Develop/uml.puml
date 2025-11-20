@@ -1,0 +1,58 @@
+﻿@startuml
+class Game
+class FenFromString
+class UciBuffer
+class SettingsContainer
+class Assets
+class MenuStateMachine
+class InGameMenuViewModel
+class PopupViewModel
+class GameCanvas
+interface IGameStateMachine
+class GameStateMachineOffline implements IGameStateMachine
+class GameStateMachineOnline implements IGameStateMachine
+interface IGameState
+class WarmUpState implements IGameState
+class IdleState implements IGameState
+class MoveState implements IGameState
+class PauseState implements IGameState
+class UndoState implements IGameState
+class RedoState implements IGameState
+class EndGameState implements IGameState
+
+class PieceFactory
+{
+    -assets: Assets
+    -resolver: IObjectResolver
+    +Create(PieceInfo)
+}
+
+class Board
+{
+   -pieceFabric: PieceFactory
+   ...
+   +SpawnAllPieces()
+}
+
+Board --> PieceFactory
+Board --> Assets
+Board --> UciBuffer
+Board --> FenFromString
+Board --> SettingsContainer
+Game --> Board
+Game --> FenFromString
+Game --> UciBuffer
+Game --> SettingsContainer
+PieceFactory --> Assets
+UciBuffer --> FenFromBoard
+UciBuffer --> FenFromString
+InGameMenuViewModel --> PopupViewModel
+InGameMenuViewModel --> MenuStateMachine
+PopupViewModel --> FenFromBoard
+PopupViewModel --> MenuStateMachine
+FenFromBoard --> SceneManager
+FenFromBoard --> SettingsService
+FenFromBoard --> ConnectionTerminator
+
+hide empty members
+@enduml

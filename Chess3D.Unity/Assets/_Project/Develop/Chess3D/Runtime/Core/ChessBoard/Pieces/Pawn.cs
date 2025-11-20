@@ -24,15 +24,15 @@ namespace Chess3D.Runtime.Core.ChessBoard.Pieces
             // Calculate moves
             foreach (Vector2Int offset in currentMoves)
             {
-                Square square = Game.GetSquareRel(pieceColor, currentSquare, offset);
+                Square square = Board.GetSquareRel(pieceColor, currentSquare, offset);
 
-                if (square.HasPiece() || square == Game.NullSquare)
+                if (square.HasPiece() || square == Board.NullSquare)
                 {
                     break;
                 }
 
                 Square epSquare = offset.y == 2
-                    ? Game.GetSquareRel(pieceColor, currentSquare, new Vector2Int(0, 1))
+                    ? Board.GetSquareRel(pieceColor, currentSquare, new Vector2Int(0, 1))
                     : null;
                 MoveSquares.Add(square, new MoveInfo(epSquare));
             }
@@ -40,7 +40,7 @@ namespace Chess3D.Runtime.Core.ChessBoard.Pieces
             // Calculate Captures and defends
             foreach (Vector2Int offset in eat)
             {
-                Square square = Game.GetSquareRel(pieceColor, currentSquare, offset);
+                Square square = Board.GetSquareRel(pieceColor, currentSquare, offset);
 
                 if (square.HasPiece())
                 {

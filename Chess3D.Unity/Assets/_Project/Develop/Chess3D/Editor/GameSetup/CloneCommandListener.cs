@@ -27,7 +27,7 @@ namespace Chess3D.Editor.GameSetup
                     break;
                 case "StartLocalhostComputers":
                     LocalhostSetupLoader.PlayAndLoadLocalhost();
-                    GameSettingsContainer.IsOnlineComputerVsComputer = true;
+                    // GameSettingsContainer.IsOnlineComputerVsComputer = true;
                     break;
                 case "ExitPlaymode":
                     EditorApplication.ExitPlaymode();

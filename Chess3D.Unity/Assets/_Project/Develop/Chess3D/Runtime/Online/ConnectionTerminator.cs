@@ -9,10 +9,10 @@ namespace Chess3D.Runtime.Online
     public class ConnectionTerminator : NetworkBehaviour
     {
         [Header("References")]
-        [SerializeField] private GameSettingsContainer gameSettingsContainer;
+        // [SerializeField] private GameSettingsContainer gameSettingsContainer;
         [SerializeField] private OnlineSceneLoader onlineSceneLoader;
 
-        public static void DisconnectFromServer()
+        public void DisconnectFromServer()
         {
             InstanceHandler.NetworkManager?.StopClient();
         }

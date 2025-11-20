@@ -1,23 +1,29 @@
-﻿using Chess3D.Runtime.Utilities;
+﻿using System.Threading;
+using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
+using UnityEngine.Scripting;
 using VContainer.Unity;
 
 namespace Chess3D.Runtime.Bootstrap
 {
-    public class BootstrapFlow : IStartable
+    [Preserve]
+    public class BootstrapFlow : IAsyncStartable
     {
-        private LoadingService _loadingService;
-        private SceneManager _sceneManager;
+        private readonly LoadingService _loadingService;
+        private readonly SceneManager _sceneManager;
+        private readonly SettingsService _settingsService;
 
-        public BootstrapFlow(LoadingService loadingService, SceneManager sceneManager)
+        public BootstrapFlow(LoadingService loadingService, SceneManager sceneManager, SettingsService settingsService)
         {
             _loadingService = loadingService;
             _sceneManager = sceneManager;
+            _settingsService = settingsService;
         }
 
-        public void Start()
+        public async UniTask StartAsync(CancellationToken cancellation = new())
         {
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu).Forget();
+            await _loadingService.BeginLoading(_settingsService);
+            await _sceneManager.LoadScene(RuntimeConstants.Scenes.Core);
         }
     }
 }

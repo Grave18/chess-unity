@@ -1,13 +1,11 @@
 ﻿using System;
-using UnityEngine;
+using Chess3D.Runtime.Utilities;
 
 namespace Chess3D.Runtime.Core.Logic
 {
-    public interface IClock
+    public interface IClock : ILoadUnit
     {
         public TimeSpan WhiteTime {get;}
         public TimeSpan BlackTime {get;}
-
-        public void Init(Game game, Vector2Int time);
     }
 }

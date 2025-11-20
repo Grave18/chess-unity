@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Chess3D.Runtime;
 using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.Notation;
 using Ui.Auxiliary;
@@ -11,7 +12,8 @@ namespace Ui.Menu.ViewModels
 {
     public class FenUserControlViewModel : MonoBehaviour, INotifyPropertyChanged
     {
-        [SerializeField] private GameSettingsContainer gameSettingsContainer;
+        // TODO: Add DI dependency
+        private SettingsService _settingsService;
 
         public DelegateCommand GetDefaultFenCommand { get; private set; }
         public DelegateCommand GetSavedFenCommand { get; private set; }
@@ -24,7 +26,7 @@ namespace Ui.Menu.ViewModels
             {
                 if (FenValidator.IsValid(value, out string message) && SetField(ref _currentFen, value))
                 {
-                    gameSettingsContainer.SetCurrentFen(_currentFen);
+                    // gameSettingsContainer.SetCurrentFen(_currentFen);
                     LogUi.Debug($"Current Fen changed to {_currentFen}");
                 }
                 else if(message is not {Length: 0})
@@ -44,17 +46,17 @@ namespace Ui.Menu.ViewModels
 
         private void GetDefaultFen(object obj)
         {
-            CurrentFen = gameSettingsContainer.GetDefaultFen();
+            // CurrentFen = gameSettingsContainer.GetDefaultFen();
         }
 
         private void GetSavedFen(object obj)
         {
-            CurrentFen = gameSettingsContainer.GetSavedFen();
+            // CurrentFen = gameSettingsContainer.GetSavedFen();
         }
 
         private void InitFen()
         {
-            _currentFen = gameSettingsContainer.GetCurrentFen();
+            // _currentFen = gameSettingsContainer.GetCurrentFen();
         }
 
         #region ViewModelImplimentation

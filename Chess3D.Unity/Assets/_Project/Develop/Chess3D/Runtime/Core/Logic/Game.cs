@@ -1,48 +1,40 @@
 using System.Collections.Generic;
 using System.Linq;
-using Chess3D.Runtime.Bootstrap.Settings;
+using VContainer;
 using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.ChessBoard.Pieces;
-using Chess3D.Runtime.Core.Logic.GameStates;
-using Chess3D.Runtime.Core.Logic.MenuStates;
 using Chess3D.Runtime.Core.Logic.MovesBuffer;
-using Chess3D.Runtime.Core.Logic.Players;
-using Chess3D.Runtime.Core.MainCamera;
+using Chess3D.Runtime.Core.Notation;
+using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
-using PurrNet.StateMachine;
-using UnityEngine;
-using UnityEngine.Events;
 
 namespace Chess3D.Runtime.Core.Logic
 {
-    public class Game : MonoBehaviour
+    public sealed class Game : ILoadUnit
     {
-        [SerializeField] private StateNode warmupState;
-        [SerializeField] private StateNode idleState;
-
-        public IGameStateMachine GameStateMachine { get; private set; }
-        public MenuStateMachine MenuStateMachine { get; private set; }
-        public Competitors Competitors { get; private set; }
-        public Board Board { get; private set; }
-        public UciBuffer UciBuffer { get; private set; }
-
         public PieceColor CurrentTurnColor { get; private set; } = PieceColor.White;
         public PieceColor PreviousTurnColor => CurrentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
         public CheckType CheckType { get; private set; } = CheckType.None;
         public string EndGameDescription { get; private set; }
         public HashSet<Square> UnderAttackSquares { get; private set; } = new();
         public AttackLinesList AttackLines { get; } = new();
-        private PieceColor _winnerColor;
 
-        // Draw Rules
-        private int _fiftyMoveRuleCount;
-        private int _threefoldRepetitionCount;
+        private UciBuffer _uciBuffer;
+        private Board _board;
+        private FenFromString _fenFromString;
+        private SettingsService _settingsService;
 
-        private PieceColor _startingColor;
-        private CameraController _cameraController;
-        private GameSettingsContainer _gameSettingsContainer;
+        /// Is it turn of current player
+        public bool IsMyTurn => CurrentTurnColor == _settingsService.S.GameSettings.PlayerColor;
+        public bool IsWhiteTurn => CurrentTurnColor == PieceColor.White;
+        public bool IsBlackTurn => CurrentTurnColor == PieceColor.Black;
+
+        public HashSet<Piece> CurrentTurnPieces => CurrentTurnColor == PieceColor.White ? _board.WhitePieces : _board.BlackPieces;
+        public HashSet<Piece> PrevTurnPieces => CurrentTurnColor == PieceColor.Black ? _board.WhitePieces : _board.BlackPieces;
 
         // End game
+        private PieceColor _winnerColor;
+
         public bool IsCheck => CheckType is CheckType.Check or CheckType.DoubleCheck;
         public bool IsCheckmate => CheckType is CheckType.Checkmate;
         public bool IsDraw => CheckType == CheckType.Draw;
@@ -52,81 +44,44 @@ namespace Chess3D.Runtime.Core.Logic
         public bool IsWinnerWhite => _winnerColor == PieceColor.White;
         public bool IsWinnerBlack => _winnerColor == PieceColor.Black;
 
-        /// Is it turn of current player
-        public bool IsMyTurn => CurrentTurnColor == _gameSettingsContainer.GameSettings.PlayerColor;
-        public bool IsWhiteTurn => CurrentTurnColor == PieceColor.White;
-        public bool IsBlackTurn => CurrentTurnColor == PieceColor.Black;
 
-        // Selection
-        public ISelectable Selected { get; private set; }
-
-        public HashSet<Piece> CurrentTurnPieces => CurrentTurnColor == PieceColor.White ? Board.WhitePieces : Board.BlackPieces;
-        public HashSet<Piece> PrevTurnPieces => CurrentTurnColor == PieceColor.Black ? Board.WhitePieces : Board.BlackPieces;
-
-        // Events and invokers
-        public event UnityAction OnWarmup;
-        public event UnityAction OnStart;
-        public event UnityAction OnIdle;
-        public event UnityAction<PieceColor> OnStartWithColor;
-        public event UnityAction OnEnd;
-        public event UnityAction OnEndMove;
-        public event UnityAction<PieceColor> OnEndMoveWithColor;
-        public event UnityAction OnPlay;
-        public event UnityAction OnPause;
-
-        public void FireWarmup() => OnWarmup?.Invoke();
-        public void FireStart() { OnStart?.Invoke(); OnStartWithColor?.Invoke(CurrentTurnColor); }
-        public void FireIdle() => OnIdle?.Invoke();
-        public void FireEnd() => OnEnd?.Invoke();
-        public void FireEndMove() { OnEndMove?.Invoke(); OnEndMoveWithColor?.Invoke(CurrentTurnColor); }
-        public void FirePlay() => OnPlay?.Invoke();
-        public void FirePause() => OnPause?.Invoke();
-
-        public void Init(Board board, Competitors competitors, CameraController cameraController, UciBuffer commandUciBuffer,
-            PieceColor color, GameSettingsContainer gameSettingsContainer, IGameStateMachine gameStateMachine, MenuStateMachine menuStateMachine)
+        [Inject]
+        public void Construct(Board board, FenFromString fenFromString, UciBuffer uciBuffer, SettingsService settingsService)
         {
-            Board = board;
-            Competitors = competitors;
-            _cameraController = cameraController;
-            UciBuffer = commandUciBuffer;
-            _startingColor = color;
-            _gameSettingsContainer = gameSettingsContainer;
-            GameStateMachine = gameStateMachine;
-            MenuStateMachine = menuStateMachine;
-
-            _fiftyMoveRuleCount = _gameSettingsContainer.FiftyMoveRuleCount;
-            _threefoldRepetitionCount = _gameSettingsContainer.ThreefoldRepetitionCount;
+            _board = board;
+            _fenFromString = fenFromString;
+            _uciBuffer = uciBuffer;
+            _settingsService = settingsService;
         }
 
-        public async UniTask StartGame()
+        public UniTask Load()
         {
             ResetGameState();
             PreformCalculations();
-            await UniTask.WaitUntil(() => GameStateMachine.State is not WarmUpState);
+
+            return UniTask.CompletedTask;
         }
+
 
         private void ResetGameState()
         {
             CheckType = CheckType.None;
-            CurrentTurnColor = _startingColor;
+            CurrentTurnColor = _fenFromString.TurnColor;
             Selected = null;
-            UciBuffer.Clear();
-            GameStateMachine.ResetState();
-            MenuStateMachine.ResetState();
         }
 
         public void ChangeTurn()
         {
             CurrentTurnColor = CurrentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
-            Competitors.SwapCurrentPlayer();
         }
 
-        public void Rematch()
-        {
-            Competitors.Restart();
-            Board.Build();
-            StartGame().Forget();
-        }
+        // TODO: This functionality must be in Flow
+        // public void Rematch()
+        // {
+        //     Competitors.Restart();
+        //     Board.Build();
+        //     StartGame().Forget();
+        // }
 
         public void TimeOutSetup(PieceColor pieceColor)
         {
@@ -311,14 +266,14 @@ namespace Chess3D.Runtime.Core.Logic
 
         private bool IsThreefoldRule()
         {
-            bool isThreefold = UciBuffer.ThreefoldRepetitionCount >= _threefoldRepetitionCount;
+            bool isThreefold = _uciBuffer.ThreefoldRepetitionCount >= _settingsService.S.GameSettings.ThreefoldRepetitionCount;
 
             return isThreefold;
         }
 
         private bool IsRule50()
         {
-            return UciBuffer.HalfMoveClock == _fiftyMoveRuleCount * 2;
+            return _uciBuffer.HalfMoveClock == _settingsService.S.GameSettings.FiftyMoveRuleCount * 2;
         }
 
         private bool IsInsufficientMaterial(out string checkDescription)
@@ -378,29 +333,12 @@ namespace Chess3D.Runtime.Core.Logic
             }
 
             return false;
-        }
+         }
 
-#region Board shortcuts
+#region Selection
 
-        // Board shortcuts
-        public HashSet<Piece> WhitePieces => Board.WhitePieces;
-        public HashSet<Piece> BlackPieces => Board.BlackPieces;
-        public IEnumerable<Square> Squares => Board.Squares;
-        public Square NullSquare => Board.NullSquare;
+        public ISelectable Selected { get; private set; }
 
-        /// Get section relative to current piece color
-        public Square GetSquareRel(PieceColor pieceColor, Square currentSquare, Vector2Int offset)
-        {
-            return Board.GetSquareRel(pieceColor, currentSquare, offset);
-        }
-
-        /// Get section relative to absolute position (white side)
-        public Square GetSquareAbs(Square currentSquare, Vector2Int offset)
-        {
-            return Board.GetSquareAbs(currentSquare, offset);
-        }
-
-        // Selection
         public bool CanSelect(ISelectable selectable)
         {
             return selectable.HasPiece() && selectable.GetPieceColor() == CurrentTurnColor;

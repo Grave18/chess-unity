@@ -11,13 +11,13 @@ namespace Chess3D.Runtime.Core.Ui.DebugUi
 
         private void Update()
         {
-            UciBuffer uciBuffer = game.UciBuffer;
-            if(uciBuffer == null)
-            {
-                return;
-            }
-
-            uciText.text = uciBuffer.GetAllUciDebug();
+            // UciBuffer uciBuffer = game._UciBuffer;
+            // if(uciBuffer == null)
+            // {
+            //     return;
+            // }
+            //
+            // uciText.text = uciBuffer.GetAllUciDebug();
         }
     }
 }

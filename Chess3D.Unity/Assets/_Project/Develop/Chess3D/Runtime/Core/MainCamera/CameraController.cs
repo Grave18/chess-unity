@@ -1,21 +1,19 @@
 ﻿using System.Collections;
+using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.InputManagement;
 using Chess3D.Runtime.Core.Logic;
+using Chess3D.Runtime.Core.Notation;
+using Chess3D.Runtime.Utilities;
 using Chess3D.Runtime.Utilities.Common.Mathematics;
 using Cysharp.Threading.Tasks;
-using EditorCools;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.Events;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.MainCamera
 {
-    [RequireComponent(typeof(Camera))]
-    public class CameraController : MonoBehaviour
+    public class CameraController : MonoBehaviour, ILoadUnit
     {
-        private float _whiteInitialYawRad = Mathf.PI*1.5f;
-        private float _blackInitialYawRad = Mathf.PI*0.5f;
-
         [Header("Target")]
         [SerializeField] private Vector3 offset = new(0, 0.15f, 0);
 
@@ -48,6 +46,19 @@ namespace Chess3D.Runtime.Core.MainCamera
         [SerializeField] private float autoRotateTimeSec = 0.5f;
         [SerializeField] private EasingType autoRotateEasing = EasingType.InOutQuad;
 
+        private Game _game;
+        private Camera _mainCamera;
+        private SettingsService _settingsService;
+        private CoreEvents _coreEvents;
+        private FenFromString _fenFromString;
+
+        private bool _isUpdating;
+        private bool _isStartRotationOn;
+        private PieceColor _rotateCameraToColor;
+        private Coroutine _startRotateRoutine;
+
+        private float _whiteInitialYawRad;
+        private float _blackInitialYawRad;
         private float _zoomCurrentVelocity;
         private float _yawCurrentVelocity;
         private float _pitchCurrentVelocity;
@@ -58,51 +69,45 @@ namespace Chess3D.Runtime.Core.MainCamera
         private Vector3 _newPosition;
         private float _tPitch;
 
-        private Camera _camera;
+        private bool IsVsPlayer => _settingsService.S.GameSettings.PlayerWhite.PlayerType == PlayerType.Human
+                                   && _settingsService.S.GameSettings.PlayerBlack.PlayerType == PlayerType.Human;
 
-        private PieceColor _rotateCameraToColor;
-        private Game _game;
-
-        private bool _isUpdating;
-        private Coroutine _autoRotateRoutine;
-        private bool _isAutoRotationOn;
-
-        private void Awake()
-        {
-            _camera = GetComponent<Camera>();
-            Assert.IsNotNull(_camera);
-        }
-
-        public void Init(Game game, PieceColor rotateCameraToColor, bool isAutoRotationOn)
+        [Inject]
+        public void Construct(Game game, [Key(CameraKeys.Main)] Camera mainCamera,
+            SettingsService settingsService, CoreEvents coreEvents, FenFromString fenFromString)
         {
             _game = game;
-            _rotateCameraToColor = rotateCameraToColor;
-            _isAutoRotationOn = isAutoRotationOn;
+            _mainCamera = mainCamera;
+            _settingsService = settingsService;
+            _coreEvents = coreEvents;
+            _fenFromString = fenFromString;
 
-            SetCameraTargetAnglesByColor();
+            _coreEvents.OnEndMove += AutoRotate;
+            _coreEvents.OnEnd += StopAutoRotate;
+        }
 
-            if (_rotateCameraToColor == PieceColor.White)
+        private void OnDestroy()
+        {
+            if (_coreEvents is null)
             {
-                yawRad = _whiteInitialYawRad;
+                return;
             }
-            else if (_rotateCameraToColor == PieceColor.Black)
-            {
-                yawRad = _blackInitialYawRad;
-            }
+
+            _coreEvents.OnEndMove -= AutoRotate;
+            _coreEvents.OnEnd -= StopAutoRotate;
+        }
+
+        public UniTask Load()
+        {
+            _isStartRotationOn = IsVsPlayer && _settingsService.S.GameSettings.IsAutoRotateCamera;
+            _rotateCameraToColor = IsVsPlayer ? _fenFromString.TurnColor : _settingsService.S.GameSettings.PlayerColor;
+            // TODO: offline-online camera autoRotation
+            // _isStartRotationOn = IsVsPlayer && OnlineInstanceHandler.IsOffline && gameSettingsContainer.IsAutoRotateCamera;
 
             _newDistance = distance;
             _newYawRad = yawRad;
             _newPitchRad = pitchRad;
 
-            if (_isAutoRotationOn)
-            {
-                _game.OnEndMoveWithColor += AutoRotate;
-                _game.OnEnd += StopAutoRotate;
-            }
-        }
-
-        private void SetCameraTargetAnglesByColor()
-        {
             if (_rotateCameraToColor == PieceColor.White)
             {
                 _whiteInitialYawRad = Mathf.PI*1.5f;
@@ -113,18 +118,20 @@ namespace Chess3D.Runtime.Core.MainCamera
                 _whiteInitialYawRad = Mathf.PI*0.5f;
                 _blackInitialYawRad = Mathf.PI*1.5f;
             }
-        }
 
-        private void OnDestroy()
-        {
-            if (_game != null && _isAutoRotationOn)
+            if (_rotateCameraToColor == PieceColor.White)
             {
-                _game.OnEndMoveWithColor -= AutoRotate;
-                _game.OnEnd -= StopAutoRotate;
+                yawRad = _whiteInitialYawRad;
             }
+            else if (_rotateCameraToColor == PieceColor.Black)
+            {
+                yawRad = _blackInitialYawRad;
+            }
+
+            return UniTask.CompletedTask;
         }
 
-        public async UniTask RotateToStartPosition(bool isRotateCameraOnStart = true)
+        public async UniTask RotateToStartPosition()
         {
             _isUpdating = false;
 
@@ -133,7 +140,7 @@ namespace Chess3D.Runtime.Core.MainCamera
             float t = 0f;
             while (t < 1f)
             {
-                if (!isRotateCameraOnStart)
+                if (!_isStartRotationOn)
                 {
                     t = 1f;
                 }
@@ -207,23 +214,28 @@ namespace Chess3D.Runtime.Core.MainCamera
             pitchRad = Mathf.SmoothDamp(pitchRad, _newPitchRad, ref _pitchCurrentVelocity, pitchSmoothTime);
         }
 
-        public void AutoRotate(PieceColor color)
+        public void AutoRotate()
         {
-            AutoRotate(color, null);
+            if (!_settingsService.S.GameSettings.IsAutoRotateCamera)
+            {
+                return;
+            }
+
+            AutoRotate(_game.CurrentTurnColor, null);
         }
 
         public void AutoRotate(PieceColor color, UnityAction continuation)
         {
             StopAutoRotate();
-            _autoRotateRoutine = StartCoroutine(AutoRotateRoutine(color, continuation));
+            _startRotateRoutine = StartCoroutine(AutoRotateRoutine(color, continuation));
         }
 
         private void StopAutoRotate()
         {
-            if(_autoRotateRoutine != null)
+            if(_startRotateRoutine != null)
             {
                 _isUpdating = true;
-                StopCoroutine(_autoRotateRoutine);
+                StopCoroutine(_startRotateRoutine);
             }
         }
 
@@ -299,28 +311,7 @@ namespace Chess3D.Runtime.Core.MainCamera
         {
             transform.position = _newPosition;
             transform.LookAt(offset);
-            _camera.fieldOfView = Mathf.Lerp(fovStart, fovEnd, _tPitch);
+            _mainCamera.fieldOfView = Mathf.Lerp(fovStart, fovEnd, _tPitch);
         }
-
-#if UNITY_EDITOR
-
-        [Button(space: 20, row:"0")]
-        public void AutoRotateWhiteButton()
-        {
-            AutoRotate(PieceColor.White);
-        }
-
-        [Button(space: 10, row:"0")]
-        public void AutoRotateBlackButton()
-        {
-            AutoRotate(PieceColor.Black);
-        }
-
-        [Button(space: 10)]
-        public void RotateToStartPositionButton()
-        {
-           RotateToStartPosition().Forget();
-        }
-#endif
     }
 }

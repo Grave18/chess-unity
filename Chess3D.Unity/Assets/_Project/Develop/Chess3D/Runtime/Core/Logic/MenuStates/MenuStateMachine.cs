@@ -1,19 +1,28 @@
-﻿using Chess3D.Runtime.Utilities.Common.Singleton;
-using Ui.InGame.ViewModels;
-using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using Chess3D.Runtime.Core.Ui;
+using Chess3D.Runtime.Core.Ui.ViewModels;
+using Chess3D.Runtime.Utilities;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.MenuStates
 {
-    public class MenuStateMachine : SingletonBehaviour<MenuStateMachine>
+    [UnityEngine.Scripting.Preserve]
+    public sealed class MenuStateMachine: ILoadUnit
     {
-        [SerializeField] private GameObject gameCanvas;
-        [SerializeField] private InGameMenuViewModel inGameMenuViewModel;
+        private readonly IObjectResolver _resolver;
 
         private MenuState _currentState;
 
-        public void ResetState()
+        public MenuStateMachine(IObjectResolver resolver)
+        {
+            _resolver = resolver;
+        }
+
+        public UniTask Load()
         {
             SetState<PlayState>();
+
+            return UniTask.CompletedTask;
         }
 
         public void SetState<T>() where T : MenuState
@@ -26,14 +35,18 @@ namespace Chess3D.Runtime.Core.Logic.MenuStates
             }
             if (typeof(T) == typeof(PlayState))
             {
+                var gameCanvas = _resolver.Resolve<GameCanvas>();
                 _currentState = new PlayState(this, gameCanvas);
             }
             else if (typeof(T) == typeof(PauseState))
             {
+                var inGameMenuViewModel = _resolver.Resolve<InGameMenuViewModel>();
+                var gameCanvas = _resolver.Resolve<GameCanvas>();
                 _currentState = new PauseState(this, inGameMenuViewModel, gameCanvas);
             }
             else if (typeof(T) == typeof(PopupState))
             {
+                var gameCanvas = _resolver.Resolve<GameCanvas>();
                 _currentState = new PopupState(this, gameCanvas);
             }
             else

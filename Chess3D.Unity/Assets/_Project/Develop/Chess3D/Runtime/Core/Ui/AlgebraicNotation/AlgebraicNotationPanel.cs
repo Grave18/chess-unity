@@ -1,50 +1,60 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Ui.AlgebraicNotation
 {
-    public class AlgebraicNotationPanel : MonoBehaviour
+    public class AlgebraicNotationPanel : MonoBehaviour, IDisposable
     {
-        [Header("References")]
-        [SerializeField] private Logic.Game game;
-        [SerializeField] private UciBuffer uciBuffer;
+        private const int NumOfVisibleItems = 5;
+
+        private Game _game;
+        private UciBuffer _uciBuffer;
+        private CoreEvents _coreEvents;
 
         [Header("Ui")]
         [SerializeField] private ScrollRect scrollView;
         [SerializeField] private GameObject notationItemPrefab;
 
-        [Header("Settings")]
-        [SerializeField] private int numOfVisibleItems = 5;
-
         /// Zero based full move index
         private int _fullMoveIndex = -1;
         private readonly List<NotationItem> _notationItems = new();
+        private int FullMoveCounter => _uciBuffer.FullMoveCounter;
 
-        private int FullMoveCounter => uciBuffer.FullMoveCounter;
-
-        private void OnEnable()
+        [Inject]
+        public void Construct(Game game, UciBuffer uciBuffer, CoreEvents coreEvents)
         {
-            game.OnWarmup += Clear;
-            game.OnEnd += NotateEndGame;
-            uciBuffer.OnAdd += OnAdd;
-            uciBuffer.OnUndo += OnUndo;
-            uciBuffer.OnRedo += OnRedo;
-            uciBuffer.OnDelete += OnDelete;
+            _game = game;
+            _uciBuffer = uciBuffer;
+            _coreEvents = coreEvents;
+
+            _coreEvents.OnWarmup += Clear;
+            _coreEvents.OnEnd += NotateEndGame;
+            _uciBuffer.OnAdd += OnAdd;
+            _uciBuffer.OnUndo += OnUndo;
+            _uciBuffer.OnRedo += OnRedo;
+            _uciBuffer.OnDelete += OnDelete;
         }
 
-        private void OnDisable()
+        public void Dispose()
         {
-            game.OnWarmup -= Clear;
-            game.OnEnd -= NotateEndGame;
-            uciBuffer.OnAdd -= OnAdd;
-            uciBuffer.OnUndo -= OnUndo;
-            uciBuffer.OnRedo -= OnRedo;
-            uciBuffer.OnDelete -= OnDelete;
+            if (_coreEvents is null)
+            {
+                return;
+            }
+
+            _coreEvents.OnWarmup -= Clear;
+            _coreEvents.OnEnd -= NotateEndGame;
+            _uciBuffer.OnAdd -= OnAdd;
+            _uciBuffer.OnUndo -= OnUndo;
+            _uciBuffer.OnRedo -= OnRedo;
+            _uciBuffer.OnDelete -= OnDelete;
         }
 
         private void Clear()
@@ -63,15 +73,15 @@ namespace Chess3D.Runtime.Core.Ui.AlgebraicNotation
             NotationItem notationItem = GetNotationItem();
             string algebraicNotation = string.Empty;
 
-            if (game.IsDraw)
+            if (_game.IsDraw)
             {
                 algebraicNotation = "½-½";
             }
-            else if (game.IsWinnerWhite)
+            else if (_game.IsWinnerWhite)
             {
                 algebraicNotation = "1-0";
             }
-            else if (game.IsWinnerBlack)
+            else if (_game.IsWinnerBlack)
             {
                 algebraicNotation = "0-1";
             }
@@ -211,10 +221,10 @@ namespace Chess3D.Runtime.Core.Ui.AlgebraicNotation
 
         private float GetPositionFromIndex()
         {
-            if (_fullMoveIndex >= numOfVisibleItems)
+            if (_fullMoveIndex >= NumOfVisibleItems)
             {
                 // Do not count indices what already on screen
-                float verticalNormalizedPosition = 1f - (_fullMoveIndex + 1f - numOfVisibleItems)/(_notationItems.Count - numOfVisibleItems);
+                float verticalNormalizedPosition = 1f - (_fullMoveIndex + 1f - NumOfVisibleItems)/(_notationItems.Count - NumOfVisibleItems);
                 return verticalNormalizedPosition;
             }
 

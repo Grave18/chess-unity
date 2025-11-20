@@ -1,14 +1,12 @@
 using Chess3D.Runtime.Core.Logic;
 using TMPro;
 using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Ui
 {
     public class NotificationPanel : MonoBehaviour
     {
-        [Header("References")]
-        [SerializeField] private Game game;
-
         [Header("Panels")]
         [SerializeField] private GameObject additionalPanel;
 
@@ -16,49 +14,61 @@ namespace Chess3D.Runtime.Core.Ui
         [SerializeField] private TMP_Text notificationText;
         [SerializeField] private TMP_Text additionalText;
 
-        private void OnEnable()
+        private Game _game;
+        private CoreEvents _coreEvents;
+
+        [Inject]
+        private void Construct(Game game, CoreEvents coreEvents)
         {
-            game.OnWarmup += UpdateNotificationText;
-            game.OnStart += UpdateNotificationText;
-            game.OnIdle += UpdateNotificationText;
-            game.OnEndMove += UpdateNotificationText;
-            game.OnEnd += UpdateNotificationText;
-            game.OnPause += Pause;
-            game.OnWarmup += Warmup;
+            _game = game;
+            _coreEvents = coreEvents;
+
+            _coreEvents.OnWarmup += UpdateNotificationText;
+            _coreEvents.OnStart += UpdateNotificationText;
+            _coreEvents.OnIdle += UpdateNotificationText;
+            _coreEvents.OnEndMove += UpdateNotificationText;
+            _coreEvents.OnEnd += UpdateNotificationText;
+            _coreEvents.OnPause += Pause;
+            _coreEvents.OnWarmup += Warmup;
         }
 
         private void OnDisable()
         {
-            game.OnWarmup -= UpdateNotificationText;
-            game.OnStart -= UpdateNotificationText;
-            game.OnIdle -= UpdateNotificationText;
-            game.OnEndMove -= UpdateNotificationText;
-            game.OnEnd -= UpdateNotificationText;
-            game.OnPause -= Pause;
-            game.OnWarmup -= Warmup;
+            if (_coreEvents is null)
+            {
+                return;
+            }
+
+            _coreEvents.OnWarmup -= UpdateNotificationText;
+            _coreEvents.OnStart -= UpdateNotificationText;
+            _coreEvents.OnIdle -= UpdateNotificationText;
+            _coreEvents.OnEndMove -= UpdateNotificationText;
+            _coreEvents.OnEnd -= UpdateNotificationText;
+            _coreEvents.OnPause -= Pause;
+            _coreEvents.OnWarmup -= Warmup;
         }
 
         private void UpdateNotificationText()
         {
-            if (game.IsCheck)
+            if (_game.IsCheck)
             {
                 SetPanel(text: "Check", additional: "", isShowHeader: true, isShowAdditional: false);
             }
-            else if (game.IsCheckmate)
+            else if (_game.IsCheckmate)
             {
-                SetPanel(text: "Checkmate", game.EndGameDescription, isShowHeader: true, isShowAdditional: true);
+                SetPanel(text: "Checkmate", _game.EndGameDescription, isShowHeader: true, isShowAdditional: true);
             }
-            else if (game.IsDraw)
+            else if (_game.IsDraw)
             {
-                SetPanel(text: "Draw", additional: game.EndGameDescription, isShowHeader: true, isShowAdditional: true);
+                SetPanel(text: "Draw", additional: _game.EndGameDescription, isShowHeader: true, isShowAdditional: true);
             }
-            else if (game.IsResign)
+            else if (_game.IsResign)
             {
-                SetPanel(text: "Resign", additional: game.EndGameDescription, isShowHeader: true, isShowAdditional: true);
+                SetPanel(text: "Resign", additional: _game.EndGameDescription, isShowHeader: true, isShowAdditional: true);
             }
-            else if (game.IsTimeOut)
+            else if (_game.IsTimeOut)
             {
-                SetPanel(text: "Time is over",game.EndGameDescription, isShowHeader: true, isShowAdditional: true);
+                SetPanel(text: "Time is over",_game.EndGameDescription, isShowHeader: true, isShowAdditional: true);
             }
             else
             {

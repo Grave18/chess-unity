@@ -1,11 +1,15 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic
 {
-    public class ClockOffline : MonoBehaviour, IClock
+    public class ClockOffline : MonoBehaviour, IClock, IDisposable
     {
         private Game _game;
+        private SettingsService _settingsService;
+        private CoreEvents _coreEvents;
 
         private TimeSpan _initialWhiteTime;
         private TimeSpan _initialBlackTime;
@@ -14,45 +18,47 @@ namespace Chess3D.Runtime.Core.Logic
         private TimeSpan _blackTime;
 
         private bool _isPlaying;
-        private bool _isInitialized;
-        private bool _isOnline;
 
         public TimeSpan WhiteTime => _whiteTime;
         public TimeSpan BlackTime => _blackTime;
 
-        public void Init(Game game, Vector2Int time)
+        [Inject]
+        public void Construct(Game game, SettingsService settingsService, CoreEvents coreEvents)
         {
-            if (_isInitialized)
+            _game = game;
+            _settingsService = settingsService;
+            _coreEvents = coreEvents;
+
+            _coreEvents.OnWarmup += InitTime;
+            _coreEvents.OnStart += StartTimer;
+            _coreEvents.OnEndMove += Play;
+            _coreEvents.OnEnd += Pause;
+            _coreEvents.OnPlay += Play;
+            _coreEvents.OnPause += Pause;
+        }
+
+        public void Dispose()
+        {
+            if (_coreEvents is null)
             {
-                Debug.Log("{nameof(Clock): Clock is already initialized}");
                 return;
             }
 
-            _game = game;
+            _coreEvents.OnWarmup -= InitTime;
+            _coreEvents.OnStart -= StartTimer;
+            _coreEvents.OnEndMove -= Play;
+            _coreEvents.OnEnd -= Pause;
+            _coreEvents.OnPlay -= Play;
+            _coreEvents.OnPause -= Pause;
+        }
+
+        public UniTask Load()
+        {
+            Vector2Int time = _settingsService.S.GameSettings.Time;
             _initialWhiteTime = TimeSpan.FromMinutes(time.x) + TimeSpan.FromSeconds(time.y);
             _initialBlackTime = _initialWhiteTime;
 
-            _game.OnWarmup += InitTime;
-            _game.OnStart += StartTimer;
-            _game.OnEndMove += Play;
-            _game.OnEnd += Pause;
-            _game.OnPlay += Play;
-            _game.OnPause += Pause;
-
-            _isInitialized = true;
-        }
-
-        private void OnDestroy()
-        {
-            if (_game)
-            {
-                _game.OnWarmup -= InitTime;
-                _game.OnStart -= StartTimer;
-                _game.OnEndMove -= Play;
-                _game.OnEnd -= Pause;
-                _game.OnPlay -= Play;
-                _game.OnPause -= Pause;
-            }
+            return UniTask.CompletedTask;
         }
 
         private void StartTimer()

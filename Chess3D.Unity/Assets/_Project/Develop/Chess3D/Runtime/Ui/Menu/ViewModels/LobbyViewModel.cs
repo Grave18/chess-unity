@@ -55,7 +55,7 @@ namespace Ui.Menu.ViewModels
         {
             foreach (FriendItem friend in newQuery)
             {
-                friend.Init(lobbyManager);
+                friend.Construct(lobbyManager);
             }
         }
 

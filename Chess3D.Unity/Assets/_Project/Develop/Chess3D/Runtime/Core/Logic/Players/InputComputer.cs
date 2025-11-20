@@ -2,23 +2,31 @@
 using System.Threading;
 using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.Ai;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Core.Logic.Players
 {
-    public class InputComputer : IInputHandler
+    [Preserve]
+    public sealed class InputComputer : IInputHandler
     {
-        private readonly Game _game;
         private readonly Stockfish _stockfish;
-        private readonly PlayerSettings _playerSettings;
+        private readonly SettingsService _settingsService;
+        private readonly IGameStateMachine _gameStateMachine;
 
         private CancellationTokenSource _moveCts = new();
 
-        public InputComputer(Game game, PlayerSettings playerSettings, Stockfish stockfish)
+        public InputComputer(Stockfish stockfish, SettingsService settingsService, IGameStateMachine gameStateMachine)
         {
-            _game = game;
-            _playerSettings = playerSettings;
+            _settingsService = settingsService;
             _stockfish = stockfish;
+            _gameStateMachine = gameStateMachine;
+        }
+
+        public async UniTask Load()
+        {
+            await _stockfish.Load();
         }
 
         public async void StartInput()
@@ -26,7 +34,8 @@ namespace Chess3D.Runtime.Core.Logic.Players
             string uci;
             try
             {
-                 uci = await _stockfish.GetUci(_playerSettings, _moveCts.Token);
+                PlayerSettings player2Settings = _settingsService.S.GameSettings.PlayerBlack;
+                uci = await _stockfish.GetUci(player2Settings, _moveCts.Token);
             }
             catch (Exception ex)
             {
@@ -39,18 +48,18 @@ namespace Chess3D.Runtime.Core.Logic.Players
                 return;
             }
 
-            _game.GameStateMachine.Move(uci);
-        }
-
-        public void UpdateInput()
-        {
-            // Noop
+            _gameStateMachine.Move(uci);
         }
 
         public void StopInput()
         {
             _moveCts?.Cancel();
             _moveCts = new CancellationTokenSource();
+        }
+
+        public void UpdateInput()
+        {
+            // Noop
         }
     }
 }

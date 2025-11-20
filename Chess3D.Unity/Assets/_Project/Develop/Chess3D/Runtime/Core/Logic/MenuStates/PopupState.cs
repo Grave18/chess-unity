@@ -1,13 +1,13 @@
 ﻿using Chess3D.Runtime.Core.InputManagement;
-using UnityEngine;
+using Chess3D.Runtime.Core.Ui;
 
 namespace Chess3D.Runtime.Core.Logic.MenuStates
 {
     public class PopupState : MenuState
     {
-        private readonly GameObject _gameCanvas;
+        private readonly GameCanvas _gameCanvas;
 
-        public PopupState(MenuStateMachine stateMachine, GameObject gameCanvas) : base(stateMachine)
+        public PopupState(MenuStateMachine stateMachine, GameCanvas gameCanvas) : base(stateMachine)
         {
             _gameCanvas = gameCanvas;
         }
@@ -32,10 +32,18 @@ namespace Chess3D.Runtime.Core.Logic.MenuStates
             Machine.SetState<PauseState>();
         }
 
-        private void EnableProtection(bool value)
+        private void EnableProtection(bool isProtectionEnabled)
         {
-            InputController.IsEnabled = !value;
-            _gameCanvas.SetActive(!value);
+            if (isProtectionEnabled)
+            {
+                InputController.IsEnabled = false;
+                _gameCanvas.Hide();
+            }
+            else
+            {
+                InputController.IsEnabled = true;
+                _gameCanvas.Show();
+            }
         }
     }
 }

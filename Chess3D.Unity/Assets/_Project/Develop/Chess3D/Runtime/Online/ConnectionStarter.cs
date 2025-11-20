@@ -16,25 +16,25 @@ namespace Chess3D.Runtime.Online
 
         public void SetupTransports(Lobby currentLobby)
         {
-            if (GameSettingsContainer.IsLocal)
-            {
-                networkManager.transport = udpTransport;
-            }
-            else
-            {
-                networkManager.transport = purrTransport;
-                purrTransport.roomName = currentLobby.LobbyId;
-            }
+            // if (GameSettingsContainer.IsLocal)
+            // {
+                // networkManager.transport = udpTransport;
+            // }
+            // else
+            // {
+                // networkManager.transport = purrTransport;
+                // purrTransport.roomName = currentLobby.LobbyId;
+            // }
         }
 
         public async UniTask StartServerIfHost()
         {
-            if (GameSettingsContainer.IsHost)
-            {
-                networkManager.StartServer();
-
-                await UniTask.WaitUntil(() => networkManager.serverState == ConnectionState.Connected);
-            }
+            // if (GameSettingsContainer.IsHost)
+            // {
+            //     networkManager.StartServer();
+            //
+            //     await UniTask.WaitUntil(() => networkManager.serverState == ConnectionState.Connected);
+            // }
         }
 
         public async UniTask StartClient()

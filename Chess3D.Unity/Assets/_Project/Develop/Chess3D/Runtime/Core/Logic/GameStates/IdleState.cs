@@ -1,68 +1,83 @@
 ﻿using Chess3D.Runtime.Core.Logic.MovesBuffer;
+using Chess3D.Runtime.Core.Logic.Players;
 using PurrNet.StateMachine;
-using TNRD;
 using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
     public class IdleState : StateNode, IGameState
     {
-        [Header("References")]
-        [SerializeField] private Game game;
+        private Game _game;
+        private Competitors _competitors;
+        private UciBuffer _uciBuffer;
+        private CoreEvents _coreEvents;
+        private IGameStateMachine _gameStateMachine;
 
-        [Header("States")]
-        [SerializeField] private SerializableInterface<IGameState> endGameState;
-        [SerializeField] private SerializableInterface<IGameState> pauseState;
-        [SerializeField] private SerializableInterface<IGameState<string>> moveState;
-        [SerializeField] private SerializableInterface<IGameState<MoveData>> undoState;
-        [SerializeField] private SerializableInterface<IGameState<MoveData>> redoState;
+        [SerializeField] private EndGameState endGameState;
+        [SerializeField] private PauseState pauseState;
+        [SerializeField] private MoveState moveState;
+        [SerializeField] private UndoState undoState;
+        [SerializeField] private RedoState redoState;
 
         private bool _isRunning;
 
         public string Name => "Idle";
 
+        [Inject]
+        public void Construct(Game game, Competitors competitors, UciBuffer uciBuffer, CoreEvents coreEvents,
+            IGameStateMachine gameStateMachine)
+        {
+            _game = game;
+            _competitors = competitors;
+            _uciBuffer = uciBuffer;
+            _coreEvents = coreEvents;
+            _gameStateMachine = gameStateMachine;
+        }
+
+
         public override void Enter()
         {
             Debug.Log("State: " + Name);
 
-            if (game.IsEndGame)
+            if (_game.IsEndGame)
             {
                 EndGame();
                 return;
             }
 
             _isRunning = true;
-            game.Competitors.StartPlayer();
+            _competitors.StartPlayer();
 
-            game.FireIdle();
+            _coreEvents.FireIdle();
         }
 
         public override void Exit()
         {
             _isRunning = false;
-            game.Competitors.StopPlayer();
+            _competitors.StopPlayer();
         }
 
         public void Move(string uci)
         {
-            game.GameStateMachine.SetState(moveState.Value, uci);
+            _gameStateMachine.SetState(moveState, uci);
         }
 
         public void Undo()
         {
-            if (game.UciBuffer.CanUndo(out MoveData moveData))
+            if (_uciBuffer.CanUndo(out MoveData moveData))
             {
                 moveData.PreviousState = this;
-                game.GameStateMachine.SetState(undoState.Value, moveData);
+                _gameStateMachine.SetState(undoState, moveData);
             }
         }
 
         public void Redo()
         {
-            if (game.UciBuffer.CanRedo(out MoveData moveData))
+            if (_uciBuffer.CanRedo(out MoveData moveData))
             {
                 moveData.PreviousState = this;
-                game.GameStateMachine.SetState(redoState.Value, moveData);
+                _gameStateMachine.SetState(redoState, moveData);
             }
         }
 
@@ -73,7 +88,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         public void Pause()
         {
-            game.GameStateMachine.SetState(pauseState.Value);
+            _gameStateMachine.SetState(pauseState);
         }
 
         public override void StateUpdate()
@@ -83,18 +98,18 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
                 return;
             }
 
-            if (game.IsEndGame)
+            if (_game.IsEndGame)
             {
                 EndGame();
             }
 
-            game.Competitors.UpdatePlayer();
+            _competitors.UpdatePlayer();
         }
 
         private void EndGame()
         {
-            game.GameStateMachine.SetState(endGameState.Value);
-            game.Competitors.StopPlayer();
+            _gameStateMachine.SetState(endGameState);
+            _competitors.StopPlayer();
         }
     }
 }

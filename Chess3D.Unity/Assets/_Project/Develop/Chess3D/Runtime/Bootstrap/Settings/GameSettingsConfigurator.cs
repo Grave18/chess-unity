@@ -11,7 +11,7 @@ namespace Chess3D.Runtime.Bootstrap.Settings
         private void Save()
         {
             string json = JsonUtility.ToJson(gameSettings, prettyPrint: true);
-            PlayerPrefs.SetString(GameSettingsContainer.GameSettingsKey, json);
+            // PlayerPrefs.SetString(GameSettingsContainer.GameSettingsKey, json);
         }
 
 #if UNITY_EDITOR

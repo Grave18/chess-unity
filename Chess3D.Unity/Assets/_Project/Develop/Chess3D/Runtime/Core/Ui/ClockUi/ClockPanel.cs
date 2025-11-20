@@ -1,14 +1,14 @@
-﻿using System.Collections;
-using Chess3D.Runtime.Core.Logic;
+﻿using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Core.Sound;
 using TMPro;
 using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Ui.ClockUi
 {
     public class ClockPanel : MonoBehaviour
     {
-        private Logic.Game _game;
+        private CoreEvents _coreEvents;
 
         [Header("Ui")]
         [SerializeField] private TMP_Text whiteText;
@@ -21,37 +21,37 @@ namespace Chess3D.Runtime.Core.Ui.ClockUi
 
         private IClock _clock;
 
-        public void Init(Logic.Game game, IClock clock)
+        private bool _isInitialized;
+
+        public void Construct(CoreEvents coreEvents, IClock clock)
         {
             _clock = clock;
-            _game = game;
+            _coreEvents = coreEvents;
 
-            _game.OnWarmup += ResetColors;
+            _coreEvents.OnWarmup += ResetColors;
 
-            StartCoroutine(TickClock());
-        }
-
-        private IEnumerator TickClock()
-        {
-            var wait = new WaitForSeconds(updateIntervalSec);
-
-            while (Application.isPlaying)
-            {
-                FormatAndApplyTime();
-                PlayTenSecondsSoundAndChangeColor();
-
-                yield return wait;
-            }
+            _isInitialized = true;
         }
 
         private void OnDestroy()
         {
-            if(_game == null)
+            if(_coreEvents == null)
             {
                 return;
             }
 
-            _game.OnWarmup -= ResetColors;
+            _coreEvents.OnWarmup -= ResetColors;
+        }
+
+        private void Update()
+        {
+            if (!_isInitialized)
+            {
+                return;
+            }
+
+            FormatAndApplyTime();
+            PlayTenSecondsSoundAndChangeColor();
         }
 
         private void ResetColors()

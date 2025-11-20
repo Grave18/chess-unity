@@ -4,6 +4,7 @@ using UnityEngine.Assertions;
 
 namespace Chess3D.Runtime.Core.Sound
 {
+    // TODO: Refactor effects player
     [RequireComponent(typeof(AudioSource))]
     public class EffectsPlayer : SingletonBehaviour<EffectsPlayer>
     {

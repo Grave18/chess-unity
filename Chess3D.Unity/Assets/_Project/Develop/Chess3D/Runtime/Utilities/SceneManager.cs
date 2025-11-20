@@ -34,5 +34,10 @@ namespace Chess3D.Runtime.Utilities
             Log.Default.D(LogTag, $"{SceneUtility.GetScenePathByBuildIndex(toLoadIndex)} is loading.");
             UnitySceneManager.LoadScene(toLoadIndex);
         }
+
+        public void SetActiveScene(int sceneIndex)
+        {
+            UnitySceneManager.SetActiveScene(UnitySceneManager.GetSceneByBuildIndex(sceneIndex));
+        }
     }
 }

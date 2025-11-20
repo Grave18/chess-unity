@@ -1,19 +1,28 @@
 ﻿using Chess3D.Runtime.Core.Logic.MovesBuffer;
+using Chess3D.Runtime.Core.Logic.Players;
 using PurrNet.StateMachine;
-using TNRD;
 using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
     public class PauseState : StateNode,IGameState
     {
-        [Header("References")]
-        [SerializeField] private Game game;
+        private UciBuffer _uciBuffer;
+        private IGameStateMachine _gameStateMachine;
+        private CoreEvents _coreEvents;
 
-        [Header("States")]
-        [SerializeField] private SerializableInterface<IGameState> idleState;
-        [SerializeField] private SerializableInterface<IGameState<MoveData>> undoState;
-        [SerializeField] private SerializableInterface<IGameState<MoveData>> redoState;
+        [SerializeField] private IdleState idleState;
+        [SerializeField] private UndoState undoState;
+        [SerializeField] private RedoState redoState;
+
+        [Inject]
+        public void Construct(UciBuffer uciBuffer, IGameStateMachine gameStateMachine, CoreEvents coreEvents)
+        {
+            _uciBuffer = uciBuffer;
+            _gameStateMachine = gameStateMachine;
+            _coreEvents = coreEvents;
+        }
 
         public string Name => "Pause";
 
@@ -21,32 +30,38 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         {
             Debug.Log("State: " + Name);
 
-            game.FirePause();
+            _coreEvents.FirePause();
         }
 
         public override void Exit()
         {
-            game.FirePlay();
+            _coreEvents.FirePlay();
         }
 
         public void Undo()
         {
-            if (game.UciBuffer.CanUndo(out MoveData moveData))
+            if (_uciBuffer.CanUndo(out MoveData moveData))
             {
                 moveData.PreviousState = this;
-                game.GameStateMachine.SetState(undoState.Value, moveData);
+                _gameStateMachine.SetState(undoState, moveData);
             }
         }
 
         public void Redo()
         {
-            if (game.UciBuffer.CanRedo(out MoveData moveData))
+            if (_uciBuffer.CanRedo(out MoveData moveData))
             {
                 moveData.PreviousState = this;
-                game.GameStateMachine.SetState(redoState.Value, moveData);
+                _gameStateMachine.SetState(redoState, moveData);
             }
         }
 
+        public void Play()
+        {
+            _gameStateMachine.SetState(idleState);
+        }
+
+#region unused
         public override void StateUpdate()
         {
             // Nothing to update
@@ -57,14 +72,10 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             // Can't move from Pause
         }
 
-        public void Play()
-        {
-            game.GameStateMachine.SetState(idleState.Value);
-        }
-
         public void Pause()
         {
             // Already paused
         }
+#endregion
     }
 }

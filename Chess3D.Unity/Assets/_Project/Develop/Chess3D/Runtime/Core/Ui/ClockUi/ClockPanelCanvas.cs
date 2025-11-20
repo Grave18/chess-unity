@@ -1,5 +1,7 @@
 using Chess3D.Runtime.Core.Logic;
+using Chess3D.Runtime.Core.MainCamera;
 using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Ui.ClockUi
 {
@@ -9,10 +11,11 @@ namespace Chess3D.Runtime.Core.Ui.ClockUi
         [SerializeField] private CurrentPlayerPointerPanel currentPlayerPointerPanel;
         [SerializeField] private Canvas canvas;
 
-        public void Init(Game game, IClock clock, Camera uiCamera)
+        [Inject]
+        public void Construct(Game game, CoreEvents coreEvents, IClock clock, [Key(CameraKeys.Ui)]Camera uiCamera)
         {
-            clockPanel.Init(game, clock);
-            currentPlayerPointerPanel.Init(game);
+            clockPanel.Construct(coreEvents, clock);
+            currentPlayerPointerPanel.Construct(game, coreEvents);
             canvas.worldCamera = uiCamera;
         }
     }

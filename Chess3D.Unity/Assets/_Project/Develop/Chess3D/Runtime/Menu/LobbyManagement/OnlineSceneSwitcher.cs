@@ -11,7 +11,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
         [Header("References")]
         [SerializeField] private LobbyManager lobbyManager;
         [SerializeField] private SceneLoader sceneLoader;
-        [SerializeField] private GameSettingsContainer gameSettingsContainer;
+        // [SerializeField] private GameSettingsContainer gameSettingsContainer;
 
         private void OnEnable()
         {
@@ -39,18 +39,18 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
                 await UniTask.WaitForSeconds(1f, ignoreTimeScale: true);
             }
 
-            if (GameSettingsContainer.IsOnlineComputerVsComputer)
-            {
-                gameSettingsContainer.SetupGameComputerVsComputerOnline(playerColor);
-                GameSettingsContainer.IsOnlineComputerVsComputer = false;
-            }
-            else
-            {
-                gameSettingsContainer.SetupGameHumanVsHumanOnline(playerColor);
-            }
+            // if (GameSettingsContainer.IsOnlineComputerVsComputer)
+            // {
+                // gameSettingsContainer.SetupGameComputerVsComputerOnline(playerColor);
+                // GameSettingsContainer.IsOnlineComputerVsComputer = false;
+            // }
+            // else
+            // {
+                // gameSettingsContainer.SetupGameHumanVsHumanOnline(playerColor);
+            // }
 
-            GameSettingsContainer.IsHost = isHost;
-            GameSettingsContainer.IsLocal = isLocal;
+            // GameSettingsContainer.IsHost = isHost;
+            // GameSettingsContainer.IsLocal = isLocal;
 
             await sceneLoader.LoadGameOnline();
         }

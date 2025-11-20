@@ -30,11 +30,11 @@ namespace Chess3D.Runtime.Online
             await SetupAndStartNetworking();
             await InitOnlineInstanceHandler();
 
-            if (GameSettingsContainer.IsHost)
-            {
-                await GiveOwnership();
-                await ExchangeDataBetweenPlayers();
-            }
+            // if (GameSettingsContainer.IsHost)
+            // {
+            //     await GiveOwnership();
+            //     await ExchangeDataBetweenPlayers();
+            // }
         }
 
         public async UniTask LoadGame()

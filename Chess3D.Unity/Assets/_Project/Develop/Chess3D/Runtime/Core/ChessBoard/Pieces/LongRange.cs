@@ -36,10 +36,10 @@ namespace Chess3D.Runtime.Core.ChessBoard.Pieces
             _pinnedPieceCount = 0;
             while (Application.isPlaying)
             {
-                Square square = Game.GetSquareRel(pieceColor, currentSquare, offset);
+                Square square = Board.GetSquareRel(pieceColor, currentSquare, offset);
                 offset += direction;
 
-                if (square == Game.NullSquare)
+                if (square == Board.NullSquare)
                 {
                     break;
                 }
@@ -55,7 +55,7 @@ namespace Chess3D.Runtime.Core.ChessBoard.Pieces
                             if (IsNoPinnedPiece())
                             {
                                 CaptureSquares.Add(square, new CaptureInfo(square.GetPiece()));
-                                SquareBehindKing = Game.GetSquareRel(pieceColor, square, direction);
+                                SquareBehindKing = Board.GetSquareRel(pieceColor, square, direction);
                             }
                             break;
                         }

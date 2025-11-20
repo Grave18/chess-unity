@@ -1,34 +1,45 @@
-﻿using Chess3D.Runtime.Core.ChessBoard;
+﻿using System;
+using UnityEngine;
+using UnityEngine.Scripting;
+using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.ChessBoard.Info;
 using Chess3D.Runtime.Core.ChessBoard.Pieces;
 using Chess3D.Runtime.Core.Effects;
 using Chess3D.Runtime.Core.Logic;
-using UnityEngine;
 
 namespace Chess3D.Runtime.Core.Highlighting
 {
-    public class Highlighter : MonoBehaviour
+    [Preserve]
+    public class Highlighter: IDisposable
     {
-        private Game _game;
+        private readonly Game _game;
+        private readonly Board _board;
+        private readonly CoreEvents _coreEvents;
+        private readonly CommonPieceSettings _commonSettings;
 
-        [Header("Settings")]
-        [SerializeField] private CommonPieceSettings commonSettings;
-
-        [Header("Debug")]
-        [SerializeField] private bool isDebugUnderAttackSquares;
-        [SerializeField] private bool isDebugAttackLine;
+        private bool isDebugUnderAttackSquares;
+        private bool isDebugAttackLine;
 
         private SquareHighlighter _oldPieceHighlighter;
 
-        public void Init(Game game)
+        public Highlighter(Game game, Board board, CoreEvents coreEvents, CommonPieceSettings commonSettings)
         {
             _game = game;
-            _game.OnEndMove += UpdateHighlighting;
+            _board = board;
+            _coreEvents = coreEvents;
+            _commonSettings = commonSettings;
+
+            coreEvents.OnEndMove += UpdateHighlighting;
         }
 
-        private void OnDestroy()
+        public void Dispose()
         {
-            _game.OnEndMove -= UpdateHighlighting;
+            if (_coreEvents is null)
+            {
+                return;
+            }
+
+            _coreEvents.OnEndMove -= UpdateHighlighting;
         }
 
         public void UpdateHighlighting()
@@ -58,7 +69,7 @@ namespace Chess3D.Runtime.Core.Highlighting
             // Highlight selected
             if (pieceHighlighter == null)
             {
-                _oldPieceHighlighter?.Show(SquareShape.None, commonSettings.DefaultColor);
+                _oldPieceHighlighter?.Show(SquareShape.None, _commonSettings.DefaultColor);
                 return;
             }
 
@@ -92,7 +103,7 @@ namespace Chess3D.Runtime.Core.Highlighting
                 Square kingSquare = assumeKing.GetSquare();
                 if (kingSquare.TryGetComponent(out SquareHighlighter squareHighlighter))
                 {
-                    squareHighlighter.Show(SquareShape.Circle, commonSettings.CaptureColor);
+                    squareHighlighter.Show(SquareShape.Circle, _commonSettings.CaptureColor);
                 }
             }
         }
@@ -103,7 +114,7 @@ namespace Chess3D.Runtime.Core.Highlighting
             {
                 if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
                 {
-                    squareHighlighter.Show(SquareShape.Dot, commonSettings.MoveColor);
+                    squareHighlighter.Show(SquareShape.Dot, _commonSettings.MoveColor);
                 }
             }
 
@@ -111,7 +122,7 @@ namespace Chess3D.Runtime.Core.Highlighting
             {
                 if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
                 {
-                    squareHighlighter.Show(SquareShape.Circle, commonSettings.CaptureColor);
+                    squareHighlighter.Show(SquareShape.Circle, _commonSettings.CaptureColor);
                 }
             }
 
@@ -121,7 +132,7 @@ namespace Chess3D.Runtime.Core.Highlighting
                 {
                     if (castlingInfo.KingToSquare.TryGetComponent(out SquareHighlighter squareHighlighter))
                     {
-                        squareHighlighter.Show(SquareShape.Dot, commonSettings.CastlingColor);
+                        squareHighlighter.Show(SquareShape.Dot, _commonSettings.CastlingColor);
                     }
                 }
             }
@@ -130,7 +141,7 @@ namespace Chess3D.Runtime.Core.Highlighting
             {
                 if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
                 {
-                    squareHighlighter.Show(SquareShape.Dot, commonSettings.CanNotMoveColor);
+                    squareHighlighter.Show(SquareShape.Dot, _commonSettings.CanNotMoveColor);
                 }
             }
         }
@@ -139,28 +150,28 @@ namespace Chess3D.Runtime.Core.Highlighting
         {
             if (_oldPieceHighlighter != pieceHighlighter)
             {
-                _oldPieceHighlighter?.Show(SquareShape.None, commonSettings.DefaultColor);
+                _oldPieceHighlighter?.Show(SquareShape.None, _commonSettings.DefaultColor);
                 _oldPieceHighlighter = pieceHighlighter;
             }
 
-            _oldPieceHighlighter.Show(SquareShape.Circle, commonSettings.SelectColor);
+            _oldPieceHighlighter.Show(SquareShape.Circle, _commonSettings.SelectColor);
         }
 
         private void ClearAllHighlights()
         {
-            foreach (Square square in _game.Squares)
+            foreach (Square square in _board.Squares)
             {
                 var squareHighlighter = square.GetComponent<SquareHighlighter>();
-                squareHighlighter.Show(SquareShape.None, commonSettings.DefaultColor);
+                squareHighlighter.Show(SquareShape.None, _commonSettings.DefaultColor);
             }
 
-            foreach (Piece piece in _game.WhitePieces)
+            foreach (Piece piece in _board.WhitePieces)
             {
                 var pieceFx = piece.GetComponent<EffectsRunner>();
                 pieceFx.HighlightPiece(enableHighlight: false);
             }
 
-            foreach (Piece piece in _game.BlackPieces)
+            foreach (Piece piece in _board.BlackPieces)
             {
                 var pieceFx = piece.GetComponent<EffectsRunner>();
                 pieceFx.HighlightPiece(enableHighlight: false);

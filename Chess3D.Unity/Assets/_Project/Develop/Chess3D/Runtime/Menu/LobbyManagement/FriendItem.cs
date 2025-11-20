@@ -18,7 +18,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
 
         private LobbyManager _lobbyManager;
 
-        public void Init(LobbyManager lobbyManager)
+        public void Construct(LobbyManager lobbyManager)
         {
             _lobbyManager = lobbyManager;
         }

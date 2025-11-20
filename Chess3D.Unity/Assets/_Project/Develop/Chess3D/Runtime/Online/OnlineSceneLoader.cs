@@ -16,14 +16,14 @@ namespace Chess3D.Runtime.Online
 
         public async UniTask LoadGame()
         {
-            if (GameSettingsContainer.IsHost)
-            {
-                await InstanceHandler.NetworkManager?.sceneModule.LoadSceneAsync(gameScene, LoadSceneMode.Additive);
-            }
-            else
-            {
-                await UniTask.WaitUntil(IsGameSceneLoaded);
-            }
+            // if (GameSettingsContainer.IsHost)
+            // {
+            //     await InstanceHandler.NetworkManager?.sceneModule.LoadSceneAsync(gameScene, LoadSceneMode.Additive);
+            // }
+            // else
+            // {
+            //     await UniTask.WaitUntil(IsGameSceneLoaded);
+            // }
         }
 
         public async UniTask UnloadGameAndLoadMainMenu()
@@ -52,14 +52,14 @@ namespace Chess3D.Runtime.Online
 
         private async UniTask UnloadOnline()
         {
-            if (GameSettingsContainer.IsHost)
-            {
-                InstanceHandler.NetworkManager.sceneModule.UnloadSceneAsync(gameScene);
-            }
-            else
-            {
-                await UniTask.WaitWhile(IsGameSceneLoaded);
-            }
+            // if (GameSettingsContainer.IsHost)
+            // {
+            //     InstanceHandler.NetworkManager.sceneModule.UnloadSceneAsync(gameScene);
+            // }
+            // else
+            // {
+            //     await UniTask.WaitWhile(IsGameSceneLoaded);
+            // }
         }
 
         private bool IsGameSceneLoaded()

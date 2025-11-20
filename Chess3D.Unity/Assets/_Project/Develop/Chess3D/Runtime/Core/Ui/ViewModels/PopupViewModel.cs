@@ -1,26 +1,22 @@
-﻿using Chess3D.Runtime;
-using Chess3D.Runtime.Bootstrap.Settings;
-using Chess3D.Runtime.Core.Logic;
-using Chess3D.Runtime.Core.Logic.MenuStates;
+﻿using Chess3D.Runtime.Core.Logic.MenuStates;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Online;
-using Chess3D.Runtime.Utilities.Common.Singleton;
+using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using MvvmTool;
-using Network;
-using Ui.Auxiliary;
-using UnityEngine;
+using UnityEngine.Scripting;
 
-namespace Ui.InGame.ViewModels
+namespace Chess3D.Runtime.Core.Ui.ViewModels
 {
     [INotifyPropertyChanged]
-    public partial class PopupViewModel : SingletonBehaviour<PopupViewModel>
+    [Preserve]
+    public sealed partial class PopupViewModel
     {
-        [SerializeField] private SceneLoader sceneLoader;
-        [SerializeField] private Game game;
-        [SerializeField] private GameSettingsContainer gameSettingsContainer;
-        [SerializeField] private FenFromBoard fenFromBoard;
-        [SerializeField] private MenuStateMachine menuStateMachine;
+        private readonly FenFromBoard _fenFromBoard;
+        private readonly MenuStateMachine _menuStateMachine;
+        private readonly SceneManager _sceneManager;
+        private readonly SettingsService _settingsService;
+        private readonly ConnectionTerminator _connectionTerminator;
 
         [ObservableProperty] private bool _isPopupOpen;
         [ObservableProperty] private string _popupText;
@@ -30,15 +26,17 @@ namespace Ui.InGame.ViewModels
         [ObservableProperty] private bool _isSaveCheckBoxEnabled;
         [ObservableProperty] private bool _isSaveCheckBoxChecked;
 
-        public RelayCommand PopupYesCommand { get; set; }
-        public RelayCommand PopupNoCommand { get; set; }
-
-        protected override void Awake()
+        public PopupViewModel(FenFromBoard fenFromBoard, MenuStateMachine menuStateMachine, SceneManager sceneManager, SettingsService settingsService, ConnectionTerminator connectionTerminator)
         {
-            base.Awake();
-            PopupYesCommand = new RelayCommand();
-            PopupNoCommand = new RelayCommand();
+            _fenFromBoard = fenFromBoard;
+            _menuStateMachine = menuStateMachine;
+            _sceneManager = sceneManager;
+            _settingsService = settingsService;
+            _connectionTerminator = connectionTerminator;
         }
+
+        public RelayCommand PopupYesCommand { get; set; } = new();
+        public RelayCommand PopupNoCommand { get; set; } = new();
 
         public void OpenConfigurablePopup(PopupSettings popupSettings)
         {
@@ -51,7 +49,7 @@ namespace Ui.InGame.ViewModels
             PopupYesCommand.Replace(popupSettings.PopupYesCommand);
             PopupNoCommand.Replace(popupSettings.PopupNoCommand);
 
-            menuStateMachine.OpenPopup();
+            _menuStateMachine.OpenPopup();
         }
 
         public void OpenExitPopup()
@@ -65,7 +63,7 @@ namespace Ui.InGame.ViewModels
             PopupYesCommand.Replace(ExitToMainMenu);
             PopupNoCommand.Replace(ClosePopupToPause);
 
-            menuStateMachine.OpenPopup();
+            _menuStateMachine.OpenPopup();
         }
 
         public void OpenReconnectPopup()
@@ -79,19 +77,19 @@ namespace Ui.InGame.ViewModels
             PopupYesCommand.Replace(ExitToMainMenu);
             PopupNoCommand.Replace(null);
 
-            menuStateMachine.OpenPopup();
+            _menuStateMachine.OpenPopup();
         }
 
         public void ClosePopupToPause()
         {
             IsPopupOpen = false;
-            menuStateMachine.ClosePopupToPause();
+            _menuStateMachine.ClosePopupToPause();
         }
 
         public void ClosePopupToGame()
         {
             IsPopupOpen = false;
-            menuStateMachine.ClosePopupToGame();
+            _menuStateMachine.ClosePopupToGame();
         }
 
         public void ExitToMainMenu()
@@ -100,11 +98,11 @@ namespace Ui.InGame.ViewModels
 
             if (OnlineInstanceHandler.IsOnline)
             {
-                ConnectionTerminator.DisconnectFromServer();
+                _connectionTerminator.DisconnectFromServer();
             }
             else
             {
-                sceneLoader.LoadMainMenu().Forget();
+                _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu).Forget();
             }
         }
 
@@ -112,9 +110,9 @@ namespace Ui.InGame.ViewModels
         {
             if (IsSaveCheckBoxChecked)
             {
-                string fen = fenFromBoard.Get();
-                gameSettingsContainer.SetSavedFen(fen);
-                LogUi.Debug($"Board saved with: {fen}");
+                string fen = _fenFromBoard.Get();
+                _settingsService.S.GameSettings.SavedFen = fen;
+                _settingsService.Save();
             }
         }
 

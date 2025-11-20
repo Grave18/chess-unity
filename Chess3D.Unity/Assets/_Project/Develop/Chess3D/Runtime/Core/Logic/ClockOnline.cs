@@ -1,61 +1,65 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using PurrNet;
 using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic
 {
-    public class ClockOnline : NetworkBehaviour, IClock
+    public sealed class ClockOnline : NetworkBehaviour, IClock, IDisposable
     {
         private Game _game;
+        private SettingsService _settingsService;
+        private CoreEvents _coreEvents;
 
         private TimeSpan _initialWhiteTime;
         private TimeSpan _initialBlackTime;
 
-        private SyncVar<TimeSpan> _whiteTime = new();
-        private SyncVar<TimeSpan> _blackTime = new();
+        private readonly SyncVar<TimeSpan> _whiteTime = new();
+        private readonly SyncVar<TimeSpan> _blackTime = new();
 
         private bool _isPlaying;
 
         public TimeSpan WhiteTime => _whiteTime.value;
         public TimeSpan BlackTime => _blackTime.value;
 
-        public void Init(Game game, Vector2Int time)
+        [Inject]
+        public void Construct(Game game, SettingsService settingsService, CoreEvents coreEvents)
         {
             _game = game;
+            _settingsService = settingsService;
+            _coreEvents = coreEvents;
+
+            _coreEvents.OnWarmup += InitTime;
+            _coreEvents.OnStart += StartTimer;
+            _coreEvents.OnEndMove += Play;
+            _coreEvents.OnEnd += Pause;
+            _coreEvents.OnPlay += Play;
+            _coreEvents.OnPause += Pause;
+        }
+
+        public void Dispose()
+        {
+            if (_coreEvents is null)
+            {
+                return;
+            }
+
+            _coreEvents.OnWarmup -= InitTime;
+            _coreEvents.OnStart -= StartTimer;
+            _coreEvents.OnEndMove -= Play;
+            _coreEvents.OnEnd -= Pause;
+            _coreEvents.OnPlay -= Play;
+            _coreEvents.OnPause -= Pause;
+        }
+
+        public UniTask Load()
+        {
+            Vector2Int time = _settingsService.S.GameSettings.Time;
             _initialWhiteTime = TimeSpan.FromMinutes(time.x) + TimeSpan.FromSeconds(time.y);
             _initialBlackTime = _initialWhiteTime;
 
-            SubscribeToGameEvents();
-        }
-
-        private void SubscribeToGameEvents()
-        {
-            _game.OnWarmup += InitTime;
-            _game.OnStart += StartTimer;
-            _game.OnEndMove += Play;
-            _game.OnEnd += Pause;
-            _game.OnPlay += Play;
-            _game.OnPause += Pause;
-        }
-
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-
-            if (_game)
-            {
-                UnsubscribeFromGameEvents();
-            }
-        }
-
-        private void UnsubscribeFromGameEvents()
-        {
-            _game.OnWarmup -= InitTime;
-            _game.OnStart -= StartTimer;
-            _game.OnEndMove -= Play;
-            _game.OnEnd -= Pause;
-            _game.OnPlay -= Play;
-            _game.OnPause -= Pause;
+            return UniTask.CompletedTask;
         }
 
         private void StartTimer()
@@ -94,7 +98,7 @@ namespace Chess3D.Runtime.Core.Logic
 
         private void Update()
         {
-            if (!_isPlaying || !_game)
+            if (!_isPlaying)
             {
                 return;
             }

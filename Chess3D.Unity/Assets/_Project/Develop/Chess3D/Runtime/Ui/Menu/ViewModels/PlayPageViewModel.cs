@@ -1,5 +1,4 @@
 ﻿using Chess3D.Runtime;
-using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Menu.LobbyManagement;
 using Cysharp.Threading.Tasks;
@@ -12,7 +11,7 @@ namespace Ui.Menu.ViewModels
 {
     public partial class PlayPageViewModel : MonoBehaviour
     {
-        [SerializeField] private GameSettingsContainer gameSettingsContainer;
+        [SerializeField] private SettingsService _settingsService;
         [SerializeField] private SceneLoader sceneLoader;
         [SerializeField] private LobbyManager lobbyManager;
         [SerializeField] private OnlineSceneSwitcher onlineSceneSwitcher;
@@ -36,13 +35,13 @@ namespace Ui.Menu.ViewModels
 
         private void PlayOffline(object obj)
         {
-            gameSettingsContainer.SetupGameHumanVsHumanOffline();
+            // _settingsService.SetupGameHumanVsHumanOffline();
             sceneLoader.LoadGame().Forget();
         }
 
         private void PlayWithComputer(object obj)
         {
-            gameSettingsContainer.SetupGameHumanVsComputerOffline();
+            // _settingsService.SetupGameHumanVsComputerOffline();
             sceneLoader.LoadGame().Forget();
         }
 

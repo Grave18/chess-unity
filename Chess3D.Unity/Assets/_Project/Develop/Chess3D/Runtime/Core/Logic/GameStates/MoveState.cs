@@ -3,21 +3,25 @@ using Chess3D.Runtime.Core.ChessBoard.Info;
 using Chess3D.Runtime.Core.ChessBoard.Pieces;
 using Chess3D.Runtime.Core.Logic.Moves;
 using Chess3D.Runtime.Core.Logic.MovesBuffer;
+using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Core.Sound;
 using PurrNet.StateMachine;
-using TNRD;
 using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
     public class MoveState : StateNode<string>, IGameState<string>
     {
-        [Header("References")]
-        [SerializeField] private Game game;
+        private Game _game;
+        private Board _board;
+        private PieceFactory _pieceFactory;
+        private UciBuffer _uciBuffer;
+        private IGameStateMachine _gameStateMachine;
+        private CoreEvents _coreEvents;
 
-        [Header("States")]
-        [SerializeField] private SerializableInterface<IGameState> idleState;
+        [SerializeField] private IdleState idleState;
 
         private const float MoveTimeSec = 0.3f;
         private const float SoundT = 0.6f;
@@ -27,6 +31,18 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         private Turn _turn;
         private float _t;
         private bool _isRunning;
+
+        [Inject]
+        public void Construct(Game game, Board board, PieceFactory pieceFactory, UciBuffer uciBuffer,
+            IGameStateMachine gameStateMachine, CoreEvents coreEvents)
+        {
+            _game = game;
+            _board = board;
+            _pieceFactory = pieceFactory;
+            _uciBuffer = uciBuffer;
+            _gameStateMachine = gameStateMachine;
+            _coreEvents = coreEvents;
+        }
 
         public string Name => "Move";
 
@@ -56,8 +72,8 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             string from = uci.Substring(0, 2);
             string to = uci.Substring(2, 2);
 
-            Square fromSquare = game.Board.GetSquare(from);
-            Square toSquare = game.Board.GetSquare(to);
+            Square fromSquare = _board.GetSquare(from);
+            Square toSquare = _board.GetSquare(to);
             var promotedPieceType = PieceType.None;
 
             // If uci with promotion
@@ -98,15 +114,15 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
                 if (parsedUci.PromotedPieceType == PieceType.None)
                 {
                     _moveData.MoveType = MoveType.Move;
-                    _turn = new SimpleMove(game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
+                    _turn = new SimpleMove(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
                 }
                 else
                 {
                     _moveData.MoveType = MoveType.MovePromotion;
                     _moveData.HiddenPawn = piece;
-                    promotedPiece = game.Board.GetSpawnedPiece(parsedUci.PromotedPieceType, game.CurrentTurnColor,
+                    promotedPiece = _pieceFactory.Create(parsedUci.PromotedPieceType, _game.CurrentTurnColor,
                         parsedUci.ToSquare);
-                    _turn = new MovePromotion(game,_moveData.HiddenPawn, parsedUci.FromSquare, parsedUci.ToSquare,
+                    _turn = new MovePromotion(_game,_moveData.HiddenPawn, parsedUci.FromSquare, parsedUci.ToSquare,
                         promotedPiece);
                 }
 
@@ -126,16 +142,16 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
                 if (parsedUci.PromotedPieceType == PieceType.None)
                 {
                     _moveData.MoveType = captureInfo.MoveType;
-                    _turn = new Capture(game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
+                    _turn = new Capture(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
                         _moveData.IsFirstMove);
                 }
                 else
                 {
                     _moveData.MoveType = MoveType.CapturePromotion;
                     _moveData.HiddenPawn = piece;
-                    promotedPiece = game.Board.GetSpawnedPiece(parsedUci.PromotedPieceType, game.CurrentTurnColor,
+                    promotedPiece = _pieceFactory.Create(parsedUci.PromotedPieceType, _game.CurrentTurnColor,
                         parsedUci.ToSquare);
-                    _turn = new CapturePromotion(game, piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece,
+                    _turn = new CapturePromotion(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece,
                         _moveData.BeatenPiece);
                 }
 
@@ -150,18 +166,18 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             {
                 _moveData.MoveType = castlingInfo.MoveType;
                 _moveData.CastlingInfo = castlingInfo;
-                _turn = new Castling(game,_moveData.CastlingInfo, _moveData.IsFirstMove);
+                _turn = new Castling(_game,_moveData.CastlingInfo, _moveData.IsFirstMove);
                 isValid = true;
             }
 
-            _moveData.TurnColor = game.CurrentTurnColor;
+            _moveData.TurnColor = _game.CurrentTurnColor;
             _moveData.AlgebraicNotation = Algebraic.Get(piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.MoveType, promotedPiece);
             return isValid;
         }
 
         private int GetIncrementedHalfMovesCounter()
         {
-            return game.UciBuffer.HalfMoveClock + 1;
+            return _uciBuffer.HalfMoveClock + 1;
         }
 
         private void ResetHalfMoveClock()
@@ -171,7 +187,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         private int GetFullMoveCounter(PieceColor pieceColor)
         {
-            int counter = game.UciBuffer.FullMoveCounter;
+            int counter = _uciBuffer.FullMoveCounter;
 
             if (pieceColor == PieceColor.Black)
             {
@@ -185,7 +201,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         {
             Debug.Log($"{uci}: invalid move");
             _isRunning = false;
-            game.GameStateMachine.SetState(idleState.Value);
+            _gameStateMachine.SetState(idleState);
         }
 
         public override void Exit()
@@ -195,14 +211,14 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
                 _turn.Progress(1);
                 _turn.End();
 
-                game.ChangeTurn();
-                game.UciBuffer.Add(_moveData);
-                game.PreformCalculations();
+                _game.ChangeTurn();
+                _uciBuffer.Add(_moveData);
+                _game.PreformCalculations();
                 UpdateAlgebraicNotation();
                 PlayCheckSoundIfCheck();
             }
 
-            game.FireEndMove();
+            _coreEvents.FireEndMove();
         }
 
         public override void StateUpdate()
@@ -218,7 +234,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             }
             else
             {
-                game.GameStateMachine.SetState(idleState.Value);
+                _gameStateMachine.SetState(idleState);
             }
         }
 
@@ -238,7 +254,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         private void UpdateAlgebraicNotation()
         {
-            _moveData.AlgebraicNotation += Algebraic.GetCheck(game.CheckType);
+            _moveData.AlgebraicNotation += Algebraic.GetCheck(_game.CheckType);
         }
 
         private void PlaySound(float delta)
@@ -253,7 +269,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         private void PlayCheckSoundIfCheck()
         {
-            if (game.IsCheck)
+            if (_game.IsCheck)
             {
                 EffectsPlayer.Instance.PlayCheckSound();
             }

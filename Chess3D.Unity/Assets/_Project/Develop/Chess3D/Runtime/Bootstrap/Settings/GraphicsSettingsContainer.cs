@@ -13,12 +13,11 @@ namespace Chess3D.Runtime.Bootstrap.Settings
 
         private int _width;
         private int _height;
-        private bool _isResolutionChanged;
-
         private int _fullScreenMode;
-        private bool _isFullScreenModeChanged;
-
         private int _qualityIndex;
+
+        private bool _isFullScreenModeChanged;
+        private bool _isResolutionChanged;
         private bool _isQualityChanged;
 
 

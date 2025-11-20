@@ -21,7 +21,7 @@ namespace Chess3D.Runtime.Utilities.Logging
             }
         }
 
-#if COMPANYNAME_PROD
+#if GRAVEBOX_PROD
         [System.Diagnostics.Conditional("DUMMY_UNUSED_DEFINE")]
 #endif
         [HideInCallstack]
@@ -29,8 +29,8 @@ namespace Chess3D.Runtime.Utilities.Logging
         {
             Debug.unityLogger.Log(LogType.Log, _tag, msg);
         }
-        
-#if COMPANYNAME_PROD
+
+#if GRAVEBOX_PROD
         [System.Diagnostics.Conditional("DUMMY_UNUSED_DEFINE")]
 #endif
         [HideInCallstack]

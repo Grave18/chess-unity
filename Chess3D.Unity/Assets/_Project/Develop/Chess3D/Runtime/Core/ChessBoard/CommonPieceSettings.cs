@@ -3,11 +3,12 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Core.ChessBoard
 {
+    // TODO: move to configs
     [System.Serializable]
-    public class CommonPieceSettings
+    public sealed class CommonPieceSettings
     {
         [Header("Animation")]
-        public LayerMask SquareLayer;
+        public LayerMask SquareLayer = LayerMask.GetMask("Square");
         public Ease Ease = Ease.InOutCubic;
         public float Speed = 0.7f;
 

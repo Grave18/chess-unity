@@ -50,7 +50,7 @@ namespace Chess3D.Runtime.Utilities.Logging
     {
         private readonly StringBuilder _sb = new();
 
-#if COMPANYNAME_PROD
+#if GRAVEBOX_PROD
         [System.Diagnostics.Conditional("DUMMY_UNUSED_DEFINE")]
 #endif
         public void AppendFormat(string format, object arg0)
@@ -58,7 +58,7 @@ namespace Chess3D.Runtime.Utilities.Logging
             _sb.AppendFormat(format, arg0);
         }
 
-#if COMPANYNAME_PROD
+#if GRAVEBOX_PROD
         [System.Diagnostics.Conditional("DUMMY_UNUSED_DEFINE")]
 #endif
         public void AppendFormat(string format, object arg0, object arg1)
@@ -66,7 +66,7 @@ namespace Chess3D.Runtime.Utilities.Logging
             _sb.AppendFormat(format, arg0, arg1);
         }
 
-#if COMPANYNAME_PROD
+#if GRAVEBOX_PROD
         [System.Diagnostics.Conditional("DUMMY_UNUSED_DEFINE")]
 #endif
         public void AppendFormat(string format,
@@ -77,7 +77,7 @@ namespace Chess3D.Runtime.Utilities.Logging
             _sb.AppendFormat(format, arg0, arg1, arg2);
         }
 
-#if COMPANYNAME_PROD
+#if GRAVEBOX_PROD
         [System.Diagnostics.Conditional("DUMMY_UNUSED_DEFINE")]
 #endif
         public void AppendFormat(string format, params object[] args)
@@ -85,7 +85,7 @@ namespace Chess3D.Runtime.Utilities.Logging
             _sb.AppendFormat(format, args);
         }
 
-#if COMPANYNAME_PROD
+#if GRAVEBOX_PROD
         [System.Diagnostics.Conditional("DUMMY_UNUSED_DEFINE")]
 #endif
         public void AppendLine()
@@ -93,7 +93,7 @@ namespace Chess3D.Runtime.Utilities.Logging
             _sb.AppendLine();
         }
 
-#if COMPANYNAME_PROD
+#if GRAVEBOX_PROD
         [System.Diagnostics.Conditional("DUMMY_UNUSED_DEFINE")]
 #endif
         public void AppendLine(string value)

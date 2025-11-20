@@ -3,16 +3,21 @@ using Chess3D.Runtime.Core.ChessBoard.Info;
 using Chess3D.Runtime.Core.ChessBoard.Pieces;
 using Chess3D.Runtime.Core.Logic.Moves;
 using Chess3D.Runtime.Core.Logic.MovesBuffer;
+using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.Sound;
 using PurrNet.StateMachine;
 using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
     public class UndoState : StateNode<MoveData>, IGameState<MoveData>
     {
-        [Header("References")]
-        [SerializeField] private Game game;
+        private Game _game;
+        private Board _board;
+        private UciBuffer _uciBuffer;
+        private IGameStateMachine _gameStateMachine;
+        private CoreEvents _coreEvents;
 
         private const float MoveTimeSec = 0.1f;
         private const float SoundT = 0.4f;
@@ -21,6 +26,16 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         private Turn _turn;
         private float _t;
         private bool _isRunning;
+
+        [Inject]
+        public void Construct(Game game, Board board, UciBuffer uciBuffer, IGameStateMachine gameStateMachine, CoreEvents coreEvents)
+        {
+            _game = game;
+            _board = board;
+            _uciBuffer = uciBuffer;
+            _gameStateMachine = gameStateMachine;
+            _coreEvents = coreEvents;
+        }
 
         public string Name => "Undo";
 
@@ -50,8 +65,8 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             string from = uci.Substring(0, 2);
             string to = uci.Substring(2, 2);
 
-            Square fromSquare = game.Board.GetSquare(from);
-            Square toSquare = game.Board.GetSquare(to);
+            Square fromSquare = _board.GetSquare(from);
+            Square toSquare = _board.GetSquare(to);
             var promotedPieceType = PieceType.None;
 
             if (uci.Length == 5)
@@ -76,7 +91,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
             if (_moveData.MoveType == MoveType.Move)
             {
-                _turn = new SimpleMove(game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
+                _turn = new SimpleMove(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
                 return true;
             }
 
@@ -84,13 +99,13 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             {
                 // Piece and Promoted piece swapped
                 Piece promotedPiece = parsedUci.ToSquare.GetPiece();
-                _turn = new MovePromotion(game, promotedPiece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.HiddenPawn);
+                _turn = new MovePromotion(_game, promotedPiece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.HiddenPawn);
                 return true;
             }
 
             if (_moveData.MoveType is MoveType.Capture or MoveType.EnPassant)
             {
-                _turn = new Capture(game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
+                _turn = new Capture(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
                     _moveData.IsFirstMove);
                 return true;
             }
@@ -99,14 +114,14 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             {
                 Piece promotedPiece = parsedUci.ToSquare.GetPiece();
                 // Piece and Promoted piece swapped
-                _turn = new CapturePromotion(game, promotedPiece, parsedUci.FromSquare, parsedUci.ToSquare,
+                _turn = new CapturePromotion(_game, promotedPiece, parsedUci.FromSquare, parsedUci.ToSquare,
                     _moveData.HiddenPawn, _moveData.BeatenPiece);
                 return true;
             }
 
             if (_moveData.MoveType is MoveType.CastlingShort or MoveType.CastlingLong)
             {
-                _turn = new Castling(game, _moveData.CastlingInfo, _moveData.IsFirstMove);
+                _turn = new Castling(_game, _moveData.CastlingInfo, _moveData.IsFirstMove);
                 return true;
             }
 
@@ -117,7 +132,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         {
             Debug.Log("Invalid Undo");
             _isRunning = false;
-            game.GameStateMachine.SetState(_moveData.PreviousState);
+            _gameStateMachine.SetState(_moveData.PreviousState);
         }
 
         public override void Exit()
@@ -129,10 +144,10 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
             _turn.EndUndo();
 
-            game.ChangeTurn();
-            game.UciBuffer.Undo();
-            game.PreformCalculations();
-            game.FireEndMove();
+            _game.ChangeTurn();
+            _uciBuffer.Undo();
+            _game.PreformCalculations();
+            _coreEvents.FireEndMove();
 
             PlayCheckSoundIfCheck();
         }
@@ -150,7 +165,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             }
             else
             {
-                game.GameStateMachine.SetState(_moveData.PreviousState);
+                _gameStateMachine.SetState(_moveData.PreviousState);
             }
         }
 
@@ -180,7 +195,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         private void PlayCheckSoundIfCheck()
         {
-            if (game.IsCheck)
+            if (_game.IsCheck)
             {
                 EffectsPlayer.Instance.PlayCheckSound();
             }

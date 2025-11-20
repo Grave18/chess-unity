@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Chess3D.Runtime;
 using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.Ai;
 using Ui.Auxiliary;
@@ -12,7 +13,8 @@ namespace Ui.Menu.ViewModels
 {
     public class GameSettingsViewModel : MonoBehaviour, INotifyPropertyChanged
     {
-        [SerializeField] private GameSettingsContainer gameSettingsContainer;
+        // TODO: Add DI dependency
+        private SettingsService _settingsService;
 
         public ObservableCollection<string> Times { get; set; }
         public ObservableCollection<string> Difficulties { get; set; }
@@ -25,7 +27,7 @@ namespace Ui.Menu.ViewModels
             {
                 if (SetField(ref _playerName, value))
                 {
-                    gameSettingsContainer.SetPlayerName(_playerName);
+                    // _settingsService.SetPlayerName(_playerName);
                     LogUi.Debug($"Name changed to {_playerName}");
                 }
             }
@@ -39,7 +41,7 @@ namespace Ui.Menu.ViewModels
             {
                 if (SetField(ref _selectedTime, value))
                 {
-                    gameSettingsContainer.SetTime(_selectedTime);
+                    // _settingsService.SetTime(_selectedTime);
                     LogUi.Debug($"Time changed to {_selectedTime}");
                 }
             }
@@ -53,7 +55,7 @@ namespace Ui.Menu.ViewModels
             {
                 if (SetField(ref _selectedDifficulty, value))
                 {
-                    gameSettingsContainer.SetDifficulty(_selectedDifficulty);
+                    // _settingsService.SetDifficulty(_selectedDifficulty);
                     LogUi.Debug($"Difficulty changed to {_selectedDifficulty}");
                 }
             }
@@ -68,20 +70,20 @@ namespace Ui.Menu.ViewModels
 
         private void InitName()
         {
-            _playerName = gameSettingsContainer.GetPlayerName();
+            // _playerName = _settingsService.GetPlayerName();
         }
 
         private void IntiTime()
         {
             Times = new ObservableCollection<string> { "1", "3", "5", "10", "20", "30", "40", "50", "60" };
-            _selectedTime = gameSettingsContainer.GetTimeString();
+            // _selectedTime = _settingsService.GetTimeString();
         }
 
         private void InitDifficulty()
         {
             var difficulties = Enum.GetNames(typeof(ComputerSkillLevel));
             Difficulties = new ObservableCollection<string>(difficulties);
-            _selectedDifficulty = gameSettingsContainer.GetDifficulty();
+            // _selectedDifficulty = _settingsService.GetDifficulty();
         }
 
         #region ViewModelImplimentation

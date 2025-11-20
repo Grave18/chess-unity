@@ -1,44 +1,50 @@
-﻿using Chess3D.Runtime.Bootstrap.Settings;
+﻿using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.MainCamera;
 using Cysharp.Threading.Tasks;
 using PurrNet.StateMachine;
-using TNRD;
 using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
     public class WarmUpState : StateNode, IGameState
     {
-        [Header("References")]
-        [SerializeField] private Game game;
-        [SerializeField] private GameSettingsContainer gameSettingsContainer;
-        [SerializeField] private CameraController cameraController;
+        private IGameStateMachine _gameStateMachine;
+        private SettingsService _settingsService;
+        private CameraController _cameraController;
+        private CoreEvents _coreEvents;
 
-        [Header("States")]
-        [SerializeField] private SerializableInterface<IGameState> idleState;
+        [SerializeField] private IdleState idleState;
 
-        [Header("Settings")]
-        [SerializeField] private float warmupTimeSec = 3f;
-
+        private const float WarmupTimeSec = 3f; // TODO: Make configurable
         private float t;
 
         public string Name => "WarmUp";
+
+        [Inject]
+        public void Construct(IGameStateMachine gameStateMachine, SettingsService settingsService,
+            CameraController cameraController, CoreEvents coreEvents)
+        {
+            _gameStateMachine = gameStateMachine;
+            _settingsService = settingsService;
+            _cameraController = cameraController;
+            _coreEvents = coreEvents;
+        }
 
         public override void Enter()
         {
             Debug.Log("State: " + Name);
 
-            t = warmupTimeSec;
+            t = WarmupTimeSec;
 
-            bool isRotateCameraOnStart = gameSettingsContainer.IsRotateCameraOnStart;
-            cameraController.RotateToStartPosition(isRotateCameraOnStart).Forget();
+            _cameraController.RotateToStartPosition().Forget();
 
-            game.FireWarmup();
+            _coreEvents.FireWarmup();
         }
 
         public override void Exit()
         {
-            game.FireStart();
+            _coreEvents.FireStart();
         }
 
         public override void StateUpdate()
@@ -52,10 +58,11 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
             if (t <= 0f)
             {
-                game.GameStateMachine.SetState(idleState.Value);
+                _gameStateMachine.SetState(idleState);
             }
         }
 
+        // Unused
         public void Move(string uci)
         {
             // Empty

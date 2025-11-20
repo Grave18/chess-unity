@@ -1,65 +1,77 @@
-﻿using UnityEngine;
+﻿using System;
+using Chess3D.Runtime.Core.Notation;
+using Chess3D.Runtime.Utilities;
+using Cysharp.Threading.Tasks;
+using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Core.Logic.Players
 {
-    public class Competitors : MonoBehaviour
+    [Preserve]
+    public sealed class Competitors : ILoadUnit, IDisposable
     {
-        private Game _game;
+        public IPlayer CurrentPlayer { get; private set; }
+
+        private readonly Game _game;
+        private readonly FenFromString _fenFromString;
+        private readonly Func<IPlayer> _playerFactory;
+        private readonly CoreEvents _coreEvents;
+
         private IPlayer _playerWhite;
         private IPlayer _playerBlack;
 
-        private IPlayer _initialPlayer;
-        private IPlayer _currentPlayer;
-
-        public IPlayer CurrentPlayer => _currentPlayer;
-
-        public void Init(Game game, IPlayer playerWhite, IPlayer playerBlack, PieceColor firstMoveColor)
+        public Competitors(Game game, FenFromString fenFromString, Func<IPlayer> playerFactory, CoreEvents coreEvents)
         {
             _game = game;
-            _playerWhite = playerWhite;
-            _playerBlack = playerBlack;
+            _fenFromString = fenFromString;
+            _playerFactory = playerFactory;
+            _coreEvents = coreEvents;
 
-            _initialPlayer = firstMoveColor == PieceColor.White ? _playerWhite : _playerBlack;
-            _currentPlayer = _initialPlayer;
+            _coreEvents.OnEndMove += SwapCurrentPlayer;
         }
 
-        public void Restart()
+        public void Dispose()
         {
-            _currentPlayer = _initialPlayer;
+            if (_coreEvents is null)
+            {
+                return;
+            }
+
+            _coreEvents.OnEndMove -= SwapCurrentPlayer;
+        }
+
+        public UniTask Load()
+        {
+            _playerWhite = _playerFactory(); // TODO: send config as argument
+            _playerBlack = _playerFactory();
+            CurrentPlayer = _fenFromString.TurnColor == PieceColor.White ? _playerWhite : _playerBlack;
+
+            return UniTask.CompletedTask;
         }
 
         public void StartPlayer()
         {
-            _currentPlayer.StartPlayer();
+            CurrentPlayer.StartPlayer();
         }
 
         public void UpdatePlayer()
         {
-            _currentPlayer.UpdatePlayer();
+            CurrentPlayer.UpdatePlayer();
         }
 
         public void StopPlayer()
         {
-            _currentPlayer.StopPlayer();
+            CurrentPlayer.StopPlayer();
         }
 
-        public void SubstitutePlayers(IPlayer playerWhite, IPlayer playerBlack)
-        {
-            _playerWhite = playerWhite;
-            _playerBlack = playerBlack;
-
-            SwapCurrentPlayer();
-        }
-
-        public void SwapCurrentPlayer()
+        private void SwapCurrentPlayer()
         {
             if (_game.CurrentTurnColor == PieceColor.White)
             {
-                _currentPlayer = _playerWhite;
+                CurrentPlayer = _playerWhite;
             }
             else if (_game.CurrentTurnColor == PieceColor.Black)
             {
-                _currentPlayer = _playerBlack;
+                CurrentPlayer = _playerBlack;
             }
         }
     }

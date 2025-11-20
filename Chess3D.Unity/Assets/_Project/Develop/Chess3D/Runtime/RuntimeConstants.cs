@@ -1,4 +1,6 @@
-﻿using UnityEngine.SceneManagement;
+﻿using System.IO;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Chess3D.Runtime
 {
@@ -12,6 +14,12 @@ namespace Chess3D.Runtime
             public static readonly int Core = SceneUtility.GetBuildIndexByScenePath("3.Core");
             public static readonly int Online = SceneUtility.GetBuildIndexByScenePath("4.Online");
             public static readonly int LoadScreen = SceneUtility.GetBuildIndexByScenePath("5.LoadScreen");
+        }
+
+        public static class Settings
+        {
+            public const string FileName = "Settings";
+            public static readonly string FilePath = Path.Combine(Application.persistentDataPath, FileName + ".json");
         }
     }
 }

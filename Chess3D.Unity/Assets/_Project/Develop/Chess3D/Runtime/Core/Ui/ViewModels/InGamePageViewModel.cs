@@ -1,37 +1,39 @@
-﻿using Chess3D.Runtime;
-using Chess3D.Runtime.Bootstrap.Settings;
-using Chess3D.Runtime.Core.Logic;
-using Chess3D.Runtime.Core.Notation;
+﻿using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Core.Sound;
 using Chess3D.Runtime.Online;
-using Network;
 using MvvmTool;
 using PurrNet;
-using UnityEngine;
+using VContainer;
 
-namespace Ui.InGame.ViewModels
+namespace Chess3D.Runtime.Core.Ui.ViewModels
 {
     public partial class InGamePageViewModel : NetworkBehaviour
     {
-        [SerializeField] private SceneLoader sceneLoader;
-        [SerializeField] private Game game;
-        [SerializeField] private GameSettingsContainer gameSettingsContainer;
-        [SerializeField] private FenFromBoard fenFromBoard;
-        [SerializeField] private PopupViewModel popupViewModel;
-        [SerializeField] private InGameMenuViewModel inGameMenuViewModel;
-        [SerializeField] private EffectsPlayer effectsPlayer;
+        private Game _game;
+        private PopupViewModel _popupViewModel;
+        private InGameMenuViewModel _inGameMenuViewModel;
+        private EffectsPlayer _effectsPlayer;
+
+        [Inject]
+        public void Construct(Game game, PopupViewModel popupViewModel, InGameMenuViewModel inGameMenuViewModel, EffectsPlayer effectsPlayer)
+        {
+            _game = game;
+            _popupViewModel = popupViewModel;
+            _inGameMenuViewModel = inGameMenuViewModel;
+            _effectsPlayer = effectsPlayer;
+        }
 
         public bool IsRematchRequested { get; set; }
         public bool IsDrawRequested { get; set; }
 
         private void OnEnable()
         {
-            inGameMenuViewModel.OnOpenedChanged += OnInGameMenuOpenedChanged;
+            _inGameMenuViewModel.OnOpenedChanged += OnInGameMenuOpenedChanged;
         }
 
         private void OnDisable()
         {
-            inGameMenuViewModel.OnOpenedChanged -= OnInGameMenuOpenedChanged;
+            _inGameMenuViewModel.OnOpenedChanged -= OnInGameMenuOpenedChanged;
         }
 
         private void OnInGameMenuOpenedChanged(bool isOpened)
@@ -48,16 +50,16 @@ namespace Ui.InGame.ViewModels
             {
                 PopupText = "Do you want to Rematch?",
                 PopupYesCommand = Rematch,
-                PopupNoCommand = popupViewModel.ClosePopupToPause,
+                PopupNoCommand = _popupViewModel.ClosePopupToPause,
             };
 
-            popupViewModel.OpenConfigurablePopup(popupSettings);
+            _popupViewModel.OpenConfigurablePopup(popupSettings);
         }
 
         private bool OpenRematchPopup_CanExecute()
         {
             bool isOffline = OnlineInstanceHandler.IsOffline;
-            bool isOnline = OnlineInstanceHandler.IsOnline && !IsRematchRequested && !IsDrawRequested && game.IsEndGame;
+            bool isOnline = OnlineInstanceHandler.IsOnline && !IsRematchRequested && !IsDrawRequested && _game.IsEndGame;
             bool canOpen = isOffline || isOnline;
             return canOpen;
         }
@@ -69,15 +71,15 @@ namespace Ui.InGame.ViewModels
             {
                 PopupText = "Do you want to Draw?",
                 PopupYesCommand = Draw,
-                PopupNoCommand = popupViewModel.ClosePopupToPause,
+                PopupNoCommand = _popupViewModel.ClosePopupToPause,
             };
 
-            popupViewModel.OpenConfigurablePopup(popupSettings);
+            _popupViewModel.OpenConfigurablePopup(popupSettings);
         }
 
         private bool OpenDrawPopup_CanExecute()
         {
-            bool isOnline = OnlineInstanceHandler.IsOnline && !IsRematchRequested && !IsDrawRequested && !game.IsEndGame && game.IsMyTurn;
+            bool isOnline = OnlineInstanceHandler.IsOnline && !IsRematchRequested && !IsDrawRequested && !_game.IsEndGame && _game.IsMyTurn;
             return isOnline;
         }
 
@@ -88,22 +90,22 @@ namespace Ui.InGame.ViewModels
             {
                 PopupText = "Do you want to Resign?",
                 PopupYesCommand = Resign,
-                PopupNoCommand = popupViewModel.ClosePopupToPause,
+                PopupNoCommand = _popupViewModel.ClosePopupToPause,
             };
 
-            popupViewModel.OpenConfigurablePopup(popupSettings);
+            _popupViewModel.OpenConfigurablePopup(popupSettings);
         }
 
         private bool OpenResignPopup_CanExecute()
         {
-            bool isOnline = OnlineInstanceHandler.IsOnline && !IsRematchRequested && !IsDrawRequested&& !game.IsEndGame && game.IsMyTurn;
+            bool isOnline = OnlineInstanceHandler.IsOnline && !IsRematchRequested && !IsDrawRequested&& !_game.IsEndGame && _game.IsMyTurn;
             return isOnline;
         }
 
         [RelayCommand]
         private void OpenExitPopup()
         {
-            popupViewModel.OpenExitPopup();
+            _popupViewModel.OpenExitPopup();
         }
 
         private void Rematch()
@@ -117,12 +119,13 @@ namespace Ui.InGame.ViewModels
                 RematchOnline();
             }
 
-            popupViewModel.ClosePopupToGame();
+            _popupViewModel.ClosePopupToGame();
         }
 
         private void RematchOffline()
         {
-            game.Rematch();
+            // TODO: Flow
+            // _game.Rematch();
         }
 
         private void RematchOnline()
@@ -144,15 +147,16 @@ namespace Ui.InGame.ViewModels
                 PopupNoCommand = RematchDecline,
             };
 
-            popupViewModel.OpenConfigurablePopup(popupSettings);
+            _popupViewModel.OpenConfigurablePopup(popupSettings);
 
-            effectsPlayer.PlayNotifySound();
+            _effectsPlayer.PlayNotifySound();
         }
 
         private void RematchApprove()
         {
-            game.Rematch();
-            popupViewModel.ClosePopupToGame();
+            // TODO: Flow
+            // _game.Rematch();
+            _popupViewModel.ClosePopupToGame();
 
             PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
             RematchApprove_TargetRpc(otherPlayerID);
@@ -162,8 +166,9 @@ namespace Ui.InGame.ViewModels
         private void RematchApprove_TargetRpc(PlayerID player)
         {
             IsRematchRequested = false;
-            game.Rematch();
-            popupViewModel.ClosePopupToGame();
+            // TODO: Flow
+            // _game.Rematch();
+            _popupViewModel.ClosePopupToGame();
         }
 
         private void RematchDecline()
@@ -171,19 +176,19 @@ namespace Ui.InGame.ViewModels
             PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
             RematchDecline_TargetRpc(otherPlayerID);
 
-            popupViewModel.ClosePopupToGame();
+            _popupViewModel.ClosePopupToGame();
         }
 
         private void RematchDecline_TargetRpc(PlayerID otherPlayerID)
         {
             IsRematchRequested = false;
-            popupViewModel.ClosePopupToGame();
+            _popupViewModel.ClosePopupToGame();
         }
 
         private void Draw()
         {
             IsDrawRequested = true;
-            popupViewModel.ClosePopupToGame();
+            _popupViewModel.ClosePopupToGame();
 
             PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
             DrawRequest_TargetRpc(otherPlayerID);
@@ -201,15 +206,15 @@ namespace Ui.InGame.ViewModels
                 PopupNoCommand = DrawDecline,
             };
 
-            popupViewModel.OpenConfigurablePopup(popupSettings);
+            _popupViewModel.OpenConfigurablePopup(popupSettings);
 
-            effectsPlayer.PlayNotifySound();
+            _effectsPlayer.PlayNotifySound();
         }
 
         private void DrawApprove()
         {
-            game.DrawSetup("Draw by agreement");
-            popupViewModel.ClosePopupToGame();
+            _game.DrawSetup("Draw by agreement");
+            _popupViewModel.ClosePopupToGame();
 
             PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
             DrawApprove_TargetRpc(otherPlayerID);
@@ -219,12 +224,12 @@ namespace Ui.InGame.ViewModels
         private void DrawApprove_TargetRpc(PlayerID otherPlayerID)
         {
             IsDrawRequested = false;
-            game.DrawSetup("Draw by agreement");
+            _game.DrawSetup("Draw by agreement");
         }
 
         private void DrawDecline()
         {
-            popupViewModel.ClosePopupToGame();
+            _popupViewModel.ClosePopupToGame();
 
             PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
             DrawDecline_TargetRpc(otherPlayerID);
@@ -238,8 +243,8 @@ namespace Ui.InGame.ViewModels
 
         private void Resign()
         {
-            game.ResignSetup();
-            popupViewModel.ClosePopupToGame();
+            _game.ResignSetup();
+            _popupViewModel.ClosePopupToGame();
 
             PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
             Resign_TargetRpc(otherPlayerID);
@@ -248,7 +253,7 @@ namespace Ui.InGame.ViewModels
         [TargetRpc]
         private void Resign_TargetRpc(PlayerID otherPlayerID)
         {
-            game.ResignSetup();
+            _game.ResignSetup();
         }
     }
 }

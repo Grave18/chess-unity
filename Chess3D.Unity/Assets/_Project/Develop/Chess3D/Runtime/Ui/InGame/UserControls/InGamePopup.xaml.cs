@@ -3,8 +3,8 @@
 using Noesis;
 using Ui.Auxiliary;
 using UnityEngine;
-using Ui.InGame.ViewModels;
 using GUI = Noesis.GUI;
+using PopupViewModel = Chess3D.Runtime.Core.Ui.ViewModels.PopupViewModel;
 
 #else
 using System;
@@ -27,7 +27,8 @@ namespace Ui.InGame.UserControls
         private void OnInitialized(object sender, EventArgs e)
         {
 #if NOESIS
-            DataContext = Object.FindAnyObjectByType<PopupViewModel>();
+            // TODO: Refactor to use container
+            // DataContext = Object.FindAnyObjectByType<PopupViewModel>();
 #endif
         }
 
