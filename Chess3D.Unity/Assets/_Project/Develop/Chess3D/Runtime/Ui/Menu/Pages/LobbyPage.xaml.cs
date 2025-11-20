@@ -2,7 +2,6 @@
 #define NOESIS
 using UnityEngine;
 using Noesis;
-using Ui.Menu.ViewModels;
 
 #else
 using System;
@@ -11,6 +10,7 @@ using System.Windows;
 #endif
 
 using Ui.Auxiliary;
+using LobbyViewModel = Chess3D.Runtime.Menu.UI.ViewModels.LobbyViewModel;
 
 namespace Ui.Menu.Pages
 {

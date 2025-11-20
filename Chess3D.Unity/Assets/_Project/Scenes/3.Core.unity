@@ -545,7 +545,7 @@ GameObject:
   - component: {fileID: 117839664}
   - component: {fileID: 117839665}
   m_Layer: 0
-  m_Name: InGamePageViewModel
+  m_Name: InGamePageViewModel(network)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1173,7 +1173,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 177198598}
   m_HandleRect: {fileID: 177198597}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -5618,12 +5618,11 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 117839664}
-  - {fileID: 1987130779}
   - {fileID: 197576552}
   - {fileID: 918385637}
-  - {fileID: 1947251394}
   - {fileID: 1736661309}
   - {fileID: 48751665}
+  - {fileID: 1947251394}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1783972071
@@ -6202,53 +6201,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 85dd54f7d06f42d4a9c533c4c08f0d63, type: 3}
---- !u!1 &1987130778
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1987130779}
-  - component: {fileID: 1987130780}
-  m_Layer: 0
-  m_Name: PlayPageViewModel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1987130779
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1987130778}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1782523899}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1987130780
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1987130778}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2690b9f91474fee834dac7b959a07be, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneLoader: {fileID: 0}
-  lobbyManager: {fileID: 0}
-  onlineSceneSwitcher: {fileID: 0}
 --- !u!1 &1995482127
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-namespace Ui.Menu.ViewModels
+namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     public class SettingsPageViewModel : MonoBehaviour, INotifyPropertyChanged
     {

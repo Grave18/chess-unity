@@ -1,13 +1,12 @@
-﻿using Chess3D.Runtime;
-using Chess3D.Runtime.Core.Logic;
+﻿using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Menu.LobbyManagement;
 using Cysharp.Threading.Tasks;
 using LobbyManagement;
-using Ui.Auxiliary;
 using MvvmTool;
+using Ui.Auxiliary;
 using UnityEngine;
 
-namespace Ui.Menu.ViewModels
+namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     public partial class PlayPageViewModel : MonoBehaviour
     {

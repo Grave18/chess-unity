@@ -1,7 +1,7 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
+using Chess3D.Runtime.Menu.UI.ViewModels;
 using Noesis;
-using Ui.Menu.ViewModels;
 using UnityEngine;
 using GUI = Noesis.GUI;
 

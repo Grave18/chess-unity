@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Ui.Menu.ViewModels
+namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     public class MainPageViewModel : MonoBehaviour
     {

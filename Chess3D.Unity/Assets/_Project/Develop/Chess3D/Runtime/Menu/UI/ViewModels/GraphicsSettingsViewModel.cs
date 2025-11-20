@@ -4,11 +4,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Chess3D.Runtime.Bootstrap.Settings;
-using Ui.Auxiliary;
 using MvvmTool;
+using Ui.Auxiliary;
 using UnityEngine;
 
-namespace Ui.Menu.ViewModels
+namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     public class GraphicsSettingsViewModel : MonoBehaviour, INotifyPropertyChanged
     {

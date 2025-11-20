@@ -5,8 +5,8 @@ using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Core.Ui.ViewModels
 {
-    [INotifyPropertyChanged]
     [Preserve]
+    [INotifyPropertyChanged]
     public partial class InGameMenuViewModel
     {
         private readonly PopupViewModel _popupViewModel;

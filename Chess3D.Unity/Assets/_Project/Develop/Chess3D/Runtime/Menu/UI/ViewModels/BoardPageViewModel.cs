@@ -2,13 +2,11 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Chess3D.Runtime;
-using Chess3D.Runtime.Bootstrap.Settings;
 using Ui.Auxiliary;
 using Ui.BoardInMainMenu;
 using UnityEngine;
 
-namespace Ui.Menu.ViewModels
+namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     public class BoardPageViewModel : MonoBehaviour, INotifyPropertyChanged
     {

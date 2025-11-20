@@ -1,7 +1,6 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
 using Noesis;
-using Ui.Menu.ViewModels;
 using UnityEngine;
 using Grid = Noesis.Grid;
 using GUI = Noesis.GUI;
@@ -13,7 +12,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 #endif
 
+using Chess3D.Runtime.Menu.UI.ViewModels;
 using Ui.Auxiliary;
+using PlayPageViewModel = Chess3D.Runtime.Menu.UI.ViewModels.PlayPageViewModel;
 
 namespace Ui.Menu.Pages
 {

@@ -5,7 +5,7 @@ using Ui.Auxiliary;
 using Ui.Menu.Pages;
 using UnityEngine;
 
-namespace Ui.Menu.ViewModels
+namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     public class MainMenuViewModel : MonoBehaviour
     {

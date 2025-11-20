@@ -7,7 +7,7 @@ using MvvmTool;
 using UnityEngine;
 using FriendItem = Chess3D.Runtime.Menu.LobbyManagement.FriendItem;
 
-namespace Ui.Menu.ViewModels
+namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     public partial class LobbyViewModel : MonoBehaviour
     {

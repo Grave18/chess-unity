@@ -8,8 +8,8 @@ using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Core.Ui.ViewModels
 {
-    [INotifyPropertyChanged]
     [Preserve]
+    [INotifyPropertyChanged]
     public sealed partial class PopupViewModel
     {
         private readonly FenFromBoard _fenFromBoard;
