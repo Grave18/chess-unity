@@ -114,10 +114,11 @@ namespace Chess3D.Runtime.Core
             builder.RegisterComponentInNewPrefab(blackClockPrefab, Lifetime.Scoped).Keyed(PieceColor.Black);
             // VMs
             builder.Register<InGameMenuViewModel>(Lifetime.Scoped);
-            builder.RegisterComponent(inGamePageViewModel);
+            builder.RegisterComponent(inGamePageViewModel); // Network behaviour
             builder.Register<PopupViewModel>(Lifetime.Scoped);
             builder.Register<SettingsPageViewModel>(Lifetime.Scoped);
             builder.Register<GraphicsSettingsViewModel>(Lifetime.Scoped);
+            builder.Register<AudioSettingsViewModel>(Lifetime.Scoped);
 
             // Online
             builder.RegisterComponentOnNewGameObject<ConnectionTerminator>(Lifetime.Scoped);

@@ -39,12 +39,13 @@ namespace Chess3D.Runtime.Core
         private readonly NameCanvas _nameCanvas;
         private readonly IInputHandler _inputHandler;
         private readonly GraphicsSettingsViewModel _graphicsSettingsViewModel;
+        private readonly AudioSettingsViewModel _audioSettingsViewModel;
 
         public CoreFlow(IObjectResolver resolver, LoadingService loadingService, SceneManager sceneManager,
             FenFromString fenFromString, IGameStateMachine gameStateMachineOffline, MenuStateMachine menuStateMachine,
             Assets assets, Board board, Game game, UciBuffer uciBuffer, Competitors competitors, IClock clock,
             CameraController cameraController, NameCanvas nameCanvas, IInputHandler inputHandler,
-            StateDebugPanel stateDebugPanel, BufferDebugPanel bufferDebugPanel, GraphicsSettingsViewModel graphicsSettingsViewModel)
+            StateDebugPanel stateDebugPanel, BufferDebugPanel bufferDebugPanel, GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel)
         {
             _resolver = resolver;
             _loadingService = loadingService;
@@ -62,6 +63,7 @@ namespace Chess3D.Runtime.Core
             _nameCanvas = nameCanvas;
             _inputHandler = inputHandler;
             _graphicsSettingsViewModel = graphicsSettingsViewModel;
+            _audioSettingsViewModel = audioSettingsViewModel;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = new())
@@ -83,6 +85,7 @@ namespace Chess3D.Runtime.Core
             await _loadingService.BeginLoading(_nameCanvas);
             await _loadingService.BeginLoading(_menuStateMachine);
             await _loadingService.BeginLoading(_graphicsSettingsViewModel);
+            await _loadingService.BeginLoading(_audioSettingsViewModel);
             SpawnClockPanel();
 
             await _loadingService.BeginLoading(_gameStateMachineOffline, _resolver.Resolve<WarmUpState>());

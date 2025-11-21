@@ -1,6 +1,7 @@
 ﻿using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Bootstrap
@@ -17,16 +18,30 @@ namespace Chess3D.Runtime.Bootstrap
 
         public UniTask Load()
         {
+            SetFramerate();
+            SetQuality();
+            SetResolution();
+            SetVolume();
+
+            return UniTask.CompletedTask;
+        }
+
+        private static void SetFramerate()
+        {
             Application.targetFrameRate = (int)Screen.currentResolution.refreshRateRatio.value;
+        }
+
+        private void SetQuality()
+        {
             QualitySettings.SetQualityLevel(_settingsService.S.GraphicsSettings.Quality);
+        }
 
+        private void SetResolution()
+        {
             InitializeResolution();
-
             Screen.SetResolution(_settingsService.S.GraphicsSettings.Width,
                 _settingsService.S.GraphicsSettings.Height,
                 (FullScreenMode)_settingsService.S.GraphicsSettings.FullScreenMode);
-
-            return UniTask.CompletedTask;
         }
 
         private void InitializeResolution()
@@ -38,6 +53,14 @@ namespace Chess3D.Runtime.Bootstrap
                 _settingsService.S.GraphicsSettings.Height = Screen.currentResolution.height;
                 _settingsService.Save();
             }
+        }
+
+        private void SetVolume()
+        {
+            var audioMixer = AssetService.R.Load<AudioMixer>(RuntimeConstants.Settings.AudioMixerFileName);
+            audioMixer.SetFloat(RuntimeConstants.Settings.MasterVolumeKey, VolumeUtil.Map01ToDb(_settingsService.S.AudioSettings.MasterVolume));
+            audioMixer.SetFloat(RuntimeConstants.Settings.MusicVolumeKey, VolumeUtil.Map01ToDb(_settingsService.S.AudioSettings.MusicVolume));
+            audioMixer.SetFloat(RuntimeConstants.Settings.EffectsVolumeKey, VolumeUtil.Map01ToDb(_settingsService.S.AudioSettings.EffectsVolume));
         }
     }
 }

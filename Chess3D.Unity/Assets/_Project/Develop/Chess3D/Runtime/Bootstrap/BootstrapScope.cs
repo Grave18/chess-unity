@@ -1,5 +1,4 @@
-﻿using Chess3D.Runtime.Core;
-using Chess3D.Runtime.Utilities;
+﻿using Chess3D.Runtime.Utilities;
 using VContainer;
 using VContainer.Unity;
 

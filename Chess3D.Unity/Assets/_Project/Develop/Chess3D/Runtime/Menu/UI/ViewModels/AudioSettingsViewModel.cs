@@ -1,88 +1,57 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Chess3D.Runtime.Bootstrap.Settings;
-using Ui.Auxiliary;
-using UnityEngine;
+﻿using Chess3D.Runtime.Utilities;
+using Cysharp.Threading.Tasks;
+using MvvmTool;
+using UnityEngine.Audio;
+using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
-    public class AudioSettingsViewModel : MonoBehaviour, INotifyPropertyChanged
+    [Preserve]
+    [INotifyPropertyChanged]
+    public partial class AudioSettingsViewModel : ILoadUnit
     {
-        [SerializeField] private AudioSettingsContainer audioSettingsContainer;
+        [ObservableProperty] private float _masterVolume;
+        [ObservableProperty] private float _musicVolume;
+        [ObservableProperty] private float _effectsVolume;
 
-        private float _masterVolume;
+        private AudioMixer _audioMixer;
 
-        public float MasterVolume
+        private readonly SettingsService _settingsService;
+
+        public AudioSettingsViewModel(SettingsService settingsService)
         {
-            get => _masterVolume;
-            set
-            {
-                if (SetField(ref _masterVolume, value))
-                {
-                    audioSettingsContainer.SetMasterVolume(value);
-                    LogUi.Debug($"{nameof(MasterVolume)} changed to {value}");
-                }
-            }
+            _settingsService = settingsService;
         }
 
-        private float _musicVolume;
-        public float MusicVolume
+        public UniTask Load()
         {
-            get => _musicVolume;
-            set
-            {
-                if (SetField(ref _musicVolume, value))
-                {
-                    audioSettingsContainer.SetMusicVolume(value);
-                    LogUi.Debug($"{nameof(MusicVolume)} changed to {value}");
-                }
-            }
+            _masterVolume = _settingsService.S.AudioSettings.MasterVolume;
+            _musicVolume = _settingsService.S.AudioSettings.MusicVolume;
+            _effectsVolume = _settingsService.S.AudioSettings.EffectsVolume;
+            _audioMixer = AssetService.R.Load<AudioMixer>(RuntimeConstants.Settings.AudioMixerFileName);
+
+            return UniTask.CompletedTask;
         }
 
-        private float _effectsVolume;
-        public float EffectsVolume
+        partial void OnMasterVolumeChanged(float value)
         {
-            get => _effectsVolume;
-            set
-            {
-                if (SetField(ref _effectsVolume, value))
-                {
-                    audioSettingsContainer.SetEffectsVolume(value);
-                    LogUi.Debug($"{nameof(EffectsVolume)} changed to {value}");
-                }
-            }
+            _settingsService.S.AudioSettings.MasterVolume = value;
+            _audioMixer.SetFloat(RuntimeConstants.Settings.MasterVolumeKey, VolumeUtil.Map01ToDb(value));
+            _settingsService.Save();
         }
 
-        private void Awake()
+        partial void OnMusicVolumeChanged(float value)
         {
-            InitVolumes();
+            _settingsService.S.AudioSettings.MusicVolume = value;
+            _audioMixer.SetFloat(RuntimeConstants.Settings.MusicVolumeKey, VolumeUtil.Map01ToDb(value));
+            _settingsService.Save();
         }
 
-        private void InitVolumes()
+        partial void OnEffectsVolumeChanged(float value)
         {
-            _masterVolume = audioSettingsContainer.GetMasterVolume();
-            _musicVolume = audioSettingsContainer.GetMusicVolume();
-            _effectsVolume = audioSettingsContainer.GetEffectsVolume();
+            _settingsService.S.AudioSettings.EffectsVolume = value;
+            _audioMixer.SetFloat(RuntimeConstants.Settings.EffectsVolumeKey, VolumeUtil.Map01ToDb(value));
+            _settingsService.Save();
         }
-
-#region ViewModelImplimentation
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-
-#endregion Implimentation
     }
 }
