@@ -130,7 +130,6 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         private void AbortAndSetPreviousState()
         {
-            Debug.Log("Invalid Undo");
             _isRunning = false;
             _gameStateMachine.SetState(_moveData.PreviousState);
         }

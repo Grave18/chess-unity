@@ -11,14 +11,17 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         private CoreEvents _coreEvents;
         private UciBuffer _uciBuffer;
         private UndoState _undoState;
+        private IdleState _idleState;
 
         [Inject]
-        public void Construct(IGameStateMachine gameStateMachine, CoreEvents coreEvents, UciBuffer uciBuffer, UndoState undoState)
+        public void Construct(IGameStateMachine gameStateMachine, CoreEvents coreEvents, UciBuffer uciBuffer,
+            UndoState undoState, IdleState idleState)
         {
             _gameStateMachine = gameStateMachine;
             _coreEvents = coreEvents;
             _uciBuffer = uciBuffer;
             _undoState = undoState;
+            _idleState = idleState;
         }
 
         public string Name => "End Game";
@@ -32,7 +35,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         {
             if (_uciBuffer.CanUndo(out MoveData moveData))
             {
-                moveData.PreviousState = this;
+                moveData.PreviousState = _idleState;
                 _gameStateMachine.SetState(_undoState, moveData);
             }
         }
