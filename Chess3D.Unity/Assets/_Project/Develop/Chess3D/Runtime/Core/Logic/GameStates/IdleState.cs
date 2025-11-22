@@ -38,8 +38,6 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         public override void Enter()
         {
-            Debug.Log("State: " + Name);
-
             if (_game.IsEndGame)
             {
                 EndGame();
@@ -81,11 +79,6 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             }
         }
 
-        public void Play()
-        {
-            // Already playing
-        }
-
         public void Pause()
         {
             _gameStateMachine.SetState(pauseState);
@@ -110,6 +103,11 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         {
             _gameStateMachine.SetState(endGameState);
             _competitors.StopPlayer();
+        }
+
+        public void Play()
+        {
+            // Already playing
         }
     }
 }

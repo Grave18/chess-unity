@@ -48,8 +48,6 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         public override void Enter(string uci)
         {
-            Debug.Log("State: " + Name);
-
             _t = 0f;
             _uci = uci;
 
@@ -275,6 +273,8 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             }
         }
 
+#region unused
+
         public void Move(string uci)
         {
          // Empty
@@ -298,6 +298,8 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         public void Pause()
         {
          // Maybe implement pause from Move
-         }
+        }
+
+#endregion unused
     }
 }

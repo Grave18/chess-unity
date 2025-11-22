@@ -28,8 +28,6 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         public override void Enter()
         {
-            Debug.Log("State: " + Name);
-
             _coreEvents.FirePause();
         }
 

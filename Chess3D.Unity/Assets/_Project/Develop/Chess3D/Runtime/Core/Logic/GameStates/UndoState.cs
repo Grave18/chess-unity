@@ -41,8 +41,6 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         public override void Enter(MoveData moveData)
         {
-            Debug.Log("State: " + Name);
-
             _t = 1f;
             _moveData = moveData;
 
@@ -200,6 +198,8 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             }
         }
 
+#region unused
+
         public void Move(string uci)
         {
             // No need
@@ -224,5 +224,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         {
             // May be implemented, but with Undo and Redo
         }
+        
+#endregion unused
     }
 }

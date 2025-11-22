@@ -10,7 +10,6 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
     public class WarmUpState : StateNode, IGameState
     {
         private IGameStateMachine _gameStateMachine;
-        private SettingsService _settingsService;
         private CameraController _cameraController;
         private CoreEvents _coreEvents;
 
@@ -22,19 +21,16 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         public string Name => "WarmUp";
 
         [Inject]
-        public void Construct(IGameStateMachine gameStateMachine, SettingsService settingsService,
+        public void Construct(IGameStateMachine gameStateMachine,
             CameraController cameraController, CoreEvents coreEvents)
         {
             _gameStateMachine = gameStateMachine;
-            _settingsService = settingsService;
             _cameraController = cameraController;
             _coreEvents = coreEvents;
         }
 
         public override void Enter()
         {
-            Debug.Log("State: " + Name);
-
             t = WarmupTimeSec;
 
             _cameraController.RotateToStartPosition().Forget();
@@ -62,7 +58,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             }
         }
 
-        // Unused
+#region unused
         public void Move(string uci)
         {
             // Empty
@@ -87,5 +83,6 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         {
             // Empty
         }
+#endregion unused
     }
 }
