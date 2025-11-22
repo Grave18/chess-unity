@@ -1926,17 +1926,19 @@ MonoBehaviour:
   gameStateMachineOnline: {fileID: 231309765}
   effectsPlayer: {fileID: 1073805729}
   gameCanvas: {fileID: 1783972078}
+  nameCanvas: {fileID: 1974612115}
   stateDebugPanelPrefab: {fileID: 5876438799246262298, guid: 39ec6e9c33a5bc8488053291cc83c895,
     type: 3}
   bufferDebugPanelPrefab: {fileID: 5251672986739833790, guid: b8c5ecbcda78eeb4ab9f76ed67b117c6,
     type: 3}
-  nameCanvas: {fileID: 1974612115}
-  promotionPanel: {fileID: 59947144}
-  notificationPanel: {fileID: 948061434}
   whiteClockPrefab: {fileID: 7944437879434264550, guid: e028a4c506fb2ee40a5c18ae5bf50d90,
     type: 3}
   blackClockPrefab: {fileID: 7313132116599355226, guid: 995b4dbbc0d5b884da75a67691c69c15,
     type: 3}
+  promotionPanel: {fileID: 59947144}
+  notificationPanel: {fileID: 948061434}
+  algebraicNotationPanel: {fileID: 1731108921}
+  undoRedoPausePanel: {fileID: 1351301124}
   inGamePageViewModel: {fileID: 117839665}
   warmupState: {fileID: 1084554415}
   idleState: {fileID: 784571184}

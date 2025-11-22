@@ -16,6 +16,7 @@ using Chess3D.Runtime.Core.MainCamera;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Core.Sound;
 using Chess3D.Runtime.Core.Ui;
+using Chess3D.Runtime.Core.Ui.AlgebraicNotation;
 using Chess3D.Runtime.Core.Ui.BoardUi;
 using Chess3D.Runtime.Core.Ui.ClockUi;
 using Chess3D.Runtime.Core.Ui.DebugUi;
@@ -37,13 +38,17 @@ namespace Chess3D.Runtime.Core
 
         [Header("Ui")]
         [SerializeField] private GameCanvas gameCanvas;
+        [SerializeField] private NameCanvas nameCanvas;
         [SerializeField] private StateDebugPanel stateDebugPanelPrefab;
         [SerializeField] private BufferDebugPanel bufferDebugPanelPrefab;
-        [SerializeField] private NameCanvas nameCanvas;
-        [SerializeField] private PromotionPanel promotionPanel;
-        [SerializeField] private NotificationPanel notificationPanel;
         [SerializeField] private ClockPanelCanvas whiteClockPrefab;
         [SerializeField] private ClockPanelCanvas blackClockPrefab;
+        [SerializeField] private PromotionPanel promotionPanel;
+        [SerializeField] private NotificationPanel notificationPanel;
+        [SerializeField] private AlgebraicNotationPanel algebraicNotationPanel;
+        [SerializeField] private UndoRedoPausePanel undoRedoPausePanel;
+
+        [Header("VMs")]
         [SerializeField] private InGamePageViewModel inGamePageViewModel; // Because NetworkBehaviour
 
         [Header("Game states")]
@@ -108,6 +113,8 @@ namespace Chess3D.Runtime.Core
             builder.RegisterComponent(nameCanvas);
             builder.RegisterComponent(promotionPanel);
             builder.RegisterComponent(notificationPanel);
+            builder.RegisterComponent(algebraicNotationPanel);
+            builder.RegisterComponent(undoRedoPausePanel);
             // Clock Ui
             builder.RegisterFactory(ClockPanelFactory, Lifetime.Scoped);
             builder.RegisterComponentInNewPrefab(whiteClockPrefab, Lifetime.Scoped).Keyed(PieceColor.White);

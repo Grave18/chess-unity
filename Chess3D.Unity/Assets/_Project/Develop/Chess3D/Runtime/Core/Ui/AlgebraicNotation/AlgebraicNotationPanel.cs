@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Core.Logic.MovesBuffer;
+using Chess3D.Runtime.Utilities;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 
 namespace Chess3D.Runtime.Core.Ui.AlgebraicNotation
 {
-    public class AlgebraicNotationPanel : MonoBehaviour, IDisposable
+    public class AlgebraicNotationPanel : MonoBehaviour, IDisposable, ILoadUnit
     {
         private const int NumOfVisibleItems = 5;
 
@@ -34,7 +36,6 @@ namespace Chess3D.Runtime.Core.Ui.AlgebraicNotation
             _uciBuffer = uciBuffer;
             _coreEvents = coreEvents;
 
-            _coreEvents.OnWarmup += Clear;
             _coreEvents.OnEnd += NotateEndGame;
             _uciBuffer.OnAdd += OnAdd;
             _uciBuffer.OnUndo += OnUndo;
@@ -49,7 +50,6 @@ namespace Chess3D.Runtime.Core.Ui.AlgebraicNotation
                 return;
             }
 
-            _coreEvents.OnWarmup -= Clear;
             _coreEvents.OnEnd -= NotateEndGame;
             _uciBuffer.OnAdd -= OnAdd;
             _uciBuffer.OnUndo -= OnUndo;
@@ -57,15 +57,16 @@ namespace Chess3D.Runtime.Core.Ui.AlgebraicNotation
             _uciBuffer.OnDelete -= OnDelete;
         }
 
-        private void Clear()
+        public UniTask Load()
         {
             foreach (NotationItem notationItem in _notationItems)
             {
                 Destroy(notationItem.gameObject);
             }
-
-            _fullMoveIndex = 0;
             _notationItems.Clear();
+            _fullMoveIndex = 0;
+
+            return UniTask.CompletedTask;
         }
 
         private void NotateEndGame()

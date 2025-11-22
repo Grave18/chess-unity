@@ -9,6 +9,8 @@ using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.MainCamera;
 using Chess3D.Runtime.Core.Notation;
+using Chess3D.Runtime.Core.Ui;
+using Chess3D.Runtime.Core.Ui.AlgebraicNotation;
 using Chess3D.Runtime.Core.Ui.BoardUi;
 using Chess3D.Runtime.Core.Ui.ClockUi;
 using Chess3D.Runtime.Core.Ui.DebugUi;
@@ -40,12 +42,14 @@ namespace Chess3D.Runtime.Core
         private readonly IInputHandler _inputHandler;
         private readonly GraphicsSettingsViewModel _graphicsSettingsViewModel;
         private readonly AudioSettingsViewModel _audioSettingsViewModel;
+        private readonly AlgebraicNotationPanel _algebraicNotationPanel;
+        private readonly UndoRedoPausePanel _undoRedoPausePanel;
 
         public CoreFlow(IObjectResolver resolver, LoadingService loadingService, SceneManager sceneManager,
             FenFromString fenFromString, IGameStateMachine gameStateMachineOffline, MenuStateMachine menuStateMachine,
             Assets assets, Board board, Game game, UciBuffer uciBuffer, Competitors competitors, IClock clock,
             CameraController cameraController, NameCanvas nameCanvas, IInputHandler inputHandler,
-            StateDebugPanel stateDebugPanel, BufferDebugPanel bufferDebugPanel, GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel)
+            StateDebugPanel stateDebugPanel, BufferDebugPanel bufferDebugPanel, GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel, AlgebraicNotationPanel algebraicNotationPanel, UndoRedoPausePanel undoRedoPausePanel)
         {
             _resolver = resolver;
             _loadingService = loadingService;
@@ -64,6 +68,8 @@ namespace Chess3D.Runtime.Core
             _inputHandler = inputHandler;
             _graphicsSettingsViewModel = graphicsSettingsViewModel;
             _audioSettingsViewModel = audioSettingsViewModel;
+            _algebraicNotationPanel = algebraicNotationPanel;
+            _undoRedoPausePanel = undoRedoPausePanel;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = new())
@@ -86,6 +92,8 @@ namespace Chess3D.Runtime.Core
             await _loadingService.BeginLoading(_menuStateMachine);
             await _loadingService.BeginLoading(_graphicsSettingsViewModel);
             await _loadingService.BeginLoading(_audioSettingsViewModel);
+            await _loadingService.BeginLoading(_algebraicNotationPanel);
+            await _loadingService.BeginLoading(_undoRedoPausePanel);
             SpawnClockPanel();
 
             await _loadingService.BeginLoading(_gameStateMachineOffline, _resolver.Resolve<WarmUpState>());
