@@ -4,6 +4,7 @@ namespace Chess3D.Runtime.Utilities.Logging
     {
         public static readonly TagLog Default = new(string.Empty);
         public static readonly TagLog Loading = new("LOADING");
+        public static readonly TagLog Editor = new("EDITOR");
         public static readonly TagLog Boot = new("BOOT");
         public static readonly TagLog Meta = new("META");
         public static readonly TagLog Battle = new("BATTLE");
