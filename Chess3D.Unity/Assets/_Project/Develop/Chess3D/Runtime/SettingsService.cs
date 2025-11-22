@@ -40,7 +40,7 @@ namespace Chess3D.Runtime
 
         public void Save()
         {
-            string settingsJson = JsonUtility.ToJson(S);
+            string settingsJson = JsonUtility.ToJson(S, prettyPrint: true);
             File.WriteAllText(RuntimeConstants.Settings.FilePath, settingsJson);
         }
     }

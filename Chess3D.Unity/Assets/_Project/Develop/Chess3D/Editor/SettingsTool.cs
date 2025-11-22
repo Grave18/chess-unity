@@ -2,14 +2,15 @@
 using Chess3D.Runtime;
 using Chess3D.Runtime.Core.Logic;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 using PlayerSettings = Chess3D.Runtime.Bootstrap.Settings.PlayerSettings;
 
 namespace Chess3D.Editor
 {
-    public static class SettingsGenerator
+    public static class SettingsTool
     {
-        [MenuItem("Tools/Grave/Generators/Generate Settings")]
+        [MenuItem("Tools/Grave/Settings/Generate Settings")]
         public static void Generate()
         {
             var settings = new Settings
@@ -57,6 +58,19 @@ namespace Chess3D.Editor
             var path = Path.Combine(Application.dataPath, "_Project", "Resources", RuntimeConstants.Settings.FileName + ".json");
             var settingsJson = JsonUtility.ToJson(settings, prettyPrint: true);
             File.WriteAllText(path, settingsJson);
+        }
+
+        [MenuItem("Tools/Grave/Settings/Open External Settings")]
+        public static void OpenExternalSettings()
+        {
+            InternalEditorUtility.OpenFileAtLineExternal(RuntimeConstants.Settings.FilePath, 1);
+        }
+
+        [MenuItem("Tools/Grave/Settings/Open Default Settings")]
+        public static void OpenInternalSettings()
+        {
+            var path = Path.Combine(Application.dataPath, "_Project", "Resources", RuntimeConstants.Settings.FileName + ".json");
+            InternalEditorUtility.OpenFileAtLineExternal(path, 1);
         }
     }
 }
