@@ -52,7 +52,7 @@ namespace Chess3D.Runtime.Core.MainCamera
 
         private Game _game;
         private Camera _mainCamera;
-        private SettingsService _settingsService;
+        private ISettingsService _settingsService;
         private CoreEvents _coreEvents;
         private FenFromString _fenFromString;
 
@@ -76,7 +76,7 @@ namespace Chess3D.Runtime.Core.MainCamera
 
         [Inject]
         public void Construct(Game game, [Key(CameraKeys.Main)] Camera mainCamera,
-            SettingsService settingsService, CoreEvents coreEvents, FenFromString fenFromString)
+            ISettingsService settingsService, CoreEvents coreEvents, FenFromString fenFromString)
         {
             _game = game;
             _mainCamera = mainCamera;

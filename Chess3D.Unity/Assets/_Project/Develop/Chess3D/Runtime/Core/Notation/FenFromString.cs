@@ -16,14 +16,14 @@ namespace Chess3D.Runtime.Core.Notation
         public int FullMoveCounter { get; private set; }
         public IList<PieceInfo> PieceInfos { get; private set; }
 
-        private readonly SettingsService _settingsService;
+        private readonly ISettingsService _settingsService;
         private FenSplit _fenSplit;
 
         public string EnPassantAddress => _fenSplit.EnPassant;
 
 
         /// Fen string must be valid
-        public FenFromString(SettingsService settingsService)
+        public FenFromString(ISettingsService settingsService)
         {
             _settingsService = settingsService;
         }

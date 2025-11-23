@@ -13,7 +13,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [SerializeField] private VisualBoardSpawner visualBoardSpawner;
 
         // TODO: Add DI dependency
-        private SettingsService _settingsService;
+        private ISettingsService _settingsService;
 
         public ObservableCollection<string> Pieces { get; set; } = new();
         public ObservableCollection<string> Boards { get; set; } = new();

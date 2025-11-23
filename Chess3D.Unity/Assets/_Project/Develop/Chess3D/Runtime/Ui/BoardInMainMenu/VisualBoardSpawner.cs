@@ -14,7 +14,7 @@ namespace Ui.BoardInMainMenu
     {
         [Header("References")]
         // TODO: Add DI dependency
-        private SettingsService _settingsService;
+        private ISettingsService _settingsService;
 
         [Header("Board")]
         [SerializeField] private AssetLabelReference boardLabel;

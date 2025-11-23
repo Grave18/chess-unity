@@ -11,7 +11,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
     public class FenUserControlViewModel : MonoBehaviour, INotifyPropertyChanged
     {
         // TODO: Add DI dependency
-        private SettingsService _settingsService;
+        private ISettingsService _settingsService;
 
         public DelegateCommand GetDefaultFenCommand { get; private set; }
         public DelegateCommand GetSavedFenCommand { get; private set; }

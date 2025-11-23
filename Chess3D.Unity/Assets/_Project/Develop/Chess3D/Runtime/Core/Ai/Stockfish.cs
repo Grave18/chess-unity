@@ -16,7 +16,7 @@ namespace Chess3D.Runtime.Core.Ai
     public sealed class Stockfish : IDisposable
     {
         private readonly UciBuffer _uciBuffer;
-        private readonly SettingsService _settingsService;
+        private readonly ISettingsService _settingsService;
 
         private PlayerSettings _playerSettings;
 
@@ -37,7 +37,7 @@ namespace Chess3D.Runtime.Core.Ai
 
         private readonly TaskCompletionSource<bool> _isAiLoaded = new();
 
-        public Stockfish(UciBuffer uciBuffer, SettingsService settingsService)
+        public Stockfish(UciBuffer uciBuffer, ISettingsService settingsService)
         {
             _uciBuffer = uciBuffer;
             _settingsService = settingsService;

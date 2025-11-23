@@ -12,7 +12,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
     public class GameSettingsViewModel : MonoBehaviour, INotifyPropertyChanged
     {
         // TODO: Add DI dependency
-        private SettingsService _settingsService;
+        private ISettingsService _settingsService;
 
         public ObservableCollection<string> Times { get; set; }
         public ObservableCollection<string> Difficulties { get; set; }

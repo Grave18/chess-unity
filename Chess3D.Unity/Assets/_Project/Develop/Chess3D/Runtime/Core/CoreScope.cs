@@ -154,7 +154,7 @@ namespace Chess3D.Runtime.Core
         {
             return () =>
             {
-                var settingsService = resolver.Resolve<SettingsService>();
+                var settingsService = resolver.Resolve<ISettingsService>();
                 var game = resolver.Resolve<Game>();
                 var clock = resolver.Resolve<IClock>();
                 var uiCamera = resolver.Resolve<Camera>(CameraKeys.Ui);

@@ -12,12 +12,12 @@ namespace Chess3D.Runtime.Core.Logic.Players
     public sealed class InputComputer : IInputHandler
     {
         private readonly Stockfish _stockfish;
-        private readonly SettingsService _settingsService;
+        private readonly ISettingsService _settingsService;
         private readonly IGameStateMachine _gameStateMachine;
 
         private CancellationTokenSource _moveCts = new();
 
-        public InputComputer(Stockfish stockfish, SettingsService settingsService, IGameStateMachine gameStateMachine)
+        public InputComputer(Stockfish stockfish, ISettingsService settingsService, IGameStateMachine gameStateMachine)
         {
             _settingsService = settingsService;
             _stockfish = stockfish;

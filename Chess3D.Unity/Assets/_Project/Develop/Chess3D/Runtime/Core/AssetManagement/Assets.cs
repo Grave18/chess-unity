@@ -14,12 +14,12 @@ namespace Chess3D.Runtime.Core.AssetManagement
     {
         public LoadedPrefabs Prefabs;
 
-        private readonly SettingsService _settingsService;
+        private readonly ISettingsService _settingsService;
 
         private AsyncOperationHandle<GameObject> _boardHandle;
         private AsyncOperationHandle<IList<GameObject>> _piecesHandle;
 
-        public Assets(SettingsService settingsService)
+        public Assets(ISettingsService settingsService)
         {
             _settingsService = settingsService;
         }

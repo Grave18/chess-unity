@@ -20,7 +20,7 @@ namespace Chess3D.Runtime.Core.Logic.Players
         private readonly IGameStateMachine _gameStateMachine;
         private readonly Camera _mainCamera;
         private readonly Highlighter _highlighter;
-        private readonly SettingsService _settingsService;
+        private readonly ISettingsService _settingsService;
         private readonly PromotionPanel _promotionPanel;
 
         // TODO: Move to config
@@ -28,7 +28,7 @@ namespace Chess3D.Runtime.Core.Logic.Players
         private bool _isPlaying;
 
         public InputHuman(Game game, IGameStateMachine gameStateMachine,
-            SettingsService settingsService, [Key(CameraKeys.Main)] Camera mainCamera,
+            ISettingsService settingsService, [Key(CameraKeys.Main)] Camera mainCamera,
             Highlighter highlighter, PromotionPanel promotionPanel)
         {
             _game = game;

@@ -24,7 +24,7 @@ namespace Chess3D.Runtime.Core.ChessBoard
         private Assets _assets;
         private UciBuffer _commandUciBuffer;
         private FenFromString _fenFromString;
-        private SettingsService _settingsService;
+        private ISettingsService _settingsService;
         [SerializeField] private Transform piecesParent;
         [SerializeField] private Transform squaresParent;
         [SerializeField] private BeatenPieces beatenPieces;
@@ -41,7 +41,7 @@ namespace Chess3D.Runtime.Core.ChessBoard
         public Transform PiecesParent => piecesParent;
 
         [Inject]
-        public void Construct(PieceFactory pieceFactory, Assets assets, UciBuffer commandUciBuffer, FenFromString fenFromString, SettingsService settingsService)
+        public void Construct(PieceFactory pieceFactory, Assets assets, UciBuffer commandUciBuffer, FenFromString fenFromString, ISettingsService settingsService)
         {
             this.pieceFactory = pieceFactory;
             _assets = assets;

@@ -11,10 +11,10 @@ namespace Chess3D.Runtime.Bootstrap
     {
         private readonly LoadingService _loadingService;
         private readonly SceneManager _sceneManager;
-        private readonly SettingsService _settingsService;
+        private readonly ISettingsService _settingsService;
         private readonly ApplicationConfigurationLoadUnit _applicationConfigurationLoadUnit;
 
-        public BootstrapFlow(LoadingService loadingService, SceneManager sceneManager, SettingsService settingsService,
+        public BootstrapFlow(LoadingService loadingService, SceneManager sceneManager, ISettingsService settingsService,
             ApplicationConfigurationLoadUnit applicationConfigurationLoadUnit)
         {
             _loadingService = loadingService;

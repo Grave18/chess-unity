@@ -16,9 +16,9 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private AudioMixer _audioMixer;
 
-        private readonly SettingsService _settingsService;
+        private readonly ISettingsService _settingsService;
 
-        public AudioSettingsViewModel(SettingsService settingsService)
+        public AudioSettingsViewModel(ISettingsService settingsService)
         {
             _settingsService = settingsService;
         }

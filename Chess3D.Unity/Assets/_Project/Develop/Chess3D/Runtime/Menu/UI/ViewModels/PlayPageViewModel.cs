@@ -10,7 +10,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     public partial class PlayPageViewModel : MonoBehaviour
     {
-        [SerializeField] private SettingsService _settingsService;
+        [SerializeField] private ISettingsService _settingsService;
         [SerializeField] private SceneLoader sceneLoader;
         [SerializeField] private LobbyManager lobbyManager;
         [SerializeField] private OnlineSceneSwitcher onlineSceneSwitcher;

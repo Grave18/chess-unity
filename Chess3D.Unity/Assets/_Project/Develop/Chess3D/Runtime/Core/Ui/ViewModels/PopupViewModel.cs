@@ -15,7 +15,7 @@ namespace Chess3D.Runtime.Core.Ui.ViewModels
         private readonly FenFromBoard _fenFromBoard;
         private readonly MenuStateMachine _menuStateMachine;
         private readonly SceneManager _sceneManager;
-        private readonly SettingsService _settingsService;
+        private readonly ISettingsService _settingsService;
         private readonly ConnectionTerminator _connectionTerminator;
 
         [ObservableProperty] private bool _isPopupOpen;
@@ -26,7 +26,7 @@ namespace Chess3D.Runtime.Core.Ui.ViewModels
         [ObservableProperty] private bool _isSaveCheckBoxEnabled;
         [ObservableProperty] private bool _isSaveCheckBoxChecked;
 
-        public PopupViewModel(FenFromBoard fenFromBoard, MenuStateMachine menuStateMachine, SceneManager sceneManager, SettingsService settingsService, ConnectionTerminator connectionTerminator)
+        public PopupViewModel(FenFromBoard fenFromBoard, MenuStateMachine menuStateMachine, SceneManager sceneManager, ISettingsService settingsService, ConnectionTerminator connectionTerminator)
         {
             _fenFromBoard = fenFromBoard;
             _menuStateMachine = menuStateMachine;

@@ -8,13 +8,13 @@ namespace Chess3D.Runtime.Core.Ui.BoardUi
 {
     public class NameCanvas : MonoBehaviour, ILoadUnit
     {
-        private SettingsService _settingsService;
+        private ISettingsService _settingsService;
 
         [SerializeField] private TMP_Text whitePlayerNameText;
         [SerializeField] private TMP_Text blackPlayerNameText;
 
         [Inject]
-        public void Construct(SettingsService settingsService)
+        public void Construct(ISettingsService settingsService)
         {
             _settingsService = settingsService;
         }

@@ -22,7 +22,7 @@ namespace Chess3D.Runtime.Core.Logic
         private UciBuffer _uciBuffer;
         private Board _board;
         private FenFromString _fenFromString;
-        private SettingsService _settingsService;
+        private ISettingsService _settingsService;
 
         /// Is it turn of current player
         public bool IsMyTurn => CurrentTurnColor == _settingsService.S.GameSettings.PlayerColor;
@@ -46,7 +46,7 @@ namespace Chess3D.Runtime.Core.Logic
 
 
         [Inject]
-        public void Construct(Board board, FenFromString fenFromString, UciBuffer uciBuffer, SettingsService settingsService)
+        public void Construct(Board board, FenFromString fenFromString, UciBuffer uciBuffer, ISettingsService settingsService)
         {
             _board = board;
             _fenFromString = fenFromString;

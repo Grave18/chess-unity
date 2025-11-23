@@ -8,7 +8,7 @@ namespace Chess3D.Runtime.Core.Logic
     public class ClockOffline : MonoBehaviour, IClock, IDisposable
     {
         private Game _game;
-        private SettingsService _settingsService;
+        private ISettingsService _settingsService;
         private CoreEvents _coreEvents;
 
         private TimeSpan _initialWhiteTime;
@@ -23,7 +23,7 @@ namespace Chess3D.Runtime.Core.Logic
         public TimeSpan BlackTime => _blackTime;
 
         [Inject]
-        public void Construct(Game game, SettingsService settingsService, CoreEvents coreEvents)
+        public void Construct(Game game, ISettingsService settingsService, CoreEvents coreEvents)
         {
             _game = game;
             _settingsService = settingsService;
