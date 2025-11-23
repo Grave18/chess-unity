@@ -70,6 +70,12 @@ namespace Chess3D.Runtime.Core.Ui.AlgebraicNotation
         private void OnAdd(MoveData moveData)
         {
             string algebraicNotation = moveData.AlgebraicNotation;
+
+            if (_game.IsEndGame)
+            {
+                Debug.Log("End Game");
+            }
+
             if (moveData.TurnColor == PieceColor.White)
             {
                 _fullMoveIndex += 1;
@@ -82,6 +88,7 @@ namespace Chess3D.Runtime.Core.Ui.AlgebraicNotation
                 NotationItem notationItem = _notationItems.LastOrDefault();
                 if (!notationItem)
                 {
+                    _fullMoveIndex += 1;
                     notationItem = GetNotationItem();
                     // Minus one because full move counter is updated after black move
                     // Factical second technically first move
@@ -163,7 +170,6 @@ namespace Chess3D.Runtime.Core.Ui.AlgebraicNotation
 
         private void NotateEndGame()
         {
-            NotationItem notationItem = GetNotationItem();
             string algebraicNotation = string.Empty;
 
             if (_game.IsDraw)
@@ -179,7 +185,8 @@ namespace Chess3D.Runtime.Core.Ui.AlgebraicNotation
                 algebraicNotation = "0-1";
             }
 
-            notationItem.AddEndGame(algebraicNotation);
+            NotationItem notationItem = _notationItems.LastOrDefault();
+            notationItem?.AddEndGame(algebraicNotation);
         }
 
         private NotationItem GetNotationItem()
