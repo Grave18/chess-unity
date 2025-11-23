@@ -12,19 +12,21 @@ namespace Chess3D.Runtime.Core.Logic.Players
         public IPlayer CurrentPlayer { get; private set; }
 
         private readonly Game _game;
+        private readonly ISettingsService _settingsService;
         private readonly FenFromString _fenFromString;
-        private readonly Func<IPlayer> _playerFactory;
+        private readonly PlayerFactory _playerFactory;
         private readonly CoreEvents _coreEvents;
 
         private IPlayer _playerWhite;
         private IPlayer _playerBlack;
 
-        public Competitors(Game game, FenFromString fenFromString, Func<IPlayer> playerFactory, CoreEvents coreEvents)
+        public Competitors(Game game, FenFromString fenFromString, PlayerFactory playerFactory, CoreEvents coreEvents, ISettingsService settingsService)
         {
             _game = game;
             _fenFromString = fenFromString;
             _playerFactory = playerFactory;
             _coreEvents = coreEvents;
+            _settingsService = settingsService;
 
             _coreEvents.OnEndMove += SwapCurrentPlayer;
         }
@@ -41,8 +43,8 @@ namespace Chess3D.Runtime.Core.Logic.Players
 
         public UniTask Load()
         {
-            _playerWhite = _playerFactory(); // TODO: send config as argument
-            _playerBlack = _playerFactory();
+            _playerWhite = _playerFactory.Create(_settingsService.S.GameSettings.PlayerWhite.PlayerType);
+            _playerBlack = _playerFactory.Create(_settingsService.S.GameSettings.PlayerBlack.PlayerType);
             CurrentPlayer = _fenFromString.TurnColor == PieceColor.White ? _playerWhite : _playerBlack;
 
             return UniTask.CompletedTask;

@@ -39,7 +39,6 @@ namespace Chess3D.Runtime.Core
         private readonly IClock _clock;
         private readonly CameraController _cameraController;
         private readonly NameCanvas _nameCanvas;
-        private readonly IInputHandler _inputHandler;
         private readonly GraphicsSettingsViewModel _graphicsSettingsViewModel;
         private readonly AudioSettingsViewModel _audioSettingsViewModel;
         private readonly AlgebraicNotationPanel _algebraicNotationPanel;
@@ -48,7 +47,7 @@ namespace Chess3D.Runtime.Core
         public CoreFlow(IObjectResolver resolver, LoadingService loadingService, SceneManager sceneManager,
             FenFromString fenFromString, IGameStateMachine gameStateMachineOffline, MenuStateMachine menuStateMachine,
             Assets assets, Board board, Game game, UciBuffer uciBuffer, Competitors competitors, IClock clock,
-            CameraController cameraController, NameCanvas nameCanvas, IInputHandler inputHandler,
+            CameraController cameraController, NameCanvas nameCanvas,
             StateDebugPanel stateDebugPanel, BufferDebugPanel bufferDebugPanel, GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel, AlgebraicNotationPanel algebraicNotationPanel, UndoRedoPausePanel undoRedoPausePanel)
         {
             _resolver = resolver;
@@ -65,7 +64,6 @@ namespace Chess3D.Runtime.Core
             _clock = clock;
             _cameraController = cameraController;
             _nameCanvas = nameCanvas;
-            _inputHandler = inputHandler;
             _graphicsSettingsViewModel = graphicsSettingsViewModel;
             _audioSettingsViewModel = audioSettingsViewModel;
             _algebraicNotationPanel = algebraicNotationPanel;
@@ -85,8 +83,6 @@ namespace Chess3D.Runtime.Core
             await _loadingService.BeginLoading(_clock);
             await _loadingService.BeginLoading(_competitors);
             await _loadingService.BeginLoading(_cameraController);
-
-            await _loadingService.BeginLoading(_inputHandler);
 
             await _loadingService.BeginLoading(_nameCanvas);
             await _loadingService.BeginLoading(_menuStateMachine);

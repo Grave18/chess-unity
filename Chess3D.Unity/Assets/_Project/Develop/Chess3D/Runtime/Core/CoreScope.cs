@@ -1,4 +1,5 @@
 ﻿using System;
+using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.Ai;
 using UnityEngine;
 using VContainer;
@@ -93,8 +94,9 @@ namespace Chess3D.Runtime.Core
             builder.Register<CommonPieceSettings>(Lifetime.Scoped);
 
             // Player
-            builder.Register<InputHuman>(Lifetime.Transient).As<IInputHandler>();
-            builder.RegisterFactory(PlayerFactory, Lifetime.Transient);
+            builder.Register<PlayerFactory>(Lifetime.Scoped);
+            builder.Register<InputHuman>(Lifetime.Transient).As<IInputHandler>().Keyed(PlayerType.Human);
+            builder.Register<InputComputer>(Lifetime.Transient).As<IInputHandler>().Keyed(PlayerType.Computer);
             // AI
             builder.Register<Stockfish>(Lifetime.Transient);
 
@@ -139,15 +141,6 @@ namespace Chess3D.Runtime.Core
             builder.RegisterComponentInNewPrefab(stateDebugPanelPrefab, Lifetime.Scoped).UnderTransform(gameCanvas.transform);
             builder.RegisterComponentInNewPrefab(bufferDebugPanelPrefab, Lifetime.Scoped).UnderTransform(gameCanvas.transform);
 #endif
-        }
-
-        private static Func<IPlayer> PlayerFactory(IObjectResolver resolver)
-        {
-            return () =>
-            {
-                var input = resolver.Resolve<IInputHandler>();
-                return new PlayerOffline(input);
-            };
         }
 
         private static Func<ClockPanelCanvas> ClockPanelFactory(IObjectResolver resolver)
