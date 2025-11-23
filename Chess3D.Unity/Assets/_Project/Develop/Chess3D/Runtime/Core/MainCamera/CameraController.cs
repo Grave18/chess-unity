@@ -3,6 +3,7 @@ using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.InputManagement;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Core.Notation;
+using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities;
 using Chess3D.Runtime.Utilities.Common.Mathematics;
 using Cysharp.Threading.Tasks;
@@ -14,6 +15,9 @@ namespace Chess3D.Runtime.Core.MainCamera
 {
     public class CameraController : MonoBehaviour, ILoadUnit
     {
+        private const float WhiteInitialYawRad = Mathf.PI*1.5f;
+        private const float BlackInitialYawRad = Mathf.PI*0.5f;
+
         [Header("Target")]
         [SerializeField] private Vector3 offset = new(0, 0.15f, 0);
 
@@ -57,8 +61,6 @@ namespace Chess3D.Runtime.Core.MainCamera
         private PieceColor _rotateCameraToColor;
         private Coroutine _startRotateRoutine;
 
-        private float _whiteInitialYawRad;
-        private float _blackInitialYawRad;
         private float _zoomCurrentVelocity;
         private float _yawCurrentVelocity;
         private float _pitchCurrentVelocity;
@@ -102,31 +104,11 @@ namespace Chess3D.Runtime.Core.MainCamera
             _isStartRotationOn = IsVsPlayer && _settingsService.S.GameSettings.IsAutoRotateCamera;
             _rotateCameraToColor = IsVsPlayer ? _fenFromString.TurnColor : _settingsService.S.GameSettings.PlayerColor;
             // TODO: offline-online camera autoRotation
-            // _isStartRotationOn = IsVsPlayer && OnlineInstanceHandler.IsOffline && gameSettingsContainer.IsAutoRotateCamera;
+            _isStartRotationOn = IsVsPlayer && OnlineInstanceHandler.IsOffline && _settingsService.S.GameSettings.IsAutoRotateCamera;
 
             _newDistance = distance;
             _newYawRad = yawRad;
             _newPitchRad = pitchRad;
-
-            if (_rotateCameraToColor == PieceColor.White)
-            {
-                _whiteInitialYawRad = Mathf.PI*1.5f;
-                _blackInitialYawRad = Mathf.PI*0.5f;
-            }
-            else if (_rotateCameraToColor == PieceColor.Black)
-            {
-                _whiteInitialYawRad = Mathf.PI*0.5f;
-                _blackInitialYawRad = Mathf.PI*1.5f;
-            }
-
-            if (_rotateCameraToColor == PieceColor.White)
-            {
-                yawRad = _whiteInitialYawRad;
-            }
-            else if (_rotateCameraToColor == PieceColor.Black)
-            {
-                yawRad = _blackInitialYawRad;
-            }
 
             return UniTask.CompletedTask;
         }
@@ -136,6 +118,7 @@ namespace Chess3D.Runtime.Core.MainCamera
             _isUpdating = false;
 
             float targetYawRad = GetTargetYawRad(_rotateCameraToColor);
+            yawRad = targetYawRad;
 
             float t = 0f;
             while (t < 1f)
@@ -281,9 +264,9 @@ namespace Chess3D.Runtime.Core.MainCamera
         {
             return playerColor switch
             {
-                PieceColor.White => _whiteInitialYawRad,
-                PieceColor.Black => _blackInitialYawRad,
-                _ => _whiteInitialYawRad,
+                PieceColor.White => WhiteInitialYawRad,
+                PieceColor.Black => BlackInitialYawRad,
+                _ => WhiteInitialYawRad,
             };
         }
 
