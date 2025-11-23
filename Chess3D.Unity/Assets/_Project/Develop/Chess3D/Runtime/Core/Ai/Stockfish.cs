@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.Logic.MovesBuffer;
+using Chess3D.Runtime.Utilities.Logging;
 using UnityEngine;
 using UnityEngine.Scripting;
 using Debug = UnityEngine.Debug;
@@ -50,8 +51,8 @@ namespace Chess3D.Runtime.Core.Ai
 
         public void ShowProcessOutput()
         {
-            Debug.Log("StdOut: " + _outStringBuilder.ToString());
-            Debug.Log("StdErr: " + _errorStringBuilder.ToString());
+            Log.AI.D("StdOut: " + _outStringBuilder.ToString());
+            Log.AI.D("StdErr: " + _errorStringBuilder.ToString());
         }
 
         public async Task ShowInternalBoardState()
@@ -63,7 +64,7 @@ namespace Chess3D.Runtime.Core.Ai
             }
             catch (Exception)
             {
-                Debug.Log("ShowState aborted");
+                Log.AI.D("ShowState aborted");
             }
         }
 
@@ -78,7 +79,7 @@ namespace Chess3D.Runtime.Core.Ai
         private static void LogState(string state)
         {
             state = "<color=magenta>Stockfish state:</color>\n" + state;
-            Debug.Log(state);
+            Log.AI.D(state);
         }
 
         public async Task Load()
@@ -129,7 +130,7 @@ namespace Chess3D.Runtime.Core.Ai
 
             // Set Threads
             int logicalProcessorsCount = SystemInfo.processorCount;
-            Debug.Log($"Logical processors count = {logicalProcessorsCount}");
+            Log.AI.D($"Logical processors count = {logicalProcessorsCount}");
             PostCommand($"setoption name Threads value {logicalProcessorsCount/2}");
         }
 
@@ -142,7 +143,7 @@ namespace Chess3D.Runtime.Core.Ai
 
         private void DeclareReady()
         {
-            Debug.Log("Stockfish loaded!");
+            Log.AI.D("Stockfish loaded!");
             _isAiLoaded.SetResult(true);
         }
 
@@ -188,7 +189,7 @@ namespace Chess3D.Runtime.Core.Ai
         {
             string message = "<color=cyan>No more moves</color>";
             message += $"\n<color=gray>{moveString}</color>";
-            Debug.Log(message);
+            Log.AI.D(message);
         }
 
         private async Task<string> GetBestMove(CancellationToken token)
@@ -217,7 +218,7 @@ namespace Chess3D.Runtime.Core.Ai
 
         private async Task HandleTaskCancel()
         {
-            Debug.Log("Move was canceled");
+            Log.AI.D("Move was canceled");
             try
             {
                 PostCommand("stop");
@@ -233,13 +234,13 @@ namespace Chess3D.Runtime.Core.Ai
         {
             string name = $"{_playerSettings.Name}(Computer {_playerSettings.ComputerSkillLevel})";
 
-            Debug.Log("\u21bb"); // ↻
-            Debug.Log($"<color=green>{name} calculating move...</color>");
+            Log.AI.D("\u21bb"); // ↻
+            Log.AI.D($"<color=green>{name} calculating move...</color>");
 
             // Set start position
             // Todo: get uci from command buffer _buffer.GetUciMoves()
             string positionCommand = $"position fen {_settingsService.S.GameSettings.CurrentFen} {_uciBuffer.GetMovesUci()}";
-            Debug.Log(positionCommand);
+            Log.AI.D(positionCommand);
             PostCommand(positionCommand);
 
             // Set skill Level
@@ -257,8 +258,8 @@ namespace Chess3D.Runtime.Core.Ai
                 throw new TaskCanceledException();
             }
 
-            Debug.Log($"<color=green>{name} end calculate move</color>");
-            Debug.Log($"<color=cyan>{output}</color>");
+            Log.AI.D($"<color=green>{name} end calculate move</color>");
+            Log.AI.D($"<color=cyan>{output}</color>");
 
             return output;
         }
@@ -285,7 +286,7 @@ namespace Chess3D.Runtime.Core.Ai
         {
             if (IsProcessDead())
             {
-                Debug.Log("Can not read. Process is null or exited");
+                Log.AI.D("Can not read. Process is null or exited");
                 return null;
             }
 
@@ -310,7 +311,7 @@ namespace Chess3D.Runtime.Core.Ai
         {
             if (IsProcessDead())
             {
-                Debug.Log("Can not read. Process is null or exited");
+                Log.AI.D("Can not read. Process is null or exited");
                 return null;
             }
 
@@ -337,7 +338,7 @@ namespace Chess3D.Runtime.Core.Ai
         {
             if (IsProcessDead())
             {
-                Debug.Log($"Cannot execute {command}. Process is null or exited");
+                Log.AI.D($"Cannot execute {command}. Process is null or exited");
                 return;
             }
 
