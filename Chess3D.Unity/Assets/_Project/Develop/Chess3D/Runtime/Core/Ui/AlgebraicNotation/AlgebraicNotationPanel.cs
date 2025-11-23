@@ -16,18 +16,16 @@ namespace Chess3D.Runtime.Core.Ui.AlgebraicNotation
     {
         private const int NumOfVisibleItems = 5;
 
-        private Game _game;
-        private UciBuffer _uciBuffer;
-        private CoreEvents _coreEvents;
-
         [Header("Ui")]
         [SerializeField] private ScrollRect scrollView;
         [SerializeField] private GameObject notationItemPrefab;
 
-        /// Zero based full move index
-        private int _fullMoveIndex = -1;
+        private Game _game;
+        private UciBuffer _uciBuffer;
+        private CoreEvents _coreEvents;
+
+        private int _fullMoveIndex;
         private readonly List<NotationItem> _notationItems = new();
-        private int FullMoveCounter => _uciBuffer.FullMoveCounter;
 
         [Inject]
         public void Construct(Game game, UciBuffer uciBuffer, CoreEvents coreEvents)
@@ -69,27 +67,6 @@ namespace Chess3D.Runtime.Core.Ui.AlgebraicNotation
             return UniTask.CompletedTask;
         }
 
-        private void NotateEndGame()
-        {
-            NotationItem notationItem = GetNotationItem();
-            string algebraicNotation = string.Empty;
-
-            if (_game.IsDraw)
-            {
-                algebraicNotation = "½-½";
-            }
-            else if (_game.IsWinnerWhite)
-            {
-                algebraicNotation = "1-0";
-            }
-            else if (_game.IsWinnerBlack)
-            {
-                algebraicNotation = "0-1";
-            }
-
-            notationItem.AddEndGame(algebraicNotation);
-        }
-
         private void OnAdd(MoveData moveData)
         {
             string algebraicNotation = moveData.AlgebraicNotation;
@@ -116,20 +93,8 @@ namespace Chess3D.Runtime.Core.Ui.AlgebraicNotation
                     notationItem.AddBlack(algebraicNotation);
                 }
             }
-            else
-            {
-                Debug.LogError("AlgebraicNotationPanel: Invalid turn color");
-            }
 
             ResetScrollbar(0);
-        }
-
-        private NotationItem GetNotationItem()
-        {
-            GameObject instance = Instantiate(notationItemPrefab, scrollView.content);
-            var notationItem = instance.GetComponent<NotationItem>();
-            _notationItems.Add(notationItem);
-            return notationItem;
         }
 
         private void OnDelete(MoveData moveData)
@@ -148,10 +113,6 @@ namespace Chess3D.Runtime.Core.Ui.AlgebraicNotation
             else if (moveData.TurnColor == PieceColor.Black)
             {
                 notationItem.RemoveBlack();
-            }
-            else
-            {
-                Debug.LogError("AlgebraicNotationPanel: Invalid turn color");
             }
         }
 
@@ -172,10 +133,6 @@ namespace Chess3D.Runtime.Core.Ui.AlgebraicNotation
             else if (moveData.TurnColor == PieceColor.Black)
             {
                 notationItem.FadeBlack();
-            }
-            else
-            {
-                Debug.LogError("AlgebraicNotationPanel: Invalid turn color");
             }
 
             ResetScrollbar(GetPositionFromIndex());
@@ -200,12 +157,37 @@ namespace Chess3D.Runtime.Core.Ui.AlgebraicNotation
                     notationItem.UnFadeBlack();
                 }
             }
-            else
-            {
-                Debug.LogError("AlgebraicNotationPanel: Invalid turn color");
-            }
 
             ResetScrollbar(GetPositionFromIndex());
+        }
+
+        private void NotateEndGame()
+        {
+            NotationItem notationItem = GetNotationItem();
+            string algebraicNotation = string.Empty;
+
+            if (_game.IsDraw)
+            {
+                algebraicNotation = "½-½";
+            }
+            else if (_game.IsWinnerWhite)
+            {
+                algebraicNotation = "1-0";
+            }
+            else if (_game.IsWinnerBlack)
+            {
+                algebraicNotation = "0-1";
+            }
+
+            notationItem.AddEndGame(algebraicNotation);
+        }
+
+        private NotationItem GetNotationItem()
+        {
+            GameObject instance = Instantiate(notationItemPrefab, scrollView.content);
+            var notationItem = instance.GetComponent<NotationItem>();
+            _notationItems.Add(notationItem);
+            return notationItem;
         }
 
         private void ResetScrollbar(float position)
