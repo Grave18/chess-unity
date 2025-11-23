@@ -58,6 +58,7 @@ namespace Chess3D.Runtime.Core.MainCamera
 
         private bool _isUpdating;
         private bool _isStartRotationOn;
+        private bool _isAutoRotateCamera;
         private PieceColor _rotateCameraToColor;
         private Coroutine _startRotateRoutine;
 
@@ -101,10 +102,10 @@ namespace Chess3D.Runtime.Core.MainCamera
 
         public UniTask Load()
         {
-            _isStartRotationOn = IsVsPlayer && _settingsService.S.GameSettings.IsAutoRotateCamera;
             _rotateCameraToColor = IsVsPlayer ? _fenFromString.TurnColor : _settingsService.S.GameSettings.PlayerColor;
-            // TODO: offline-online camera autoRotation
-            _isStartRotationOn = IsVsPlayer && OnlineInstanceHandler.IsOffline && _settingsService.S.GameSettings.IsAutoRotateCamera;
+            // TODO: refactor online camera
+            _isStartRotationOn = IsVsPlayer && OnlineInstanceHandler.IsOffline && _settingsService.S.GameSettings.IsRotateCameraOnStart;
+            _isAutoRotateCamera = IsVsPlayer && OnlineInstanceHandler.IsOffline && _settingsService.S.GameSettings.IsAutoRotateCamera;
 
             _newDistance = distance;
             _newYawRad = yawRad;
@@ -199,7 +200,7 @@ namespace Chess3D.Runtime.Core.MainCamera
 
         public void AutoRotate()
         {
-            if (!_settingsService.S.GameSettings.IsAutoRotateCamera)
+            if (!_isAutoRotateCamera)
             {
                 return;
             }
