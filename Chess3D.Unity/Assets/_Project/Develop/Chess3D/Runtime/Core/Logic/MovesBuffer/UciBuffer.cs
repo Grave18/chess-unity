@@ -14,8 +14,8 @@ namespace Chess3D.Runtime.Core.Logic.MovesBuffer
     {
         private readonly FenFromBoard _fenFromBoard;
         private readonly FenFromString _fenFromString;
-        private readonly int _initialHalfMoveClock;
-        private readonly int _initialFullMoveCounter;
+        private int _initialHalfMoveClock;
+        private int _initialFullMoveCounter;
 
         private LinkedListNode<MoveData> _head;
         private readonly LinkedList<MoveData> _buffer = new();
@@ -37,16 +37,15 @@ namespace Chess3D.Runtime.Core.Logic.MovesBuffer
         {
             _fenFromBoard = fenFromBoard;
             _fenFromString = fenFromString;
-            _initialHalfMoveClock = fenFromString.HalfMoveClock;
-            _initialFullMoveCounter = fenFromString.FullMoveCounter;
         }
 
         public UniTask Load()
         {
             _head = null;
             _buffer.Clear();
+            _initialHalfMoveClock = _fenFromString.HalfMoveClock;
+            _initialFullMoveCounter = _fenFromString.FullMoveCounter;
             AddInitialPositionToThreefoldRule();
-            // ResetThreefoldRule();
 
             return UniTask.CompletedTask;
         }
@@ -61,14 +60,6 @@ namespace Chess3D.Runtime.Core.Logic.MovesBuffer
                 _threefoldRepetition[shortFen] += 1;
             }
         }
-
-        // private void ResetThreefoldRule()
-        // {
-        //     string shortFen = _fenFromBoard.GetShort();
-        //
-        //     _threefoldRepetition.Clear();
-        //     _threefoldRepetition.Add(shortFen, 1);
-        // }
 
         public void Add(MoveData moveData)
         {
