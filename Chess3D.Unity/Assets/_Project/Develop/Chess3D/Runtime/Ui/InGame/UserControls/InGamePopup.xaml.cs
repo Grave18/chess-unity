@@ -1,8 +1,8 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
+using Chess3D.Runtime.Core;
+using Chess3D.Runtime.Utilities;
 using Noesis;
-using Ui.Auxiliary;
-using UnityEngine;
 using GUI = Noesis.GUI;
 using PopupViewModel = Chess3D.Runtime.Core.Ui.ViewModels.PopupViewModel;
 
@@ -27,8 +27,7 @@ namespace Ui.InGame.UserControls
         private void OnInitialized(object sender, EventArgs e)
         {
 #if NOESIS
-            // TODO: Refactor to use container
-            // DataContext = Object.FindAnyObjectByType<PopupViewModel>();
+            DataContext = ServiceLocator.Resolve<PopupViewModel>();
 #endif
         }
 
@@ -51,8 +50,8 @@ namespace Ui.InGame.UserControls
 
         private void Popup_OnOpened(object sender, EventArgs e)
         {
-            this.Focusable = true;
-            this.Focus();
+            Focusable = true;
+            Focus();
         }
 
 #if NOESIS

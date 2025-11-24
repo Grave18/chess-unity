@@ -1,7 +1,10 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
 using Noesis;
-using UnityEngine;
+using Chess3D.Runtime.Core;
+using Chess3D.Runtime.Menu.UI.ViewModels;
+using Chess3D.Runtime.Utilities;
+using UnityEngine.Scripting;
 using Grid = Noesis.Grid;
 using GUI = Noesis.GUI;
 
@@ -12,12 +15,14 @@ using System.Windows.Controls;
 using System.Windows.Input;
 #endif
 
-using Chess3D.Runtime.Menu.UI.ViewModels;
 using Ui.Auxiliary;
-using PlayPageViewModel = Chess3D.Runtime.Menu.UI.ViewModels.PlayPageViewModel;
 
 namespace Ui.Menu.Pages
 {
+
+#if NOESIS
+    [Preserve]
+#endif
     public partial class PlayPage : UserControl
     {
         private readonly string _selectedTab;
@@ -36,8 +41,8 @@ namespace Ui.Menu.Pages
         private void OnInitialized(object sender, EventArgs args)
         {
 #if NOESIS
-            this.DataContext = Object.FindAnyObjectByType<PlayPageViewModel>();
-            Root.DataContext = Object.FindAnyObjectByType<GameSettingsViewModel>();
+            DataContext = ServiceLocator.Resolve<PlayPageViewModel>();
+            Root.DataContext = ServiceLocator.Resolve<GameSettingsViewModel>();
 #endif
         }
 
@@ -67,7 +72,7 @@ namespace Ui.Menu.Pages
         private void SetupInputPlayPage()
         {
             TabControl.Focus();
-            this.KeyDown += PlayPage_OnKeyDown;
+            KeyDown += PlayPage_OnKeyDown;
         }
 
         private void PlayPage_OnKeyDown(object sender, KeyEventArgs args)

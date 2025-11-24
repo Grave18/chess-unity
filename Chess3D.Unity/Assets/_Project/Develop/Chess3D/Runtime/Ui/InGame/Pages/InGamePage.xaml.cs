@@ -1,8 +1,11 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
 using Noesis;
-using UnityEngine;
+using Chess3D.Runtime.Core;
 using GUI = Noesis.GUI;
+using Chess3D.Runtime.Utilities;
+using UnityEngine.Scripting;
+using Chess3D.Runtime.Core.Ui.ViewModels;
 
 #else
 using System;
@@ -14,12 +17,12 @@ using System.Windows.Input;
 #endif
 
 using Ui.Auxiliary;
-using InGameMenuViewModel = Chess3D.Runtime.Core.Ui.ViewModels.InGameMenuViewModel;
-using InGamePageViewModel = Chess3D.Runtime.Core.Ui.ViewModels.InGamePageViewModel;
 
 namespace Ui.InGame.Pages
 {
-    // ReSharper disable once ClassNeverInstantiated.Global
+#if NOESIS
+    [Preserve]
+#endif
     public partial class InGamePage : UserControl
     {
         private CheckBox _saveCheckBox;
@@ -33,9 +36,8 @@ namespace Ui.InGame.Pages
         private void OnInitialized(object sender, EventArgs args)
         {
 #if NOESIS
-            // TODO: Refactor to use container
-            DataContext = Object.FindAnyObjectByType<InGamePageViewModel>();
-            // ResumeButton.DataContext = Object.FindAnyObjectByType<InGameMenuViewModel>();
+            DataContext = ServiceLocator.Resolve<InGamePageViewModel>();
+            ResumeButton.DataContext = ServiceLocator.Resolve<InGameMenuViewModel>();
 #endif
         }
 

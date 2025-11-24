@@ -1,7 +1,10 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
-using UnityEngine;
+using UnityEngine.Scripting;
 using Noesis;
+using Chess3D.Runtime.Utilities;
+using Chess3D.Runtime.Core;
+using Chess3D.Runtime.Menu.UI.ViewModels;
 
 #else
 using System;
@@ -10,10 +13,12 @@ using System.Windows;
 #endif
 
 using Ui.Auxiliary;
-using LobbyViewModel = Chess3D.Runtime.Menu.UI.ViewModels.LobbyViewModel;
 
 namespace Ui.Menu.Pages
 {
+#if NOESIS
+    [Preserve]
+#endif
     public partial class LobbyPage : UserControl
     {
         public LobbyPage()
@@ -25,7 +30,7 @@ namespace Ui.Menu.Pages
         private void OnInitialized(object sender, EventArgs args)
         {
 #if NOESIS
-            DataContext = Object.FindAnyObjectByType<LobbyViewModel>();
+            DataContext = ServiceLocator.Resolve<LobbyViewModel>();
 #endif
         }
 
@@ -37,11 +42,11 @@ namespace Ui.Menu.Pages
 
 #if NOESIS
 
-        private Button Back;
+        private Button Back { get; set; }
 
         private void InitializeComponent()
         {
-            Noesis.GUI.LoadComponent(this, XamlUtils.GetXamlPathFromFilePath());
+            GUI.LoadComponent(this, XamlUtils.GetXamlPathFromFilePath());
 
             Back = FindName("Back") as Button;
         }

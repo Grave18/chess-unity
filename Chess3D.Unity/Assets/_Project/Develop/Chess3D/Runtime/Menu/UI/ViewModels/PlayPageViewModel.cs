@@ -1,50 +1,61 @@
-﻿using Chess3D.Runtime.Core.Logic;
-using Chess3D.Runtime.Menu.LobbyManagement;
+﻿using Chess3D.Runtime.Bootstrap.Settings;
+using Chess3D.Runtime.Core.Ai;
+using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using LobbyManagement;
 using MvvmTool;
 using Ui.Auxiliary;
-using UnityEngine;
+using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
-    public partial class PlayPageViewModel : MonoBehaviour
+    [Preserve]
+    public partial class PlayPageViewModel
     {
-        [SerializeField] private ISettingsService _settingsService;
-        [SerializeField] private SceneLoader sceneLoader;
-        [SerializeField] private LobbyManager lobbyManager;
-        [SerializeField] private OnlineSceneSwitcher onlineSceneSwitcher;
+        private readonly ISettingsService _settingsService;
+        private readonly LobbyManager _lobbyManager;
+        private readonly SceneManager _sceneManager;
 
-        public DelegateCommand PlayOfflineCommand { get; private set; }
-        public DelegateCommand PlayWithComputerCommand { get; private set; }
-        public DelegateCommand PlayOnlineCommand { get; private set; }
-
-        public DelegateCommand StartLocalServerCommand { get; private set; }
-        public DelegateCommand StartLocalClientCommand { get; private set; }
-
-        private void Awake()
+        public PlayPageViewModel(ISettingsService settingsService, LobbyManager lobbyManager, SceneManager sceneManager)
         {
-            PlayOfflineCommand = new DelegateCommand(PlayOffline);
-            PlayWithComputerCommand = new DelegateCommand(PlayWithComputer);
-            PlayOnlineCommand = new DelegateCommand(PlayOnline);
-
-            StartLocalServerCommand = new DelegateCommand(StartLocalServer);
-            StartLocalClientCommand = new DelegateCommand(StartLocalClient);
+            _settingsService = settingsService;
+            _lobbyManager = lobbyManager;
+            _sceneManager = sceneManager;
         }
 
-        private void PlayOffline(object obj)
+        [RelayCommand]
+        private void PlayOffline()
         {
-            // _settingsService.SetupGameHumanVsHumanOffline();
-            sceneLoader.LoadGame().Forget();
+            SetupGameHumanVsHumanOffline();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Core).Forget();
         }
 
-        private void PlayWithComputer(object obj)
+        private void SetupGameHumanVsHumanOffline()
         {
-            // _settingsService.SetupGameHumanVsComputerOffline();
-            sceneLoader.LoadGame().Forget();
+            _settingsService.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
+            _settingsService.S.GameSettings.PlayerBlack.PlayerType = PlayerType.Human;
+
+            _settingsService.S.GameSettings.PlayerBlack.Name = "Player 2";
         }
 
-        private void PlayOnline(object obj)
+        [RelayCommand]
+        private void PlayWithComputer()
+        {
+            SetupGameHumanVsComputerOffline();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Core).Forget();
+        }
+
+        private void SetupGameHumanVsComputerOffline()
+        {
+            _settingsService.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
+            _settingsService.S.GameSettings.PlayerBlack.PlayerType = PlayerType.Computer;
+
+            ComputerSkillLevel skill = _settingsService.S.GameSettings.PlayerBlack.ComputerSkillLevel;
+            _settingsService.S.GameSettings.PlayerBlack.Name = $"Computer({skill})";
+        }
+
+        [RelayCommand]
+        private void PlayOnline()
         {
             LogUi.Debug("PlayOnline Clicked");
         }
@@ -52,27 +63,30 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [RelayCommand]
         private void CreateLobby()
         {
-            lobbyManager.CreateRoom();
+            _lobbyManager.CreateRoom();
         }
 
         [RelayCommand]
         private void FindGame()
         {
-            // todo FindGame()
+            // TODO: implement FindGame()
         }
 
-        public void StartLocalServer(object obj)
+        [RelayCommand]
+        public void StartLocalServer()
         {
-            onlineSceneSwitcher
-                .SetupAndSwitchScene(PieceColor.White, isHost: true, isLocal: true)
-                .Forget();
+            // TODO: Fix online scene switching
+            // onlineSceneSwitcher
+                // .SetupAndSwitchScene(PieceColor.White, isHost: true, isLocal: true)
+                // .Forget();
         }
 
-        public void StartLocalClient(object obj)
+        [RelayCommand]
+        public void StartLocalClient()
         {
-            onlineSceneSwitcher
-                .SetupAndSwitchScene(PieceColor.Black, isHost: false, isLocal: true)
-                .Forget();
+            // onlineSceneSwitcher
+                // .SetupAndSwitchScene(PieceColor.Black, isHost: false, isLocal: true)
+                // .Forget();
         }
     }
 }

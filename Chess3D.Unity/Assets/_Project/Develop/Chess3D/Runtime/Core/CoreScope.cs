@@ -128,6 +128,7 @@ namespace Chess3D.Runtime.Core
             builder.Register<SettingsPageViewModel>(Lifetime.Scoped);
             builder.Register<GraphicsSettingsViewModel>(Lifetime.Scoped);
             builder.Register<AudioSettingsViewModel>(Lifetime.Scoped);
+            builder.Register<FenUserControlViewModel>(Lifetime.Scoped); // For suppress null in Settings Page
 
             // Online
             builder.RegisterComponentOnNewGameObject<ConnectionTerminator>(Lifetime.Scoped);

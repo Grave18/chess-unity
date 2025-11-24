@@ -1,47 +1,56 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Chess3D.Runtime.Menu.LobbyManagement;
+using Chess3D.Runtime.Utilities;
+using Cysharp.Threading.Tasks;
 using LobbyManagement;
 using MvvmTool;
 using UnityEngine;
+using UnityEngine.Scripting;
+using VContainer.Unity;
 using FriendItem = Chess3D.Runtime.Menu.LobbyManagement.FriendItem;
 
 namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
-    public partial class LobbyViewModel : MonoBehaviour
+    [Preserve]
+    public partial class LobbyViewModel : ILoadUnit, ITickable, IDisposable
     {
-        [Header("References")]
-        [SerializeField] private LobbyManager lobbyManager;
-
-        [Header("Settings")]
-        [SerializeField] private LobbyManager.FriendFilter filter = LobbyManager.FriendFilter.All;
-        [SerializeField] private float updateIntervalSec = 3f;
-
-        private float _lastUpdateTime;
+        private const float UpdateIntervalSec = 3f;
+        private const LobbyManager.FriendFilter Filter = LobbyManager.FriendFilter.All;
 
         public ObservableCollection<FriendItem> Friends { get; set; } = new();
         public ObservableCollection<LobbyUser> LobbyUsers { get; set; } = new();
 
-        [RelayCommand]
-        private void Ready()
+        private readonly LobbyManager _lobbyManager;
+
+        private float _lastUpdateTime;
+
+        public LobbyViewModel(LobbyManager lobbyManager)
         {
-            lobbyManager.ToggleLocalReady();
+            _lobbyManager = lobbyManager;
+            _lobbyManager.OnFriendListPulled.AddListener(PopulateFriends);
+            _lobbyManager.OnRoomLeft.AddListener(OnLobbyLeave);
+            _lobbyManager.OnRoomUpdated.AddListener(LobbyDataUpdate);
         }
 
-        private void OnEnable()
+        public void Dispose()
         {
-            lobbyManager.OnFriendListPulled.AddListener(PopulateFriends);
-            lobbyManager.OnRoomLeft.AddListener(OnLobbyLeave);
-            lobbyManager.OnRoomUpdated.AddListener(LobbyDataUpdate);
-            PullFriends();
+            if (_lobbyManager is null)
+            {
+                return;
+            }
+
+            _lobbyManager.OnFriendListPulled.RemoveListener(PopulateFriends);
+            _lobbyManager.OnRoomLeft.RemoveListener(OnLobbyLeave);
+            _lobbyManager.OnRoomUpdated.RemoveListener(LobbyDataUpdate);
         }
 
-        private void OnDisable()
+        public UniTask Load()
         {
-            lobbyManager.OnFriendListPulled.RemoveListener(PopulateFriends);
-            lobbyManager.OnRoomLeft.RemoveListener(OnLobbyLeave);
-            lobbyManager.OnRoomUpdated.RemoveListener(LobbyDataUpdate);
+            // PullFriends();
+            return UniTask.CompletedTask;
         }
 
         private void PopulateFriends(List<FriendItem> newQuery)
@@ -55,7 +64,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         {
             foreach (FriendItem friend in newQuery)
             {
-                friend.Construct(lobbyManager);
+                friend.Construct(_lobbyManager);
             }
         }
 
@@ -121,7 +130,20 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             }
         }
 
-        private void Update()
+        [RelayCommand]
+        private void Ready()
+        {
+            _lobbyManager.ToggleLocalReady();
+        }
+
+        [RelayCommand]
+        private void Back()
+        {
+            Debug.Log("Leve Lobby");
+            _lobbyManager.LeaveLobby();
+        }
+
+        public void Tick()
         {
             if(IsNeedToPullFriends())
             {
@@ -131,20 +153,13 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private bool IsNeedToPullFriends()
         {
-            return lobbyManager.IsInLobby && _lastUpdateTime + updateIntervalSec < Time.time;
+            return _lobbyManager.IsInLobby && _lastUpdateTime + UpdateIntervalSec < Time.time;
         }
 
         private void PullFriends()
         {
             _lastUpdateTime = Time.time;
-            lobbyManager.PullFriends(filter);
-        }
-
-        [RelayCommand]
-        private void Back()
-        {
-            Debug.Log("Leve Lobby");
-            lobbyManager.LeaveLobby();
+            _lobbyManager.PullFriends(Filter);
         }
     }
 }

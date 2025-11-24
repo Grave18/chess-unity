@@ -5,8 +5,9 @@ using UnityEngine.Scripting;
 using Chess3D.Runtime.Core;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using GUI = Noesis.GUI;
-using Object = UnityEngine.Object;
 using EventArgs = Noesis.EventArgs;
+using Chess3D.Runtime.Utilities;
+
 
 #else
 using System;

@@ -1,8 +1,10 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
-using Chess3D.Runtime.Menu.UI.ViewModels;
 using Noesis;
-using UnityEngine;
+using UnityEngine.Scripting;
+using Chess3D.Runtime.Core;
+using Chess3D.Runtime.Menu.UI.ViewModels;
+using Chess3D.Runtime.Utilities;
 using GUI = Noesis.GUI;
 
 #else
@@ -12,6 +14,9 @@ using System.Windows.Controls;
 
 namespace Ui.Menu.UserControls
 {
+#if NOESIS
+    [Preserve]
+#endif
     public partial class FenTextBox : UserControl
     {
         public FenTextBox()
@@ -23,7 +28,7 @@ namespace Ui.Menu.UserControls
         private void OnInitialized(object sender, EventArgs args)
         {
 #if NOESIS
-            DataContext = Object.FindAnyObjectByType<FenUserControlViewModel>();
+            DataContext = ServiceLocator.Resolve<FenUserControlViewModel>();
 #endif
         }
 

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VContainer;
 
 namespace Chess3D.Runtime.Core
@@ -22,6 +23,14 @@ namespace Chess3D.Runtime.Core
         public static T Resolve<T>()
         {
             return _resolver.Resolve<T>();
+        }
+
+        public static async UniTask<T> ResolveAsync<T>()
+        {
+            await UniTask.WaitUntil(() => IsValid);
+            var ret = _resolver.Resolve<T>();
+
+            return ret;
         }
     }
 }

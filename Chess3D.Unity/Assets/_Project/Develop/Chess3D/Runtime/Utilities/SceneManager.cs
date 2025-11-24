@@ -1,10 +1,12 @@
 ﻿using Chess3D.Runtime.Utilities.Logging;
 using Cysharp.Threading.Tasks;
 using UnityEngine.SceneManagement;
+using UnityEngine.Scripting;
 using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
 
 namespace Chess3D.Runtime.Utilities
 {
+    [Preserve]
     public class SceneManager
     {
         private const string LogTag = "SCENE";

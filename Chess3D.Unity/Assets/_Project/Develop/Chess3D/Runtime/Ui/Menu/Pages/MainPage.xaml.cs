@@ -2,19 +2,25 @@
 #define NOESIS
 using Noesis;
 using GUI = Noesis.GUI;
+using Chess3D.Runtime.Utilities;
+using UnityEngine.Scripting;
 using UnityEngine; // Do not remove
 
 #else
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 #endif
 
-using System.Windows.Input;
 using Ui.Auxiliary;
 
 namespace Ui.Menu.Pages
 {
+
+#if NOESIS
+    [Preserve]
+#endif
     public partial class MainPage : UserControl
     {
         public MainPage()
@@ -38,8 +44,8 @@ namespace Ui.Menu.Pages
 
         private void OnLoaded(object sender, RoutedEventArgs args)
         {
-            this.Focus();
-            this.KeyDown += MainPage_OnKeyDown;
+            Focus();
+            KeyDown += MainPage_OnKeyDown;
 
         }
 

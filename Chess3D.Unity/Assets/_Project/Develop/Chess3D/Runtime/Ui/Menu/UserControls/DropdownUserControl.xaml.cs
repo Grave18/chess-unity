@@ -2,6 +2,8 @@
 #define NOESIS
 using Noesis;
 using GUI = Noesis.GUI;
+using Chess3D.Runtime.Utilities;
+using UnityEngine.Scripting;
 
 #else
 using System.Windows.Controls;
@@ -12,9 +14,10 @@ using System.Collections;
 
 namespace Ui.Menu.UserControls
 {
-    /// <summary>
-    /// Interaction logic for DropdownUserControl.xaml
-    /// </summary>
+
+#if NOESIS
+    [Preserve]
+#endif
     public partial class DropdownUserControl : UserControl
     {
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register(

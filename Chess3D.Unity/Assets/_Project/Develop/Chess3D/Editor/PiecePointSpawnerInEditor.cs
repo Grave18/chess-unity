@@ -3,9 +3,7 @@ using Chess3D.Runtime.Core.ChessBoard;
 using EditorCools;
 using UnityEngine;
 
-#if UNITY_EDITOR
-
-namespace Ui.BoardInMainMenu
+namespace Chess3D.Editor
 {
     public class PiecePointSpawnerInEditor : MonoBehaviour
     {
@@ -48,5 +46,3 @@ namespace Ui.BoardInMainMenu
         }
     }
 }
-
-#endif

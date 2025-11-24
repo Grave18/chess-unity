@@ -1,20 +1,26 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
 using Noesis;
+using UnityEngine.Scripting;
+using Chess3D.Runtime.Core;
+using Chess3D.Runtime.Menu.UI.ViewModels;
 using EventArgs = Noesis.EventArgs;
 using GUI = Noesis.GUI;
-using Object = UnityEngine.Object;
+using Chess3D.Runtime.Utilities;
 
 #else
 using System;
 using System.Windows.Controls;
 #endif
 
-using Chess3D.Runtime.Menu.UI.ViewModels;
 using Ui.Auxiliary;
 
 namespace Ui.Menu
 {
+
+#if NOESIS
+    [Preserve]
+#endif
     public partial class MainMenu : GameMenuBase
     {
         public MainMenu()
@@ -28,10 +34,10 @@ namespace Ui.Menu
             ContentControl.Content = page;
         }
 
-        private void OnInitialized(object sender, EventArgs args)
+        private async void OnInitialized(object sender, EventArgs args)
         {
 #if NOESIS
-            DataContext = Object.FindAnyObjectByType<MainMenuViewModel>();
+            DataContext = await ServiceLocator.ResolveAsync<MainMenuViewModel>();
 #endif
         }
 

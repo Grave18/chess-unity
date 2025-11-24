@@ -1,21 +1,18 @@
 ﻿using System.Collections.Generic;
-using Chess3D.Runtime;
-using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.ChessBoard.Info;
 using Chess3D.Runtime.Core.Logic;
+using Chess3D.Runtime.Utilities;
+using Cysharp.Threading.Tasks;
 using EditorCools;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using VContainer;
 
-namespace Ui.BoardInMainMenu
+namespace Chess3D.Runtime.Menu.UI.BoardInMainMenu
 {
-    public class VisualBoardSpawner : MonoBehaviour
+    public class VisualBoardSpawner : MonoBehaviour, ILoadUnit
     {
-        [Header("References")]
-        // TODO: Add DI dependency
-        private ISettingsService _settingsService;
-
         [Header("Board")]
         [SerializeField] private AssetLabelReference boardLabel;
         [SerializeField] private Transform boardParent;
@@ -24,16 +21,26 @@ namespace Ui.BoardInMainMenu
         [SerializeField] private AssetLabelReference piecesLabel;
         [SerializeField] private PieceSpawnPoint[] pieceSpawnPoints;
 
+        private ISettingsService _settingsService;
+
         private AsyncOperationHandle<GameObject> _boardHandle;
         private GameObject _boardInstance;
 
         private AsyncOperationHandle<IList<GameObject>> _piecesHandle;
         private readonly List<GameObject> _pieceInstances = new();
 
-        private void Awake()
+        [Inject]
+        public void Construct(ISettingsService settingsService)
+        {
+            _settingsService = settingsService;
+        }
+
+        public UniTask Load()
         {
             SpawnBoard(_settingsService.S.GameSettings.BoardModelAddress);
             SpawnPieces(_settingsService.S.GameSettings.PiecesModelAddress);
+
+            return UniTask.CompletedTask;
         }
 
         public void SpawnBoard(string boardModelAddress)

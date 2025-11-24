@@ -1,9 +1,10 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
+using UnityEngine.Scripting;
 using Noesis;
 using Chess3D.Runtime.Core;
 using Chess3D.Runtime.Menu.UI.ViewModels;
-using UnityEngine.Scripting;
+using Chess3D.Runtime.Utilities;
 using GUI = Noesis.GUI;
 using EventArgs = Noesis.EventArgs;
 
@@ -18,6 +19,7 @@ using Ui.Auxiliary;
 
 namespace Ui.Menu.Pages
 {
+
 #if NOESIS
     [Preserve]
 #endif
@@ -42,8 +44,8 @@ namespace Ui.Menu.Pages
 
         private void OnLoaded(object sender, RoutedEventArgs args)
         {
-            this.Focus();
-            this.KeyDown += OnKeyDown;
+            Focus();
+            KeyDown += OnKeyDown;
         }
 
         private void OnKeyDown(object sender, KeyEventArgs args)

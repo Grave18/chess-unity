@@ -1,44 +1,65 @@
-﻿using Chess3D.Runtime.Menu.LobbyManagement;
+﻿using System;
+using Chess3D.Runtime.Bootstrap;
+using Chess3D.Runtime.Menu.LobbyManagement;
+using Chess3D.Runtime.Utilities;
+using Cysharp.Threading.Tasks;
 using LobbyManagement;
 using Noesis;
 using Ui.Auxiliary;
 using Ui.Menu.Pages;
 using UnityEngine;
+using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
-    public class MainMenuViewModel : MonoBehaviour
+    [Preserve]
+    public class MainMenuViewModel : ILoadUnit, IDisposable
     {
-        [SerializeField] private RenderTexture renderTexture;
-        [SerializeField] private LobbyManager lobbyManager;
+        private readonly RenderTexture _renderTexture;
+        private readonly LobbyManager _lobbyManager;
+        private readonly AppEvents _appEvents;
 
         public ImageSource ImageSource { get; private set; }
 
-        private void Awake()
+        public MainMenuViewModel(RenderTexture renderTexture, LobbyManager lobbyManager, AppEvents appEvents)
+        {
+            _renderTexture = renderTexture;
+            _lobbyManager = lobbyManager;
+            _appEvents = appEvents;
+
+            _lobbyManager.OnRoomJoined.AddListener(TryShowLobbyPage);
+            _lobbyManager.OnRoomJoinFailed.AddListener(ShowOnlinePage);
+            _lobbyManager.OnRoomLeft.AddListener(ShowOnlinePage);
+            _appEvents.OnPause += OnApplicationPause;
+        }
+
+        public void Dispose()
+        {
+            if (_lobbyManager is not null)
+            {
+                _lobbyManager.OnRoomJoined.RemoveListener(TryShowLobbyPage);
+                _lobbyManager.OnRoomJoinFailed.RemoveListener(ShowOnlinePage);
+                _lobbyManager.OnRoomLeft.RemoveListener(ShowOnlinePage);
+            }
+
+            if (_appEvents is not null)
+            {
+                _appEvents.OnPause -= OnApplicationPause;
+            }
+        }
+
+        public UniTask Load()
         {
             InitRenderTexture();
+            return UniTask.CompletedTask;
         }
 
         private void InitRenderTexture()
         {
-            if(renderTexture)
+            if(_renderTexture)
             {
-                ImageSource = new TextureSource(renderTexture);
+                ImageSource = new TextureSource(_renderTexture);
             }
-        }
-
-        private void OnEnable()
-        {
-            lobbyManager.OnRoomJoined.AddListener(TryShowLobbyPage);
-            lobbyManager.OnRoomJoinFailed.AddListener(ShowOnlinePage);
-            lobbyManager.OnRoomLeft.AddListener(ShowOnlinePage);
-        }
-
-        private void OnDisable()
-        {
-            lobbyManager.OnRoomJoined.RemoveListener(TryShowLobbyPage);
-            lobbyManager.OnRoomJoinFailed.RemoveListener(ShowOnlinePage);
-            lobbyManager.OnRoomLeft.RemoveListener(ShowOnlinePage);
         }
 
         private void OnApplicationPause(bool isPause)
@@ -61,7 +82,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private bool IsShowLobbyPage()
         {
-            return lobbyManager.IsInLobby
+            return _lobbyManager.IsInLobby
                    && !GameMenuBase.Instance.IsCurrentPage<LobbyPage>();
         }
 

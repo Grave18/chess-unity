@@ -1,6 +1,8 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
+using Chess3D.Runtime.Utilities;
 using Noesis;
+using UnityEngine.Scripting;
 using GUI = Noesis.GUI;
 
 #else
@@ -9,6 +11,9 @@ using System.Windows.Controls;
 
 namespace Ui.Menu.UserControls
 {
+#if NOESIS
+    [Preserve]
+#endif
     public partial class DifficultyDropdown : UserControl
     {
         public DifficultyDropdown()

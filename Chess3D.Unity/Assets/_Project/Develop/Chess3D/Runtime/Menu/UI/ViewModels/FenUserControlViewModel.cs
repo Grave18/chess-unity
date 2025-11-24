@@ -1,79 +1,50 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Chess3D.Runtime.Core.Notation;
+﻿using Chess3D.Runtime.Utilities;
+using Cysharp.Threading.Tasks;
 using MvvmTool;
-using Ui.Auxiliary;
-using UnityEngine;
+using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
-    public class FenUserControlViewModel : MonoBehaviour, INotifyPropertyChanged
+    [Preserve]
+    [INotifyPropertyChanged]
+    public partial class FenUserControlViewModel : ILoadUnit
     {
-        // TODO: Add DI dependency
-        private ISettingsService _settingsService;
+        [ObservableProperty] private string _currentFen;
 
-        public DelegateCommand GetDefaultFenCommand { get; private set; }
-        public DelegateCommand GetSavedFenCommand { get; private set; }
+        private readonly ISettingsService _settingsService;
 
-        private string _currentFen;
-        public string CurrentFen
+        public FenUserControlViewModel(ISettingsService settingsService)
         {
-            get => _currentFen;
-            set
-            {
-                if (FenValidator.IsValid(value, out string message) && SetField(ref _currentFen, value))
-                {
-                    // gameSettingsContainer.SetCurrentFen(_currentFen);
-                    LogUi.Debug($"Current Fen changed to {_currentFen}");
-                }
-                else if(message is not {Length: 0})
-                {
-                    LogUi.Debug(message);
-                }
-            }
+            _settingsService = settingsService;
         }
 
-        private void Awake()
+        public UniTask Load()
         {
-            GetSavedFenCommand = new DelegateCommand(GetSavedFen);
-            GetDefaultFenCommand = new DelegateCommand(GetDefaultFen);
-
             InitFen();
-        }
-
-        private void GetDefaultFen(object obj)
-        {
-            // CurrentFen = gameSettingsContainer.GetDefaultFen();
-        }
-
-        private void GetSavedFen(object obj)
-        {
-            // CurrentFen = gameSettingsContainer.GetSavedFen();
+            return UniTask.CompletedTask;
         }
 
         private void InitFen()
         {
-            // _currentFen = gameSettingsContainer.GetCurrentFen();
+            _currentFen = _settingsService.S.GameSettings.CurrentFen;
         }
 
-        #region ViewModelImplimentation
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        [RelayCommand]
+        private void GetDefaultFen(object obj)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            CurrentFen = _settingsService.S.GameSettings.CurrentFen;
         }
 
-        private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+        [RelayCommand]
+        private void GetSavedFen(object obj)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
+            CurrentFen = _settingsService.S.GameSettings.CurrentFen;
         }
 
-        #endregion Implimentation
+        partial void OnCurrentFenChanged(string value)
+        {
+            _settingsService.S.GameSettings.CurrentFen = value;
+            _settingsService.Save();
+        }
     }
 }

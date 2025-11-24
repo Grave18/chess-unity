@@ -1,7 +1,10 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
+using UnityEngine.Scripting;
 using Noesis;
-using UnityEngine;
+using Chess3D.Runtime.Core;
+using Chess3D.Runtime.Menu.UI.ViewModels;
+using Chess3D.Runtime.Utilities;
 using GUI = Noesis.GUI;
 
 #else
@@ -11,11 +14,13 @@ using System.Windows.Controls;
 using System.Windows.Input;
 #endif
 
-using Chess3D.Runtime.Menu.UI.ViewModels;
 using Ui.Auxiliary;
 
 namespace Ui.Menu.Pages
 {
+#if NOESIS
+    [Preserve]
+#endif
     public partial class BoardPage : UserControl
     {
         public BoardPage()
@@ -28,14 +33,14 @@ namespace Ui.Menu.Pages
         private void OnInitialized(object sender, EventArgs args)
         {
 #if NOESIS
-            DataContext = Object.FindAnyObjectByType<BoardPageViewModel>();
+            DataContext = ServiceLocator.Resolve<BoardPageViewModel>();
 #endif
         }
 
         private void OnLoaded(object sender, RoutedEventArgs args)
         {
-            this.Focus();
-            this.KeyDown += OnKeyDown;
+            Focus();
+            KeyDown += OnKeyDown;
         }
 
         private void OnKeyDown(object sender, KeyEventArgs args)

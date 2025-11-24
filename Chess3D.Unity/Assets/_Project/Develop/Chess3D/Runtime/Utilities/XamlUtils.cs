@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-namespace Ui
+namespace Chess3D.Runtime.Utilities
 {
     public static class XamlUtils
     {

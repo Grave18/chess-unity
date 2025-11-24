@@ -1,34 +1,56 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Chess3D.Runtime.Menu.LobbyManagement;
+using Chess3D.Runtime.Utilities;
+using Cysharp.Threading.Tasks;
 using LobbyManagement;
 using UnityEngine;
+using UnityEngine.Scripting;
+using VContainer.Unity;
 
 namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
-    public class FindGameViewModel : MonoBehaviour
+    [Preserve]
+    public class FindGameViewModel : ILoadUnit, ITickable, IDisposable
     {
-        [Header("References")]
-        [SerializeField] private LobbyManager lobbyManager;
+        private const float UpdateIntervalSec = 3f;
 
-        [Header("Settings")]
-        [SerializeField] private float updateIntervalSec = 3f;
+        private LobbyManager _lobbyManager;
 
         public ObservableCollection<LobbyUser> Lobbies { get; set; } = new();
 
         private bool _isActive;
         private float _lastSearchTime;
 
-        private void OnEnable()
+        public FindGameViewModel(LobbyManager lobbyManager)
         {
-            lobbyManager.OnRoomSearchResults.AddListener(PopulateRoom);
-            EnableLobby();
+            _lobbyManager = lobbyManager;
+            _lobbyManager.OnRoomSearchResults.AddListener(PopulateRoom);
         }
 
-        private void OnDisable()
+        public UniTask Load()
         {
-            lobbyManager.OnRoomSearchResults.RemoveListener(PopulateRoom);
+            EnableLobby();
+            return UniTask.CompletedTask;
+        }
+
+        private void EnableLobby()
+        {
+            _lobbyManager.SearchLobbies();
+            _lastSearchTime = Time.time;
+            _isActive = true;
+        }
+
+        public void Dispose()
+        {
+            _lobbyManager.OnRoomSearchResults.RemoveListener(PopulateRoom);
             DisableLobby();
+        }
+
+        private void DisableLobby()
+        {
+            _isActive = false;
         }
 
         private void PopulateRoom(List<Lobby> rooms)
@@ -47,29 +69,17 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             }
         }
 
-        private void EnableLobby()
-        {
-            lobbyManager.SearchLobbies();
-            _lastSearchTime = Time.time;
-            _isActive = true;
-        }
-
-        private void DisableLobby()
-        {
-            _isActive = false;
-        }
-
-        private void Update()
+        public void Tick()
         {
             if (!_isActive)
             {
                 return;
             }
 
-            if (_lastSearchTime + updateIntervalSec < Time.time)
+            if (_lastSearchTime + UpdateIntervalSec < Time.time)
             {
                 _lastSearchTime = Time.time;
-                lobbyManager.SearchLobbies();
+                _lobbyManager.SearchLobbies();
             }
         }
     }

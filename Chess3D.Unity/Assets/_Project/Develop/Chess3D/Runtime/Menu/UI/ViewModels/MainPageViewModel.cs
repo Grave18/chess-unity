@@ -1,9 +1,9 @@
-﻿using UnityEngine;
+﻿using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
-    public class MainPageViewModel : MonoBehaviour
+    [Preserve]
+    public class MainPageViewModel
     {
-        
     }
 }

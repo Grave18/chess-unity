@@ -1,62 +1,36 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Ui.Auxiliary;
-using Ui.BoardInMainMenu;
-using UnityEngine;
+﻿using System.Collections.ObjectModel;
+using Chess3D.Runtime.Menu.UI.BoardInMainMenu;
+using Chess3D.Runtime.Utilities;
+using Cysharp.Threading.Tasks;
+using MvvmTool;
+using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
-    public class BoardPageViewModel : MonoBehaviour, INotifyPropertyChanged
+    [Preserve]
+    [INotifyPropertyChanged]
+    public partial class BoardPageViewModel : ILoadUnit
     {
-        [SerializeField] private VisualBoardSpawner visualBoardSpawner;
+        public ObservableCollection<string> Pieces { get; set; }
+        public ObservableCollection<string> Boards { get; set; }
 
-        // TODO: Add DI dependency
-        private ISettingsService _settingsService;
+        [ObservableProperty] private string _selectedPiece;
+        [ObservableProperty] private string _selectedBoard;
 
-        public ObservableCollection<string> Pieces { get; set; } = new();
-        public ObservableCollection<string> Boards { get; set; } = new();
+        private readonly ISettingsService _settingsService;
+        private readonly VisualBoardSpawner _visualBoardSpawner;
 
-        private string _selectedPiece;
-        public string SelectedPiece
+        public BoardPageViewModel(ISettingsService settingsService, VisualBoardSpawner visualBoardSpawner)
         {
-            get => _selectedPiece;
-            set
-            {
-                if (SetField(ref _selectedPiece, value))
-                {
-                    _settingsService.S.GameSettings.PiecesModelAddress = value;
-                    _settingsService.Save();
-                    visualBoardSpawner.SpawnPieces(value);
-
-                    LogUi.Debug($"{nameof(SelectedPiece)} changed to {value}");
-                }
-            }
+            _settingsService = settingsService;
+            _visualBoardSpawner = visualBoardSpawner;
         }
 
-        private string _selectedBoard;
-
-        public string SelectedBoard
-        {
-            get => _selectedBoard;
-            set
-            {
-                if (SetField(ref _selectedBoard, value))
-                {
-                    _settingsService.S.GameSettings.BoardModelAddress = value;
-                    _settingsService.Save();
-                    visualBoardSpawner.SpawnBoard(value);
-
-                    LogUi.Debug($"{nameof(SelectedBoard)} changed to {value}");
-                }
-            }
-        }
-
-        private void Awake()
+        public UniTask Load()
         {
             InitPieces();
             InitBoards();
+            return UniTask.CompletedTask;
         }
 
         private void InitPieces()
@@ -81,23 +55,18 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             };
         }
 
-        #region ViewModelImplimentation
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        partial void OnSelectedBoardChanged(string value)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            _settingsService.S.GameSettings.BoardModelAddress = value;
+            _settingsService.Save();
+            _visualBoardSpawner.SpawnBoard(value);
         }
 
-        private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+        partial void OnSelectedPieceChanged(string value)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
+            _settingsService.S.GameSettings.PiecesModelAddress = value;
+            _settingsService.Save();
+            _visualBoardSpawner.SpawnPieces(value);
         }
-
-        #endregion Implimentation
     }
 }

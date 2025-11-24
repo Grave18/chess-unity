@@ -1,10 +1,12 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
 using Noesis;
+using Chess3D.Runtime.Core;
+using Chess3D.Runtime.Utilities;
+using UnityEngine.Scripting;
+using Chess3D.Runtime.Core.Ui.ViewModels;
 using EventArgs = Noesis.EventArgs;
 using GUI = Noesis.GUI;
-using Object = UnityEngine.Object;
-using InGameMenuViewModel = Chess3D.Runtime.Core.Ui.ViewModels.InGameMenuViewModel;
 
 #else
 using System;
@@ -13,12 +15,13 @@ using System.Windows;
 using System.Windows.Input;
 #endif
 
-using Chess3D.Runtime.Core;
-using Chess3D.Runtime.Core.Ui;
 using Ui.Auxiliary;
 
 namespace Ui.InGame
 {
+#if NOESIS
+    [Preserve]
+#endif
     public partial class InGameMenu : GameMenuBase
     {
         public InGameMenu()
@@ -26,7 +29,7 @@ namespace Ui.InGame
             Initialized += OnInitialized;
             Loaded += OnLoaded;
             InitializeComponent();
-            this.KeyDown += OnKeyDown;
+            KeyDown += OnKeyDown;
         }
 
         protected override void ChangePage(UserControl page)
@@ -44,8 +47,8 @@ namespace Ui.InGame
         private void OnLoaded(object sender, RoutedEventArgs args)
         {
             // Focus on Menu and listen for key events
-            this.Focusable = true;
-            this.Focus();
+            Focusable = true;
+            Focus();
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)

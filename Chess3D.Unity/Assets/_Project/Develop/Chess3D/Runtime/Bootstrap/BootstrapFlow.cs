@@ -28,7 +28,7 @@ namespace Chess3D.Runtime.Bootstrap
             await _loadingService.BeginLoading(_settingsService);
             await _loadingService.BeginLoading(_applicationConfigurationLoadUnit);
 
-            await _sceneManager.LoadScene(RuntimeConstants.Scenes.Core);
+            await _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu);
         }
     }
 }
