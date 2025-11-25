@@ -64,8 +64,6 @@ namespace Ui.Menu.Pages
                         return;
                     }
                 }
-
-                LogUi.Debug($"Tab {_selectedTab} not found");
             }
         }
 

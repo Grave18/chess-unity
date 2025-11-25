@@ -57,7 +57,6 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [RelayCommand]
         private void PlayOnline()
         {
-            LogUi.Debug("PlayOnline Clicked");
         }
 
         [RelayCommand]
