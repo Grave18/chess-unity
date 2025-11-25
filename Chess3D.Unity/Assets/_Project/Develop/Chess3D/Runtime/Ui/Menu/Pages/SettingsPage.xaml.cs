@@ -35,7 +35,6 @@ namespace Ui.Menu.Pages
         private void OnInitialized(object sender, EventArgs args)
         {
 #if NOESIS
-            DataContext = ServiceLocator.Resolve<SettingsPageViewModel>();
             GameSettingsTab.DataContext = ServiceLocator.Resolve<GameSettingsViewModel>();
             GraphicsSettingsTab.DataContext = ServiceLocator.Resolve<GraphicsSettingsViewModel>();
             AudioSettingsTab.DataContext = ServiceLocator.Resolve<AudioSettingsViewModel>();

@@ -21,9 +21,7 @@ namespace Chess3D.Runtime.Menu
             builder.RegisterComponent(visualBoardSpawner);
 
             builder.Register<MainMenuViewModel>(Lifetime.Scoped);
-            builder.Register<MainPageViewModel>(Lifetime.Scoped);
             builder.Register<PlayPageViewModel>(Lifetime.Scoped);
-            builder.Register<SettingsPageViewModel>(Lifetime.Scoped);
             builder.Register<GameSettingsViewModel>(Lifetime.Scoped);
             builder.Register<GraphicsSettingsViewModel>(Lifetime.Scoped);
             builder.Register<AudioSettingsViewModel>(Lifetime.Scoped);

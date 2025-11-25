@@ -38,7 +38,6 @@ namespace Ui.InGame.Pages
         private void OnInitialized(object sender, EventArgs args)
         {
 #if NOESIS
-            DataContext = ServiceLocator.Resolve<SettingsPageViewModel>();
             GraphicsSettingsTab.DataContext = ServiceLocator.Resolve<GraphicsSettingsViewModel>();
             AudioSettingsTab.DataContext = ServiceLocator.Resolve<AudioSettingsViewModel>();
 #endif

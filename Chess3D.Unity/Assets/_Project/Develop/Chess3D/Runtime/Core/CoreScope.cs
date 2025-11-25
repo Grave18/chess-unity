@@ -125,7 +125,6 @@ namespace Chess3D.Runtime.Core
             builder.Register<InGameMenuViewModel>(Lifetime.Scoped);
             builder.RegisterComponent(inGamePageViewModel); // Network behaviour
             builder.Register<PopupViewModel>(Lifetime.Scoped);
-            builder.Register<SettingsPageViewModel>(Lifetime.Scoped);
             builder.Register<GraphicsSettingsViewModel>(Lifetime.Scoped);
             builder.Register<AudioSettingsViewModel>(Lifetime.Scoped);
             builder.Register<FenUserControlViewModel>(Lifetime.Scoped); // For suppress null in Settings Page
