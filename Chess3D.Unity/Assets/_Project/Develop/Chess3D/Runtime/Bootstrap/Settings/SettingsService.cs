@@ -1,13 +1,12 @@
 ﻿using System;
 using System.IO;
-using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Scripting;
 
-namespace Chess3D.Runtime
+namespace Chess3D.Runtime.Bootstrap.Settings
 {
     public interface ISettingsService : ILoadUnit
     {

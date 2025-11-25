@@ -1,4 +1,5 @@
 ﻿using System;
+using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.ChessBoard.Pieces;
 using Chess3D.Runtime.Core.Highlighting;

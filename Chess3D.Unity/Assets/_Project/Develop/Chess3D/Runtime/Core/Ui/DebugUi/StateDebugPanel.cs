@@ -1,3 +1,4 @@
+using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Online;

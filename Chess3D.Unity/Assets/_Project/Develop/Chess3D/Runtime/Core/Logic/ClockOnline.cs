@@ -1,4 +1,5 @@
 ﻿using System;
+using Chess3D.Runtime.Bootstrap.Settings;
 using Cysharp.Threading.Tasks;
 using PurrNet;
 using UnityEngine;

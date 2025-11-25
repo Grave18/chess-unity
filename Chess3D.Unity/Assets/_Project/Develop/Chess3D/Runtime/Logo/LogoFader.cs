@@ -4,10 +4,11 @@ using UnityEngine.UI;
 
 namespace Chess3D.Runtime.Logo
 {
+    // TODO: Refactor or delete LogoFader
     public class Fader : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private SceneLoader sceneLoader;
+        // [SerializeField] private SceneLoader sceneLoader;
 
         [Header("Settings")]
         [SerializeField] private Image image;
@@ -46,7 +47,7 @@ namespace Chess3D.Runtime.Logo
                 yield return null;
             }
 
-            sceneLoader.LoadMainMenu();
+            // sceneLoader.LoadMainMenu();
         }
 
         private IEnumerator Scale()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using UnityEngine;

@@ -10,6 +10,7 @@ using UnityEngine;
 
 namespace Chess3D.Editor.GameSetup
 {
+    // TODO: Refactor or delete LocalhostSetupLoader
     public static class LocalhostSetupLoader
     {
         [MenuItem("Tools/GameSetup/Play And Load Localhost ^#w")]
@@ -56,8 +57,8 @@ namespace Chess3D.Editor.GameSetup
 
         private static async UniTask StartCloneClient()
         {
-            var onlineSceneSwitcher = Object.FindObjectOfType<OnlineSceneSwitcher>();
-            await onlineSceneSwitcher.SetupAndSwitchScene(PieceColor.Black, isHost: false, isLocal: true);
+            // var onlineSceneSwitcher = Object.FindObjectOfType<OnlineSceneSwitcher>();
+            // await onlineSceneSwitcher.SetupAndSwitchScene(PieceColor.Black, isHost: false, isLocal: true);
         }
 
         private static async UniTask OpenOrCreateAndOpenClone()
@@ -99,8 +100,8 @@ namespace Chess3D.Editor.GameSetup
             //     CloneCommandSender.Send("StartLocalhost");
             // }
 
-            var onlineSceneSwitcher = Object.FindObjectOfType<OnlineSceneSwitcher>();
-            await onlineSceneSwitcher.SetupAndSwitchScene(PieceColor.White, isHost: true, isLocal: true);
+            // var onlineSceneSwitcher = Object.FindObjectOfType<OnlineSceneSwitcher>();
+            // await onlineSceneSwitcher.SetupAndSwitchScene(PieceColor.White, isHost: true, isLocal: true);
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using System.IO;
 using Chess3D.Runtime;
+using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.Logic;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
+using AudioSettings = Chess3D.Runtime.Bootstrap.Settings.AudioSettings;
 using PlayerSettings = Chess3D.Runtime.Bootstrap.Settings.PlayerSettings;
 
 namespace Chess3D.Editor
@@ -15,7 +17,7 @@ namespace Chess3D.Editor
         {
             var settings = new Settings
             {
-                AudioSettings = new Runtime.AudioSettings
+                AudioSettings = new AudioSettings
                 {
                     MasterVolume = 1f,
                     MusicVolume = 1f,

@@ -1,4 +1,5 @@
-﻿using Chess3D.Runtime.Core.Logic.MenuStates;
+﻿using Chess3D.Runtime.Bootstrap.Settings;
+using Chess3D.Runtime.Core.Logic.MenuStates;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities;
