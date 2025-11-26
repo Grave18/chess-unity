@@ -15,17 +15,15 @@ using System.Windows.Controls;
 using System.Windows.Input;
 #endif
 
-using Ui.Auxiliary;
-
-namespace Ui.Menu.Pages
+namespace Chess3D.Runtime.Menu.UI.Views
 {
 
 #if NOESIS
     [Preserve]
 #endif
-    public partial class SettingsPage : UserControl
+    public partial class SettingsView : UserControl
     {
-        public SettingsPage()
+        public SettingsView()
         {
             Initialized += OnInitialized;
             Loaded += OnLoaded;
@@ -44,21 +42,6 @@ namespace Ui.Menu.Pages
         private void OnLoaded(object sender, RoutedEventArgs args)
         {
             Focus();
-            KeyDown += OnKeyDown;
-        }
-
-        private void OnKeyDown(object sender, KeyEventArgs args)
-        {
-            if (args.Key == Key.Escape)
-            {
-                // GameMenuBase.Instance.ChangePage<HomeView>();
-                args.Handled = true;
-            }
-        }
-
-        public void Back_Click(object sender, RoutedEventArgs args)
-        {
-            // GameMenuBase.Instance.ChangePage<HomeView>();
         }
 
 #if NOESIS
@@ -73,17 +56,6 @@ namespace Ui.Menu.Pages
             GameSettingsTab = FindName("GameSettingsTab") as TabItem;
             GraphicsSettingsTab = FindName("GraphicsSettingsTab") as TabItem;
             AudioSettingsTab = FindName("AudioSettingsTab") as TabItem;
-        }
-
-        protected override bool ConnectEvent(object source, string eventName, string handlerName)
-        {
-            if (eventName == "Click" && handlerName == nameof(Back_Click))
-            {
-                ((Button)source).Click += Back_Click;
-                return true;
-            }
-
-            return false;
         }
 #endif
     }

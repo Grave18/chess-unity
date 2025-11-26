@@ -24,7 +24,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [RelayCommand]
         private void Settings()
         {
-            // _viewNavigator.GoTo<SettingsViewModel>();
+            _viewNavigator.GoTo<SettingsViewModel>();
         }
 
         [RelayCommand]

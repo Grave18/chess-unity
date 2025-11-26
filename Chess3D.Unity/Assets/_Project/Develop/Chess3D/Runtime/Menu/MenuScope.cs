@@ -29,6 +29,7 @@ namespace Chess3D.Runtime.Menu
             builder.Register<HomeViewModel>(Lifetime.Scoped);
             builder.Register<BoardViewModel>(Lifetime.Scoped);
             builder.Register<PlayViewModel>(Lifetime.Scoped);
+            builder.Register<SettingsViewModel>(Lifetime.Scoped);
             builder.Register<GameSettingsViewModel>(Lifetime.Scoped);
             builder.Register<GraphicsSettingsViewModel>(Lifetime.Scoped);
             builder.Register<AudioSettingsViewModel>(Lifetime.Scoped);

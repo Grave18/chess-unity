@@ -1,4 +1,4 @@
-<UserControl x:Class="Ui.Menu.Pages.SettingsPage"
+<UserControl x:Class="Chess3D.Runtime.Menu.UI.Views.SettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,6 +8,10 @@
              d:DesignWidth="640" d:DesignHeight="1080"
              Focusable="True"
              IsTabStop="False">
+
+    <UserControl.InputBindings>
+        <KeyBinding Key="Escape" Command="{Binding BackCommand}" />
+    </UserControl.InputBindings>
 
     <Grid IsSharedSizeScope="True">
         <Grid.RowDefinitions>
@@ -181,7 +185,7 @@
         <Button Grid.Row="2"
                 Margin="0 0 0 20"
                 Content="Back"
-                Click="Back_Click" />
+                Command="{Binding BackCommand}" />
     </Grid>
 
 </UserControl>
