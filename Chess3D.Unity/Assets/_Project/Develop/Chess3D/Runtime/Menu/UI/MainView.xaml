@@ -1,4 +1,4 @@
-<auxiliary:GameMenuBase x:Class="Ui.Menu.MainMenu"
+<UserControl x:Class="Chess3D.Runtime.Menu.UI.MainView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -44,4 +44,4 @@
         </Grid>
     </Viewbox>
 
-</auxiliary:GameMenuBase>
+</UserControl>
