@@ -36,33 +36,29 @@ namespace Chess3D.Runtime.Menu.UI.Views
         {
             PopupText.Text = "Are you sure you want to Exit?";
             PopupYesButton.Content = "Exit";
-            PopupYesButton.Click += PopupYes_Click;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs args)
         {
-            Focus();
-            KeyDown += MainPage_OnKeyDown;
-
+            KeyDown += HomeView_OnKeyDown;
+            PlayButton.Focus();
         }
 
-        private void MainPage_OnKeyDown(object sender, KeyEventArgs e)
+        private void HomeView_OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (!Popup.IsOpen)
-            {
-                return;
-            }
-
             if (e.Key == Key.Escape)
             {
-                ClosePopup();
+                if (Popup.IsOpen)
+                {
+                    ClosePopup();
+                }
+                else
+                {
+                    OpenPopup();
+                }
                 e.Handled = true;
             }
-            else if (e.Key == Key.Enter)
-            {
-                e.Handled = true;
-                Exit();
-            }
+
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
@@ -96,28 +92,13 @@ namespace Chess3D.Runtime.Menu.UI.Views
             ExitButton.Focus();
         }
 
-        private void PopupYes_Click(object sender, RoutedEventArgs e)
-        {
-            Exit();
-        }
-
-        private void Exit()
-        {
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#elif NOESIS
-            Application.Quit();
-#else
-            Application.Current.Shutdown();
-#endif
-        }
-
 #if NOESIS
         private Popup Popup { get; set; }
         private TextBlock PopupText { get; set; }
         private Button PopupYesButton { get; set; }
         private Button PopupCancelButton { get; set; }
         private Button ExitButton { get; set; }
+        private Button PlayButton { get; set; }
 
         private void InitializeComponent()
         {
@@ -128,6 +109,7 @@ namespace Chess3D.Runtime.Menu.UI.Views
             PopupYesButton = FindName("PopupYesButton") as Button;
             PopupCancelButton = FindName("PopupCancelButton") as Button;
             ExitButton = FindName("ExitButton") as Button;
+            PlayButton = FindName("PlayButton") as Button;
         }
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)
@@ -141,12 +123,6 @@ namespace Chess3D.Runtime.Menu.UI.Views
             if (eventName == "Click" && handlerName == nameof(PopupClose_Click))
             {
                 ((Button)source).Click += PopupClose_Click;
-                return true;
-            }
-
-            if (eventName == "Click" && handlerName == nameof(PopupYes_Click))
-            {
-                ((Button)source).Click += PopupYes_Click;
                 return true;
             }
 

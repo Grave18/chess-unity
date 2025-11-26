@@ -4,9 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignWidth="640" d:DesignHeight="1080"
-             Focusable="True"
-             IsTabStop="False">
+             d:DesignWidth="640" d:DesignHeight="1080">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -27,9 +25,10 @@
                 </Style>
             </StackPanel.Resources>
 
-            <Button Content="Play" Click="Play_Click" />
-            <Button Content="Settings" Click="Settings_Click" />
+            <Button Name="PlayButton" Content="Play" Command="{Binding PlayCommand}" />
+            <Button Content="Settings" Command="{Binding SettingsCommand}" />
             <Button Content="Board" Command="{Binding BoardCommand}" />
+
         </StackPanel>
 
         <!-- Exit Button -->
@@ -38,7 +37,6 @@
                 Content="Exit"
                 KeyDown="ExitButton_OnKeyDown"
                 Click="Exit_Click" />
-
 
         <!-- Popup -->
         <Popup Grid.Row="0"
@@ -70,7 +68,7 @@
                                 <!-- Yes Button -->
                                 <Button Grid.Column="1"
                                         Name="PopupYesButton"
-                                        Click="PopupYes_Click"
+                                        Command="{Binding QuitCommand}"
                                         Style="{StaticResource PopupButtonStyle}"/>
                             </Grid>
                         </DockPanel>
