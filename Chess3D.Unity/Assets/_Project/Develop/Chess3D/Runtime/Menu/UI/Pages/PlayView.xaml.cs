@@ -39,7 +39,6 @@ namespace Chess3D.Runtime.Menu.UI.Views
         private void OnInitialized(object sender, EventArgs args)
         {
 #if NOESIS
-            DataContext = ServiceLocator.Resolve<PlayViewModel>();
             Root.DataContext = ServiceLocator.Resolve<GameSettingsViewModel>();
 #endif
         }
