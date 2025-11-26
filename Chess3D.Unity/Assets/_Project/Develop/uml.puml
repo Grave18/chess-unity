@@ -1,5 +1,15 @@
 ﻿@startuml
 class Game
+Game --> Board
+Game --> FenFromString
+Game --> UciBuffer
+Game --> SettingsContainer
+
+class FenFromBoard
+FenFromBoard --> SceneManager
+FenFromBoard --> SettingsService
+FenFromBoard --> ConnectionTerminator
+
 class FenFromString
 class UciBuffer
 class SettingsContainer
@@ -33,16 +43,44 @@ class Board
    ...
    +SpawnAllPieces()
 }
-
 Board --> PieceFactory
 Board --> Assets
 Board --> UciBuffer
 Board --> FenFromString
 Board --> SettingsContainer
-Game --> Board
-Game --> FenFromString
-Game --> UciBuffer
-Game --> SettingsContainer
+
+class NoesisGuiLoader implements ILoadUnit
+{
+    +Load()
+}
+note right of NoesisGuiLoader
+    Get NoesisView as service
+    and add xaml file and load it
+end note
+
+class MainViewModel
+{
+    +CurrentViewModel : IViewModel
+}
+MainViewModel --> IViewModel
+
+class PageNavigatorService
+{
+    -mainViewModel : MainViewModel
+    +GoTo<TViewModel>() : void
+    +GoBack() : void
+}
+PageNavigatorService --> MainViewModel
+
+class MainPageViewModel implements IViewModel
+class SettingsPageViewModel implements IViewModel
+class OtherViewModels implements IViewModel
+
+class ViewLocatorDataTemplate
+{
+
+}
+
 PieceFactory --> Assets
 UciBuffer --> FenFromBoard
 UciBuffer --> FenFromString
@@ -50,9 +88,6 @@ InGameMenuViewModel --> PopupViewModel
 InGameMenuViewModel --> MenuStateMachine
 PopupViewModel --> FenFromBoard
 PopupViewModel --> MenuStateMachine
-FenFromBoard --> SceneManager
-FenFromBoard --> SettingsService
-FenFromBoard --> ConnectionTerminator
 
 hide empty members
 @enduml

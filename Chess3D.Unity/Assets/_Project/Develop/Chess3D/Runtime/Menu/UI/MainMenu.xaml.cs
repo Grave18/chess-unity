@@ -37,7 +37,7 @@ namespace Ui.Menu
         private async void OnInitialized(object sender, EventArgs args)
         {
 #if NOESIS
-            DataContext = await ServiceLocator.ResolveAsync<MainMenuViewModel>();
+            // DataContext = await ServiceLocator.ResolveAsync<MainMenuViewModel>();
 #endif
         }
 

@@ -1678,6 +1678,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pieceType: 6
   pieceColor: 1
+--- !u!1 &840606148
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 840606150}
+  - component: {fileID: 840606149}
+  m_Layer: 0
+  m_Name: AppEvents
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &840606149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 840606148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3f8460b950748799e2a23d20c29c95b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &840606150
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 840606148}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &846782247 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1211492289595240699, guid: d3a01af0dd4b3034a985831a5cb02615,
@@ -3353,6 +3397,7 @@ GameObject:
   - component: {fileID: 1637782475}
   - component: {fileID: 1637782478}
   - component: {fileID: 1637782479}
+  - component: {fileID: 1637782480}
   m_Layer: 0
   m_Name: NoesisUiCamera
   m_TagString: MainCamera
@@ -3490,7 +3535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29355477be96127469aed699dd82b4be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _xaml: {fileID: 11400000, guid: eac09e81d941d9345b720a0fcac35737, type: 2}
+  _xaml: {fileID: 0}
   _texture: {fileID: 0}
   _isPPAAEnabled: 1
   _tessellationMaxPixelError: 0.2
@@ -3502,6 +3547,19 @@ MonoBehaviour:
   _enableGamepad: 1
   _emulateTouch: 0
   _useRealTimeClock: 0
+--- !u!114 &1637782480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1637782474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a247ab3a9a7b04842bc48c1cf9223223, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nx: {fileID: 11400000, guid: eac09e81d941d9345b720a0fcac35737, type: 2}
 --- !u!114 &1639321307 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6960819470116050267, guid: d3a01af0dd4b3034a985831a5cb02615,
@@ -4157,3 +4215,4 @@ SceneRoots:
   - {fileID: 1637782477}
   - {fileID: 640971773}
   - {fileID: 187368471}
+  - {fileID: 840606150}

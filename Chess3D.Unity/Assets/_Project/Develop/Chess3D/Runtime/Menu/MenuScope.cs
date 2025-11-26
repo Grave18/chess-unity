@@ -20,6 +20,7 @@ namespace Chess3D.Runtime.Menu
             builder.RegisterComponent(lobbyManager);
             builder.RegisterComponent(visualBoardSpawner);
 
+            builder.RegisterComponentInHierarchy<NoesisView>();
             builder.Register<MainMenuViewModel>(Lifetime.Scoped);
             builder.Register<PlayPageViewModel>(Lifetime.Scoped);
             builder.Register<GameSettingsViewModel>(Lifetime.Scoped);
