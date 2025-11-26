@@ -1,5 +1,7 @@
 ﻿using Chess3D.Runtime.Bootstrap.Settings;
+using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Utilities;
+using Chess3D.Runtime.Utilities.Logging;
 using Cysharp.Threading.Tasks;
 using MvvmTool;
 using UnityEngine.Scripting;
@@ -31,21 +33,29 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         }
 
         [RelayCommand]
-        private void GetDefaultFen(object obj)
+        private void GetDefaultFen()
         {
-            CurrentFen = _settingsService.S.GameSettings.CurrentFen;
+            CurrentFen = _settingsService.S.GameSettings.DefaultFen;
         }
 
         [RelayCommand]
-        private void GetSavedFen(object obj)
+        private void GetSavedFen()
         {
-            CurrentFen = _settingsService.S.GameSettings.CurrentFen;
+            CurrentFen = _settingsService.S.GameSettings.SavedFen;
         }
 
         partial void OnCurrentFenChanged(string value)
         {
-            _settingsService.S.GameSettings.CurrentFen = value;
-            _settingsService.Save();
+            if (FenValidator.IsValid(value, out string errorMessage))
+            {
+                _settingsService.S.GameSettings.CurrentFen = value;
+                _settingsService.Save();
+            }
+            else
+            {
+                CurrentFen = _settingsService.S.GameSettings.CurrentFen;
+                Log.Editor.W(errorMessage);
+            }
         }
     }
 }
