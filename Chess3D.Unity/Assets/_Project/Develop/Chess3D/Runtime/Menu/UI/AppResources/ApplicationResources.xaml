@@ -36,6 +36,7 @@
     <!-- Converters -->
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <converters:Texture2dToImageSourceConverter x:Key="Texture2dToImageSourceConverter" />
+    <converters:ViewLocatorConverter x:Key="ViewLocatorConverter" />
 
     <!-- Lobby Template -->
     <DataTemplate x:Key="PlayerTemplate">

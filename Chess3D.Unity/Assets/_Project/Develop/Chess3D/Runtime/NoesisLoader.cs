@@ -1,18 +1,23 @@
 using Chess3D.Runtime.Core;
 using Chess3D.Runtime.Menu.UI.ViewModels;
+using Noesis;
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnityEngine.Scripting;
 
-public class NoesisLoader : MonoBehaviour
+namespace Chess3D.Runtime
 {
-    [FormerlySerializedAs("nx")] public NoesisXaml nXaml;
-
-    private void Start()
+    [Preserve]
+    public class NoesisLoader : MonoBehaviour
     {
-        var nView = gameObject.GetComponent<NoesisView>();
-        nView.Xaml = nXaml;
-        nView.LoadXaml(false);
-        var content = nView.Content;
-        content.DataContext = ServiceLocator.Resolve<MainMenuViewModel>();
+        [SerializeField] public NoesisXaml mainViewXaml;
+
+        private void Start()
+        {
+            var noesisView = gameObject.GetComponent<NoesisView>();
+            noesisView.Xaml = mainViewXaml;
+            noesisView.LoadXaml(false);
+            FrameworkElement content = noesisView.Content;
+            content.DataContext = ServiceLocator.Resolve<MainViewModel>();
+        }
     }
 }

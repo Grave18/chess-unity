@@ -51,14 +51,14 @@ namespace Ui.Menu.Pages
         {
             if (args.Key == Key.Escape)
             {
-                GameMenuBase.Instance.ChangePage<MainPage>();
+                // GameMenuBase.Instance.ChangePage<HomeView>();
                 args.Handled = true;
             }
         }
 
         public void Back_Click(object sender, RoutedEventArgs args)
         {
-            GameMenuBase.Instance.ChangePage<MainPage>();
+            // GameMenuBase.Instance.ChangePage<HomeView>();
         }
 
 #if NOESIS

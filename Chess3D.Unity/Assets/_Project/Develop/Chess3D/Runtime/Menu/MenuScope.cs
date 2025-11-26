@@ -1,4 +1,5 @@
 ﻿using Chess3D.Runtime.Core;
+using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.BoardInMainMenu;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using LobbyManagement;
@@ -20,14 +21,18 @@ namespace Chess3D.Runtime.Menu
             builder.RegisterComponent(lobbyManager);
             builder.RegisterComponent(visualBoardSpawner);
 
-            builder.RegisterComponentInHierarchy<NoesisView>();
-            builder.Register<MainMenuViewModel>(Lifetime.Scoped);
-            builder.Register<PlayPageViewModel>(Lifetime.Scoped);
+            // UI
+            builder.RegisterComponentInHierarchy<NoesisView>(); // Load MainView
+            builder.Register<ViewNavigator>(Lifetime.Scoped); // Navigate through Views
+            // VMs
+            builder.Register<MainViewModel>(Lifetime.Scoped);
+            builder.Register<HomeViewModel>(Lifetime.Scoped);
+            builder.Register<BoardViewModel>(Lifetime.Scoped);
+            builder.Register<PlayViewModel>(Lifetime.Scoped);
             builder.Register<GameSettingsViewModel>(Lifetime.Scoped);
             builder.Register<GraphicsSettingsViewModel>(Lifetime.Scoped);
             builder.Register<AudioSettingsViewModel>(Lifetime.Scoped);
             builder.Register<FenUserControlViewModel>(Lifetime.Scoped);
-            builder.Register<BoardPageViewModel>(Lifetime.Scoped);
             builder.RegisterEntryPoint<FindGameViewModel>(Lifetime.Scoped).AsSelf();
             builder.RegisterEntryPoint<LobbyViewModel>(Lifetime.Scoped).AsSelf();
 

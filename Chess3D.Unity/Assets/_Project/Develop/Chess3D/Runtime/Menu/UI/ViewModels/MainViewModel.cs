@@ -4,24 +4,26 @@ using Chess3D.Runtime.Menu.LobbyManagement;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using LobbyManagement;
+using MvvmTool;
 using Noesis;
 using Ui.Auxiliary;
 using Ui.Menu.Pages;
 using UnityEngine;
-using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
-    [Preserve]
-    public class MainMenuViewModel : ILoadUnit, IDisposable
+    [INotifyPropertyChanged]
+    [UnityEngine.Scripting.Preserve]
+    public partial class MainViewModel : ILoadUnit<IViewModel>, IDisposable
     {
         private readonly RenderTexture _renderTexture;
         private readonly LobbyManager _lobbyManager;
         private readonly AppEvents _appEvents;
 
+        [ObservableProperty] private IViewModel _currentViewModel;
         public ImageSource ImageSource { get; private set; }
 
-        public MainMenuViewModel(RenderTexture renderTexture, LobbyManager lobbyManager, AppEvents appEvents)
+        public MainViewModel(RenderTexture renderTexture, LobbyManager lobbyManager, AppEvents appEvents)
         {
             _renderTexture = renderTexture;
             _lobbyManager = lobbyManager;
@@ -48,10 +50,16 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             }
         }
 
-        public UniTask Load()
+        public UniTask Load(IViewModel viewModel)
         {
+            LoadStartingView(viewModel);
             InitRenderTexture();
             return UniTask.CompletedTask;
+        }
+
+        private void LoadStartingView(IViewModel viewModel)
+        {
+            CurrentViewModel = viewModel;
         }
 
         private void InitRenderTexture()

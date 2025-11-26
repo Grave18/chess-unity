@@ -10,13 +10,13 @@ using UnityEngine.Scripting;
 namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
-    public partial class PlayPageViewModel
+    public partial class PlayViewModel
     {
         private readonly ISettingsService _settingsService;
         private readonly LobbyManager _lobbyManager;
         private readonly SceneManager _sceneManager;
 
-        public PlayPageViewModel(ISettingsService settingsService, LobbyManager lobbyManager, SceneManager sceneManager)
+        public PlayViewModel(ISettingsService settingsService, LobbyManager lobbyManager, SceneManager sceneManager)
         {
             _settingsService = settingsService;
             _lobbyManager = lobbyManager;

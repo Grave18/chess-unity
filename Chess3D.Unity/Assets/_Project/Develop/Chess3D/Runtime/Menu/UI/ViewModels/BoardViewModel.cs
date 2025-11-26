@@ -10,7 +10,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
     [INotifyPropertyChanged]
-    public partial class BoardPageViewModel : ILoadUnit
+    public partial class BoardViewModel : IViewModel, ILoadUnit
     {
         public ObservableCollection<string> Pieces { get; set; }
         public ObservableCollection<string> Boards { get; set; }
@@ -20,11 +20,13 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private readonly ISettingsService _settingsService;
         private readonly VisualBoardSpawner _visualBoardSpawner;
+        private readonly ViewNavigator _viewNavigator;
 
-        public BoardPageViewModel(ISettingsService settingsService, VisualBoardSpawner visualBoardSpawner)
+        public BoardViewModel(ISettingsService settingsService, VisualBoardSpawner visualBoardSpawner, ViewNavigator viewNavigator)
         {
             _settingsService = settingsService;
             _visualBoardSpawner = visualBoardSpawner;
+            _viewNavigator = viewNavigator;
         }
 
         public UniTask Load()
@@ -68,6 +70,12 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _settingsService.S.GameSettings.PiecesModelAddress = value;
             _settingsService.Save();
             _visualBoardSpawner.SpawnPieces(value);
+        }
+
+        [RelayCommand]
+        private void Back()
+        {
+            _viewNavigator.GoBack();
         }
     }
 }

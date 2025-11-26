@@ -13,8 +13,9 @@ namespace Chess3D.Runtime.Menu
     {
         private readonly LoadingService _loadingService;
         private readonly VisualBoardSpawner _visualBoardSpawner;
-        private readonly MainMenuViewModel _mainMenuViewModel;
-        private readonly BoardPageViewModel _boardPageViewModel;
+        private readonly MainViewModel _mainViewModel;
+        private readonly HomeViewModel _homeViewModel;
+        private readonly BoardViewModel _boardViewModel;
         private readonly FenUserControlViewModel _fenUserControlViewModel;
         private readonly FindGameViewModel _findGameViewModel;
         private readonly GameSettingsViewModel _gameSettingsViewModel;
@@ -22,28 +23,29 @@ namespace Chess3D.Runtime.Menu
         private readonly GraphicsSettingsViewModel _graphicsSettingsViewModel;
         private readonly AudioSettingsViewModel _audioSettingsViewModel;
 
-        public MenuFlow(LoadingService loadingService, MainMenuViewModel mainMenuViewModel,
-            VisualBoardSpawner visualBoardSpawner, BoardPageViewModel boardPageViewModel,
+        public MenuFlow(LoadingService loadingService, MainViewModel mainViewModel,
+            VisualBoardSpawner visualBoardSpawner, BoardViewModel boardViewModel,
             FenUserControlViewModel fenUserControlViewModel, FindGameViewModel findGameViewModel,
-            GameSettingsViewModel gameSettingsViewModel, LobbyViewModel lobbyViewModel, GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel)
+            GameSettingsViewModel gameSettingsViewModel, LobbyViewModel lobbyViewModel, GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel, HomeViewModel homeViewModel)
         {
             _loadingService = loadingService;
             _visualBoardSpawner = visualBoardSpawner;
-            _boardPageViewModel = boardPageViewModel;
-            _mainMenuViewModel = mainMenuViewModel;
+            _boardViewModel = boardViewModel;
+            _mainViewModel = mainViewModel;
             _fenUserControlViewModel = fenUserControlViewModel;
             _findGameViewModel = findGameViewModel;
             _gameSettingsViewModel = gameSettingsViewModel;
             _lobbyViewModel = lobbyViewModel;
             _graphicsSettingsViewModel = graphicsSettingsViewModel;
             _audioSettingsViewModel = audioSettingsViewModel;
+            _homeViewModel = homeViewModel;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = new())
         {
             await _loadingService.BeginLoading(_visualBoardSpawner);
-            await _loadingService.BeginLoading(_mainMenuViewModel);
-            await _loadingService.BeginLoading(_boardPageViewModel);
+            await _loadingService.BeginLoading(_mainViewModel, _homeViewModel);
+            await _loadingService.BeginLoading(_boardViewModel);
             await _loadingService.BeginLoading(_fenUserControlViewModel);
             await _loadingService.BeginLoading(_findGameViewModel);
             await _loadingService.BeginLoading(_gameSettingsViewModel);

@@ -1,9 +1,9 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
-using Noesis;
-using GUI = Noesis.GUI;
 using Chess3D.Runtime.Utilities;
+using Noesis;
 using UnityEngine.Scripting;
+using GUI = Noesis.GUI;
 using UnityEngine; // Do not remove
 
 #else
@@ -13,17 +13,14 @@ using System.Windows.Controls;
 using System.Windows.Input;
 #endif
 
-using Ui.Auxiliary;
-
-namespace Ui.Menu.Pages
+namespace Chess3D.Runtime.Menu.UI.Views
 {
-
 #if NOESIS
     [Preserve]
 #endif
-    public partial class MainPage : UserControl
+    public partial class HomeView : UserControl
     {
-        public MainPage()
+        public HomeView()
         {
             Initialized += OnInitialized;
             Loaded += OnLoaded;
@@ -68,21 +65,6 @@ namespace Ui.Menu.Pages
             }
         }
 
-        public void Play_Click(object sender, RoutedEventArgs args)
-        {
-            GameMenuBase.Instance.ChangePage<PlayPage>();
-        }
-
-        public void Settings_Click(object sender, RoutedEventArgs args)
-        {
-            GameMenuBase.Instance.ChangePage<SettingsPage>();
-        }
-
-        private void Board_Click(object sender, RoutedEventArgs e)
-        {
-            GameMenuBase.Instance.ChangePage<BoardPage>();
-        }
-
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             OpenPopup();
@@ -119,7 +101,7 @@ namespace Ui.Menu.Pages
             Exit();
         }
 
-        public void Exit()
+        private void Exit()
         {
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
@@ -150,24 +132,6 @@ namespace Ui.Menu.Pages
 
         protected override bool ConnectEvent(object source, string eventName, string handlerName)
         {
-            if (eventName == "Click" && handlerName == nameof(Play_Click))
-            {
-                ((Button)source).Click += Play_Click;
-                return true;
-            }
-
-            if (eventName == "Click" && handlerName == nameof(Settings_Click))
-            {
-                ((Button)source).Click += Settings_Click;
-                return true;
-            }
-
-            if (eventName == "Click" && handlerName == nameof(Board_Click))
-            {
-                ((Button)source).Click += Board_Click;
-                return true;
-            }
-
             if (eventName == "Click" && handlerName == nameof(Exit_Click))
             {
                 ((Button)source).Click += Exit_Click;
