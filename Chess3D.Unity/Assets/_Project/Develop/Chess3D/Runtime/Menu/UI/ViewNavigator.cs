@@ -1,21 +1,28 @@
 ﻿using System.Collections.Generic;
 using Chess3D.Runtime.Menu.UI.ViewModels;
+using Chess3D.Runtime.Utilities;
+using Cysharp.Threading.Tasks;
 using VContainer;
 
 namespace Chess3D.Runtime.Menu.UI
 {
     [UnityEngine.Scripting.Preserve]
-    public class ViewNavigator
+    public class ViewNavigator : ILoadUnit
     {
-        private readonly MainViewModel _mainViewModel;
         private readonly IObjectResolver _resolver;
 
+        private MainViewModel _mainViewModel;
         private readonly Stack<IViewModel> _viewModels = new();
 
-        public ViewNavigator(MainViewModel mainViewModel, IObjectResolver resolver)
+        public ViewNavigator(IObjectResolver resolver)
         {
-            _mainViewModel = mainViewModel;
             _resolver = resolver;
+        }
+
+        public UniTask Load()
+        {
+            _mainViewModel = _resolver.Resolve<MainViewModel>();
+            return UniTask.CompletedTask;
         }
 
         public void GoTo<TViewModel>() where TViewModel : IViewModel

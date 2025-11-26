@@ -1,4 +1,4 @@
-<UserControl x:Class="Ui.Menu.Pages.PlayPage"
+<UserControl x:Class="Chess3D.Runtime.Menu.UI.Views.PlayView"
              Name="ThisControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,6 +9,9 @@
              d:DesignWidth="640" d:DesignHeight="1080"
              Focusable="True"
              IsTabStop="False">
+    <UserControl.InputBindings>
+        <KeyBinding Key="Escape" Command="{Binding BackCommand}" />
+    </UserControl.InputBindings>
 
     <Grid Name="Root">
         <Grid.RowDefinitions>
@@ -123,7 +126,6 @@
                             Name="CreateLobbyButton"
                             Content="Create Lobby"
                             VerticalAlignment="Bottom"
-                            Click="CreateLobby_OnClick"
                             DataContext="{Binding DataContext, ElementName=ThisControl}"
                             Command="{Binding CreateLobbyCommand}" />
 
@@ -133,7 +135,6 @@
                             Content="Find Game"
                             VerticalAlignment="Bottom"
                             DataContext="{Binding DataContext, ElementName=ThisControl}"
-                            Click="FindGame_OnClick"
                             Command="{Binding FindGameCommand}" />
                 </DockPanel>
             </TabItem>
@@ -146,7 +147,7 @@
                 Margin="0 0 0 20"
                 Content="Back"
                 DataContext="{Binding DataContext, ElementName=ThisControl}"
-                Click="Back_Click" />
+                Command="{Binding BackCommand}" />
     </Grid>
 
 </UserControl>

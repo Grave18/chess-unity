@@ -3,6 +3,7 @@ using Chess3D.Runtime.Bootstrap;
 using Chess3D.Runtime.Menu.LobbyManagement;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
 using LobbyManagement;
 using MvvmTool;
 using Noesis;
@@ -19,15 +20,17 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         private readonly RenderTexture _renderTexture;
         private readonly LobbyManager _lobbyManager;
         private readonly AppEvents _appEvents;
+        private readonly ViewNavigator _viewNavigator;
 
         [ObservableProperty] private IViewModel _currentViewModel;
         public ImageSource ImageSource { get; private set; }
 
-        public MainViewModel(RenderTexture renderTexture, LobbyManager lobbyManager, AppEvents appEvents)
+        public MainViewModel(RenderTexture renderTexture, LobbyManager lobbyManager, AppEvents appEvents, ViewNavigator viewNavigator)
         {
             _renderTexture = renderTexture;
             _lobbyManager = lobbyManager;
             _appEvents = appEvents;
+            _viewNavigator = viewNavigator;
 
             _lobbyManager.OnRoomJoined.AddListener(TryShowLobbyPage);
             _lobbyManager.OnRoomJoinFailed.AddListener(ShowOnlinePage);
@@ -106,7 +109,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private void ShowOnlinePage()
         {
-            GameMenuBase.Instance.ChangePage<PlayPage>("OnlineTab");
+            _viewNavigator.GoTo<PlayViewModel>();
         }
     }
 }

@@ -36,8 +36,8 @@ namespace Ui.Menu.Pages
 
         private void Back_Click(object sender, RoutedEventArgs e)
         {
-            Back.Command.Execute(null); // for command to execute before event handler
-            GameMenuBase.Instance.ChangePage<PlayPage>("OnlineTab");
+            // Back.Command.Execute(null); // for command to execute before event handler
+            // GameMenuBase.Instance.ChangePage<PlayView>("OnlineTab");
         }
 
 #if NOESIS

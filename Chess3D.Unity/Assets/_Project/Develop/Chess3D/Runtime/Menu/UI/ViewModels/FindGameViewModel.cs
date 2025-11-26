@@ -12,7 +12,7 @@ using VContainer.Unity;
 namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
-    public class FindGameViewModel : ILoadUnit, ITickable, IDisposable
+    public class FindGameViewModel : IViewModel, ILoadUnit, ITickable, IDisposable
     {
         private const float UpdateIntervalSec = 3f;
 

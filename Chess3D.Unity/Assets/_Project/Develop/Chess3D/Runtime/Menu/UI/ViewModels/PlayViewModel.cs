@@ -4,23 +4,24 @@ using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using LobbyManagement;
 using MvvmTool;
-using Ui.Auxiliary;
 using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
-    public partial class PlayViewModel
+    public partial class PlayViewModel : IViewModel
     {
         private readonly ISettingsService _settingsService;
         private readonly LobbyManager _lobbyManager;
         private readonly SceneManager _sceneManager;
+        private readonly ViewNavigator _viewNavigator;
 
-        public PlayViewModel(ISettingsService settingsService, LobbyManager lobbyManager, SceneManager sceneManager)
+        public PlayViewModel(ISettingsService settingsService, LobbyManager lobbyManager, SceneManager sceneManager, ViewNavigator viewNavigator)
         {
             _settingsService = settingsService;
             _lobbyManager = lobbyManager;
             _sceneManager = sceneManager;
+            _viewNavigator = viewNavigator;
         }
 
         [RelayCommand]
@@ -57,18 +58,21 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [RelayCommand]
         private void PlayOnline()
         {
+
         }
 
         [RelayCommand]
         private void CreateLobby()
         {
             _lobbyManager.CreateRoom();
+            _viewNavigator.GoTo<LobbyViewModel>();
         }
 
         [RelayCommand]
         private void FindGame()
         {
-            // TODO: implement FindGame()
+            // TODO: Implement find game
+            _viewNavigator.GoTo<FindGameViewModel>();
         }
 
         [RelayCommand]
@@ -86,6 +90,12 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             // onlineSceneSwitcher
                 // .SetupAndSwitchScene(PieceColor.Black, isHost: false, isLocal: true)
                 // .Forget();
+        }
+
+        [RelayCommand]
+        private void Back()
+        {
+            _viewNavigator.GoBack();
         }
     }
 }

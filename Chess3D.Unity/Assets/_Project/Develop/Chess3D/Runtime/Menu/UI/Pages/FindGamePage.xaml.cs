@@ -36,7 +36,7 @@ namespace Ui.Menu.Pages
 
         private void Back_Click(object sender, RoutedEventArgs e)
         {
-            GameMenuBase.Instance.ChangePage<PlayPage>("OnlineTab");
+            // GameMenuBase.Instance.ChangePage<PlayView>("OnlineTab");
         }
 
 #if NOESIS

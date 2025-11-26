@@ -18,7 +18,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [RelayCommand]
         private void Play()
         {
-            // _viewNavigator.GoTo<PlayViewModel>();
+            _viewNavigator.GoTo<PlayViewModel>();
         }
 
         [RelayCommand]

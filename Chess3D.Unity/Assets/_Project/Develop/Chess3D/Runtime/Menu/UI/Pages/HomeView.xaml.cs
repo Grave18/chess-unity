@@ -4,7 +4,6 @@ using Chess3D.Runtime.Utilities;
 using Noesis;
 using UnityEngine.Scripting;
 using GUI = Noesis.GUI;
-using UnityEngine; // Do not remove
 
 #else
 using System;

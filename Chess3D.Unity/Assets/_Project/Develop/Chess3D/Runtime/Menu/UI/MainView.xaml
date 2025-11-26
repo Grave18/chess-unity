@@ -11,7 +11,7 @@
 
     <noesis:Xaml.Dependencies>
         <noesis:Dependency Source="Pages/HomeView.xaml" />
-        <noesis:Dependency Source="Pages/PlayPage.xaml" />
+        <noesis:Dependency Source="Pages/PlayView.xaml" />
         <noesis:Dependency Source="Pages/BoardView.xaml" />
         <noesis:Dependency Source="Pages/SettingsPage.xaml" />
         <noesis:Dependency Source="Pages/FindGamePage.xaml" />

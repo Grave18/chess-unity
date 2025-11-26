@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.BoardInMainMenu;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities;
@@ -13,6 +14,7 @@ namespace Chess3D.Runtime.Menu
     {
         private readonly LoadingService _loadingService;
         private readonly VisualBoardSpawner _visualBoardSpawner;
+        private readonly ViewNavigator _viewNavigator;
         private readonly MainViewModel _mainViewModel;
         private readonly HomeViewModel _homeViewModel;
         private readonly BoardViewModel _boardViewModel;
@@ -26,7 +28,7 @@ namespace Chess3D.Runtime.Menu
         public MenuFlow(LoadingService loadingService, MainViewModel mainViewModel,
             VisualBoardSpawner visualBoardSpawner, BoardViewModel boardViewModel,
             FenUserControlViewModel fenUserControlViewModel, FindGameViewModel findGameViewModel,
-            GameSettingsViewModel gameSettingsViewModel, LobbyViewModel lobbyViewModel, GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel, HomeViewModel homeViewModel)
+            GameSettingsViewModel gameSettingsViewModel, LobbyViewModel lobbyViewModel, GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel, HomeViewModel homeViewModel, ViewNavigator viewNavigator)
         {
             _loadingService = loadingService;
             _visualBoardSpawner = visualBoardSpawner;
@@ -39,11 +41,13 @@ namespace Chess3D.Runtime.Menu
             _graphicsSettingsViewModel = graphicsSettingsViewModel;
             _audioSettingsViewModel = audioSettingsViewModel;
             _homeViewModel = homeViewModel;
+            _viewNavigator = viewNavigator;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = new())
         {
             await _loadingService.BeginLoading(_visualBoardSpawner);
+            await _loadingService.BeginLoading(_viewNavigator);
             await _loadingService.BeginLoading(_mainViewModel, _homeViewModel);
             await _loadingService.BeginLoading(_boardViewModel);
             await _loadingService.BeginLoading(_fenUserControlViewModel);

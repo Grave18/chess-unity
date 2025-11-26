@@ -15,7 +15,7 @@ using FriendItem = Chess3D.Runtime.Menu.LobbyManagement.FriendItem;
 namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
-    public partial class LobbyViewModel : ILoadUnit, ITickable, IDisposable
+    public partial class LobbyViewModel : IViewModel, ILoadUnit, ITickable, IDisposable
     {
         private const float UpdateIntervalSec = 3f;
         private const LobbyManager.FriendFilter Filter = LobbyManager.FriendFilter.All;
