@@ -10,13 +10,13 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
     [INotifyPropertyChanged]
-    public partial class FenUserControlViewModel : ILoadUnit
+    public partial class FenTextBoxViewModel : ILoadUnit
     {
         [ObservableProperty] private string _currentFen;
 
         private readonly ISettingsService _settingsService;
 
-        public FenUserControlViewModel(ISettingsService settingsService)
+        public FenTextBoxViewModel(ISettingsService settingsService)
         {
             _settingsService = settingsService;
         }

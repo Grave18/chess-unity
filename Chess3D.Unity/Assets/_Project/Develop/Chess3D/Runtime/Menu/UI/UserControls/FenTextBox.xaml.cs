@@ -28,7 +28,7 @@ namespace Ui.Menu.UserControls
         private void OnInitialized(object sender, EventArgs args)
         {
 #if NOESIS
-            DataContext = ServiceLocator.Resolve<FenUserControlViewModel>();
+            DataContext = ServiceLocator.Resolve<FenTextBoxViewModel>();
 #endif
         }
 

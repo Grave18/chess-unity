@@ -33,7 +33,7 @@ namespace Chess3D.Runtime.Menu
             builder.Register<GameSettingsViewModel>(Lifetime.Scoped);
             builder.Register<GraphicsSettingsViewModel>(Lifetime.Scoped);
             builder.Register<AudioSettingsViewModel>(Lifetime.Scoped);
-            builder.Register<FenUserControlViewModel>(Lifetime.Scoped);
+            builder.Register<FenTextBoxViewModel>(Lifetime.Scoped);
             builder.RegisterEntryPoint<FindGameViewModel>(Lifetime.Scoped).AsSelf();
             builder.RegisterEntryPoint<LobbyViewModel>(Lifetime.Scoped).AsSelf();
 

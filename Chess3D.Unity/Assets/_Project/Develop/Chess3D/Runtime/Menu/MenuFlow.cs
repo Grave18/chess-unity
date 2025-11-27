@@ -18,7 +18,7 @@ namespace Chess3D.Runtime.Menu
         private readonly MainViewModel _mainViewModel;
         private readonly HomeViewModel _homeViewModel;
         private readonly BoardViewModel _boardViewModel;
-        private readonly FenUserControlViewModel _fenUserControlViewModel;
+        private readonly FenTextBoxViewModel fenTextBoxViewModel;
         private readonly FindGameViewModel _findGameViewModel;
         private readonly GameSettingsViewModel _gameSettingsViewModel;
         private readonly LobbyViewModel _lobbyViewModel;
@@ -27,14 +27,14 @@ namespace Chess3D.Runtime.Menu
 
         public MenuFlow(LoadingService loadingService, MainViewModel mainViewModel,
             VisualBoardSpawner visualBoardSpawner, BoardViewModel boardViewModel,
-            FenUserControlViewModel fenUserControlViewModel, FindGameViewModel findGameViewModel,
+            FenTextBoxViewModel fenTextBoxViewModel, FindGameViewModel findGameViewModel,
             GameSettingsViewModel gameSettingsViewModel, LobbyViewModel lobbyViewModel, GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel, HomeViewModel homeViewModel, ViewNavigator viewNavigator)
         {
             _loadingService = loadingService;
             _visualBoardSpawner = visualBoardSpawner;
             _boardViewModel = boardViewModel;
             _mainViewModel = mainViewModel;
-            _fenUserControlViewModel = fenUserControlViewModel;
+            this.fenTextBoxViewModel = fenTextBoxViewModel;
             _findGameViewModel = findGameViewModel;
             _gameSettingsViewModel = gameSettingsViewModel;
             _lobbyViewModel = lobbyViewModel;
@@ -50,7 +50,7 @@ namespace Chess3D.Runtime.Menu
             await _loadingService.BeginLoading(_viewNavigator);
             await _loadingService.BeginLoading(_mainViewModel, _homeViewModel);
             await _loadingService.BeginLoading(_boardViewModel);
-            await _loadingService.BeginLoading(_fenUserControlViewModel);
+            await _loadingService.BeginLoading(fenTextBoxViewModel);
             await _loadingService.BeginLoading(_findGameViewModel);
             await _loadingService.BeginLoading(_gameSettingsViewModel);
             await _loadingService.BeginLoading(_lobbyViewModel);
