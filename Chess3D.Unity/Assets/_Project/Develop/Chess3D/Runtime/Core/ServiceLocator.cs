@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
 
@@ -31,6 +32,11 @@ namespace Chess3D.Runtime.Core
             var ret = _resolver.Resolve<T>();
 
             return ret;
+        }
+
+        public static object Resolve(Type viewType)
+        {
+            return _resolver.Resolve(viewType);
         }
     }
 }

@@ -1,5 +1,6 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
+using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities;
 using Noesis;
 using UnityEngine.Scripting;
@@ -25,6 +26,13 @@ namespace Chess3D.Runtime.Menu.UI.Views
             Loaded += OnLoaded;
             InitializeComponent();
         }
+
+#if NOESIS
+        public HomeView(HomeViewModel homeViewModel) : this()
+        {
+            DataContext = homeViewModel;
+        }
+#endif
 
         private void OnInitialized(object sender, EventArgs e)
         {

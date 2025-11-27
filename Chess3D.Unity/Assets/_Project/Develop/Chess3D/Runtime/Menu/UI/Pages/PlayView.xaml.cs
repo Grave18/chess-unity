@@ -26,7 +26,6 @@ namespace Chess3D.Runtime.Menu.UI.Views
         private readonly string _selectedTab;
         public PlayView()
         {
-            Initialized += OnInitialized;
             Loaded += OnLoaded;
             InitializeComponent();
         }
@@ -36,12 +35,13 @@ namespace Chess3D.Runtime.Menu.UI.Views
             _selectedTab = selectedTab;
         }
 
-        private void OnInitialized(object sender, EventArgs args)
-        {
 #if NOESIS
-            Root.DataContext = ServiceLocator.Resolve<GameSettingsViewModel>();
-#endif
+        public PlayView(PlayViewModel playViewModel, GameSettingsViewModel gameSettingsViewModel) : this()
+        {
+            DataContext = playViewModel;
+            Root.DataContext = gameSettingsViewModel;
         }
+#endif
 
         private void OnLoaded(object sender, RoutedEventArgs args)
         {

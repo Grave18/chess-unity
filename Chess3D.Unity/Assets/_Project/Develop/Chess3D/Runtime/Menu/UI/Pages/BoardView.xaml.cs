@@ -1,5 +1,6 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
+using Chess3D.Runtime.Menu.UI.ViewModels;
 using UnityEngine.Scripting;
 using Noesis;
 using Chess3D.Runtime.Utilities;
@@ -24,6 +25,13 @@ namespace Chess3D.Runtime.Menu.UI.Views
             Loaded += OnLoaded;
             InitializeComponent();
         }
+
+#if NOESIS
+        public BoardView(BoardViewModel boardViewModel) : this()
+        {
+            DataContext = boardViewModel;
+        }
+#endif
 
         private void OnLoaded(object sender, RoutedEventArgs args)
         {

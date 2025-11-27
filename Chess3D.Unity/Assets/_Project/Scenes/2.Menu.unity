@@ -2250,6 +2250,7 @@ MonoBehaviour:
   renderTexture: {fileID: 8400000, guid: f3ef78b0b841e9643a1c4eeab135ae56, type: 2}
   lobbyManager: {fileID: 905780858}
   visualBoardSpawner: {fileID: 722864658}
+  mainViewLoader: {fileID: 1637782480}
 --- !u!4 &1148853546
 Transform:
   m_ObjectHideFlags: 0

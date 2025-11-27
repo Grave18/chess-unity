@@ -2,7 +2,9 @@
 using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.BoardInMainMenu;
 using Chess3D.Runtime.Menu.UI.ViewModels;
+using Chess3D.Runtime.Menu.UI.Views;
 using LobbyManagement;
+using Ui.Menu.Pages;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -14,6 +16,7 @@ namespace Chess3D.Runtime.Menu
         [SerializeField] private RenderTexture renderTexture;
         [SerializeField] private LobbyManager lobbyManager;
         [SerializeField] private VisualBoardSpawner visualBoardSpawner;
+        [SerializeField] private MainViewLoader mainViewLoader;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -22,8 +25,15 @@ namespace Chess3D.Runtime.Menu
             builder.RegisterComponent(visualBoardSpawner);
 
             // UI
-            builder.RegisterComponentInHierarchy<NoesisView>(); // Load MainView
+            builder.RegisterComponent(mainViewLoader); // Load MainView
             builder.Register<ViewNavigator>(Lifetime.Scoped); // Navigate through Views
+            // Views
+            builder.Register<HomeView>(Lifetime.Scoped);
+            builder.Register<BoardView>(Lifetime.Scoped);
+            builder.Register<PlayView>(Lifetime.Scoped);
+            builder.Register<SettingsView>(Lifetime.Scoped);
+            builder.Register<FindGamePage>(Lifetime.Scoped);
+            builder.Register<LobbyPage>(Lifetime.Scoped);
             // VMs
             builder.Register<MainViewModel>(Lifetime.Scoped);
             builder.Register<HomeViewModel>(Lifetime.Scoped);

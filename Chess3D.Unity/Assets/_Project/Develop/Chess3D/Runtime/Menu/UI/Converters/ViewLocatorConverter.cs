@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using Chess3D.Runtime.Core;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Noesis;
 using UnityEngine.Scripting;
@@ -13,26 +14,27 @@ namespace Ui.Converters
         {
             if (value is IViewModel viewModel && targetType == typeof(BaseComponent))
             {
-                Type vmType = viewModel.GetType();
-                string viewTypeName = vmType.FullName?.Replace("ViewModel", "View");
-                var viewType = Type.GetType(viewTypeName ?? string.Empty);
+                string viewTypeName = GetViewType(viewModel, out Type viewType);
 
                 if (viewType == null)
                 {
-                    return new TextBlock { Text = $"{nameof(ViewLocatorConverter)}: Not found: {viewTypeName}" };
+                    return new TextBlock { Text = $"Not found: {viewTypeName}" };
                 }
 
-                var instance = Activator.CreateInstance(viewType) as Control;
-
-                if (instance != null)
-                {
-                    instance.DataContext = viewModel;
-                }
+                var instance = ServiceLocator.Resolve(viewType);
 
                 return instance;
             }
 
             return null;
+        }
+
+        private static string GetViewType(IViewModel viewModel, out Type viewType)
+        {
+            Type vmType = viewModel.GetType();
+            string viewTypeName = vmType.FullName?.Replace("ViewModel", "View");
+            viewType = Type.GetType(viewTypeName ?? string.Empty);
+            return viewTypeName;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

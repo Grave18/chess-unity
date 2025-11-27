@@ -25,19 +25,19 @@ namespace Chess3D.Runtime.Menu.UI.Views
     {
         public SettingsView()
         {
-            Initialized += OnInitialized;
             Loaded += OnLoaded;
             InitializeComponent();
         }
 
-        private void OnInitialized(object sender, EventArgs args)
-        {
 #if NOESIS
-            GameSettingsTab.DataContext = ServiceLocator.Resolve<GameSettingsViewModel>();
-            GraphicsSettingsTab.DataContext = ServiceLocator.Resolve<GraphicsSettingsViewModel>();
-            AudioSettingsTab.DataContext = ServiceLocator.Resolve<AudioSettingsViewModel>();
-#endif
+        public SettingsView(SettingsViewModel settingsViewModel, GameSettingsViewModel gameSettingsViewModel, GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel) : this()
+        {
+            DataContext = settingsViewModel;
+            GameSettingsTab.DataContext = gameSettingsViewModel;
+            GraphicsSettingsTab.DataContext = graphicsSettingsViewModel;
+            AudioSettingsTab.DataContext = audioSettingsViewModel;
         }
+#endif
 
         private void OnLoaded(object sender, RoutedEventArgs args)
         {
