@@ -27,15 +27,42 @@ namespace Ui.Menu.UserControls
 
         private void OnInitialized(object sender, EventArgs args)
         {
+            TextBox.KeyDown += TextBox_KeyDown;
 #if NOESIS
             DataContext = ServiceLocator.Resolve<FenTextBoxViewModel>();
 #endif
         }
 
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+
+                var textBox = (TextBox)sender;
+                BindingExpression bindingExpression = textBox.GetBindingExpression(TextBox.TextProperty);
+                bindingExpression?.UpdateSource();
+
+                MoveFocusToParent(textBox);
+            }
+        }
+
+        private static void MoveFocusToParent(FrameworkElement element)
+        {
+            FrameworkElement parent = element.Parent?.Parent;
+            if (parent != null)
+            {
+                parent.Focus();
+            }
+        }
+
 #if NOESIS
+        private TextBox TextBox { get; set; }
         private void InitializeComponent()
         {
             GUI.LoadComponent(this, XamlUtils.GetXamlPathFromFilePath());
+
+            TextBox = FindName("TextBox") as TextBox;
         }
 #endif
     }

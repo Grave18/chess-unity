@@ -36,6 +36,7 @@
                 Command="{Binding GetSavedFenCommand}"
                 Style="{StaticResource FenButtonStyle}" />
         <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                 Name="TextBox"
                  Margin="0 5 0 0"
                  MinHeight="50"
                  VerticalContentAlignment="Center"
