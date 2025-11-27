@@ -139,7 +139,6 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [RelayCommand]
         private void Back()
         {
-            Debug.Log("Leve Lobby");
             _lobbyManager.LeaveLobby();
         }
 

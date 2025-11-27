@@ -3,12 +3,9 @@ using Chess3D.Runtime.Bootstrap;
 using Chess3D.Runtime.Menu.LobbyManagement;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
-using JetBrains.Annotations;
 using LobbyManagement;
 using MvvmTool;
 using Noesis;
-using Ui.Auxiliary;
-using Ui.Menu.Pages;
 using UnityEngine;
 
 namespace Chess3D.Runtime.Menu.UI.ViewModels
@@ -32,9 +29,9 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _appEvents = appEvents;
             _viewNavigator = viewNavigator;
 
-            _lobbyManager.OnRoomJoined.AddListener(TryShowLobbyPage);
-            _lobbyManager.OnRoomJoinFailed.AddListener(ShowOnlinePage);
-            _lobbyManager.OnRoomLeft.AddListener(ShowOnlinePage);
+            _lobbyManager.OnRoomJoined.AddListener(ShowLobbyView);
+            _lobbyManager.OnRoomJoinFailed.AddListener(ShowPlayView);
+            _lobbyManager.OnRoomLeft.AddListener(ShowPlayView);
             _appEvents.OnPause += OnApplicationPause;
         }
 
@@ -42,9 +39,9 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         {
             if (_lobbyManager is not null)
             {
-                _lobbyManager.OnRoomJoined.RemoveListener(TryShowLobbyPage);
-                _lobbyManager.OnRoomJoinFailed.RemoveListener(ShowOnlinePage);
-                _lobbyManager.OnRoomLeft.RemoveListener(ShowOnlinePage);
+                _lobbyManager.OnRoomJoined.RemoveListener(ShowLobbyView);
+                _lobbyManager.OnRoomJoinFailed.RemoveListener(ShowPlayView);
+                _lobbyManager.OnRoomLeft.RemoveListener(ShowPlayView);
             }
 
             if (_appEvents is not null)
@@ -80,34 +77,20 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
                 return;
             }
 
-            TryShowLobbyPage();
+            ShowLobbyView();
         }
 
-        private void TryShowLobbyPage(Lobby _ = default)
+        private void ShowLobbyView(Lobby _ = default)
         {
-            if (IsShowLobbyPage())
-            {
-                ShowLobbyPage();
-            }
+            _viewNavigator.GoTo<LobbyViewModel>();
         }
 
-        private bool IsShowLobbyPage()
+        private void ShowPlayView(string _)
         {
-            return _lobbyManager.IsInLobby
-                   && !GameMenuBase.Instance.IsCurrentPage<LobbyPage>();
+            ShowPlayView();
         }
 
-        private static void ShowLobbyPage()
-        {
-            GameMenuBase.Instance.ChangePage<LobbyPage>();
-        }
-
-        private void ShowOnlinePage(string _)
-        {
-            ShowOnlinePage();
-        }
-
-        private void ShowOnlinePage()
+        private void ShowPlayView()
         {
             _viewNavigator.GoTo<PlayViewModel>();
         }

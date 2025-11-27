@@ -33,7 +33,7 @@ namespace Chess3D.Runtime.Menu
             builder.Register<PlayView>(Lifetime.Scoped);
             builder.Register<SettingsView>(Lifetime.Scoped);
             builder.Register<FindGamePage>(Lifetime.Scoped);
-            builder.Register<LobbyPage>(Lifetime.Scoped);
+            builder.Register<LobbyView>(Lifetime.Scoped);
             // VMs
             builder.Register<MainViewModel>(Lifetime.Scoped);
             builder.Register<HomeViewModel>(Lifetime.Scoped);

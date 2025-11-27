@@ -56,22 +56,14 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         }
 
         [RelayCommand]
-        private void PlayOnline()
-        {
-
-        }
-
-        [RelayCommand]
         private void CreateLobby()
         {
             _lobbyManager.CreateRoom();
-            _viewNavigator.GoTo<LobbyViewModel>();
         }
 
         [RelayCommand]
         private void FindGame()
         {
-            // TODO: Implement find game
             _viewNavigator.GoTo<FindGameViewModel>();
         }
 

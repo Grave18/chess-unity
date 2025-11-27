@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities;
+using Chess3D.Runtime.Utilities.Logging;
 using Cysharp.Threading.Tasks;
 using VContainer;
 
@@ -19,6 +20,7 @@ namespace Chess3D.Runtime.Menu.UI
             _resolver = resolver;
         }
 
+
         public UniTask Load()
         {
             _mainViewModel = _resolver.Resolve<MainViewModel>();
@@ -27,6 +29,12 @@ namespace Chess3D.Runtime.Menu.UI
 
         public void GoTo<TViewModel>() where TViewModel : IViewModel
         {
+            if (_mainViewModel.CurrentViewModel is TViewModel)
+            {
+                Log.Noesis.D($"{typeof(TViewModel)} is already opened!");
+                return;
+            }
+
             if (_mainViewModel.CurrentViewModel != null)
             {
                 _viewModels.Push(_mainViewModel.CurrentViewModel);
