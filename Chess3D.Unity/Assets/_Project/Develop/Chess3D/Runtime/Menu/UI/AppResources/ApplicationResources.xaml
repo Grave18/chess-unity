@@ -1203,7 +1203,7 @@
     <Style x:Key="PopupStyle" TargetType="Popup">
         <Setter Property="AllowsTransparency" Value="True" />
         <Setter Property="Placement" Value="Center" />
-        <Setter Property="PlacementTarget" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=auxiliary:GameMenuBase}}" />
+        <Setter Property="PlacementTarget" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" />
         <Setter Property="StaysOpen" Value="False" />
     </Style>
 
