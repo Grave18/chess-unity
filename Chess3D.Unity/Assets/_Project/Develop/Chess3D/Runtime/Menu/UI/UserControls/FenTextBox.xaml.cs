@@ -10,6 +10,8 @@ using GUI = Noesis.GUI;
 #else
 using System;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
 #endif
 
 namespace Ui.Menu.UserControls
@@ -21,16 +23,17 @@ namespace Ui.Menu.UserControls
     {
         public FenTextBox()
         {
+#if NOESIS
             Initialized += OnInitialized;
+#endif
             InitializeComponent();
         }
+#if NOESIS
 
         private void OnInitialized(object sender, EventArgs args)
         {
             TextBox.KeyDown += TextBox_KeyDown;
-#if NOESIS
             DataContext = ServiceLocator.Resolve<FenTextBoxViewModel>();
-#endif
         }
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
@@ -56,7 +59,6 @@ namespace Ui.Menu.UserControls
             }
         }
 
-#if NOESIS
         private TextBox TextBox { get; set; }
         private void InitializeComponent()
         {

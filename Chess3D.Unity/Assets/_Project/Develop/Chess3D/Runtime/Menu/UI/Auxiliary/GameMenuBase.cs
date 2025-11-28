@@ -21,6 +21,7 @@ namespace Ui.Auxiliary
             Instance = this;
         }
 
+#if NOESIS
         public void ChangePage<T>(params object[] args) where T : UserControl
         {
             var newPage = ActivatorHelper.CreateInstance<T>(args);
@@ -36,7 +37,6 @@ namespace Ui.Auxiliary
             return _currentPage is T;
         }
 
-#if NOESIS
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void CleanStatic()

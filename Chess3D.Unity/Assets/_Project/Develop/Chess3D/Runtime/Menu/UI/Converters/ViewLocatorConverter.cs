@@ -1,12 +1,21 @@
-﻿using System;
-using System.Globalization;
+#if UNITY_5_3_OR_NEWER
+#define NOESIS
+using System;
 using Chess3D.Runtime.Core;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Noesis;
 using UnityEngine.Scripting;
 
+#else
+using System;
+using System.Windows.Data;
+#endif
+
+using System.Globalization;
+
 namespace Ui.Converters
 {
+#if NOESIS
     [Preserve]
     public class ViewLocatorConverter : IValueConverter
     {
@@ -42,4 +51,19 @@ namespace Ui.Converters
             return null;
         }
     }
+
+#else
+    public class ViewLocatorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+#endif
 }
