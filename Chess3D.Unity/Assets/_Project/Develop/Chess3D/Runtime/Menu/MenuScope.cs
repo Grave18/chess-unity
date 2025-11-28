@@ -30,6 +30,7 @@ namespace Chess3D.Runtime.Menu
             builder.RegisterComponent(noesisView);
             builder.Register<MainViewLoader>(Lifetime.Scoped);
             builder.Register<ViewNavigator>(Lifetime.Scoped);
+            builder.Register<LobbyListener>(Lifetime.Scoped);
             // Views
             builder.Register<HomeView>(Lifetime.Scoped);
             builder.Register<BoardView>(Lifetime.Scoped);
