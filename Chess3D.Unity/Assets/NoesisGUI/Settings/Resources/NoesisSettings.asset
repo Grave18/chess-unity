@@ -23,7 +23,7 @@ MonoBehaviour:
   linearRendering: 0
   previewEnabled: 1
   debugImporter: 0
-  logVerbosity: 2
+  logVerbosity: 0
   AppStarting:
     Texture: {fileID: 0}
     HotSpot: {x: 0, y: 0}

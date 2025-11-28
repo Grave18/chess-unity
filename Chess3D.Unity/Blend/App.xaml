@@ -6,7 +6,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/chess_3d_blend;component/Assets/Code/Ui/Menu/Resources/ApplicationResources.xaml" />
+                <ResourceDictionary Source="/chess_3d_blend;component/Assets/_Project/Develop/Chess3D/Runtime/Menu/UI/AppResources/ApplicationResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
