@@ -16,17 +16,20 @@ namespace Chess3D.Runtime.Menu
         [SerializeField] private RenderTexture renderTexture;
         [SerializeField] private LobbyManager lobbyManager;
         [SerializeField] private VisualBoardSpawner visualBoardSpawner;
-        [SerializeField] private MainViewLoader mainViewLoader;
+        [SerializeField] public NoesisXaml mainViewXaml;
+        [SerializeField] private NoesisView noesisView;
 
         protected override void Configure(IContainerBuilder builder)
         {
-            builder.RegisterComponent(renderTexture);
             builder.RegisterComponent(lobbyManager);
-            builder.RegisterComponent(visualBoardSpawner);
 
             // UI
-            builder.RegisterComponent(mainViewLoader); // Load MainView
-            builder.Register<ViewNavigator>(Lifetime.Scoped); // Navigate through Views
+            builder.RegisterComponent(renderTexture);
+            builder.RegisterComponent(visualBoardSpawner);
+            builder.RegisterComponent(mainViewXaml);
+            builder.RegisterComponent(noesisView);
+            builder.Register<MainViewLoader>(Lifetime.Scoped);
+            builder.Register<ViewNavigator>(Lifetime.Scoped);
             // Views
             builder.Register<HomeView>(Lifetime.Scoped);
             builder.Register<BoardView>(Lifetime.Scoped);
