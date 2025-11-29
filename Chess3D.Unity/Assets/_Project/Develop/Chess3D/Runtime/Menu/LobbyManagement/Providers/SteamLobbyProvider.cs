@@ -36,6 +36,8 @@ namespace LobbyManagement.Providers
         }
 
 #if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
+        public bool IsLobbyCreationPossible => SteamAPI.IsSteamRunning();
+
         public LobbyType lobbyType = LobbyType.Public;
         public int maxLobbiesToFind = 10;
 
@@ -363,7 +365,6 @@ namespace LobbyManagement.Providers
 
             return Task.FromResult(Task.CompletedTask);
         }
-
         public void SetLobbyStarted(Steamworks.CSteamID serverId)
         {
             if (IsSteamClientAvailable)

@@ -28,6 +28,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement.Providers {
         Task<string> GetLocalUserIdAsync();
         Task SetAllReadyAsync();
         Task SetLobbyStartedAsync();
+        bool IsLobbyCreationPossible { get; }
 
         // Events
         event UnityAction<string> OnLobbyJoinFailed;

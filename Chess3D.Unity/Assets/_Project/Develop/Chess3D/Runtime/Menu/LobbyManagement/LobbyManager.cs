@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Chess3D.Runtime.Menu.LobbyManagement;
 using Chess3D.Runtime.Menu.LobbyManagement.Providers;
+using Chess3D.Runtime.Utilities;
+using Cysharp.Threading.Tasks;
 using PurrNet;
 using PurrNet.Logging;
 using UnityEngine;
@@ -13,7 +15,7 @@ using FriendItem = Chess3D.Runtime.Menu.LobbyManagement.FriendItem;
 
 namespace LobbyManagement
 {
-    public class LobbyManager : MonoBehaviour
+    public class LobbyManager : MonoBehaviour, ILoadUnit
     {
         private const int PlayersToStart = 2;
 
@@ -73,7 +75,7 @@ namespace LobbyManagement
             return playerIndexInLobby;
         }
 
-        private void Awake()
+        public UniTask Load()
         {
             _lastKnownState = new Lobby { IsValid = false };
 
@@ -83,6 +85,8 @@ namespace LobbyManagement
                 PurrLogger.LogWarning("No lobby provider assigned to LobbyManager.");
 
             SetupDataHolder();
+
+            return UniTask.CompletedTask;
         }
 
         private void SetupDataHolder()
