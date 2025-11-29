@@ -1,10 +1,10 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
-using UnityEngine.Scripting;
-using Noesis;
-using Chess3D.Runtime.Utilities;
 using Chess3D.Runtime.Core;
 using Chess3D.Runtime.Menu.UI.ViewModels;
+using Chess3D.Runtime.Utilities;
+using Noesis;
+using UnityEngine.Scripting;
 
 #else
 using System;
@@ -12,16 +12,14 @@ using System.Windows;
 using System.Windows.Controls;
 #endif
 
-using Ui.Auxiliary;
-
-namespace Ui.Menu.Pages
+namespace Chess3D.Runtime.Menu.UI.Views
 {
 #if NOESIS
     [Preserve]
 #endif
-    public partial class FindGamePage : UserControl
+    public partial class FindGameView : UserControl
     {
-        public FindGamePage()
+        public FindGameView()
         {
             Initialized += OnInitialized;
             InitializeComponent();

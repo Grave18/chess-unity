@@ -4,7 +4,6 @@ using Chess3D.Runtime.Menu.UI.BoardInMainMenu;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Menu.UI.Views;
 using LobbyManagement;
-using Ui.Menu.Pages;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -36,7 +35,7 @@ namespace Chess3D.Runtime.Menu
             builder.Register<BoardView>(Lifetime.Scoped);
             builder.Register<PlayView>(Lifetime.Scoped);
             builder.Register<SettingsView>(Lifetime.Scoped);
-            builder.Register<FindGamePage>(Lifetime.Scoped);
+            builder.Register<FindGameView>(Lifetime.Scoped);
             builder.Register<LobbyView>(Lifetime.Scoped);
             // VMs
             builder.Register<MainViewModel>(Lifetime.Scoped);

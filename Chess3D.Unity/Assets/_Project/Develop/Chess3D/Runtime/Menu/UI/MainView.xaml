@@ -10,12 +10,12 @@
              Style="{StaticResource MainMenuStyle}">
 
     <noesis:Xaml.Dependencies>
-        <noesis:Dependency Source="Pages/HomeView.xaml" />
-        <noesis:Dependency Source="Pages/PlayView.xaml" />
-        <noesis:Dependency Source="Pages/BoardView.xaml" />
-        <noesis:Dependency Source="Pages/SettingsPage.xaml" />
-        <noesis:Dependency Source="Pages/FindGamePage.xaml" />
-        <noesis:Dependency Source="Pages/LobbyPage.xaml" />
+        <noesis:Dependency Source="Views/HomeView.xaml" />
+        <noesis:Dependency Source="Views/PlayView.xaml" />
+        <noesis:Dependency Source="Views/BoardView.xaml" />
+        <noesis:Dependency Source="Views/SettingsView.xaml" />
+        <noesis:Dependency Source="Views/FindGameView.xaml" />
+        <noesis:Dependency Source="Views/LobbyView.xaml" />
     </noesis:Xaml.Dependencies>
 
     <Viewbox Stretch="Uniform">
