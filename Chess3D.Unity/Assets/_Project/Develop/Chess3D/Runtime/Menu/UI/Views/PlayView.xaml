@@ -31,7 +31,7 @@
 
             <!-- Common Time Dropdown style-->
             <TabControl.Resources>
-                <Style TargetType="userControls:DropdownUserControl">
+                <Style TargetType="userControls:Dropdown">
                     <Setter Property="ItemTemplate" Value="{StaticResource TimeDataTemplate}" />
                 </Style>
             </TabControl.Resources>
@@ -44,7 +44,7 @@
                      Style="{DynamicResource TabItemStyle}">
                 <DockPanel Margin="30">
                     <!-- Time dropdown -->
-                    <userControls:DropdownUserControl DockPanel.Dock="Top"
+                    <userControls:Dropdown DockPanel.Dock="Top"
                                                       Text="Time"
                                                       Focusable="True"
                                                       SelectedItem="{Binding SelectedTime, Mode=TwoWay}"
@@ -69,12 +69,12 @@
                      Style="{DynamicResource TabItemStyle}">
                 <DockPanel Margin="30">
                     <!-- Time dropdown -->
-                    <userControls:DropdownUserControl DockPanel.Dock="Top"
+                    <userControls:Dropdown DockPanel.Dock="Top"
                                                       Text="Time"
                                                       SelectedItem="{Binding SelectedTime, Mode=TwoWay}"
                                                       ItemsSource="{Binding Times}" />
                     <!-- Difficulty dropdown -->
-                    <userControls:DropdownUserControl DockPanel.Dock="Top"
+                    <userControls:Dropdown DockPanel.Dock="Top"
                                                       Text="Difficulty"
                                                       SelectedItem="{Binding SelectedDifficulty, Mode=TwoWay}"
                                                       ItemsSource="{Binding Difficulties}" />
@@ -98,7 +98,7 @@
                      KeyboardNavigation.TabNavigation="Continue">
                 <DockPanel Margin="30">
                     <!-- Time dropdown -->
-                    <userControls:DropdownUserControl DockPanel.Dock="Top"
+                    <userControls:Dropdown DockPanel.Dock="Top"
                                                       Text="Time"
                                                       SelectedItem="{Binding SelectedTime, Mode=TwoWay}"
                                                       ItemsSource="{Binding Times}" />

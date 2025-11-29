@@ -27,12 +27,12 @@
         <Border Grid.Row="1"
                 Style="{StaticResource SettingsControlsBorder}">
             <DockPanel>
-                <userControls:DropdownUserControl DockPanel.Dock="Top"
+                <userControls:Dropdown DockPanel.Dock="Top"
                                                   Text="Pieces"
                                                   SelectedItem="{Binding SelectedPiece, Mode=TwoWay}"
                                                   ItemsSource="{Binding Pieces}" />
 
-                <userControls:DropdownUserControl VerticalAlignment="Top"
+                <userControls:Dropdown VerticalAlignment="Top"
                                                   Text="Board"
                                                   SelectedItem="{Binding SelectedBoard, Mode=TwoWay}"
                                                   ItemsSource="{Binding Boards}" />

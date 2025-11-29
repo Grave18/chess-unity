@@ -18,10 +18,10 @@ namespace Ui.Menu.UserControls
 #if NOESIS
     [Preserve]
 #endif
-    public partial class DropdownUserControl : UserControl
+    public partial class Dropdown : UserControl
     {
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
-            nameof(Text), typeof(string), typeof(DropdownUserControl), new PropertyMetadata(default(string)));
+            nameof(Text), typeof(string), typeof(Dropdown), new PropertyMetadata(default(string)));
 
         public string Text
         {
@@ -30,7 +30,7 @@ namespace Ui.Menu.UserControls
         }
 
         public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(
-            nameof(SelectedItem), typeof(object), typeof(DropdownUserControl), new PropertyMetadata(default(object)));
+            nameof(SelectedItem), typeof(object), typeof(Dropdown), new PropertyMetadata(default(object)));
 
         public object SelectedItem
         {
@@ -39,7 +39,7 @@ namespace Ui.Menu.UserControls
         }
 
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
-            nameof(ItemsSource), typeof(IEnumerable), typeof(DropdownUserControl), new PropertyMetadata(default(IEnumerable)));
+            nameof(ItemsSource), typeof(IEnumerable), typeof(Dropdown), new PropertyMetadata(default(IEnumerable)));
 
         public IEnumerable ItemsSource
         {
@@ -48,7 +48,7 @@ namespace Ui.Menu.UserControls
         }
 
         public static readonly DependencyProperty ItemTemplateProperty = DependencyProperty.Register(
-            nameof(ItemTemplate), typeof(DataTemplate), typeof(DropdownUserControl), new PropertyMetadata(default(DataTemplate)));
+            nameof(ItemTemplate), typeof(DataTemplate), typeof(Dropdown), new PropertyMetadata(default(DataTemplate)));
 
         public DataTemplate ItemTemplate
         {
@@ -56,7 +56,7 @@ namespace Ui.Menu.UserControls
             set => SetValue(ItemTemplateProperty, value);
         }
 
-        public DropdownUserControl()
+        public Dropdown()
         {
             InitializeComponent();
         }

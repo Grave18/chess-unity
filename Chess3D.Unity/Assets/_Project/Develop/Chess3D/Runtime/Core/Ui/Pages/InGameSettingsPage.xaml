@@ -9,7 +9,7 @@
              d:DesignWidth="640" d:DesignHeight="1080">
 
     <noesis:Xaml.Dependencies>
-        <noesis:Dependency Source="../../Menu/UserControls/DropdownUserControl.xaml" />
+        <noesis:Dependency Source="../../Menu/UserControls/Dropdown.xaml" />
     </noesis:Xaml.Dependencies>
     <Grid IsSharedSizeScope="True">
         <Grid.RowDefinitions>
@@ -31,19 +31,19 @@
                      Style="{DynamicResource TabItemStyle}">
                 <DockPanel Margin="30">
                     <!-- Screen dropdown -->
-                    <userControls:DropdownUserControl DockPanel.Dock="Top"
+                    <userControls:Dropdown DockPanel.Dock="Top"
                                                       Text="Screen"
                                                       SelectedItem="{Binding SelectedFullscreenMode, Mode=TwoWay}"
                                                       ItemsSource="{Binding FullscreenModes}" />
                     <!-- Resolution dropdown -->
-                    <userControls:DropdownUserControl DockPanel.Dock="Top"
+                    <userControls:Dropdown DockPanel.Dock="Top"
                                                       Text="Resolution"
                                                       SelectedItem="{Binding SelectedResolution, Mode=TwoWay}"
                                                       ItemsSource="{Binding Resolutions}">
-                    </userControls:DropdownUserControl>
+                    </userControls:Dropdown>
 
                     <!-- Quality dropdown -->
-                    <userControls:DropdownUserControl DockPanel.Dock="Top"
+                    <userControls:Dropdown DockPanel.Dock="Top"
                                                       Text="Quality"
                                                       SelectedItem="{Binding SelectedQuality, Mode=TwoWay}"
                                                       ItemsSource="{Binding Qualities}" />
@@ -62,7 +62,7 @@
                      Style="{DynamicResource TabItemStyle}">
                 <DockPanel Margin="30">
                     <!-- Time dropdown -->
-                    <userControls:DropdownUserControl DockPanel.Dock="Top" />
+                    <userControls:Dropdown DockPanel.Dock="Top" />
                     <!-- Fen Text Box -->
                     <userControls:FenTextBox DockPanel.Dock="Top" />
                     <!-- Debug Localhost Buttons -->
