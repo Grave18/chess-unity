@@ -91,6 +91,8 @@
 
             <!-- Online Tab -->
             <TabItem Name="OnlineTab"
+                     DataContext="{Binding DataContext, ElementName=ThisControl}"
+                     IsEnabled="{Binding IsOnlineEnabled}"
                      Header="Online"
                      TabIndex="3"
                      Style="{DynamicResource TabItemStyle}"

@@ -9,8 +9,11 @@ using UnityEngine.Scripting;
 namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
-    public partial class PlayViewModel : IViewModel
+    [INotifyPropertyChanged]
+    public partial class PlayViewModel : IViewModel, ILoadUnit
     {
+        [ObservableProperty] private bool _isOnlineEnabled;
+
         private readonly ISettingsService _settingsService;
         private readonly LobbyManager _lobbyManager;
         private readonly SceneManager _sceneManager;
@@ -22,6 +25,12 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _lobbyManager = lobbyManager;
             _sceneManager = sceneManager;
             _viewNavigator = viewNavigator;
+        }
+
+        public UniTask Load()
+        {
+            IsOnlineEnabled = _lobbyManager.CurrentProvider.IsLobbyCreationPossible;
+            return UniTask.CompletedTask;
         }
 
         [RelayCommand]

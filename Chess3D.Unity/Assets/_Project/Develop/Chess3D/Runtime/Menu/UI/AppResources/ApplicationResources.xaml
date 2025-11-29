@@ -328,6 +328,7 @@
 
         </ControlTemplate.Triggers>
     </ControlTemplate>
+    
     <!-- General Button Style -->
     <Style x:Key="GeneralButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
@@ -337,7 +338,7 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Width" Value="350" />
         <Setter Property="Height" Value="80" />
-        <Setter Property="Template" Value="{StaticResource GeneralButtonTemplate}" />
+        <Setter Property="Template" Value="{DynamicResource GeneralButtonTemplate}" />
     </Style>
 
     <Style TargetType="Button" BasedOn="{StaticResource GeneralButtonStyle}" />
@@ -352,7 +353,7 @@
         <Setter Property="MinWidth" Value="200" />
         <Setter Property="Width" Value="Auto" />
         <Setter Property="Height" Value="50" />
-        <Setter Property="Template" Value="{StaticResource GeneralButtonTemplate}" />
+        <Setter Property="Template" Value="{DynamicResource GeneralButtonTemplate}" />
     </Style>
 
     <Style x:Key="FenButtonStyle_Back"  TargetType="Button">
@@ -600,6 +601,7 @@
                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                     </Grid>
                     <ControlTemplate.Triggers>
+                        
                         <!-- Animate Selected False, Mouse False -->
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
@@ -616,6 +618,7 @@
                                 </BeginStoryboard>
                             </MultiDataTrigger.EnterActions>
                         </MultiDataTrigger>
+                        
                         <!-- Animate Selected True,  Mouse False -->
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
@@ -632,6 +635,7 @@
                                 </BeginStoryboard>
                             </MultiDataTrigger.EnterActions>
                         </MultiDataTrigger>
+                        
                         <!-- Animate Selected False, Mouse True  -->
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
@@ -665,6 +669,32 @@
                                 </BeginStoryboard>
                             </MultiDataTrigger.EnterActions>
                         </MultiDataTrigger>
+
+                        <!-- Animate Is Disabled -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Duration="0:0:0.15"
+                                                        Storyboard.TargetProperty="Foreground.Color"
+                                                        To="Gray" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                        </Trigger>
+
+                        <!-- Animate Is Enabled -->
+                        <Trigger Property="IsEnabled" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Duration="0:0:0.15"
+                                                        Storyboard.TargetProperty="Foreground.Color"
+                                                        To="{StaticResource ForegroundColor}" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                        </Trigger>
 
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
