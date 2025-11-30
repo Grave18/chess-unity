@@ -62,7 +62,7 @@ namespace Chess3D.Runtime.Menu.UI
 
         private void ShowPlayView()
         {
-            _viewNavigator.GoTo<PlayViewModel>();
+            _viewNavigator.GoBack();
         }
     }
 }

@@ -9,7 +9,6 @@ using PurrNet;
 using PurrNet.Logging;
 using UnityEngine;
 using UnityEngine.Events;
-using FriendItem = Chess3D.Runtime.Menu.LobbyManagement.FriendItem;
 
 // ReSharper disable All
 
@@ -197,7 +196,6 @@ namespace LobbyManagement
             _currentProvider.OnLobbyPlayerListUpdated -= players => InvokeDelayed(() => OnPlayerListUpdated.Invoke(players));
             _currentProvider.OnError -= error => InvokeDelayed(() => OnError.Invoke(error));
 
-            // ReSharper disable once EventUnsubscriptionViaAnonymousDelegate
             _currentProvider.OnLobbyUpdated -= room =>
             {
                 if (room.IsValid)
@@ -274,7 +272,6 @@ namespace LobbyManagement
             {
                 EnsureProviderSet();
                 await _currentProvider.LeaveLobbyAsync();
-                OnRoomLeft?.Invoke();
             });
         }
 
@@ -287,7 +284,6 @@ namespace LobbyManagement
             {
                 EnsureProviderSet();
                 await _currentProvider.LeaveLobbyAsync(lobbyId);
-                OnRoomLeft?.Invoke();
             });
         }
 
