@@ -3,14 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:userControls="clr-namespace:Ui.Menu.UserControls"
+             xmlns:userControls="clr-namespace:Chess3D.Runtime.Menu.UI.UserControls"
              xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions"
              mc:Ignorable="d"
              d:DesignWidth="640" d:DesignHeight="1080">
 
     <noesis:Xaml.Dependencies>
-        <noesis:Dependency Source="../../Menu/UserControls/Dropdown.xaml" />
+        <noesis:Dependency Source="../../Menu/UI/UserControls/Dropdown.xaml" />
+        <noesis:Dependency Source="../../Menu/UI/UserControls/FenTextBox.xaml" />
     </noesis:Xaml.Dependencies>
+
     <Grid IsSharedSizeScope="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

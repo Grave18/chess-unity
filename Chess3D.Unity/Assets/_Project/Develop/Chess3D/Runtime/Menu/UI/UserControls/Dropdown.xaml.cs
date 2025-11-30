@@ -12,7 +12,7 @@ using System.Windows;
 
 using System.Collections;
 
-namespace Ui.Menu.UserControls
+namespace Chess3D.Runtime.Menu.UI.UserControls
 {
 
 #if NOESIS

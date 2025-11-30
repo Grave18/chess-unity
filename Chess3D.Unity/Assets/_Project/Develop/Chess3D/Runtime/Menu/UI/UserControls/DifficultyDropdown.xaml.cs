@@ -9,7 +9,7 @@ using GUI = Noesis.GUI;
 using System.Windows.Controls;
 #endif
 
-namespace Ui.Menu.UserControls
+namespace Chess3D.Runtime.Menu.UI.UserControls
 {
 #if NOESIS
     [Preserve]

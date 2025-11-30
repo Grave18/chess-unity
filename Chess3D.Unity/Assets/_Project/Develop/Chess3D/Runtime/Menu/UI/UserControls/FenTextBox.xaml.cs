@@ -14,7 +14,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 #endif
 
-namespace Ui.Menu.UserControls
+namespace Chess3D.Runtime.Menu.UI.UserControls
 {
 #if NOESIS
     [Preserve]
