@@ -4,12 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:Ui.Converters"
+             xmlns:design="clr-namespace:Blend"
              mc:Ignorable="d"
-             d:DesignHeight="800" d:DesignWidth="700">
+             d:DesignHeight="1080" d:DesignWidth="700" >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="100" />
             <RowDefinition Height="100" />
@@ -23,9 +24,17 @@
         <Border Grid.Row="1"
                 Style="{StaticResource SettingsControlsBorder}">
             <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     Height="Auto"
+                     ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                     Height="190"
                      ItemsSource="{Binding LobbyUsers}"
-                     ItemTemplate="{StaticResource PlayerTemplate}" />
+                     ItemTemplate="{StaticResource LobbyUserTemplate}" >
+                <d:ListBox.ItemsSource>
+                    <x:Array Type="design:DesignLobbyUser">
+                        <design:DesignLobbyUser Name="Alice" IsReady="True"/>
+                        <design:DesignLobbyUser Name="Bob" IsReady="False"/>
+                    </x:Array>
+                </d:ListBox.ItemsSource>
+            </ListBox>
         </Border>
 
         <!-- Friends List -->
