@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Chess3D.Runtime.Menu.LobbyManagement;
 using Chess3D.Runtime.Menu.LobbyManagement.Providers;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
@@ -10,66 +9,50 @@ using PurrNet.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 
-// ReSharper disable All
-
-namespace LobbyManagement
+namespace Chess3D.Runtime.Menu.LobbyManagement
 {
     public class LobbyManager : MonoBehaviour, ILoadUnit
     {
         private const int PlayersToStart = 2;
 
+        public CreateRoomArgs createRoomArgs = new();
+        public SerializableDictionary<string, string> searchRoomArgs = new();
         [SerializeField] private MonoBehaviour currentProvider;
 
         private ILobbyProvider _currentProvider;
-        private readonly Queue<Action> _delayedActions = new Queue<Action>();
+        private readonly Queue<Action> _delayedActions = new();
         private int _taskLock;
-
-        public CreateRoomArgs createRoomArgs = new();
-        public SerializableDictionary<string, string> searchRoomArgs = new();
+        private LobbyDataHolder _lobbyDataHolder;
+        private Lobby _lastKnownState;
+        private bool _isStarting;
 
         // Events exposed by the manager
-        public UnityEvent<Lobby> OnRoomJoined = new UnityEvent<Lobby>();
-        public UnityEvent<string> OnRoomJoinFailed = new UnityEvent<string>();
-        public UnityEvent OnRoomLeft = new UnityEvent();
-        public UnityEvent<Lobby> OnRoomUpdated = new UnityEvent<Lobby>();
-        public UnityEvent<List<LobbyUser>> OnPlayerListUpdated = new UnityEvent<List<LobbyUser>>();
-        public UnityEvent<List<Lobby>> OnRoomSearchResults = new UnityEvent<List<Lobby>>();
-        public UnityEvent<List<FriendItem>> OnFriendListPulled = new UnityEvent<List<FriendItem>>();
-        public UnityEvent OnAllReady = new UnityEvent();
-        public UnityEvent<string> OnError = new UnityEvent<string>();
+        public UnityEvent<Lobby> OnRoomJoined = new();
+        public UnityEvent<string> OnRoomJoinFailed = new();
+        public UnityEvent OnRoomLeft = new();
+        public UnityEvent<Lobby> OnRoomUpdated = new();
+        public UnityEvent<List<LobbyUser>> OnPlayerListUpdated = new();
+        public UnityEvent<List<Lobby>> OnRoomSearchResults = new();
+        public UnityEvent<List<FriendItem>> OnFriendListPulled = new();
+        public UnityEvent OnAllReady = new();
+        public UnityEvent<string> OnError = new();
 
-        public UnityEvent onInitialized = new UnityEvent();
-        public UnityEvent onShutdown = new UnityEvent();
+        public UnityEvent onInitialized = new();
+        public UnityEvent onShutdown = new();
 
-        public ILobbyProvider CurrentProvider => currentProvider as ILobbyProvider;
-
-        private Lobby _currentLobby
+        public Lobby CurrentLobby
         {
-            get
-            {
-                if (!_lobbyDataHolder)
-                    return default;
-                return _lobbyDataHolder.CurrentLobby;
-            }
-            set
-            {
-                _lobbyDataHolder.SetCurrentLobby(value);
-            }
+            get => _lobbyDataHolder ? _lobbyDataHolder.CurrentLobby : default;
+            private set => _lobbyDataHolder.SetCurrentLobby(value);
         }
 
-        private Lobby _lastKnownState;
-        public Lobby CurrentLobby => _currentLobby;
-
-        public bool IsInLobby => _currentLobby.IsValid;
-
-        private LobbyDataHolder _lobbyDataHolder;
-
-        private bool IsStarting = false;
+        public bool IsInLobby => CurrentLobby.IsValid;
+        public ILobbyProvider CurrentProvider => currentProvider as ILobbyProvider;
 
         public int GetPlayerIndexInLobby()
         {
             string localUserId = _currentProvider.GetLocalUserIdAsync().Result;
-            int playerIndexInLobby = _currentLobby.Members.FindIndex((LobbyUser x) => x.Id == localUserId);
+            int playerIndexInLobby = CurrentLobby.Members.FindIndex(lobbyUser => lobbyUser.Id == localUserId);
 
             return playerIndexInLobby;
         }
@@ -79,9 +62,13 @@ namespace LobbyManagement
             _lastKnownState = new Lobby { IsValid = false };
 
             if (CurrentProvider != null)
+            {
                 SetProvider(CurrentProvider);
+            }
             else
+            {
                 PurrLogger.LogWarning("No lobby provider assigned to LobbyManager.");
+            }
 
             SetupDataHolder();
 
@@ -156,21 +143,24 @@ namespace LobbyManagement
             _currentProvider.OnLobbyJoinFailed += message => InvokeDelayed(() => OnRoomJoinFailed.Invoke(message));
             _currentProvider.OnLobbyLeft += () => InvokeDelayed(() =>
             {
-                _currentLobby = default;
+                CurrentLobby = default;
                 OnRoomLeft?.Invoke();
             });
 
             _currentProvider.OnLobbyUpdated += room => InvokeDelayed(() =>
             {
-                if(!_lastKnownState.HasChanged(room) || room.Members.Count <= 0 || !room.IsValid) return;
+                if(!_lastKnownState.HasChanged(room) || room.Members.Count <= 0 || !room.IsValid)
+                {
+                    return;
+                }
 
                 _lastKnownState = room;
-                _currentLobby = room;
+                CurrentLobby = room;
                 OnRoomUpdated?.Invoke(room);
 
-                if (!IsStarting && room.Members.TrueForAll(x => x.IsReady))
+                if (!_isStarting && room.Members.TrueForAll(x => x.IsReady))
                 {
-                    IsStarting = true; //Prevent calling ready again if lobby is updated after all ready
+                    _isStarting = true; //Prevent calling ready again if lobby is updated after all ready
                     CallOnAllReady();
                 }
             });
@@ -188,6 +178,7 @@ namespace LobbyManagement
         }
 
         // Unsubscribe from provider events
+        // ReSharper disable EventUnsubscriptionViaAnonymousDelegate
         private void UnsubscribeFromProviderEvents()
         {
             _currentProvider.OnLobbyJoinFailed -= message => InvokeDelayed(() => OnRoomJoinFailed.Invoke(message));
@@ -204,6 +195,7 @@ namespace LobbyManagement
                 }
             };
         }
+        // ReSharper enable EventUnsubscriptionViaAnonymousDelegate
 
         /// <summary>
         /// Shuts down and clears the current provider
@@ -257,8 +249,8 @@ namespace LobbyManagement
             RunTask(async () =>
             {
                 EnsureProviderSet();
-                var room = await _currentProvider.CreateLobbyAsync(maxPlayers, roomProperties);
-                _currentLobby = room;
+                Lobby room = await _currentProvider.CreateLobbyAsync(maxPlayers, roomProperties);
+                CurrentLobby = room;
                 OnRoomUpdated?.Invoke(room);
             });
         }
@@ -302,7 +294,7 @@ namespace LobbyManagement
             RunTask(async () =>
             {
                 EnsureProviderSet();
-                var room = await _currentProvider.JoinLobbyAsync(roomId);
+                Lobby room = await _currentProvider.JoinLobbyAsync(roomId);
                 if (room.IsValid)
                 {
                     OnRoomJoined?.Invoke(room);
@@ -322,7 +314,9 @@ namespace LobbyManagement
         public void SearchLobbies(int maxRoomsToFind = 10, Dictionary<string, string> filters = null)
         {
             if(filters == null)
+            {
                 filters = searchRoomArgs.ToDictionary();
+            }
 
             RunTask(async () =>
             {
@@ -330,6 +324,53 @@ namespace LobbyManagement
                 var rooms = await _currentProvider.SearchLobbiesAsync(maxRoomsToFind, filters);
                 OnRoomSearchResults?.Invoke(rooms);
             });
+        }
+
+        /// <summary>
+        /// Sets metadata on the current lobby we're in
+        /// </summary>
+        /// <param name="key">Key/Identifier of the metadata</param>
+        /// <param name="value">The value of the metadata to be stored</param>
+        public void SetLobbyData(string key, string value)
+        {
+            RunTask(async () =>
+            {
+                EnsureProviderSet();
+                await _currentProvider.SetLobbyDataAsync(key, value);
+            });
+        }
+
+        /// <summary>
+        /// Gets metadata from the current lobby we're in
+        /// </summary>
+        /// <param name="key">Key/Identifier of the metadata we want</param>
+        /// <returns>Value of the metadata we get</returns>
+        public async Task<String> GetLobbyData(string key)
+        {
+            EnsureProviderSet();
+            return await _currentProvider.GetLobbyDataAsync(key);
+        }
+
+        /// <summary>
+        /// Toggles the local users ready state automatically
+        /// </summary>
+        public void ToggleLocalReady()
+        {
+            if (!CurrentLobby.IsValid)
+            {
+                PurrLogger.LogError($"Can't toggle ready state, current lobby is invalid.");
+                return;
+            }
+
+            var localUserId = _currentProvider.GetLocalUserIdAsync().Result;
+            if (string.IsNullOrEmpty(localUserId))
+            {
+                PurrLogger.LogError($"Can't toggle ready state, local user ID is null or empty.");
+                return;
+            }
+
+            LobbyUser localLobbyUser = CurrentLobby.Members.Find(lobbyUser => lobbyUser.Id == localUserId);
+            SetIsReady(localUserId, !localLobbyUser.IsReady);
         }
 
         /// <summary>
@@ -346,53 +387,6 @@ namespace LobbyManagement
             });
         }
 
-        /// <summary>
-        /// Sets meta data on the current lobby we're in
-        /// </summary>
-        /// <param name="key">Key/Identifier of the meta data</param>
-        /// <param name="value">The value of the meta data to be stored</param>
-        public void SetLobbyData(string key, string value)
-        {
-            RunTask(async () =>
-            {
-                EnsureProviderSet();
-                await _currentProvider.SetLobbyDataAsync(key, value);
-            });
-        }
-
-        /// <summary>
-        /// Gets meta data from the current lobby we're in
-        /// </summary>
-        /// <param name="key">Key/Identifier of the meta data we want</param>
-        /// <returns>Value of the meta data we get</returns>
-        public async Task<String> GetLobbyData(string key)
-        {
-            EnsureProviderSet();
-            return await _currentProvider.GetLobbyDataAsync(key);
-        }
-
-        /// <summary>
-        /// Toggles the local users ready state automatically
-        /// </summary>
-        public void ToggleLocalReady()
-        {
-            if (!_currentLobby.IsValid)
-            {
-                PurrLogger.LogError($"Can't toggle ready state, current lobby is invalid.");
-                return;
-            }
-
-            var localUserId = _currentProvider.GetLocalUserIdAsync().Result;
-            if (string.IsNullOrEmpty(localUserId))
-            {
-                PurrLogger.LogError($"Can't toggle ready state, local user ID is null or empty.");
-                return;
-            }
-
-            var localLobbyUser = _currentLobby.Members.Find((LobbyUser x) => x.Id == localUserId);
-            SetIsReady(localUserId, !localLobbyUser.IsReady);
-        }
-
         private void OnDestroy()
         {
             _currentProvider = null;
@@ -403,9 +397,9 @@ namespace LobbyManagement
         {
             await WaitForAllTasksAsync();
 
-            if(_currentLobby.IsValid
-               && _currentLobby.Members.Count == PlayersToStart
-               && _currentLobby.Members.TrueForAll(x => x.IsReady))
+            if(CurrentLobby.IsValid
+               && CurrentLobby.Members.Count == PlayersToStart
+               && CurrentLobby.Members.TrueForAll(x => x.IsReady))
             {
                 await _currentProvider.SetAllReadyAsync();
 
@@ -423,7 +417,10 @@ namespace LobbyManagement
 
         private async void RunTask(Func<Task> taskFunc)
         {
-            if (taskFunc == null || _currentProvider == null) return;
+            if (taskFunc == null || _currentProvider == null)
+            {
+                return;
+            }
 
             _taskLock++;
             try
@@ -438,14 +435,18 @@ namespace LobbyManagement
             {
                 _taskLock--;
                 if (_taskLock < 0)
+                {
                     _taskLock = 0;
+                }
             }
         }
 
         private void EnsureProviderSet()
         {
             if (_currentProvider == null)
+            {
                 throw new InvalidOperationException("No lobby provider has been set.");
+            }
         }
 
         public void SetLobbyStarted()
@@ -453,14 +454,14 @@ namespace LobbyManagement
             _currentProvider.SetLobbyStartedAsync();
         }
 
-        [System.Serializable]
+        [Serializable]
         public class CreateRoomArgs
         {
             public int maxPlayers = 5;
-            public SerializableDictionary<string, string> roomProperties = null;
+            public SerializableDictionary<string, string> roomProperties;
         }
 
-        [System.Serializable]
+        [Serializable]
         public enum FriendFilter
         {
             InThisGame,

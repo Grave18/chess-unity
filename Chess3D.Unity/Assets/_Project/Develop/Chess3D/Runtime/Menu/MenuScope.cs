@@ -1,9 +1,9 @@
 ﻿using Chess3D.Runtime.Core;
+using Chess3D.Runtime.Menu.LobbyManagement;
 using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.BoardInMainMenu;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Menu.UI.Views;
-using LobbyManagement;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
