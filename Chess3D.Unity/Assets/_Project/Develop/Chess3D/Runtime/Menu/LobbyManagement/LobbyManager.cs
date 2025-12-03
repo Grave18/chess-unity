@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Chess3D.Runtime.Menu.LobbyManagement.Providers;
 using Chess3D.Runtime.Utilities;
+using Chess3D.Runtime.Utilities.Logging;
 using Cysharp.Threading.Tasks;
 using PurrNet;
-using PurrNet.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Chess3D.Runtime.Menu.LobbyManagement
 {
-    public class LobbyManager : MonoBehaviour, ILoadUnit
+    public class LobbyManager : MonoBehaviour, ILoadUnit, IDisposable
     {
         private const int PlayersToStart = 2;
 
@@ -40,6 +40,8 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
         public UnityEvent onInitialized = new();
         public UnityEvent onShutdown = new();
 
+        private Lobby _oldLobby;
+
         public Lobby CurrentLobby
         {
             get => _lobbyDataHolder ? _lobbyDataHolder.CurrentLobby : default;
@@ -48,14 +50,6 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
 
         public bool IsInLobby => CurrentLobby.IsValid;
         public ILobbyProvider CurrentProvider => currentProvider as ILobbyProvider;
-
-        public int GetPlayerIndexInLobby()
-        {
-            string localUserId = _currentProvider.GetLocalUserIdAsync().Result;
-            int playerIndexInLobby = CurrentLobby.Members.FindIndex(lobbyUser => lobbyUser.Id == localUserId);
-
-            return playerIndexInLobby;
-        }
 
         public UniTask Load()
         {
@@ -67,7 +61,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
             }
             else
             {
-                PurrLogger.LogWarning("No lobby provider assigned to LobbyManager.");
+                Log.Lobby.W("No lobby provider assigned to LobbyManager.");
             }
 
             SetupDataHolder();
@@ -92,6 +86,12 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
             }
         }
 
+        public void Dispose()
+        {
+            _currentProvider = null;
+            _lobbyDataHolder = null;
+        }
+
         private void Update()
         {
             while (_delayedActions.Count > 0)
@@ -100,22 +100,10 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
             }
         }
 
-        private void InvokeDelayed(Action action)
-        {
-            try
-            {
-                _delayedActions.Enqueue(action);
-            }
-            catch (Exception ex)
-            {
-                PurrLogger.LogError($"Error in InvokeDelayed: {ex.Message}");
-            }
-        }
-
         /// <summary>
         /// Set or switch the current provider
         /// </summary>
-        /// <param name="provider"></param>
+        /// <param name="provider"> </param>
         public void SetProvider(ILobbyProvider provider)
         {
             if (_currentProvider != null)
@@ -137,74 +125,88 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
             }
         }
 
+        // Unsubscribe from provider events
+        private void UnsubscribeFromProviderEvents()
+        {
+            _currentProvider.OnError -= OnCurrentProviderOnError;
+            _currentProvider.OnLobbyPlayerListUpdated -= OnCurrentProviderOnLobbyPlayerListUpdated;
+            _currentProvider.OnLobbyUpdated -= OnCurrentProviderOnLobbyUpdated;
+            _currentProvider.OnLobbyLeft -= OnCurrentProviderOnLobbyLeft;
+            _currentProvider.OnLobbyJoinFailed -= OnCurrentProviderOnLobbyJoinFailed;
+        }
+
         // Subscribe to provider events
         private void SubscribeToProviderEvents()
         {
-            _currentProvider.OnLobbyJoinFailed += message => InvokeDelayed(() => OnRoomJoinFailed.Invoke(message));
-            _currentProvider.OnLobbyLeft += () => InvokeDelayed(() =>
-            {
-                CurrentLobby = default;
-                OnRoomLeft?.Invoke();
-            });
+            _currentProvider.OnError += OnCurrentProviderOnError;
+            _currentProvider.OnLobbyPlayerListUpdated += OnCurrentProviderOnLobbyPlayerListUpdated;
+            _currentProvider.OnLobbyUpdated += OnCurrentProviderOnLobbyUpdated;
+            _currentProvider.OnLobbyLeft += OnCurrentProviderOnLobbyLeft;
+            _currentProvider.OnLobbyJoinFailed += OnCurrentProviderOnLobbyJoinFailed;
+        }
 
-            _currentProvider.OnLobbyUpdated += room => InvokeDelayed(() =>
+        private void OnCurrentProviderOnError(string error)
+        {
+            InvokeDelayed(() => OnError.Invoke(error));
+        }
+
+        private void OnCurrentProviderOnLobbyPlayerListUpdated(List<LobbyUser> players)
+        {
+            InvokeDelayed(() => OnPlayerListUpdated.Invoke(players));
+        }
+
+        private void OnCurrentProviderOnLobbyUpdated(Lobby lobby)
+        {
+            InvokeDelayed(() =>
             {
-                if(!_lastKnownState.HasChanged(room) || room.Members.Count <= 0 || !room.IsValid)
+                if (!_lastKnownState.HasChanged(lobby) || lobby.Members.Count <= 0 || !lobby.IsValid)
                 {
                     return;
                 }
 
-                _lastKnownState = room;
-                CurrentLobby = room;
-                OnRoomUpdated?.Invoke(room);
+                if (lobby.IsValid && lobby.Members.Count != _oldLobby.Members?.Count)
+                {
+                    _oldLobby = lobby;
+                    OnRoomJoined?.Invoke(lobby);
+                }
 
-                if (!_isStarting && room.Members.TrueForAll(x => x.IsReady))
+                _lastKnownState = lobby;
+                CurrentLobby = lobby;
+                OnRoomUpdated?.Invoke(lobby);
+
+                if (!_isStarting && lobby.Members.TrueForAll(x => x.IsReady))
                 {
                     _isStarting = true; //Prevent calling ready again if lobby is updated after all ready
                     CallOnAllReady();
                 }
             });
-
-            _currentProvider.OnLobbyPlayerListUpdated += players => InvokeDelayed(() => OnPlayerListUpdated.Invoke(players));
-            _currentProvider.OnError += error => InvokeDelayed(() => OnError.Invoke(error));
-
-            _currentProvider.OnLobbyUpdated += room =>
-            {
-                if (room.IsValid)
-                {
-                    InvokeDelayed(() => OnRoomJoined?.Invoke(room));
-                }
-            };
         }
 
-        // Unsubscribe from provider events
-        // ReSharper disable EventUnsubscriptionViaAnonymousDelegate
-        private void UnsubscribeFromProviderEvents()
+        private void OnCurrentProviderOnLobbyLeft()
         {
-            _currentProvider.OnLobbyJoinFailed -= message => InvokeDelayed(() => OnRoomJoinFailed.Invoke(message));
-            _currentProvider.OnLobbyLeft -= () => InvokeDelayed(() => OnRoomLeft.Invoke());
-            _currentProvider.OnLobbyUpdated -= room => InvokeDelayed(() => OnRoomUpdated.Invoke(room));
-            _currentProvider.OnLobbyPlayerListUpdated -= players => InvokeDelayed(() => OnPlayerListUpdated.Invoke(players));
-            _currentProvider.OnError -= error => InvokeDelayed(() => OnError.Invoke(error));
-
-            _currentProvider.OnLobbyUpdated -= room =>
+            InvokeDelayed(() =>
             {
-                if (room.IsValid)
-                {
-                    InvokeDelayed(() => OnRoomJoined?.Invoke(room));
-                }
-            };
+                _oldLobby = default;
+                CurrentLobby = default;
+                OnRoomLeft?.Invoke();
+            });
         }
-        // ReSharper enable EventUnsubscriptionViaAnonymousDelegate
 
-        /// <summary>
-        /// Shuts down and clears the current provider
-        /// </summary>
-        public void Shutdown()
+        private void OnCurrentProviderOnLobbyJoinFailed(string message)
         {
-            EnsureProviderSet();
-            _currentProvider.Shutdown();
-            onShutdown?.Invoke();
+            InvokeDelayed(() => OnRoomJoinFailed.Invoke(message));
+        }
+
+        private void InvokeDelayed(Action action)
+        {
+            try
+            {
+                _delayedActions.Enqueue(action);
+            }
+            catch (Exception ex)
+            {
+                Log.Lobby.E($"Error in InvokeDelayed: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -250,6 +252,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
             {
                 EnsureProviderSet();
                 Lobby room = await _currentProvider.CreateLobbyAsync(maxPlayers, roomProperties);
+                _oldLobby = default;
                 CurrentLobby = room;
                 OnRoomUpdated?.Invoke(room);
             });
@@ -345,27 +348,37 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
         /// </summary>
         /// <param name="key">Key/Identifier of the metadata we want</param>
         /// <returns>Value of the metadata we get</returns>
-        public async Task<String> GetLobbyData(string key)
+        public async Task<string> GetLobbyData(string key)
         {
             EnsureProviderSet();
             return await _currentProvider.GetLobbyDataAsync(key);
         }
 
         /// <summary>
+        /// Shuts down and clears the current provider
+        /// </summary>
+        public void Shutdown()
+        {
+            EnsureProviderSet();
+            _currentProvider.Shutdown();
+            onShutdown?.Invoke();
+        }
+
+        /// <summary>
         /// Toggles the local users ready state automatically
         /// </summary>
-        public void ToggleLocalReady()
+        public async UniTaskVoid ToggleLocalReady()
         {
             if (!CurrentLobby.IsValid)
             {
-                PurrLogger.LogError($"Can't toggle ready state, current lobby is invalid.");
+                Log.Lobby.E("Can't toggle ready state, current lobby is invalid.");
                 return;
             }
 
-            var localUserId = _currentProvider.GetLocalUserIdAsync().Result;
+            var localUserId = await _currentProvider.GetLocalUserIdAsync();
             if (string.IsNullOrEmpty(localUserId))
             {
-                PurrLogger.LogError($"Can't toggle ready state, local user ID is null or empty.");
+                Log.Lobby.E("Can't toggle ready state, local user ID is null or empty.");
                 return;
             }
 
@@ -385,12 +398,6 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
                 EnsureProviderSet();
                 await _currentProvider.SetIsReadyAsync(userId, isReady);
             });
-        }
-
-        private void OnDestroy()
-        {
-            _currentProvider = null;
-            _lobbyDataHolder = null;
         }
 
         private async void CallOnAllReady()
@@ -429,7 +436,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
             }
             catch (Exception ex)
             {
-                PurrLogger.LogError($"Task Error: {ex.Message}");
+                Log.Lobby.E($"Task Error: {ex.Message}");
             }
             finally
             {
@@ -452,6 +459,14 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
         public void SetLobbyStarted()
         {
             _currentProvider.SetLobbyStartedAsync();
+        }
+
+        public int GetPlayerIndexInLobby()
+        {
+            string localUserId = _currentProvider.GetLocalUserIdAsync().Result;
+            int playerIndexInLobby = CurrentLobby.Members.FindIndex(lobbyUser => lobbyUser.Id == localUserId);
+
+            return playerIndexInLobby;
         }
 
         [Serializable]

@@ -2,15 +2,23 @@
 using Chess3D.Runtime.Bootstrap;
 using Chess3D.Runtime.Menu.LobbyManagement;
 using Chess3D.Runtime.Menu.UI.ViewModels;
-using LobbyManagement;
+using Chess3D.Runtime.Utilities.Logging;
+using UnityEngine;
 using UnityEngine.Scripting;
+using VContainer.Unity;
 
 namespace Chess3D.Runtime.Menu.UI
 {
     /// Listen to Lobby events and switch views accordingly
     [Preserve]
-    public class LobbyListener : IDisposable
+    public class LobbyListener : IDisposable, ITickable
     {
+        // TODO: Move to config
+        private const float UpdateIntervalSec = 3f;
+        private const LobbyManager.FriendFilter Filter = LobbyManager.FriendFilter.Online;
+
+        private float _lastUpdateTime;
+
         private readonly LobbyManager _lobbyManager;
         private readonly AppEvents _appEvents;
         private readonly ViewNavigator _viewNavigator;
@@ -22,8 +30,9 @@ namespace Chess3D.Runtime.Menu.UI
             _viewNavigator = viewNavigator;
 
             _lobbyManager.OnRoomJoined.AddListener(ShowLobbyView);
-            _lobbyManager.OnRoomJoinFailed.AddListener(ShowPlayView);
-            _lobbyManager.OnRoomLeft.AddListener(ShowPlayView);
+            _lobbyManager.OnRoomJoinFailed.AddListener(OnRoomJoinFailed);
+            _lobbyManager.OnRoomLeft.AddListener(GoBack);
+
             _appEvents.OnPause += OnApplicationPause;
         }
 
@@ -32,14 +41,33 @@ namespace Chess3D.Runtime.Menu.UI
             if (_lobbyManager is not null)
             {
                 _lobbyManager.OnRoomJoined.RemoveListener(ShowLobbyView);
-                _lobbyManager.OnRoomJoinFailed.RemoveListener(ShowPlayView);
-                _lobbyManager.OnRoomLeft.RemoveListener(ShowPlayView);
+                _lobbyManager.OnRoomJoinFailed.RemoveListener(OnRoomJoinFailed);
+                _lobbyManager.OnRoomLeft.RemoveListener(GoBack);
             }
 
             if (_appEvents is not null)
             {
                 _appEvents.OnPause -= OnApplicationPause;
             }
+        }
+
+        public void Tick()
+        {
+            if(IsNeedToPullFriends())
+            {
+                PullFriends();
+            }
+        }
+
+        private bool IsNeedToPullFriends()
+        {
+            return _lobbyManager.IsInLobby && _lastUpdateTime + UpdateIntervalSec < Time.time;
+        }
+
+        private void PullFriends()
+        {
+            _lastUpdateTime = Time.time;
+            _lobbyManager.PullFriends(Filter);
         }
 
         private void OnApplicationPause(bool isPause)
@@ -55,12 +83,12 @@ namespace Chess3D.Runtime.Menu.UI
             _viewNavigator.GoTo<LobbyViewModel>();
         }
 
-        private void ShowPlayView(string _)
+        private static void OnRoomJoinFailed(string message)
         {
-            ShowPlayView();
+            Log.Lobby.D(message);
         }
 
-        private void ShowPlayView()
+        private void GoBack()
         {
             _viewNavigator.GoBack();
         }

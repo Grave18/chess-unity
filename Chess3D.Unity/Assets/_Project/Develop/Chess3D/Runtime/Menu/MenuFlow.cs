@@ -25,7 +25,6 @@ namespace Chess3D.Runtime.Menu
         private readonly FenTextBoxViewModel _fenTextBoxViewModel;
         private readonly FindGameViewModel _findGameViewModel;
         private readonly GameSettingsViewModel _gameSettingsViewModel;
-        private readonly LobbyViewModel _lobbyViewModel;
         private readonly GraphicsSettingsViewModel _graphicsSettingsViewModel;
         private readonly AudioSettingsViewModel _audioSettingsViewModel;
 
@@ -44,7 +43,6 @@ namespace Chess3D.Runtime.Menu
             _fenTextBoxViewModel = fenTextBoxViewModel;
             _findGameViewModel = findGameViewModel;
             _gameSettingsViewModel = gameSettingsViewModel;
-            _lobbyViewModel = lobbyViewModel;
             _graphicsSettingsViewModel = graphicsSettingsViewModel;
             _audioSettingsViewModel = audioSettingsViewModel;
             _homeViewModel = homeViewModel;
@@ -66,7 +64,6 @@ namespace Chess3D.Runtime.Menu
             await _loadingService.BeginLoading(_findGameViewModel);
             await _loadingService.BeginLoading(_gameSettingsViewModel);
             await _loadingService.BeginLoading(_playViewModel);
-            await _loadingService.BeginLoading(_lobbyViewModel);
             await _loadingService.BeginLoading(_graphicsSettingsViewModel);
             await _loadingService.BeginLoading(_audioSettingsViewModel);
         }

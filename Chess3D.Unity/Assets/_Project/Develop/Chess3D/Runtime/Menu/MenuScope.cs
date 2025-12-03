@@ -29,7 +29,6 @@ namespace Chess3D.Runtime.Menu
             builder.RegisterComponent(noesisView);
             builder.Register<MainViewLoader>(Lifetime.Scoped);
             builder.Register<ViewNavigator>(Lifetime.Scoped);
-            builder.Register<LobbyListener>(Lifetime.Scoped);
             // Views
             builder.Register<HomeView>(Lifetime.Scoped);
             builder.Register<BoardView>(Lifetime.Scoped);
@@ -47,11 +46,12 @@ namespace Chess3D.Runtime.Menu
             builder.Register<GraphicsSettingsViewModel>(Lifetime.Scoped);
             builder.Register<AudioSettingsViewModel>(Lifetime.Scoped);
             builder.Register<FenTextBoxViewModel>(Lifetime.Scoped);
-            builder.RegisterEntryPoint<FindGameViewModel>(Lifetime.Scoped).AsSelf();
-            builder.RegisterEntryPoint<LobbyViewModel>(Lifetime.Scoped).AsSelf();
+            builder.Register<LobbyViewModel>(Lifetime.Scoped);
 
             builder.RegisterBuildCallback(ServiceLocator.Initialize);
 
+            builder.RegisterEntryPoint<FindGameViewModel>(Lifetime.Scoped).AsSelf();
+            builder.RegisterEntryPoint<LobbyListener>(Lifetime.Scoped).AsSelf();
             builder.RegisterEntryPoint<MenuFlow>();
         }
     }
