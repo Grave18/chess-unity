@@ -7,6 +7,10 @@
              xmlns:design="clr-namespace:Blend"
              mc:Ignorable="d"
              d:DesignHeight="1080" d:DesignWidth="700" >
+    <UserControl.Resources>
+        <converters:FriendFilterConverter x:Key="FriendFilterConverter" />
+    </UserControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -39,10 +43,38 @@
 
         <!-- Friends List -->
         <Border Grid.Row="2"
+                Margin="30 0 30 30"
+                Padding="30 0 30 30"
                 Style="{StaticResource SettingsControlsBorder}">
-            <ListBox ItemsSource="{Binding Friends}"
-                        ItemTemplate="{StaticResource FriendUserTemplate}">
-            </ListBox>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="70" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Row="0"
+                           Style="{StaticResource NormalTextBlockStyle}"
+                           Text="Friends"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           />
+                <Button Grid.Row="0" Grid.Column="1"
+                        Content="{Binding FriendFilter, Converter={StaticResource FriendFilterConverter}}"
+                        Command="{Binding ChangeFriendFilterCommand}"
+                        Width="120" Height="50"
+                        FontSize="20"
+                        Style="{StaticResource GeneralButtonStyle}"
+                        />
+                <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                         ItemsSource="{Binding Friends}"
+                         ItemTemplate="{StaticResource FriendUserTemplate}">
+                </ListBox>
+            </Grid>
+            
         </Border>
 
         <Button Grid.Row="3"

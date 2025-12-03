@@ -4,22 +4,32 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Chess3D.Runtime.Menu.LobbyManagement;
 using MvvmTool;
+using UnityEngine;
 using UnityEngine.Scripting;
+using VContainer.Unity;
 
 namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
-    public partial class LobbyViewModel : IViewModel, IDisposable
+    [INotifyPropertyChanged]
+    public partial class LobbyViewModel : IViewModel, IDisposable, ITickable
     {
+        // TODO: Move to config
+        private const float UpdateIntervalSec = 1f;
+
         public ObservableCollection<FriendItem> Friends { get; set; } = new();
         public ObservableCollection<LobbyUser> LobbyUsers { get; set; } = new();
+
+        [ObservableProperty] private LobbyManager.FriendFilter _friendFilter = LobbyManager.FriendFilter.Online;
+
+        private float _lastUpdateTime;
 
         private readonly LobbyManager _lobbyManager;
 
         public LobbyViewModel(LobbyManager lobbyManager)
         {
             _lobbyManager = lobbyManager;
-            
+
             _lobbyManager.OnFriendListPulled.AddListener(PopulateFriends);
             _lobbyManager.OnRoomLeft.AddListener(OnLobbyLeave);
             _lobbyManager.OnRoomUpdated.AddListener(LobbyDataUpdate);
@@ -35,6 +45,25 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _lobbyManager.OnFriendListPulled.RemoveListener(PopulateFriends);
             _lobbyManager.OnRoomLeft.RemoveListener(OnLobbyLeave);
             _lobbyManager.OnRoomUpdated.RemoveListener(LobbyDataUpdate);
+        }
+
+        public void Tick()
+        {
+            if(IsNeedToPullFriends())
+            {
+                PullFriends();
+            }
+        }
+
+        private bool IsNeedToPullFriends()
+        {
+            return _lobbyManager.IsInLobby && _lastUpdateTime + UpdateIntervalSec < Time.time;
+        }
+
+        private void PullFriends()
+        {
+            _lastUpdateTime = Time.time;
+            _lobbyManager.PullFriends(FriendFilter);
         }
 
         private void PopulateFriends(List<FriendItem> newQuery)
@@ -118,6 +147,23 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         private void Ready()
         {
             _lobbyManager.ToggleLocalReady().Forget();
+        }
+
+        [RelayCommand]
+        private void ChangeFriendFilter()
+        {
+            if (FriendFilter == LobbyManager.FriendFilter.InThisGame)
+            {
+                FriendFilter = LobbyManager.FriendFilter.Online;
+            }
+            else if (FriendFilter == LobbyManager.FriendFilter.Online)
+            {
+                FriendFilter = LobbyManager.FriendFilter.All;
+            }
+            else if (FriendFilter == LobbyManager.FriendFilter.All)
+            {
+                FriendFilter = LobbyManager.FriendFilter.InThisGame;
+            }
         }
 
         [RelayCommand]
