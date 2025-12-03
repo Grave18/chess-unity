@@ -7,10 +7,7 @@
              xmlns:design="clr-namespace:Blend"
              mc:Ignorable="d"
              d:DesignHeight="1080" d:DesignWidth="700" >
-    <UserControl.Resources>
-        <converters:FriendFilterConverter x:Key="FriendFilterConverter" />
-    </UserControl.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -23,7 +20,7 @@
         <Label Grid.Row="0"
                Content="Lobby"
                Style="{StaticResource HeaderLabelStyle}" />
-        
+
         <!-- Lobby List -->
         <Border Grid.Row="1"
                 Style="{StaticResource SettingsControlsBorder}">
@@ -55,7 +52,7 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                
+
                 <TextBlock Grid.Row="0"
                            Style="{StaticResource NormalTextBlockStyle}"
                            Text="Friends"
@@ -74,7 +71,7 @@
                          ItemTemplate="{StaticResource FriendUserTemplate}">
                 </ListBox>
             </Grid>
-            
+
         </Border>
 
         <Button Grid.Row="3"

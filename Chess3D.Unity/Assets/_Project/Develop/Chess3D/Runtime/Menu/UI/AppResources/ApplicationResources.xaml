@@ -13,6 +13,7 @@
     <!-- Darker City Lights  #B8BDBF -->
     <!-- Lighter City Lights #C4CACC -->
 
+    <Color x:Key="BlackBackgroundColor">#202020</Color>
     <!-- Dracula Orchid -->
     <Color x:Key="DarkerBackgroundColor">#2d3436</Color>
     <!-- American River -->
@@ -26,6 +27,7 @@
     <!-- Darker City Lights -->
     <Color x:Key="MouseOverForegroundColor">#C4CACC</Color>
 
+    <SolidColorBrush x:Key="BlackBackgroundBrush" Color="{StaticResource BlackBackgroundColor}" />
     <SolidColorBrush x:Key="DarkerBackgroundBrush" Color="{StaticResource DarkerBackgroundColor}" />
     <SolidColorBrush x:Key="LighterBackgroundBrush" Color="{StaticResource LighterBackgroundColor}" />
     <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="{StaticResource ButtonColor}" />
@@ -37,6 +39,7 @@
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <converters:Texture2dToImageSourceConverter x:Key="Texture2dToImageSourceConverter" />
     <converters:ViewLocatorConverter x:Key="ViewLocatorConverter" />
+    <converters:FriendFilterConverter x:Key="FriendFilterConverter" />
 
     <!-- Main Style-->
     <Style x:Key="MainMenuStyle" TargetType="{x:Type UserControl}">
@@ -75,6 +78,27 @@
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
+
+    <!-- Start ListBox Style-->
+    <Style TargetType="ListBox">
+        <Setter Property="Background" Value="{StaticResource BlackBackgroundBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBox">
+                    <Border Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}"
+                        Margin="{TemplateBinding Margin}"
+                        CornerRadius="10">
+                        <ScrollViewer Focusable="False"
+                                  CanContentScroll="True">
+                            <ItemsPresenter />
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!-- End ListBox Style-->
 
     <!-- Start CheckBox -->
     <Style TargetType="CheckBox" x:Key="CheckBoxStyle">
