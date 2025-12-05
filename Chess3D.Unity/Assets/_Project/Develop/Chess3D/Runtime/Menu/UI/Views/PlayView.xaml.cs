@@ -9,10 +9,8 @@ using Grid = Noesis.Grid;
 using GUI = Noesis.GUI;
 
 #else
-using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 #endif
 
 namespace Chess3D.Runtime.Menu.UI.Views

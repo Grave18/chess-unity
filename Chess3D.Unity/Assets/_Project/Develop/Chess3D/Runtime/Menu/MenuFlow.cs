@@ -23,14 +23,13 @@ namespace Chess3D.Runtime.Menu
         private readonly BoardViewModel _boardViewModel;
         private readonly PlayViewModel _playViewModel;
         private readonly FenTextBoxViewModel _fenTextBoxViewModel;
-        private readonly FindGameViewModel _findGameViewModel;
         private readonly GameSettingsViewModel _gameSettingsViewModel;
         private readonly GraphicsSettingsViewModel _graphicsSettingsViewModel;
         private readonly AudioSettingsViewModel _audioSettingsViewModel;
 
         public MenuFlow(LoadingService loadingService, MainViewModel mainViewModel,
             VisualBoardSpawner visualBoardSpawner, BoardViewModel boardViewModel,
-            FenTextBoxViewModel fenTextBoxViewModel, FindGameViewModel findGameViewModel,
+            FenTextBoxViewModel fenTextBoxViewModel,
             GameSettingsViewModel gameSettingsViewModel, LobbyViewModel lobbyViewModel,
             GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel,
             HomeViewModel homeViewModel, ViewNavigator viewNavigator, MainViewLoader mainViewLoader,
@@ -41,7 +40,6 @@ namespace Chess3D.Runtime.Menu
             _boardViewModel = boardViewModel;
             _mainViewModel = mainViewModel;
             _fenTextBoxViewModel = fenTextBoxViewModel;
-            _findGameViewModel = findGameViewModel;
             _gameSettingsViewModel = gameSettingsViewModel;
             _graphicsSettingsViewModel = graphicsSettingsViewModel;
             _audioSettingsViewModel = audioSettingsViewModel;
@@ -61,7 +59,6 @@ namespace Chess3D.Runtime.Menu
             await _loadingService.BeginLoading(_mainViewModel, _homeViewModel);
             await _loadingService.BeginLoading(_boardViewModel);
             await _loadingService.BeginLoading(_fenTextBoxViewModel);
-            await _loadingService.BeginLoading(_findGameViewModel);
             await _loadingService.BeginLoading(_gameSettingsViewModel);
             await _loadingService.BeginLoading(_playViewModel);
             await _loadingService.BeginLoading(_graphicsSettingsViewModel);

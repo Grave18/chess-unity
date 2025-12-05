@@ -71,12 +71,6 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         }
 
         [RelayCommand]
-        private void FindGame()
-        {
-            _viewNavigator.GoTo<FindGameViewModel>();
-        }
-
-        [RelayCommand]
         public void StartLocalServer()
         {
             // TODO: Fix online scene switching

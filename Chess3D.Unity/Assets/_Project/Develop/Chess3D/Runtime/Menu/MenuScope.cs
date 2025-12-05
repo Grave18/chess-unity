@@ -35,7 +35,6 @@ namespace Chess3D.Runtime.Menu
             builder.Register<BoardView>(Lifetime.Scoped);
             builder.Register<PlayView>(Lifetime.Scoped);
             builder.Register<SettingsView>(Lifetime.Scoped);
-            builder.Register<FindGameView>(Lifetime.Scoped);
             builder.Register<LobbyView>(Lifetime.Scoped);
             // VMs
             builder.Register<MainViewModel>(Lifetime.Scoped);
@@ -51,7 +50,6 @@ namespace Chess3D.Runtime.Menu
             builder.RegisterBuildCallback(ServiceLocator.Initialize);
 
             builder.RegisterEntryPoint<LobbyViewModel>(Lifetime.Scoped).AsSelf();
-            builder.RegisterEntryPoint<FindGameViewModel>(Lifetime.Scoped).AsSelf();
             builder.RegisterEntryPoint<MenuFlow>();
         }
     }
