@@ -11,8 +11,6 @@ using System.Windows.Controls;
 using System.Windows;
 #endif
 
-using Ui.Auxiliary;
-
 namespace Chess3D.Runtime.Menu.UI.Views
 {
 #if NOESIS

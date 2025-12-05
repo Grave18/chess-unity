@@ -9,7 +9,7 @@ using System;
 using System.Windows.Controls;
 #endif
 
-namespace Ui.Auxiliary
+namespace Chess3D.Runtime.Menu.UI.Auxiliary
 {
     public abstract partial class GameMenuBase : UserControl
     {

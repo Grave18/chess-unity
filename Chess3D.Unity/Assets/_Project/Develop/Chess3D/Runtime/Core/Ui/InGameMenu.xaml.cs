@@ -15,7 +15,7 @@ using System.Windows;
 using System.Windows.Input;
 #endif
 
-using Ui.Auxiliary;
+using Chess3D.Runtime.Menu.UI.Auxiliary;
 
 namespace Ui.InGame
 {

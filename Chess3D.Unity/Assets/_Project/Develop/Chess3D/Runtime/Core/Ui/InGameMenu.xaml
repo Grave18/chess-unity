@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions"
              xmlns:pages="clr-namespace:Ui.InGame.Pages"
-             xmlns:auxiliary="clr-namespace:Ui.Auxiliary"
+             xmlns:auxiliary="clr-namespace:Chess3D.Runtime.Menu.UI.Auxiliary"
              xmlns:local="clr-namespace:Ui.InGame"
              xmlns:userControls="clr-namespace:Ui.InGame.UserControls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"

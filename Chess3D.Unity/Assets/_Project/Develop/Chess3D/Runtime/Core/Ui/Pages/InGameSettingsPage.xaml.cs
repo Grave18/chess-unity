@@ -17,7 +17,7 @@ using System.Windows.Input;
 using EventArgs = System.EventArgs;
 #endif
 
-using Ui.Auxiliary;
+using Chess3D.Runtime.Menu.UI.Auxiliary;
 
 namespace Ui.InGame.Pages
 {

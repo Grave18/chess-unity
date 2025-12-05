@@ -3,9 +3,9 @@ using System;
 using UnityEngine;
 #endif
 
-namespace Ui.Auxiliary
+namespace Chess3D.Runtime.Menu.UI.Auxiliary
 {
-    public class ResolutionUi // : IEquatable<ResolutionUi>
+    public class ResolutionUi
     {
         public int Width { get; }
         public int Height { get; }

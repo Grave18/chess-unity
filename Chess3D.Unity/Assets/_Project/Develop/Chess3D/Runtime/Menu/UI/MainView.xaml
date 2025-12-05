@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:auxiliary="clr-namespace:Ui.Auxiliary"
+             xmlns:auxiliary="clr-namespace:Chess3D.Runtime.Menu.UI.Auxiliary"
              mc:Ignorable="d"
              d:DesignWidth="1920" d:DesignHeight="1080"
              Style="{StaticResource MainMenuStyle}">

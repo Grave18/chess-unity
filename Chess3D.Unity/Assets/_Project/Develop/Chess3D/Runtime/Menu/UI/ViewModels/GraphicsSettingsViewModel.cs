@@ -4,7 +4,7 @@ using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using MvvmTool;
-using Ui.Auxiliary;
+using Chess3D.Runtime.Menu.UI.Auxiliary;
 using UnityEngine;
 using UnityEngine.Scripting;
 

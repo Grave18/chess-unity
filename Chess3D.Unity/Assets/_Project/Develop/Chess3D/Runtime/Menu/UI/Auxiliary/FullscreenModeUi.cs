@@ -1,4 +1,4 @@
-﻿namespace Ui.Auxiliary
+﻿namespace Chess3D.Runtime.Menu.UI.Auxiliary
 {
     public class FullscreenModeUi
     {
