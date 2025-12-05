@@ -103,8 +103,8 @@ namespace Chess3D.Runtime.Core.MainCamera
         public UniTask Load()
         {
             _rotateCameraToColor = IsVsPlayer ? _fenFromString.TurnColor : _settingsService.S.GameSettings.PlayerColor;
+            _isStartRotationOn = _settingsService.S.GameSettings.IsRotateCameraOnStart;
             // TODO: refactor online camera
-            _isStartRotationOn = IsVsPlayer && OnlineInstanceHandler.IsOffline && _settingsService.S.GameSettings.IsRotateCameraOnStart;
             _isAutoRotateCamera = IsVsPlayer && OnlineInstanceHandler.IsOffline && _settingsService.S.GameSettings.IsAutoRotateCamera;
 
             _newDistance = distance;
