@@ -25,6 +25,11 @@ namespace Chess3D.Runtime.Menu.UI.Views
             InitializeComponent();
         }
 
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
 #if NOESIS
         private LobbyView(LobbyViewModel lobbyViewModel) : this()
         {

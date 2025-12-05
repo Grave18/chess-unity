@@ -252,18 +252,30 @@
         </Grid>
     </DataTemplate>
 
-    <!-- Friend Template -->
-    <DataTemplate x:Key="FriendUserTemplate">
-        <Button Command="{Binding FriendClickCommand}">
-            <Grid Height="Auto">
+    <Style TargetType="Button" x:Key="FriendItemButtonStyle">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="FontSize" Value="{StaticResource NormalFontSize}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <!-- FriendItem Template -->
+    <DataTemplate x:Key="FriendItemTemplate">
+        <Button Command="{Binding FriendClickCommand}"
+            Style="{StaticResource FriendItemButtonStyle}">
+            <Grid Height="50"
+              Margin="10 10 10 5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="50" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Image Grid.Column="0"
                    Source="{Binding Image, Converter={StaticResource Texture2dToImageSourceConverter}}" />
-                <Label Grid.Column="1"
-                   Content="{Binding Name}" />
+                <TextBlock Grid.Column="1"
+                       Margin="20 0 0 0"
+                       Text="{Binding Name}" />
             </Grid>
         </Button>
     </DataTemplate>

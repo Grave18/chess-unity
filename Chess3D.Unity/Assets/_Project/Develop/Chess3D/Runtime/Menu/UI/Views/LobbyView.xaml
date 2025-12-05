@@ -57,18 +57,22 @@
                            Style="{StaticResource NormalTextBlockStyle}"
                            Text="Friends"
                            VerticalAlignment="Center"
-                           HorizontalAlignment="Center"
-                           />
+                           HorizontalAlignment="Center" />
                 <Button Grid.Row="0" Grid.Column="1"
                         Content="{Binding FriendFilter, Converter={StaticResource FriendFilterConverter}}"
                         Command="{Binding ChangeFriendFilterCommand}"
                         Width="120" Height="50"
                         FontSize="20"
-                        Style="{StaticResource GeneralButtonStyle}"
-                        />
+                        Style="{StaticResource GeneralButtonStyle}" />
                 <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
                          ItemsSource="{Binding Friends}"
-                         ItemTemplate="{StaticResource FriendUserTemplate}">
+                         ItemTemplate="{StaticResource FriendItemTemplate}">
+                    <d:ListBox.ItemsSource>
+                        <x:Array Type="design:DesignFriendItem">
+                            <design:DesignFriendItem Name="Alice" />
+                            <design:DesignFriendItem Name="Bob" />
+                        </x:Array>
+                    </d:ListBox.ItemsSource>
                 </ListBox>
             </Grid>
 
@@ -77,7 +81,7 @@
         <Button Grid.Row="3"
                 Margin="0 0 0 20"
                 Content="Ready"
-                Command="{Binding ReadyCommand}"/>
+                Command="{Binding ReadyCommand}" />
 
         <Button Grid.Row="4"
                 Name="Back"
