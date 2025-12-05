@@ -15,7 +15,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
     public partial class LobbyViewModel : IViewModel, IDisposable, ITickable
     {
         // TODO: Move to config
-        private const float UpdateIntervalSec = 1f;
+        private const float UpdateIntervalSec = 3f;
 
         public ObservableCollection<FriendItem> Friends { get; set; } = new();
         public ObservableCollection<LobbyUser> LobbyUsers { get; set; } = new();
@@ -151,6 +151,12 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         [RelayCommand]
         private void ChangeFriendFilter()
+        {
+            CycleThroughFilters();
+            PullFriends();
+        }
+
+        private void CycleThroughFilters()
         {
             if (FriendFilter == LobbyManager.FriendFilter.InThisGame)
             {
