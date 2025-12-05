@@ -1,12 +1,14 @@
 using System;
 using System.Globalization;
+
 #if UNITY_5_3_OR_NEWER
 using Noesis;
+
 #else
 using System.Windows.Data;
 #endif
 
-namespace Ui.Converters
+namespace Chess3D.Runtime.Menu.UI.Converters
 {
     public class FriendFilterConverter : IValueConverter
     {

@@ -10,7 +10,7 @@ using System.Windows.Data;
 using System;
 using System.Globalization;
 
-namespace Ui.Converters
+namespace Chess3D.Runtime.Menu.UI.Converters
 {
     public class Texture2dToImageSourceConverter : IValueConverter
     {

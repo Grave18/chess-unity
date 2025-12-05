@@ -13,7 +13,7 @@ using System.Windows.Data;
 
 using System.Globalization;
 
-namespace Ui.Converters
+namespace Chess3D.Runtime.Menu.UI.Converters
 {
 #if NOESIS
     [Preserve]

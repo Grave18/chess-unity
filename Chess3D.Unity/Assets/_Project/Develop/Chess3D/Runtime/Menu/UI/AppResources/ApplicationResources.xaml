@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
                     xmlns:auxiliary="clr-namespace:Ui.Auxiliary"
-                    xmlns:converters="clr-namespace:Ui.Converters">
+                    xmlns:converters="clr-namespace:Chess3D.Runtime.Menu.UI.Converters">
 
     <!-- Color Pallet -->
     <!-- Dracula Orchid      #2d3436 -->
@@ -127,7 +127,7 @@
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        
+
                                         <DoubleAnimation Storyboard.TargetProperty="Width"
                                                          Storyboard.TargetName="Box"
                                                          Duration="0:0:0.15"
@@ -136,7 +136,7 @@
                                                 <QuadraticEase EasingMode="EaseOut" />
                                             </DoubleAnimation.EasingFunction>
                                         </DoubleAnimation>
-                                        
+
                                         <DoubleAnimation Storyboard.TargetProperty="Height"
                                                          Storyboard.TargetName="Box"
                                                          Duration="0:0:0.15"
@@ -145,7 +145,7 @@
                                                 <QuadraticEase EasingMode="EaseOut" />
                                             </DoubleAnimation.EasingFunction>
                                         </DoubleAnimation>
-                                        
+
                                         <ThicknessAnimation Storyboard.TargetProperty="BorderThickness"
                                                             Storyboard.TargetName="Box"
                                                             Duration="0:0:0.15"
@@ -154,7 +154,7 @@
                                                 <QuadraticEase EasingMode="EaseOut" />
                                             </ThicknessAnimation.EasingFunction>
                                         </ThicknessAnimation>
-                                        
+
                                         <ColorAnimation Storyboard.TargetProperty="Background.Color"
                                                         Storyboard.TargetName="Box"
                                                         Duration="0:0:0.15"
@@ -163,7 +163,7 @@
                                                 <QuadraticEase EasingMode="EaseOut" />
                                             </ColorAnimation.EasingFunction>
                                         </ColorAnimation>
-                                        
+
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
@@ -174,7 +174,7 @@
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        
+
                                         <DoubleAnimation Storyboard.TargetProperty="Width"
                                                             Storyboard.TargetName="Box"
                                                             Duration="0:0:0.15"
@@ -183,7 +183,7 @@
                                                 <QuadraticEase EasingMode="EaseOut" />
                                             </DoubleAnimation.EasingFunction>
                                         </DoubleAnimation>
-                                        
+
                                         <DoubleAnimation Storyboard.TargetProperty="Height"
                                                             Storyboard.TargetName="Box"
                                                             Duration="0:0:0.15"
@@ -192,7 +192,7 @@
                                                 <QuadraticEase EasingMode="EaseOut" />
                                             </DoubleAnimation.EasingFunction>
                                         </DoubleAnimation>
-                                        
+
                                         <ThicknessAnimation Storyboard.TargetProperty="BorderThickness"
                                                             Storyboard.TargetName="Box"
                                                             Duration="0:0:0.15"
@@ -201,7 +201,7 @@
                                                 <QuadraticEase EasingMode="EaseOut" />
                                             </ThicknessAnimation.EasingFunction>
                                         </ThicknessAnimation>
-                                        
+
                                         <ColorAnimation Storyboard.TargetProperty="Background.Color"
                                                             Storyboard.TargetName="Box"
                                                             Duration="0:0:0.15"
@@ -210,7 +210,7 @@
                                                 <QuadraticEase EasingMode="EaseOut" />
                                             </ColorAnimation.EasingFunction>
                                         </ColorAnimation>
-                                        
+
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
@@ -496,7 +496,7 @@
 
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    
+
     <!-- General Button Style -->
     <Style x:Key="GeneralButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
@@ -769,7 +769,7 @@
                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                     </Grid>
                     <ControlTemplate.Triggers>
-                        
+
                         <!-- Animate Selected False, Mouse False -->
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
@@ -786,7 +786,7 @@
                                 </BeginStoryboard>
                             </MultiDataTrigger.EnterActions>
                         </MultiDataTrigger>
-                        
+
                         <!-- Animate Selected True,  Mouse False -->
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
@@ -803,7 +803,7 @@
                                 </BeginStoryboard>
                             </MultiDataTrigger.EnterActions>
                         </MultiDataTrigger>
-                        
+
                         <!-- Animate Selected False, Mouse True  -->
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
