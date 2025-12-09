@@ -20,6 +20,7 @@ namespace Chess3D.Runtime.Menu
 
         protected override void Configure(IContainerBuilder builder)
         {
+            // Lobby
             builder.RegisterComponent(lobbyManager);
             builder.Register<LobbyListener>(Lifetime.Scoped);
 
@@ -36,7 +37,7 @@ namespace Chess3D.Runtime.Menu
             builder.Register<PlayView>(Lifetime.Scoped);
             builder.Register<SettingsView>(Lifetime.Scoped);
             builder.Register<LobbyView>(Lifetime.Scoped);
-            // VMs
+            // ViewModels
             builder.Register<MainViewModel>(Lifetime.Scoped);
             builder.Register<HomeViewModel>(Lifetime.Scoped);
             builder.Register<BoardViewModel>(Lifetime.Scoped);
@@ -46,10 +47,13 @@ namespace Chess3D.Runtime.Menu
             builder.Register<GraphicsSettingsViewModel>(Lifetime.Scoped);
             builder.Register<AudioSettingsViewModel>(Lifetime.Scoped);
             builder.Register<FenTextBoxViewModel>(Lifetime.Scoped);
+            builder.Register<LobbyViewModel>(Lifetime.Scoped);
 
+            // Service locator
             builder.RegisterBuildCallback(ServiceLocator.Initialize);
 
-            builder.RegisterEntryPoint<LobbyViewModel>(Lifetime.Scoped).AsSelf();
+            // Entry points
+            builder.RegisterEntryPoint<LobbyViewModel>(Lifetime.Scoped);
             builder.RegisterEntryPoint<MenuFlow>();
         }
     }
