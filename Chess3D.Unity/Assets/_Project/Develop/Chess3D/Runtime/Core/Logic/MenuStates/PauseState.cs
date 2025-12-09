@@ -1,6 +1,6 @@
 ﻿using Chess3D.Runtime.Core.InputManagement;
-using Chess3D.Runtime.Core.Ui;
-using InGameMenuViewModel = Chess3D.Runtime.Core.Ui.ViewModels.InGameMenuViewModel;
+using Chess3D.Runtime.Core.UI;
+using InGameMenuViewModel = Chess3D.Runtime.Core.UI.ViewModels.InGameMenuViewModel;
 
 namespace Chess3D.Runtime.Core.Logic.MenuStates
 {

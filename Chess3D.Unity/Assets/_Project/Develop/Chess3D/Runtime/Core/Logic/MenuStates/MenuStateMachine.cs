@@ -1,8 +1,8 @@
-﻿using Cysharp.Threading.Tasks;
-using Chess3D.Runtime.Core.Ui;
-using Chess3D.Runtime.Core.Ui.ViewModels;
+﻿using Chess3D.Runtime.Core.UI;
+using Cysharp.Threading.Tasks;
 using Chess3D.Runtime.Utilities;
 using VContainer;
+using InGameMenuViewModel = Chess3D.Runtime.Core.UI.ViewModels.InGameMenuViewModel;
 
 namespace Chess3D.Runtime.Core.Logic.MenuStates
 {

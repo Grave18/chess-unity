@@ -1,6 +1,6 @@
 ﻿using PurrNet;
 using UnityEngine;
-using PopupViewModel = Chess3D.Runtime.Core.Ui.ViewModels.PopupViewModel;
+using PopupViewModel = Chess3D.Runtime.Core.UI.ViewModels.PopupViewModel;
 
 namespace Chess3D.Runtime.Online
 {

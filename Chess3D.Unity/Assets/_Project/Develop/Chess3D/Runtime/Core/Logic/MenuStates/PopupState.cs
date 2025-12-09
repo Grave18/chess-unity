@@ -1,5 +1,5 @@
 ﻿using Chess3D.Runtime.Core.InputManagement;
-using Chess3D.Runtime.Core.Ui;
+using Chess3D.Runtime.Core.UI;
 
 namespace Chess3D.Runtime.Core.Logic.MenuStates
 {

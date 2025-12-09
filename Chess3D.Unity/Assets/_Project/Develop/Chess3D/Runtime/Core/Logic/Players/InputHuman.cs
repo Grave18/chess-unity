@@ -5,7 +5,7 @@ using Chess3D.Runtime.Core.ChessBoard.Pieces;
 using Chess3D.Runtime.Core.Highlighting;
 using Chess3D.Runtime.Core.InputManagement;
 using Chess3D.Runtime.Core.MainCamera;
-using Chess3D.Runtime.Core.Ui.Promotion;
+using Chess3D.Runtime.Core.UI.Promotion;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;

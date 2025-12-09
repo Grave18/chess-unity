@@ -4,7 +4,6 @@ using Chess3D.Runtime.Core.Ai;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
-using Chess3D.Runtime.Core.Ui.ViewModels;
 using Chess3D.Runtime.Core.AssetManagement;
 using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.Highlighting;
@@ -16,15 +15,18 @@ using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.MainCamera;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Core.Sound;
-using Chess3D.Runtime.Core.Ui;
-using Chess3D.Runtime.Core.Ui.AlgebraicNotation;
-using Chess3D.Runtime.Core.Ui.BoardUi;
-using Chess3D.Runtime.Core.Ui.ClockUi;
-using Chess3D.Runtime.Core.Ui.DebugUi;
-using Chess3D.Runtime.Core.Ui.Promotion;
+using Chess3D.Runtime.Core.UI;
+using Chess3D.Runtime.Core.UI.AlgebraicNotation;
+using Chess3D.Runtime.Core.UI.BoardUi;
+using Chess3D.Runtime.Core.UI.ClockUi;
+using Chess3D.Runtime.Core.UI.DebugUi;
+using Chess3D.Runtime.Core.UI.Promotion;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Online;
+using InGameMenuViewModel = Chess3D.Runtime.Core.UI.ViewModels.InGameMenuViewModel;
+using InGamePageViewModel = Chess3D.Runtime.Core.UI.ViewModels.InGamePageViewModel;
 using PauseState = Chess3D.Runtime.Core.Logic.GameStates.PauseState;
+using PopupViewModel = Chess3D.Runtime.Core.UI.ViewModels.PopupViewModel;
 
 namespace Chess3D.Runtime.Core
 {
