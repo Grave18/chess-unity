@@ -7,11 +7,11 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.UI.ViewModels
 {
-    public partial class InGamePageViewModel : NetworkBehaviour
+    public partial class CoreHomeViewModel : NetworkBehaviour
     {
         private Game _game;
         private PopupViewModel _popupViewModel;
-        private CoreMainViewModel coreMainViewModel;
+        private CoreMainViewModel _coreMainViewModel;
         private EffectsPlayer _effectsPlayer;
 
         [Inject]
@@ -19,7 +19,7 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
         {
             _game = game;
             _popupViewModel = popupViewModel;
-            this.coreMainViewModel = coreMainViewModel;
+            _coreMainViewModel = coreMainViewModel;
             _effectsPlayer = effectsPlayer;
         }
 
@@ -28,12 +28,12 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
 
         private void OnEnable()
         {
-            coreMainViewModel.OnOpenedChanged += OnCoreMainOpenedChanged;
+            _coreMainViewModel.OnOpenedChanged += OnCoreMainOpenedChanged;
         }
 
         private void OnDisable()
         {
-            coreMainViewModel.OnOpenedChanged -= OnCoreMainOpenedChanged;
+            _coreMainViewModel.OnOpenedChanged -= OnCoreMainOpenedChanged;
         }
 
         private void OnCoreMainOpenedChanged(bool isOpened)

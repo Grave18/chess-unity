@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions"
-             xmlns:pages="clr-namespace:Ui.InGame.Pages"
+             xmlns:pages="clr-namespace:Chess3D.Runtime.Core.UI.Views"
              xmlns:auxiliary="clr-namespace:Chess3D.Runtime.Menu.UI.Auxiliary"
              xmlns:local="clr-namespace:Chess3D.Runtime.Core.UI"
              xmlns:userControls="clr-namespace:Ui.InGame.UserControls"
@@ -15,7 +15,7 @@
              Background="Transparent">
 
     <noesis:Xaml.Dependencies>
-        <noesis:Dependency Source="Views/InGamePage.xaml" />
+        <noesis:Dependency Source="Views/CoreHomeView.xaml" />
         <noesis:Dependency Source="Views/InGameSettingsPage.xaml" />
     </noesis:Xaml.Dependencies>
 
@@ -89,7 +89,7 @@
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch">
                     <!-- Changeable Page -->
-                    <pages:InGamePage />
+                    <pages:CoreHomeView />
                 </ContentControl>
             </Border>
 

@@ -2,7 +2,6 @@
 #define NOESIS
 using Noesis;
 using UnityEngine.Scripting;
-using Chess3D.Runtime.Core;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using GUI = Noesis.GUI;
 using EventArgs = Noesis.EventArgs;
@@ -19,14 +18,14 @@ using EventArgs = System.EventArgs;
 
 using Chess3D.Runtime.Menu.UI.Auxiliary;
 
-namespace Ui.InGame.Pages
+namespace Chess3D.Runtime.Core.UI.Views
 {
 #if NOESIS
     [Preserve]
 #endif
-    public partial class InGameSettingsPage : UserControl
+    public partial class CoreSettingsPage : UserControl
     {
-        public InGameSettingsPage()
+        public CoreSettingsPage()
         {
             Initialized += OnInitialized;
             Loaded += OnLoaded;
@@ -61,7 +60,7 @@ namespace Ui.InGame.Pages
 
         public void Back_Click(object sender = null, RoutedEventArgs args = null)
         {
-            GameMenuBase.Instance.ChangePage<InGamePage>();
+            GameMenuBase.Instance.ChangePage<CoreHomeView>();
         }
 
 #if NOESIS

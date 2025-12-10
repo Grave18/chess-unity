@@ -1,12 +1,12 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
 using Noesis;
-using Chess3D.Runtime.Core;
 using GUI = Noesis.GUI;
 using Chess3D.Runtime.Utilities;
 using UnityEngine.Scripting;
 using Chess3D.Runtime.Core.UI.ViewModels;
 using Chess3D.Runtime.Menu.UI.Auxiliary;
+using Chess3D.Runtime.Core.UI.Views;
 
 #else
 using System;
@@ -17,17 +17,16 @@ using System.Windows.Data;
 using System.Windows.Input;
 #endif
 
-
-namespace Ui.InGame.Pages
+namespace Chess3D.Runtime.Core.UI.Views
 {
 #if NOESIS
     [Preserve]
 #endif
-    public partial class InGamePage : UserControl
+    public partial class CoreHomeView : UserControl
     {
         private CheckBox _saveCheckBox;
 
-        public InGamePage()
+        public CoreHomeView()
         {
             Initialized += OnInitialized;
             InitializeComponent();
@@ -36,14 +35,14 @@ namespace Ui.InGame.Pages
         private void OnInitialized(object sender, EventArgs args)
         {
 #if NOESIS
-            DataContext = ServiceLocator.Resolve<InGamePageViewModel>();
+            DataContext = ServiceLocator.Resolve<CoreHomeViewModel>();
             ResumeButton.DataContext = ServiceLocator.Resolve<CoreMainViewModel>();
 #endif
         }
 
         public void Settings_Click(object sender, RoutedEventArgs args)
         {
-            GameMenuBase.Instance.ChangePage<InGameSettingsPage>();
+            GameMenuBase.Instance.ChangePage<CoreSettingsPage>();
         }
 
 #if NOESIS

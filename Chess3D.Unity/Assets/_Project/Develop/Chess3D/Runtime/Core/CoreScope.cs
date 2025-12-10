@@ -22,10 +22,11 @@ using Chess3D.Runtime.Core.UI.ClockUi;
 using Chess3D.Runtime.Core.UI.DebugUi;
 using Chess3D.Runtime.Core.UI.Promotion;
 using Chess3D.Runtime.Core.UI.ViewModels;
+using Chess3D.Runtime.Core.UI.Views;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Online;
-using Ui.InGame.Pages;
-using InGamePageViewModel = Chess3D.Runtime.Core.UI.ViewModels.InGamePageViewModel;
+using Chess3D.Runtime.Core.UI.Views;
+using UnityEngine.Serialization;
 using PauseState = Chess3D.Runtime.Core.Logic.GameStates.PauseState;
 using PopupViewModel = Chess3D.Runtime.Core.UI.ViewModels.PopupViewModel;
 
@@ -54,8 +55,9 @@ namespace Chess3D.Runtime.Core
         [SerializeField] private AlgebraicNotationPanel algebraicNotationPanel;
         [SerializeField] private UndoRedoPausePanel undoRedoPausePanel;
 
+        [FormerlySerializedAs("inGamePageViewModel")]
         [Header("VMs")]
-        [SerializeField] private InGamePageViewModel inGamePageViewModel; // Because NetworkBehaviour
+        [SerializeField] private CoreHomeViewModel coreHomeViewModel; // Because NetworkBehaviour
 
         [Header("Game states")]
         [SerializeField] private WarmUpState warmupState;
@@ -130,11 +132,11 @@ namespace Chess3D.Runtime.Core
             builder.RegisterComponentInNewPrefab(whiteClockPrefab, Lifetime.Scoped).Keyed(PieceColor.White);
             builder.RegisterComponentInNewPrefab(blackClockPrefab, Lifetime.Scoped).Keyed(PieceColor.Black);
             // Views
-            builder.Register<InGamePage>(Lifetime.Scoped);
-            builder.Register<InGameSettingsPage>(Lifetime.Scoped);
+            builder.Register<CoreHomeView>(Lifetime.Scoped);
+            builder.Register<CoreSettingsPage>(Lifetime.Scoped);
             // ViewModels
             builder.Register<CoreMainViewModel>(Lifetime.Scoped);
-            builder.RegisterComponent(inGamePageViewModel); // Network behaviour
+            builder.RegisterComponent(coreHomeViewModel); // Network behaviour
             builder.Register<PopupViewModel>(Lifetime.Scoped);
             builder.Register<GraphicsSettingsViewModel>(Lifetime.Scoped);
             builder.Register<AudioSettingsViewModel>(Lifetime.Scoped);
