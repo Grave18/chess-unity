@@ -1,4 +1,4 @@
-﻿using Chess3D.Runtime.Core.Ai;
+﻿using Chess3D.Runtime.Core.AI;
 
 namespace Chess3D.Runtime.Bootstrap.Settings
 {

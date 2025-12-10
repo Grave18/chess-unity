@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.Scripting;
 using Debug = UnityEngine.Debug;
 
-namespace Chess3D.Runtime.Core.Ai
+namespace Chess3D.Runtime.Core.AI
 {
     [Preserve]
     public sealed class Stockfish : IDisposable

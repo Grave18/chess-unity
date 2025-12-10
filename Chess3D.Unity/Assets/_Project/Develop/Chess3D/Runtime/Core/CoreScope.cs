@@ -1,6 +1,6 @@
 ﻿using System;
 using Chess3D.Runtime.Bootstrap.Settings;
-using Chess3D.Runtime.Core.Ai;
+using Chess3D.Runtime.Core.AI;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;

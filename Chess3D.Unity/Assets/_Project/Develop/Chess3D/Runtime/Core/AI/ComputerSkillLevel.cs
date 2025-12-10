@@ -1,4 +1,4 @@
-﻿namespace Chess3D.Runtime.Core.Ai
+﻿namespace Chess3D.Runtime.Core.AI
 {
     public enum ComputerSkillLevel
     {

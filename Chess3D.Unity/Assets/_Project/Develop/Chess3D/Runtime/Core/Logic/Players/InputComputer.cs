@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Chess3D.Runtime.Bootstrap.Settings;
-using Chess3D.Runtime.Core.Ai;
+using Chess3D.Runtime.Core.AI;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Scripting;

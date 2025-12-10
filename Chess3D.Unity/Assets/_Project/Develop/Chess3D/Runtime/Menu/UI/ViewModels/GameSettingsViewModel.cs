@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using Chess3D.Runtime.Bootstrap.Settings;
-using Chess3D.Runtime.Core.Ai;
+using Chess3D.Runtime.Core.AI;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using MvvmTool;
