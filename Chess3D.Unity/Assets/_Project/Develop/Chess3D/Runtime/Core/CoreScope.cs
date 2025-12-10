@@ -24,13 +24,11 @@ using Chess3D.Runtime.Core.UI.UnityGUI.DebugUi;
 using Chess3D.Runtime.Core.UI.UnityGUI.Promotion;
 using Chess3D.Runtime.Core.UI.ViewModels;
 using Chess3D.Runtime.Core.UI.Views;
+using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Online;
-using Chess3D.Runtime.Core.UI.Views;
 using Chess3D.Runtime.Utilities;
-using UnityEngine.Serialization;
 using PauseState = Chess3D.Runtime.Core.Logic.GameStates.PauseState;
-using PopupViewModel = Chess3D.Runtime.Core.UI.ViewModels.PopupViewModel;
 
 namespace Chess3D.Runtime.Core
 {
@@ -38,8 +36,8 @@ namespace Chess3D.Runtime.Core
     {
         [Header("Game")]
         [SerializeField] private Board board;
-        [SerializeField] private ClockOffline clockOffline; // TODO: Make entry point, Fabric. used now
-        [SerializeField] private GameStateMachineOnline gameStateMachineOnline; // TODO: Fabric
+        [SerializeField] private ClockOffline clockOffline; // TODO: Make entry point, Factory. used now
+        [SerializeField] private GameStateMachineOnline gameStateMachineOnline; // TODO: Factory
 
         [SerializeField] private EffectsPlayer effectsPlayer;
 
@@ -57,8 +55,7 @@ namespace Chess3D.Runtime.Core
         [SerializeField] private AlgebraicNotationPanel algebraicNotationPanel;
         [SerializeField] private UndoRedoPausePanel undoRedoPausePanel;
 
-        [FormerlySerializedAs("inGamePageViewModel")]
-        [Header("VMs")]
+        [Header("ViewModels")]
         [SerializeField] private CoreHomeViewModel coreHomeViewModel; // Because NetworkBehaviour
 
         [Header("Game states")]
@@ -118,10 +115,11 @@ namespace Chess3D.Runtime.Core
             // Sound
             builder.Register<StartEndSoundPlayer>(Lifetime.Scoped);
 
-            // Ui
+            // UI
             builder.Register<CoreMainViewLoader>(Lifetime.Scoped);
             builder.RegisterComponent(mainViewXaml);
             builder.RegisterComponent(noesisView);
+            builder.Register<ViewNavigator>(Lifetime.Scoped);
             builder.Register<MenuStateMachine>(Lifetime.Scoped);
             builder.RegisterComponent(gameCanvas);
             builder.RegisterComponent(nameCanvas);
@@ -129,7 +127,7 @@ namespace Chess3D.Runtime.Core
             builder.RegisterComponent(notificationPanel);
             builder.RegisterComponent(algebraicNotationPanel);
             builder.RegisterComponent(undoRedoPausePanel);
-            // Clock Ui
+            // Clock UI
             builder.RegisterFactory(ClockPanelFactory, Lifetime.Scoped);
             builder.RegisterComponentInNewPrefab(whiteClockPrefab, Lifetime.Scoped).Keyed(PieceColor.White);
             builder.RegisterComponentInNewPrefab(blackClockPrefab, Lifetime.Scoped).Keyed(PieceColor.Black);

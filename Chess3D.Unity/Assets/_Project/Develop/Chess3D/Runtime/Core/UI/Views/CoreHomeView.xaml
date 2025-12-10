@@ -41,7 +41,7 @@
                     IsEnabled="{Binding IsResignButtonEnabled}"
                     Command="{Binding OpenResignPopupCommand}" />
             <Button Content="Settings"
-                    Click="Settings_Click" />
+                    Command="{Binding SettingsCommand}" />
         </StackPanel>
 
         <!-- Exit Button -->

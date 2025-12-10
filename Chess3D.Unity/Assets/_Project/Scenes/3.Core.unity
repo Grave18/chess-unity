@@ -500,7 +500,7 @@ GameObject:
   - component: {fileID: 117839664}
   - component: {fileID: 117839665}
   m_Layer: 0
-  m_Name: InGamePageViewModel(network)
+  m_Name: CoreHomeViewModel(network)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1941,7 +1941,7 @@ MonoBehaviour:
   notificationPanel: {fileID: 948061434}
   algebraicNotationPanel: {fileID: 1731108921}
   undoRedoPausePanel: {fileID: 1351301124}
-  inGamePageViewModel: {fileID: 117839665}
+  coreHomeViewModel: {fileID: 117839665}
   warmupState: {fileID: 1084554415}
   idleState: {fileID: 784571184}
   moveState: {fileID: 1775303475}
