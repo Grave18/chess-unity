@@ -8,7 +8,13 @@ namespace Chess3D.Runtime.Utilities
 {
     public static class XamlUtils
     {
-        public static string GetXamlPathFromFilePath([CallerFilePath]string filePath = "")
+        public static void Load(UserControl @this, [CallerFilePath] string filePath = "")
+        {
+            // ReSharper disable once ExplicitCallerInfoArgument
+            GUI.LoadComponent(@this, GetXamlPathFromFilePath(filePath));
+        }
+
+        public static string GetXamlPathFromFilePath([CallerFilePath] string filePath = "")
         {
             // Remove .cs
             string xamlPath = filePath.Replace(".cs", "");
@@ -28,11 +34,6 @@ namespace Chess3D.Runtime.Utilities
             xamlPath = xamlPath.Substring(assetsIndex);
 
             return xamlPath;
-        }
-
-        public static void Load(UserControl @this)
-        {
-            GUI.LoadComponent(@this, GetXamlPathFromFilePath());
         }
     }
 }
