@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Chess3D.Runtime.Menu.UI.BoardInMainMenu
+namespace Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu
 {
     public class Rotator : MonoBehaviour
     {

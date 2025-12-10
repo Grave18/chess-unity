@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Chess3D.Runtime.Core.UI
+namespace Chess3D.Runtime.Core.UI.UnityGUI
 {
     public class GameCanvas : MonoBehaviour
     {

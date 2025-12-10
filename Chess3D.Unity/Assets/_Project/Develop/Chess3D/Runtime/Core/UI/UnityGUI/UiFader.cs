@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Chess3D.Runtime.Core.UI
+namespace Chess3D.Runtime.Core.UI.UnityGUI
 {
     public class UiFader : MonoBehaviour
     {

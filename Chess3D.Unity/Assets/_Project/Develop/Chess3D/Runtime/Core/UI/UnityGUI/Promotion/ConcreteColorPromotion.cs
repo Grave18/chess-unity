@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Chess3D.Runtime.Core.UI.Promotion
+namespace Chess3D.Runtime.Core.UI.UnityGUI.Promotion
 {
     public class ConcreteColorPromotion : MonoBehaviour
     {

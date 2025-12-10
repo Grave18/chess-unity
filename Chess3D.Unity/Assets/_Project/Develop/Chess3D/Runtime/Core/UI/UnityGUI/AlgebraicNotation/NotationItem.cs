@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 
-namespace Chess3D.Runtime.Core.UI.AlgebraicNotation
+namespace Chess3D.Runtime.Core.UI.UnityGUI.AlgebraicNotation
 {
     public class NotationItem : MonoBehaviour
     {

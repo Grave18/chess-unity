@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Chess3D.Runtime.Core.UI
+namespace Chess3D.Runtime.Core.UI.UnityGUI
 {
     public class CurrentPlayerPointerPanel : MonoBehaviour
     {

@@ -3,7 +3,7 @@ using Chess3D.Runtime.Core.Sound;
 using TMPro;
 using UnityEngine;
 
-namespace Chess3D.Runtime.Core.UI.ClockUi
+namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUi
 {
     public class ClockPanel : MonoBehaviour
     {

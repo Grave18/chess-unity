@@ -3,7 +3,7 @@ using Chess3D.Runtime.Core.MainCamera;
 using UnityEngine;
 using VContainer;
 
-namespace Chess3D.Runtime.Core.UI.ClockUi
+namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUi
 {
     public class ClockPanelCanvas : MonoBehaviour
     {

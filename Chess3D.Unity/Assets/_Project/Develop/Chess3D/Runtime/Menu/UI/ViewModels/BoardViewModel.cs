@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using Chess3D.Runtime.Bootstrap.Settings;
-using Chess3D.Runtime.Menu.UI.BoardInMainMenu;
+using Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using MvvmTool;

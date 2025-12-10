@@ -6,7 +6,7 @@ using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Utilities.Common.Mathematics;
 using UnityEngine;
 
-namespace Chess3D.Runtime.Core.UI.Promotion
+namespace Chess3D.Runtime.Core.UI.UnityGUI.Promotion
 {
     public class PromotionPanel : MonoBehaviour
     {

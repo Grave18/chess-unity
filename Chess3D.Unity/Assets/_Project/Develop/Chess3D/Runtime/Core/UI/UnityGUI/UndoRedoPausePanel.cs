@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 
-namespace Chess3D.Runtime.Core.UI
+namespace Chess3D.Runtime.Core.UI.UnityGUI
 {
     public class UndoRedoPausePanel : MonoBehaviour, ILoadUnit, IDisposable
     {

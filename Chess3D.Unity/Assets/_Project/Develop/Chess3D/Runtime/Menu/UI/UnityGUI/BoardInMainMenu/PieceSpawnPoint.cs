@@ -2,7 +2,7 @@
 using Chess3D.Runtime.Core.Logic;
 using UnityEngine;
 
-namespace Chess3D.Runtime.Menu.UI.BoardInMainMenu
+namespace Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu
 {
     public class PieceSpawnPoint : MonoBehaviour
     {

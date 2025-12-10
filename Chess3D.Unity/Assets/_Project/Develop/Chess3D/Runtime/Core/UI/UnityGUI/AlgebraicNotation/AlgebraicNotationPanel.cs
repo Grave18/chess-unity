@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 
-namespace Chess3D.Runtime.Core.UI.AlgebraicNotation
+namespace Chess3D.Runtime.Core.UI.UnityGUI.AlgebraicNotation
 {
     public class AlgebraicNotationPanel : MonoBehaviour, IDisposable, ILoadUnit
     {

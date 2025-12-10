@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using VContainer;
 
-namespace Chess3D.Runtime.Core.UI.BoardUi
+namespace Chess3D.Runtime.Core.UI.UnityGUI.BoardUi
 {
     public class NameCanvas : MonoBehaviour, ILoadUnit
     {

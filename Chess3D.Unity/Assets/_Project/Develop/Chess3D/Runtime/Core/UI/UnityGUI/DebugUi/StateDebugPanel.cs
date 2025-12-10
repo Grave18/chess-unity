@@ -7,7 +7,7 @@ using TMPro;
 using UnityEngine;
 using VContainer;
 
-namespace Chess3D.Runtime.Core.UI.DebugUi
+namespace Chess3D.Runtime.Core.UI.UnityGUI.DebugUi
 {
     public class StateDebugPanel : MonoBehaviour
     {

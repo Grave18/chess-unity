@@ -10,7 +10,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using VContainer;
 
-namespace Chess3D.Runtime.Menu.UI.BoardInMainMenu
+namespace Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu
 {
     public class VisualBoardSpawner : MonoBehaviour, ILoadUnit
     {

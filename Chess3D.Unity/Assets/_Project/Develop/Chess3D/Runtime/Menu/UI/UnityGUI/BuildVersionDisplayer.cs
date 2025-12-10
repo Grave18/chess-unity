@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Chess3D.Runtime.Menu
+namespace Chess3D.Runtime.Menu.UI.UnityGUI
 {
     public class BuildVersionDisplayer : MonoBehaviour
     {
