@@ -1,6 +1,5 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
-using Chess3D.Runtime.Core;
 using Chess3D.Runtime.Utilities;
 using Noesis;
 using GUI = Noesis.GUI;

@@ -6,7 +6,6 @@ using Chess3D.Runtime.Utilities;
 using UnityEngine.Scripting;
 using Chess3D.Runtime.Core.UI.ViewModels;
 using Chess3D.Runtime.Menu.UI.Auxiliary;
-using Chess3D.Runtime.Core.UI.Views;
 
 #else
 using System;
