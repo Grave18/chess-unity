@@ -88,10 +88,8 @@
 
                 <ContentControl Name="ContentControl"
                                 HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch">
-                    <!-- Changeable Page -->
-                    <pages:CoreHomeView />
-                </ContentControl>
+                                VerticalAlignment="Stretch"
+                                Content="{Binding CurrentViewModel, Converter={StaticResource ViewLocatorConverter}}" />
             </Border>
 
             <Border Grid.Column="1"

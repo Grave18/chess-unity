@@ -15,6 +15,8 @@ using Chess3D.Runtime.Core.UI.UnityGUI.AlgebraicNotation;
 using Chess3D.Runtime.Core.UI.UnityGUI.BoardUi;
 using Chess3D.Runtime.Core.UI.UnityGUI.ClockUi;
 using Chess3D.Runtime.Core.UI.UnityGUI.DebugUi;
+using Chess3D.Runtime.Core.UI.ViewModels;
+using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
@@ -45,12 +47,18 @@ namespace Chess3D.Runtime.Core
         private readonly AlgebraicNotationPanel _algebraicNotationPanel;
         private readonly UndoRedoPausePanel _undoRedoPausePanel;
         private readonly CoreMainViewLoader _coreMainViewLoader;
+        private readonly CoreMainViewModel _coreMainViewModel;
+        private readonly CoreHomeViewModel _homeViewModel;
+        private readonly ViewNavigator _viewNavigator;
 
         public CoreFlow(IObjectResolver resolver, LoadingService loadingService, SceneManager sceneManager,
             FenFromString fenFromString, IGameStateMachine gameStateMachineOffline, MenuStateMachine menuStateMachine,
             Assets assets, Board board, Game game, UciBuffer uciBuffer, Competitors competitors, IClock clock,
             CameraController cameraController, NameCanvas nameCanvas,
-            StateDebugPanel stateDebugPanel, BufferDebugPanel bufferDebugPanel, GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel, AlgebraicNotationPanel algebraicNotationPanel, UndoRedoPausePanel undoRedoPausePanel, CoreMainViewLoader coreMainViewLoader)
+            StateDebugPanel stateDebugPanel, BufferDebugPanel bufferDebugPanel,
+            GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel,
+            AlgebraicNotationPanel algebraicNotationPanel, UndoRedoPausePanel undoRedoPausePanel,
+            CoreMainViewLoader coreMainViewLoader, CoreMainViewModel coreMainViewModel, CoreHomeViewModel homeViewModel, ViewNavigator viewNavigator)
         {
             _resolver = resolver;
             _loadingService = loadingService;
@@ -71,6 +79,9 @@ namespace Chess3D.Runtime.Core
             _algebraicNotationPanel = algebraicNotationPanel;
             _undoRedoPausePanel = undoRedoPausePanel;
             _coreMainViewLoader = coreMainViewLoader;
+            _coreMainViewModel = coreMainViewModel;
+            _homeViewModel = homeViewModel;
+            _viewNavigator = viewNavigator;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = new())
@@ -88,6 +99,8 @@ namespace Chess3D.Runtime.Core
             await _loadingService.BeginLoading(_cameraController);
 
             await _loadingService.BeginLoading(_coreMainViewLoader);
+            await _loadingService.BeginLoading(_viewNavigator);
+            await _loadingService.BeginLoading(_coreMainViewModel, _homeViewModel);
             await _loadingService.BeginLoading(_nameCanvas);
             await _loadingService.BeginLoading(_menuStateMachine);
             await _loadingService.BeginLoading(_graphicsSettingsViewModel);

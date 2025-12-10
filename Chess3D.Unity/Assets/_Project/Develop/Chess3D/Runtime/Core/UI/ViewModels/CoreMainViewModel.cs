@@ -1,5 +1,8 @@
 ﻿using System;
 using Chess3D.Runtime.Core.Logic.MenuStates;
+using Chess3D.Runtime.Menu.UI.ViewModels;
+using Chess3D.Runtime.Utilities;
+using Cysharp.Threading.Tasks;
 using MvvmTool;
 using UnityEngine.Scripting;
 
@@ -7,23 +10,26 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
 {
     [Preserve]
     [INotifyPropertyChanged]
-    public partial class CoreMainViewModel
+    public partial class CoreMainViewModel : ILoadUnit<IViewModel>
     {
-        private readonly PopupViewModel _popupViewModel;
+        [ObservableProperty] private IViewModel _currentViewModel;
+        [ObservableProperty] private bool _isOpened;
+        public event Action<bool> OnOpenedChanged;
+
         private readonly MenuStateMachine _menuStateMachine;
 
-        [ObservableProperty] private bool _isOpened;
 
-        public CoreMainViewModel(PopupViewModel popupViewModel, MenuStateMachine menuStateMachine)
+        public CoreMainViewModel(MenuStateMachine menuStateMachine)
         {
-            _popupViewModel = popupViewModel;
             _menuStateMachine = menuStateMachine;
         }
 
-        public event Action<bool> OnOpenedChanged;
+        public UniTask Load(IViewModel viewModel)
+        {
+            CurrentViewModel = viewModel;
 
-        // For Game Popup needs
-        public PopupViewModel Popup => _popupViewModel;
+            return UniTask.CompletedTask;
+        }
 
         [RelayCommand]
         private void OpenClose()

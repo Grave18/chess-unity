@@ -9,7 +9,7 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.UI.ViewModels
 {
-    public partial class CoreHomeViewModel : NetworkBehaviour
+    public partial class CoreHomeViewModel : NetworkBehaviour, IViewModel
     {
         public bool IsRematchRequested { get; set; }
         public bool IsDrawRequested { get; set; }
