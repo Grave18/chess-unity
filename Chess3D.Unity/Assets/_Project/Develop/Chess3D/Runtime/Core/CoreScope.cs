@@ -21,9 +21,10 @@ using Chess3D.Runtime.Core.UI.BoardUi;
 using Chess3D.Runtime.Core.UI.ClockUi;
 using Chess3D.Runtime.Core.UI.DebugUi;
 using Chess3D.Runtime.Core.UI.Promotion;
+using Chess3D.Runtime.Core.UI.ViewModels;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Online;
-using InGameMenuViewModel = Chess3D.Runtime.Core.UI.ViewModels.InGameMenuViewModel;
+using Ui.InGame.Pages;
 using InGamePageViewModel = Chess3D.Runtime.Core.UI.ViewModels.InGamePageViewModel;
 using PauseState = Chess3D.Runtime.Core.Logic.GameStates.PauseState;
 using PopupViewModel = Chess3D.Runtime.Core.UI.ViewModels.PopupViewModel;
@@ -40,6 +41,8 @@ namespace Chess3D.Runtime.Core
         [SerializeField] private EffectsPlayer effectsPlayer;
 
         [Header("Ui")]
+        [SerializeField] public NoesisXaml mainViewXaml;
+        [SerializeField] private NoesisView noesisView;
         [SerializeField] private GameCanvas gameCanvas;
         [SerializeField] private NameCanvas nameCanvas;
         [SerializeField] private StateDebugPanel stateDebugPanelPrefab;
@@ -112,6 +115,9 @@ namespace Chess3D.Runtime.Core
             builder.Register<StartEndSoundPlayer>(Lifetime.Scoped);
 
             // Ui
+            builder.Register<CoreMainViewLoader>(Lifetime.Scoped);
+            builder.RegisterComponent(mainViewXaml);
+            builder.RegisterComponent(noesisView);
             builder.Register<MenuStateMachine>(Lifetime.Scoped);
             builder.RegisterComponent(gameCanvas);
             builder.RegisterComponent(nameCanvas);
@@ -123,8 +129,11 @@ namespace Chess3D.Runtime.Core
             builder.RegisterFactory(ClockPanelFactory, Lifetime.Scoped);
             builder.RegisterComponentInNewPrefab(whiteClockPrefab, Lifetime.Scoped).Keyed(PieceColor.White);
             builder.RegisterComponentInNewPrefab(blackClockPrefab, Lifetime.Scoped).Keyed(PieceColor.Black);
-            // VMs
-            builder.Register<InGameMenuViewModel>(Lifetime.Scoped);
+            // Views
+            builder.Register<InGamePage>(Lifetime.Scoped);
+            builder.Register<InGameSettingsPage>(Lifetime.Scoped);
+            // ViewModels
+            builder.Register<CoreMainViewModel>(Lifetime.Scoped);
             builder.RegisterComponent(inGamePageViewModel); // Network behaviour
             builder.Register<PopupViewModel>(Lifetime.Scoped);
             builder.Register<GraphicsSettingsViewModel>(Lifetime.Scoped);
@@ -134,8 +143,10 @@ namespace Chess3D.Runtime.Core
             // Online
             builder.RegisterComponentOnNewGameObject<ConnectionTerminator>(Lifetime.Scoped);
 
+            // Service Locator
             builder.RegisterBuildCallback(ServiceLocator.Initialize);
 
+            // Entry points
             builder.RegisterEntryPoint<CoreFlow>();
 
 #if !GRAVEBOX_PROD

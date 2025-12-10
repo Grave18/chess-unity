@@ -1,8 +1,8 @@
 ﻿using Chess3D.Runtime.Core.UI;
+using Chess3D.Runtime.Core.UI.ViewModels;
 using Cysharp.Threading.Tasks;
 using Chess3D.Runtime.Utilities;
 using VContainer;
-using InGameMenuViewModel = Chess3D.Runtime.Core.UI.ViewModels.InGameMenuViewModel;
 
 namespace Chess3D.Runtime.Core.Logic.MenuStates
 {
@@ -40,7 +40,7 @@ namespace Chess3D.Runtime.Core.Logic.MenuStates
             }
             else if (typeof(T) == typeof(PauseState))
             {
-                var inGameMenuViewModel = _resolver.Resolve<InGameMenuViewModel>();
+                var inGameMenuViewModel = _resolver.Resolve<CoreMainViewModel>();
                 var gameCanvas = _resolver.Resolve<GameCanvas>();
                 _currentState = new PauseState(this, inGameMenuViewModel, gameCanvas);
             }

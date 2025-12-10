@@ -1,19 +1,29 @@
-<auxiliary:GameMenuBase x:Class="Ui.InGame.InGameMenu"
+<UserControl x:Class="Chess3D.Runtime.Core.UI.CoreMainView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions"
              xmlns:pages="clr-namespace:Ui.InGame.Pages"
              xmlns:auxiliary="clr-namespace:Chess3D.Runtime.Menu.UI.Auxiliary"
-             xmlns:local="clr-namespace:Ui.InGame"
+             xmlns:local="clr-namespace:Chess3D.Runtime.Core.UI"
              xmlns:userControls="clr-namespace:Ui.InGame.UserControls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignWidth="1920" d:DesignHeight="1080"
+             Focusable="True"
              Style="{StaticResource MainMenuStyle}"
              Background="Transparent">
 
-    <auxiliary:GameMenuBase.Resources>
+    <noesis:Xaml.Dependencies>
+        <noesis:Dependency Source="Views/InGamePage.xaml" />
+        <noesis:Dependency Source="Views/InGameSettingsPage.xaml" />
+    </noesis:Xaml.Dependencies>
+
+    <UserControl.InputBindings>
+        <KeyBinding Key="Escape" Command="{Binding OpenCloseCommand}" />
+    </UserControl.InputBindings>
+
+    <UserControl.Resources>
 
         <!-- Animated Sliding Panel Border Style -->
         <Style x:Key="HorLeftAnimatedBorderStyle"
@@ -59,12 +69,7 @@
             </Style.Triggers>
         </Style>
 
-    </auxiliary:GameMenuBase.Resources>
-
-    <noesis:Xaml.Dependencies>
-        <noesis:Dependency Source="../InGame/Pages/InGamePage.xaml" />
-        <noesis:Dependency Source="../InGame/Pages/InGameSettingsPage.xaml" />
-    </noesis:Xaml.Dependencies>
+    </UserControl.Resources>
 
     <Viewbox Stretch="Uniform">
         <Grid Width="1920" Height="1080">
@@ -109,4 +114,4 @@
         </Grid>
     </Viewbox>
 
-</auxiliary:GameMenuBase>
+</UserControl>

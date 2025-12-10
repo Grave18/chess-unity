@@ -43,12 +43,13 @@ namespace Chess3D.Runtime.Core
         private readonly AudioSettingsViewModel _audioSettingsViewModel;
         private readonly AlgebraicNotationPanel _algebraicNotationPanel;
         private readonly UndoRedoPausePanel _undoRedoPausePanel;
+        private readonly CoreMainViewLoader _coreMainViewLoader;
 
         public CoreFlow(IObjectResolver resolver, LoadingService loadingService, SceneManager sceneManager,
             FenFromString fenFromString, IGameStateMachine gameStateMachineOffline, MenuStateMachine menuStateMachine,
             Assets assets, Board board, Game game, UciBuffer uciBuffer, Competitors competitors, IClock clock,
             CameraController cameraController, NameCanvas nameCanvas,
-            StateDebugPanel stateDebugPanel, BufferDebugPanel bufferDebugPanel, GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel, AlgebraicNotationPanel algebraicNotationPanel, UndoRedoPausePanel undoRedoPausePanel)
+            StateDebugPanel stateDebugPanel, BufferDebugPanel bufferDebugPanel, GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel, AlgebraicNotationPanel algebraicNotationPanel, UndoRedoPausePanel undoRedoPausePanel, CoreMainViewLoader coreMainViewLoader)
         {
             _resolver = resolver;
             _loadingService = loadingService;
@@ -68,6 +69,7 @@ namespace Chess3D.Runtime.Core
             _audioSettingsViewModel = audioSettingsViewModel;
             _algebraicNotationPanel = algebraicNotationPanel;
             _undoRedoPausePanel = undoRedoPausePanel;
+            _coreMainViewLoader = coreMainViewLoader;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = new())
@@ -84,6 +86,7 @@ namespace Chess3D.Runtime.Core
             await _loadingService.BeginLoading(_competitors);
             await _loadingService.BeginLoading(_cameraController);
 
+            await _loadingService.BeginLoading(_coreMainViewLoader);
             await _loadingService.BeginLoading(_nameCanvas);
             await _loadingService.BeginLoading(_menuStateMachine);
             await _loadingService.BeginLoading(_graphicsSettingsViewModel);

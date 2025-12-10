@@ -1,29 +1,29 @@
 ﻿using Chess3D.Runtime.Core.InputManagement;
 using Chess3D.Runtime.Core.UI;
-using InGameMenuViewModel = Chess3D.Runtime.Core.UI.ViewModels.InGameMenuViewModel;
+using Chess3D.Runtime.Core.UI.ViewModels;
 
 namespace Chess3D.Runtime.Core.Logic.MenuStates
 {
     public class PauseState : MenuState
     {
-        private readonly InGameMenuViewModel _inGameMenuViewModel;
+        private readonly CoreMainViewModel coreMainViewModel;
         private readonly GameCanvas _gameCanvas;
 
-        public PauseState(MenuStateMachine stateMachine, InGameMenuViewModel inGameMenuViewModel, GameCanvas gameCanvas) : base(stateMachine)
+        public PauseState(MenuStateMachine stateMachine, CoreMainViewModel coreMainViewModel, GameCanvas gameCanvas) : base(stateMachine)
         {
             _gameCanvas = gameCanvas;
-            _inGameMenuViewModel = inGameMenuViewModel;
+            this.coreMainViewModel = coreMainViewModel;
         }
 
         public override void OnEnter()
         {
-            _inGameMenuViewModel.IsOpened = true;
+            coreMainViewModel.IsOpened = true;
             EnableProtection(true);
         }
 
         public override void OnExit()
         {
-            _inGameMenuViewModel.IsOpened = false;
+            coreMainViewModel.IsOpened = false;
             EnableProtection(false);
         }
 

@@ -1925,6 +1925,8 @@ MonoBehaviour:
   clockOffline: {fileID: 428172018}
   gameStateMachineOnline: {fileID: 231309765}
   effectsPlayer: {fileID: 1073805729}
+  mainViewXaml: {fileID: 11400000, guid: 1ed4d9beda375524c9a6cf7aeff39640, type: 2}
+  noesisView: {fileID: 1670835133}
   gameCanvas: {fileID: 1783972078}
   nameCanvas: {fileID: 1974612115}
   stateDebugPanelPrefab: {fileID: 5876438799246262298, guid: 39ec6e9c33a5bc8488053291cc83c895,

@@ -7,14 +7,14 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
 {
     [Preserve]
     [INotifyPropertyChanged]
-    public partial class InGameMenuViewModel
+    public partial class CoreMainViewModel
     {
         private readonly PopupViewModel _popupViewModel;
         private readonly MenuStateMachine _menuStateMachine;
 
         [ObservableProperty] private bool _isOpened;
 
-        public InGameMenuViewModel(PopupViewModel popupViewModel, MenuStateMachine menuStateMachine)
+        public CoreMainViewModel(PopupViewModel popupViewModel, MenuStateMachine menuStateMachine)
         {
             _popupViewModel = popupViewModel;
             _menuStateMachine = menuStateMachine;

@@ -37,7 +37,7 @@ namespace Ui.InGame.Pages
         {
 #if NOESIS
             DataContext = ServiceLocator.Resolve<InGamePageViewModel>();
-            ResumeButton.DataContext = ServiceLocator.Resolve<InGameMenuViewModel>();
+            ResumeButton.DataContext = ServiceLocator.Resolve<CoreMainViewModel>();
 #endif
         }
 

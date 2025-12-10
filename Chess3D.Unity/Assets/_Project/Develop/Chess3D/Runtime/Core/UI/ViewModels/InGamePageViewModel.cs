@@ -11,15 +11,15 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
     {
         private Game _game;
         private PopupViewModel _popupViewModel;
-        private InGameMenuViewModel _inGameMenuViewModel;
+        private CoreMainViewModel coreMainViewModel;
         private EffectsPlayer _effectsPlayer;
 
         [Inject]
-        public void Construct(Game game, PopupViewModel popupViewModel, InGameMenuViewModel inGameMenuViewModel, EffectsPlayer effectsPlayer)
+        public void Construct(Game game, PopupViewModel popupViewModel, CoreMainViewModel coreMainViewModel, EffectsPlayer effectsPlayer)
         {
             _game = game;
             _popupViewModel = popupViewModel;
-            _inGameMenuViewModel = inGameMenuViewModel;
+            this.coreMainViewModel = coreMainViewModel;
             _effectsPlayer = effectsPlayer;
         }
 
@@ -28,15 +28,15 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
 
         private void OnEnable()
         {
-            _inGameMenuViewModel.OnOpenedChanged += OnInGameMenuOpenedChanged;
+            coreMainViewModel.OnOpenedChanged += OnCoreMainOpenedChanged;
         }
 
         private void OnDisable()
         {
-            _inGameMenuViewModel.OnOpenedChanged -= OnInGameMenuOpenedChanged;
+            coreMainViewModel.OnOpenedChanged -= OnCoreMainOpenedChanged;
         }
 
-        private void OnInGameMenuOpenedChanged(bool isOpened)
+        private void OnCoreMainOpenedChanged(bool isOpened)
         {
             OpenRematchPopupCommand.NotifyCanExecuteChanged();
             OpenDrawPopupCommand.NotifyCanExecuteChanged();

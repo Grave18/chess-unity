@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using Noesis;
 using UnityEngine;
+using GUI = Noesis.GUI;
 
 namespace Chess3D.Runtime.Utilities
 {
@@ -26,6 +28,11 @@ namespace Chess3D.Runtime.Utilities
             xamlPath = xamlPath.Substring(assetsIndex);
 
             return xamlPath;
+        }
+
+        public static void Load(UserControl @this)
+        {
+            GUI.LoadComponent(@this, GetXamlPathFromFilePath());
         }
     }
 }
