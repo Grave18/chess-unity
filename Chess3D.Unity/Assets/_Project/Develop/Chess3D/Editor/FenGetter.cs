@@ -1,5 +1,6 @@
 ﻿using Chess3D.Runtime.Core;
 using Chess3D.Runtime.Core.Notation;
+using Chess3D.Runtime.Utilities;
 using Chess3D.Runtime.Utilities.Logging;
 using UnityEditor;
 

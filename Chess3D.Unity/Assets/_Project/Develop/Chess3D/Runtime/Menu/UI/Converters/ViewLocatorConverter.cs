@@ -12,6 +12,7 @@ using System.Windows.Data;
 #endif
 
 using System.Globalization;
+using Chess3D.Runtime.Utilities;
 
 namespace Chess3D.Runtime.Menu.UI.Converters
 {

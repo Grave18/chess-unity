@@ -4,6 +4,7 @@ using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.BoardInMainMenu;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Menu.UI.Views;
+using Chess3D.Runtime.Utilities;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;

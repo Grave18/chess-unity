@@ -3,7 +3,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
 
-namespace Chess3D.Runtime.Core
+namespace Chess3D.Runtime.Utilities
 {
     public static class ServiceLocator
     {
