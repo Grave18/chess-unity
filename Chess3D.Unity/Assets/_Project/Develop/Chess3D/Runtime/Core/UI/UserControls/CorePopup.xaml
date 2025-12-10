@@ -1,4 +1,4 @@
-<UserControl x:Class="Ui.InGame.UserControls.InGamePopup"
+<UserControl x:Class="Chess3D.Runtime.Core.UI.UserControls.CorePopup"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"

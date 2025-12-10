@@ -12,11 +12,11 @@ using System.Windows.Controls;
 using System.Windows.Input;
 #endif
 
-namespace Ui.InGame.UserControls
+namespace Chess3D.Runtime.Core.UI.UserControls
 {
-    public partial class InGamePopup : UserControl
+    public partial class CorePopup : UserControl
     {
-        public InGamePopup()
+        public CorePopup()
         {
             Initialized += OnInitialized;
             InitializeComponent();

@@ -6,7 +6,7 @@
              xmlns:pages="clr-namespace:Chess3D.Runtime.Core.UI.Views"
              xmlns:auxiliary="clr-namespace:Chess3D.Runtime.Menu.UI.Auxiliary"
              xmlns:local="clr-namespace:Chess3D.Runtime.Core.UI"
-             xmlns:userControls="clr-namespace:Ui.InGame.UserControls"
+             xmlns:userControls="clr-namespace:Chess3D.Runtime.Core.UI.UserControls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignWidth="1920" d:DesignHeight="1080"
@@ -16,7 +16,8 @@
 
     <noesis:Xaml.Dependencies>
         <noesis:Dependency Source="Views/CoreHomeView.xaml" />
-        <noesis:Dependency Source="Views/InGameSettingsPage.xaml" />
+        <noesis:Dependency Source="Views/CoreSettingsPage.xaml" />
+        <noesis:Dependency Source="UserControls/CorePopup.xaml" />
     </noesis:Xaml.Dependencies>
 
     <UserControl.InputBindings>
@@ -109,7 +110,7 @@
 
             <!-- Popup -->
             <ContentControl Grid.Column="0">
-                <userControls:InGamePopup />
+                <userControls:CorePopup />
             </ContentControl>
         </Grid>
     </Viewbox>
