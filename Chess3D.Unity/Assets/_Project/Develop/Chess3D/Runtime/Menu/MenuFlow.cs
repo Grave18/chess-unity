@@ -5,12 +5,12 @@ using Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
-using UnityEngine.Scripting;
+using VContainer;
 using VContainer.Unity;
 
 namespace Chess3D.Runtime.Menu
 {
-    [Preserve]
+    [UnityEngine.Scripting.Preserve]
     public class MenuFlow : IAsyncStartable
     {
         private readonly LoadingService _loadingService;

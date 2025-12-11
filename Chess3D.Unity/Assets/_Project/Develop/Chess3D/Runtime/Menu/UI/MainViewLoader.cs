@@ -2,22 +2,21 @@ using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using Noesis;
-using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Menu.UI
 {
-    [Preserve]
+    [UnityEngine.Scripting.Preserve]
     public class MainViewLoader : ILoadUnit
     {
+        private readonly MainViewModel _mainViewModel;
         private readonly NoesisXaml _mainViewXaml;
         private readonly NoesisView _noesisView;
-        private readonly MainViewModel _mainViewModel;
 
-        public MainViewLoader(MainViewModel mainViewModel, NoesisView noesisView, NoesisXaml mainViewXaml)
+        public MainViewLoader(NoesisView noesisView, NoesisXaml mainViewXaml, MainViewModel mainViewModel)
         {
-            _mainViewModel = mainViewModel;
             _noesisView = noesisView;
             _mainViewXaml = mainViewXaml;
+            _mainViewModel = mainViewModel;
         }
 
         public UniTask Load()

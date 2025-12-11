@@ -10,7 +10,7 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
 {
     [Preserve]
     [INotifyPropertyChanged]
-    public partial class CoreMainViewModel : ILoadUnit<IViewModel>
+    public partial class CoreMainViewModel : IMainViewModel, ILoadUnit<IViewModel>
     {
         [ObservableProperty] private IViewModel _currentViewModel;
         [ObservableProperty] private bool _isOpened;

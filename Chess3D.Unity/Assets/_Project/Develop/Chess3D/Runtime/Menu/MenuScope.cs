@@ -1,5 +1,4 @@
-﻿using Chess3D.Runtime.Core;
-using Chess3D.Runtime.Menu.LobbyManagement;
+﻿using Chess3D.Runtime.Menu.LobbyManagement;
 using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu;
 using Chess3D.Runtime.Menu.UI.ViewModels;
@@ -39,7 +38,7 @@ namespace Chess3D.Runtime.Menu
             builder.Register<SettingsView>(Lifetime.Scoped);
             builder.Register<LobbyView>(Lifetime.Scoped);
             // ViewModels
-            builder.Register<MainViewModel>(Lifetime.Scoped);
+            builder.Register<MainViewModel>(Lifetime.Scoped).As<IMainViewModel>().AsSelf();
             builder.Register<HomeViewModel>(Lifetime.Scoped);
             builder.Register<BoardViewModel>(Lifetime.Scoped);
             builder.Register<PlayViewModel>(Lifetime.Scoped);
@@ -55,7 +54,7 @@ namespace Chess3D.Runtime.Menu
 
             // Entry points
             builder.RegisterEntryPoint<LobbyViewModel>(Lifetime.Scoped);
-            builder.RegisterEntryPoint<MenuFlow>();
+            builder.RegisterEntryPoint<MenuFlow>(Lifetime.Scoped);
         }
     }
 }

@@ -136,7 +136,7 @@ namespace Chess3D.Runtime.Core
             builder.Register<CoreHomeView>(Lifetime.Scoped);
             builder.Register<CoreSettingsPage>(Lifetime.Scoped);
             // ViewModels
-            builder.Register<CoreMainViewModel>(Lifetime.Scoped);
+            builder.Register<CoreMainViewModel>(Lifetime.Scoped).As<IMainViewModel>().AsSelf();
             builder.RegisterComponent(coreHomeViewModel); // Network behaviour
             builder.Register<PopupViewModel>(Lifetime.Scoped);
             builder.Register<GraphicsSettingsViewModel>(Lifetime.Scoped);

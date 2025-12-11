@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities;
 using Chess3D.Runtime.Utilities.Logging;
@@ -10,20 +11,19 @@ namespace Chess3D.Runtime.Menu.UI
     [UnityEngine.Scripting.Preserve]
     public class ViewNavigator : ILoadUnit
     {
-        private readonly IObjectResolver _resolver;
-
-        private MainViewModel _mainViewModel;
         private readonly Stack<IViewModel> _viewModels = new();
+        private IMainViewModel _mainViewModel;
+
+        private readonly IObjectResolver _resolver;
 
         public ViewNavigator(IObjectResolver resolver)
         {
             _resolver = resolver;
         }
 
-
         public UniTask Load()
         {
-            _mainViewModel = _resolver.Resolve<MainViewModel>();
+            _mainViewModel = _resolver.Resolve<IMainViewModel>();
             return UniTask.CompletedTask;
         }
 
