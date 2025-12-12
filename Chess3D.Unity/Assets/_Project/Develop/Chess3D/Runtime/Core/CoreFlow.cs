@@ -42,8 +42,10 @@ namespace Chess3D.Runtime.Core
         private readonly IClock _clock;
         private readonly CameraController _cameraController;
         private readonly NameCanvas _nameCanvas;
+        private readonly GameSettingsViewModel _gameSettingsViewModel;
         private readonly GraphicsSettingsViewModel _graphicsSettingsViewModel;
         private readonly AudioSettingsViewModel _audioSettingsViewModel;
+        private readonly FenTextBoxViewModel _fenTextBoxViewModel;
         private readonly AlgebraicNotationPanel _algebraicNotationPanel;
         private readonly UndoRedoPausePanel _undoRedoPausePanel;
         private readonly MainViewLoader _mainViewLoader;
@@ -58,7 +60,7 @@ namespace Chess3D.Runtime.Core
             StateDebugPanel stateDebugPanel, BufferDebugPanel bufferDebugPanel,
             GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel,
             AlgebraicNotationPanel algebraicNotationPanel, UndoRedoPausePanel undoRedoPausePanel,
-            MainViewLoader mainViewLoader, CoreMainViewModel coreMainViewModel, CoreHomeViewModel homeViewModel, ViewNavigator viewNavigator)
+            MainViewLoader mainViewLoader, CoreMainViewModel coreMainViewModel, CoreHomeViewModel homeViewModel, ViewNavigator viewNavigator, GameSettingsViewModel gameSettingsViewModel, FenTextBoxViewModel fenTextBoxViewModel)
         {
             _resolver = resolver;
             _loadingService = loadingService;
@@ -82,6 +84,8 @@ namespace Chess3D.Runtime.Core
             _coreMainViewModel = coreMainViewModel;
             _homeViewModel = homeViewModel;
             _viewNavigator = viewNavigator;
+            _gameSettingsViewModel = gameSettingsViewModel;
+            _fenTextBoxViewModel = fenTextBoxViewModel;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = new())
@@ -103,8 +107,10 @@ namespace Chess3D.Runtime.Core
             await _loadingService.BeginLoading(_coreMainViewModel, _homeViewModel);
             await _loadingService.BeginLoading(_nameCanvas);
             await _loadingService.BeginLoading(_menuStateMachine);
+            await _loadingService.BeginLoading(_gameSettingsViewModel);
             await _loadingService.BeginLoading(_graphicsSettingsViewModel);
             await _loadingService.BeginLoading(_audioSettingsViewModel);
+            await _loadingService.BeginLoading(_fenTextBoxViewModel);
             await _loadingService.BeginLoading(_algebraicNotationPanel);
             await _loadingService.BeginLoading(_undoRedoPausePanel);
             SpawnClockPanel();

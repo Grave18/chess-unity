@@ -16,7 +16,7 @@
 
     <noesis:Xaml.Dependencies>
         <noesis:Dependency Source="Views/CoreHomeView.xaml" />
-        <noesis:Dependency Source="Views/CoreSettingsPage.xaml" />
+        <noesis:Dependency Source="../../Menu/UI/Views/SettingsView.xaml" />
         <noesis:Dependency Source="UserControls/CorePopup.xaml" />
     </noesis:Xaml.Dependencies>
 

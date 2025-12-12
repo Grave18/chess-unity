@@ -15,7 +15,6 @@ using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.MainCamera;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Core.Sound;
-using Chess3D.Runtime.Core.UI;
 using Chess3D.Runtime.Core.UI.UnityGUI;
 using Chess3D.Runtime.Core.UI.UnityGUI.AlgebraicNotation;
 using Chess3D.Runtime.Core.UI.UnityGUI.BoardUi;
@@ -26,6 +25,7 @@ using Chess3D.Runtime.Core.UI.ViewModels;
 using Chess3D.Runtime.Core.UI.Views;
 using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.ViewModels;
+using Chess3D.Runtime.Menu.UI.Views;
 using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities;
 using PauseState = Chess3D.Runtime.Core.Logic.GameStates.PauseState;
@@ -134,14 +134,17 @@ namespace Chess3D.Runtime.Core
             builder.RegisterComponentInNewPrefab(blackClockPrefab, Lifetime.Scoped).Keyed(PieceColor.Black);
             // Views
             builder.Register<CoreHomeView>(Lifetime.Scoped);
-            builder.Register<CoreSettingsPage>(Lifetime.Scoped);
+            builder.Register<SettingsView>(Lifetime.Scoped);
             // ViewModels
             builder.Register<CoreMainViewModel>(Lifetime.Scoped).As<IMainViewModel>().AsSelf();
             builder.RegisterComponent(coreHomeViewModel); // Network behaviour
             builder.Register<PopupViewModel>(Lifetime.Scoped);
+            // Settings VMs
+            builder.Register<SettingsViewModel>(Lifetime.Scoped);
+            builder.Register<GameSettingsViewModel>(Lifetime.Scoped);
             builder.Register<GraphicsSettingsViewModel>(Lifetime.Scoped);
             builder.Register<AudioSettingsViewModel>(Lifetime.Scoped);
-            builder.Register<FenTextBoxViewModel>(Lifetime.Scoped); // For suppress null in Settings Page
+            builder.Register<FenTextBoxViewModel>(Lifetime.Scoped);
 
             // Online
             builder.RegisterComponentOnNewGameObject<ConnectionTerminator>(Lifetime.Scoped);
