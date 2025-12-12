@@ -46,7 +46,7 @@ namespace Chess3D.Runtime.Core
         private readonly AudioSettingsViewModel _audioSettingsViewModel;
         private readonly AlgebraicNotationPanel _algebraicNotationPanel;
         private readonly UndoRedoPausePanel _undoRedoPausePanel;
-        private readonly CoreMainViewLoader _coreMainViewLoader;
+        private readonly MainViewLoader _mainViewLoader;
         private readonly CoreMainViewModel _coreMainViewModel;
         private readonly CoreHomeViewModel _homeViewModel;
         private readonly ViewNavigator _viewNavigator;
@@ -58,7 +58,7 @@ namespace Chess3D.Runtime.Core
             StateDebugPanel stateDebugPanel, BufferDebugPanel bufferDebugPanel,
             GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel,
             AlgebraicNotationPanel algebraicNotationPanel, UndoRedoPausePanel undoRedoPausePanel,
-            CoreMainViewLoader coreMainViewLoader, CoreMainViewModel coreMainViewModel, CoreHomeViewModel homeViewModel, ViewNavigator viewNavigator)
+            MainViewLoader mainViewLoader, CoreMainViewModel coreMainViewModel, CoreHomeViewModel homeViewModel, ViewNavigator viewNavigator)
         {
             _resolver = resolver;
             _loadingService = loadingService;
@@ -78,7 +78,7 @@ namespace Chess3D.Runtime.Core
             _audioSettingsViewModel = audioSettingsViewModel;
             _algebraicNotationPanel = algebraicNotationPanel;
             _undoRedoPausePanel = undoRedoPausePanel;
-            _coreMainViewLoader = coreMainViewLoader;
+            _mainViewLoader = mainViewLoader;
             _coreMainViewModel = coreMainViewModel;
             _homeViewModel = homeViewModel;
             _viewNavigator = viewNavigator;
@@ -98,7 +98,7 @@ namespace Chess3D.Runtime.Core
             await _loadingService.BeginLoading(_competitors);
             await _loadingService.BeginLoading(_cameraController);
 
-            await _loadingService.BeginLoading(_coreMainViewLoader);
+            await _loadingService.BeginLoading(_mainViewLoader);
             await _loadingService.BeginLoading(_viewNavigator);
             await _loadingService.BeginLoading(_coreMainViewModel, _homeViewModel);
             await _loadingService.BeginLoading(_nameCanvas);

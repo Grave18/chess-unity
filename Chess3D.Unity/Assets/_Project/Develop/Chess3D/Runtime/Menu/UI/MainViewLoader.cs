@@ -8,11 +8,11 @@ namespace Chess3D.Runtime.Menu.UI
     [UnityEngine.Scripting.Preserve]
     public class MainViewLoader : ILoadUnit
     {
-        private readonly MainViewModel _mainViewModel;
+        private readonly IMainViewModel _mainViewModel;
         private readonly NoesisXaml _mainViewXaml;
         private readonly NoesisView _noesisView;
 
-        public MainViewLoader(NoesisView noesisView, NoesisXaml mainViewXaml, MainViewModel mainViewModel)
+        public MainViewLoader(NoesisView noesisView, NoesisXaml mainViewXaml, IMainViewModel mainViewModel)
         {
             _noesisView = noesisView;
             _mainViewXaml = mainViewXaml;

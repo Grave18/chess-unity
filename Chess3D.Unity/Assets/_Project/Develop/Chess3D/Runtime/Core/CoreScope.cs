@@ -117,7 +117,7 @@ namespace Chess3D.Runtime.Core
             builder.Register<StartEndSoundPlayer>(Lifetime.Scoped);
 
             // UI
-            builder.Register<CoreMainViewLoader>(Lifetime.Scoped);
+            builder.Register<MainViewLoader>(Lifetime.Scoped);
             builder.RegisterComponent(mainViewXaml);
             builder.RegisterComponent(noesisView);
             builder.Register<ViewNavigator>(Lifetime.Scoped);
