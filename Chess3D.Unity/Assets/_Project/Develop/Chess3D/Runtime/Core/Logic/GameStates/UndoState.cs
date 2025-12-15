@@ -6,6 +6,7 @@ using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.Sound;
 using PurrNet.StateMachine;
+using UniRx;
 using UnityEngine;
 using VContainer;
 
@@ -144,7 +145,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             _game.ChangeTurn();
             _uciBuffer.Undo();
             _game.PreformCalculations();
-            _coreEvents.FireEndMove();
+            _coreEvents.OnEndMove.OnNext(Unit.Default);
 
             PlayCheckSoundIfCheck();
         }
@@ -224,7 +225,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         {
             // May be implemented, but with Undo and Redo
         }
-        
+
 #endregion unused
     }
 }

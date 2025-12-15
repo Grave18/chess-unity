@@ -1,6 +1,7 @@
 ﻿using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Core.Logic.Players;
 using PurrNet.StateMachine;
+using UniRx;
 using UnityEngine;
 using VContainer;
 
@@ -47,7 +48,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             _isRunning = true;
             _competitors.StartPlayer();
 
-            _coreEvents.FireIdle();
+            _coreEvents.OnIdle.OnNext(Unit.Default);
         }
 
         public override void Exit()

@@ -7,6 +7,7 @@ using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Core.Sound;
 using PurrNet.StateMachine;
+using UniRx;
 using UnityEngine;
 using VContainer;
 
@@ -216,7 +217,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
                 PlayCheckSoundIfCheck();
             }
 
-            _coreEvents.FireEndMove();
+            _coreEvents.OnEndMove.OnNext(Unit.Default);
         }
 
         public override void StateUpdate()

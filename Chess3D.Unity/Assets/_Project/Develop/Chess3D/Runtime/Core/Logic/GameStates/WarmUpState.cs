@@ -41,7 +41,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         public override void Exit()
         {
-            _coreEvents.FireStart();
+            _coreEvents.OnStart.OnNext(Unit.Default);
         }
 
         public override void StateUpdate()

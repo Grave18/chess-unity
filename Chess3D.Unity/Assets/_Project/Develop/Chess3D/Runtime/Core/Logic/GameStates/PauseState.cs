@@ -1,6 +1,7 @@
 ﻿using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Core.Logic.Players;
 using PurrNet.StateMachine;
+using UniRx;
 using UnityEngine;
 using VContainer;
 
@@ -28,12 +29,12 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         public override void Enter()
         {
-            _coreEvents.FirePause();
+            _coreEvents.OnPause.OnNext(Unit.Default);
         }
 
         public override void Exit()
         {
-            _coreEvents.FirePlay();
+            _coreEvents.OnPlay.OnNext(Unit.Default);
         }
 
         public void Undo()
