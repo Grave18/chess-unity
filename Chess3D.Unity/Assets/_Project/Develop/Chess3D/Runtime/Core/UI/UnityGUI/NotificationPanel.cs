@@ -1,5 +1,6 @@
 using Chess3D.Runtime.Core.Logic;
 using TMPro;
+using UniRx;
 using UnityEngine;
 using VContainer;
 
@@ -15,37 +16,26 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI
         [SerializeField] private TMP_Text additionalText;
 
         private Game _game;
-        private CoreEvents _coreEvents;
+
+        private readonly CompositeDisposable _disposables = new();
 
         [Inject]
         private void Construct(Game game, CoreEvents coreEvents)
         {
             _game = game;
-            _coreEvents = coreEvents;
 
-            _coreEvents.OnWarmup += UpdateNotificationText;
-            _coreEvents.OnStart += UpdateNotificationText;
-            _coreEvents.OnIdle += UpdateNotificationText;
-            _coreEvents.OnEndMove += UpdateNotificationText;
-            _coreEvents.OnEnd += UpdateNotificationText;
-            _coreEvents.OnPause += Pause;
-            _coreEvents.OnWarmup += Warmup;
+            coreEvents.OnWarmup.Subscribe(_ => UpdateNotificationText()).AddTo(_disposables);
+            coreEvents.OnWarmup.Subscribe(_ => Warmup()).AddTo(_disposables);
+            coreEvents.OnStart.Subscribe(_ => UpdateNotificationText()).AddTo(_disposables);
+            coreEvents.OnIdle.Subscribe(_ => UpdateNotificationText()).AddTo(_disposables);
+            coreEvents.OnEndMove.Subscribe(_ => UpdateNotificationText()).AddTo(_disposables);
+            coreEvents.OnEnd.Subscribe(_ => UpdateNotificationText()).AddTo(_disposables);
+            coreEvents.OnPause.Subscribe(_ => Pause()).AddTo(_disposables);
         }
 
         private void OnDisable()
         {
-            if (_coreEvents is null)
-            {
-                return;
-            }
-
-            _coreEvents.OnWarmup -= UpdateNotificationText;
-            _coreEvents.OnStart -= UpdateNotificationText;
-            _coreEvents.OnIdle -= UpdateNotificationText;
-            _coreEvents.OnEndMove -= UpdateNotificationText;
-            _coreEvents.OnEnd -= UpdateNotificationText;
-            _coreEvents.OnPause -= Pause;
-            _coreEvents.OnWarmup -= Warmup;
+            _disposables.Dispose();
         }
 
         private void UpdateNotificationText()

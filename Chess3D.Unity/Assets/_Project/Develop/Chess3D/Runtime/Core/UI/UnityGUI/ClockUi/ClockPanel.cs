@@ -1,6 +1,7 @@
 ﻿using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Core.Sound;
 using TMPro;
+using UniRx;
 using UnityEngine;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUi
@@ -22,24 +23,21 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUi
 
         private bool _isInitialized;
 
+        private readonly CompositeDisposable _disposables = new();
+
         public void Construct(CoreEvents coreEvents, IClock clock)
         {
             _clock = clock;
             _coreEvents = coreEvents;
 
-            _coreEvents.OnWarmup += ResetColors;
+            _coreEvents.OnWarmup.Subscribe(_ => ResetColors()).AddTo(_disposables);
 
             _isInitialized = true;
         }
 
         private void OnDestroy()
         {
-            if(_coreEvents == null)
-            {
-                return;
-            }
-
-            _coreEvents.OnWarmup -= ResetColors;
+            _disposables.Dispose();
         }
 
         private void Update()

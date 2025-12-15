@@ -1,4 +1,5 @@
 using System;
+using UniRx;
 using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Core.Sound
@@ -6,27 +7,17 @@ namespace Chess3D.Runtime.Core.Sound
     [Preserve]
     public class StartEndSoundPlayer : IDisposable
     {
-        private readonly CoreEvents _coreEvents;
-        private readonly EffectsPlayer _effectsPlayer;
+        private readonly CompositeDisposable _disposables = new();
 
         public StartEndSoundPlayer(CoreEvents coreEvents, EffectsPlayer effectsPlayer)
         {
-            _coreEvents = coreEvents;
-            _effectsPlayer = effectsPlayer;
-
-            _coreEvents.OnStart += _effectsPlayer.PlayGameStartSound;
-            _coreEvents.OnEnd += _effectsPlayer.PlayGameEndSound;
+            coreEvents.OnStart.Subscribe(_ => effectsPlayer.PlayGameStartSound()).AddTo(_disposables);
+            coreEvents.OnEnd.Subscribe(_ => effectsPlayer.PlayGameEndSound()).AddTo(_disposables);
         }
 
         public void Dispose()
         {
-            if (_coreEvents is null)
-            {
-                return;
-            }
-
-            _coreEvents.OnStart -= _effectsPlayer.PlayGameStartSound;
-            _coreEvents.OnEnd -= _effectsPlayer.PlayGameEndSound;
+            _disposables.Dispose();
         }
     }
 }

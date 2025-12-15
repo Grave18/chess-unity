@@ -2,6 +2,7 @@
 using Chess3D.Runtime.Core.MainCamera;
 using Cysharp.Threading.Tasks;
 using PurrNet.StateMachine;
+using UniRx;
 using UnityEngine;
 using VContainer;
 
@@ -35,7 +36,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
             _cameraController.RotateToStartPosition().Forget();
 
-            _coreEvents.FireWarmup();
+            _coreEvents.OnWarmup.OnNext(Unit.Default);
         }
 
         public override void Exit()

@@ -5,6 +5,7 @@ using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -24,24 +25,24 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI
         [SerializeField] private Sprite pauseSprite;
 
         private Game _game;
-        private CoreEvents _coreEvents;
         private ISettingsService _settingsService;
         private IGameStateMachine _gameStateMachine;
 
         private bool _isPause;
 
+        private readonly CompositeDisposable _disposables = new();
+
         [Inject]
         public void Construct(Game game, CoreEvents coreEvents, ISettingsService settingsService, IGameStateMachine gameStateMachine)
         {
             _game = game;
-            _coreEvents = coreEvents;
             _settingsService = settingsService;
             _gameStateMachine = gameStateMachine;
 
-            _coreEvents.OnPlay += OnPlay;
-            _coreEvents.OnPause += OnPause;
-            _coreEvents.OnStart += DisablePauseIfOnlineAndNotMoving;
-            _coreEvents.OnEnd += DisablePauseIfOnlineAndNotMoving;
+            coreEvents.OnPlay.Subscribe(_ => OnPlay()).AddTo(_disposables);
+            coreEvents.OnPause.Subscribe(_ => OnPause()).AddTo(_disposables);
+            coreEvents.OnStart.Subscribe(_ => DisablePauseIfOnlineAndNotMoving()).AddTo(_disposables);
+            coreEvents.OnEnd.Subscribe(_ => DisablePauseIfOnlineAndNotMoving()).AddTo(_disposables);
             undo.onClick.AddListener(OnUndoPressed);
             redo.onClick.AddListener(OnRedoPressed);
             pause.onClick.AddListener(OnPlayPausePressed);
@@ -49,15 +50,7 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI
 
         public void Dispose()
         {
-            if (_coreEvents is null)
-            {
-                return;
-            }
-
-            _coreEvents.OnPlay -= OnPlay;
-            _coreEvents.OnPause -= OnPause;
-            _coreEvents.OnStart -= DisablePauseIfOnlineAndNotMoving;
-            _coreEvents.OnEnd -= DisablePauseIfOnlineAndNotMoving;
+            _disposables.Dispose();
             undo.onClick.RemoveListener(OnUndoPressed);
             redo.onClick.RemoveListener(OnRedoPressed);
             pause.onClick.RemoveListener(OnPlayPausePressed);

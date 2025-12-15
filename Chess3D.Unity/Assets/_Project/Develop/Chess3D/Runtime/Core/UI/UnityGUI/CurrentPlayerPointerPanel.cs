@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UniRx;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI
@@ -6,28 +7,22 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI
     public class CurrentPlayerPointerPanel : MonoBehaviour
     {
         private Logic.Game _game;
-        private CoreEvents _coreEvents;
         [SerializeField] private Image whiteImage;
         [SerializeField] private Image blackImage;
 
+        private readonly CompositeDisposable _disposables = new();
 
         public void Construct(Logic.Game game, CoreEvents coreEvents)
         {
             _game = game;
-            _coreEvents = coreEvents;
 
-            _coreEvents.OnStart += Fade;
-            _coreEvents.OnEndMove += Fade;
+            coreEvents.OnStart.Subscribe(_ => Fade()).AddTo(_disposables);
+            coreEvents.OnEndMove.Subscribe(_ => Fade()).AddTo(_disposables);
         }
 
         private void OnDestroy()
         {
-            if (_coreEvents == null)
-            {
-                return;
-            }
-            _coreEvents.OnStart -= Fade;
-            _coreEvents.OnEndMove -= Fade;
+            _disposables.Dispose();
         }
 
         private void Fade()

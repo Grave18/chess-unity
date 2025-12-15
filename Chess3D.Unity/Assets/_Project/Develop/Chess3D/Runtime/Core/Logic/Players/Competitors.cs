@@ -3,6 +3,7 @@ using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
+using UniRx;
 using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Core.Logic.Players
@@ -16,30 +17,24 @@ namespace Chess3D.Runtime.Core.Logic.Players
         private readonly ISettingsService _settingsService;
         private readonly FenFromString _fenFromString;
         private readonly PlayerFactory _playerFactory;
-        private readonly CoreEvents _coreEvents;
 
         private IPlayer _playerWhite;
         private IPlayer _playerBlack;
 
+        private readonly CompositeDisposable _disposables = new();
         public Competitors(Game game, FenFromString fenFromString, PlayerFactory playerFactory, CoreEvents coreEvents, ISettingsService settingsService)
         {
             _game = game;
             _fenFromString = fenFromString;
             _playerFactory = playerFactory;
-            _coreEvents = coreEvents;
             _settingsService = settingsService;
 
-            _coreEvents.OnEndMove += SwapCurrentPlayer;
+            coreEvents.OnEndMove.Subscribe(_ => SwapCurrentPlayer()).AddTo(_disposables);
         }
 
         public void Dispose()
         {
-            if (_coreEvents is null)
-            {
-                return;
-            }
-
-            _coreEvents.OnEndMove -= SwapCurrentPlayer;
+            _disposables.Dispose();
         }
 
         public UniTask Load()

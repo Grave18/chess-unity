@@ -1,6 +1,7 @@
 ﻿using System;
 using Chess3D.Runtime.Bootstrap.Settings;
 using Cysharp.Threading.Tasks;
+using UniRx;
 using UnityEngine;
 using VContainer;
 
@@ -10,7 +11,6 @@ namespace Chess3D.Runtime.Core.Logic
     {
         private Game _game;
         private ISettingsService _settingsService;
-        private CoreEvents _coreEvents;
 
         private TimeSpan _initialWhiteTime;
         private TimeSpan _initialBlackTime;
@@ -23,34 +23,25 @@ namespace Chess3D.Runtime.Core.Logic
         public TimeSpan WhiteTime => _whiteTime;
         public TimeSpan BlackTime => _blackTime;
 
+        private readonly CompositeDisposable _disposables = new();
+
         [Inject]
         public void Construct(Game game, ISettingsService settingsService, CoreEvents coreEvents)
         {
             _game = game;
             _settingsService = settingsService;
-            _coreEvents = coreEvents;
 
-            _coreEvents.OnWarmup += InitTime;
-            _coreEvents.OnStart += StartTimer;
-            _coreEvents.OnEndMove += Play;
-            _coreEvents.OnEnd += Pause;
-            _coreEvents.OnPlay += Play;
-            _coreEvents.OnPause += Pause;
+            coreEvents.OnWarmup.Subscribe(_ => InitTime()).AddTo(_disposables);
+            coreEvents.OnStart.Subscribe(_ => StartTimer()).AddTo(_disposables);
+            coreEvents.OnEndMove.Subscribe(_ => Play()).AddTo(_disposables);
+            coreEvents.OnEnd.Subscribe(_ => Pause()).AddTo(_disposables);
+            coreEvents.OnPlay.Subscribe(_ => Play()).AddTo(_disposables);
+            coreEvents.OnPause.Subscribe(_ => Pause()).AddTo(_disposables);
         }
 
         public void Dispose()
         {
-            if (_coreEvents is null)
-            {
-                return;
-            }
-
-            _coreEvents.OnWarmup -= InitTime;
-            _coreEvents.OnStart -= StartTimer;
-            _coreEvents.OnEndMove -= Play;
-            _coreEvents.OnEnd -= Pause;
-            _coreEvents.OnPlay -= Play;
-            _coreEvents.OnPause -= Pause;
+            _disposables.Dispose();
         }
 
         public UniTask Load()

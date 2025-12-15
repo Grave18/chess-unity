@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.InputManagement;
 using Chess3D.Runtime.Core.Logic;
@@ -7,13 +8,14 @@ using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities;
 using Chess3D.Runtime.Utilities.Common.Mathematics;
 using Cysharp.Threading.Tasks;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
 using VContainer;
 
 namespace Chess3D.Runtime.Core.MainCamera
 {
-    public class CameraController : MonoBehaviour, ILoadUnit
+    public class CameraController : MonoBehaviour, ILoadUnit, IDisposable
     {
         private const float WhiteInitialYawRad = Mathf.PI*1.5f;
         private const float BlackInitialYawRad = Mathf.PI*0.5f;
@@ -53,7 +55,6 @@ namespace Chess3D.Runtime.Core.MainCamera
         private Game _game;
         private Camera _mainCamera;
         private ISettingsService _settingsService;
-        private CoreEvents _coreEvents;
         private FenFromString _fenFromString;
 
         private bool _isUpdating;
@@ -75,6 +76,8 @@ namespace Chess3D.Runtime.Core.MainCamera
         private bool IsVsPlayer => _settingsService.S.GameSettings.PlayerWhite.PlayerType == PlayerType.Human
                                    && _settingsService.S.GameSettings.PlayerBlack.PlayerType == PlayerType.Human;
 
+        private readonly CompositeDisposable _disposables = new();
+
         [Inject]
         public void Construct(Game game, [Key(CameraKeys.Main)] Camera mainCamera,
             ISettingsService settingsService, CoreEvents coreEvents, FenFromString fenFromString)
@@ -82,22 +85,15 @@ namespace Chess3D.Runtime.Core.MainCamera
             _game = game;
             _mainCamera = mainCamera;
             _settingsService = settingsService;
-            _coreEvents = coreEvents;
             _fenFromString = fenFromString;
 
-            _coreEvents.OnEndMove += AutoRotate;
-            _coreEvents.OnEnd += StopAutoRotate;
+            coreEvents.OnEndMove.Subscribe(_ => AutoRotate()).AddTo(_disposables);
+            coreEvents.OnEnd.Subscribe(_ => StopAutoRotate()).AddTo(_disposables);
         }
 
-        private void OnDestroy()
+        public void Dispose()
         {
-            if (_coreEvents is null)
-            {
-                return;
-            }
-
-            _coreEvents.OnEndMove -= AutoRotate;
-            _coreEvents.OnEnd -= StopAutoRotate;
+            _disposables.Dispose();
         }
 
         public UniTask Load()

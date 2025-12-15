@@ -6,6 +6,7 @@ using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -22,19 +23,19 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.AlgebraicNotation
 
         private Game _game;
         private UciBuffer _uciBuffer;
-        private CoreEvents _coreEvents;
 
         private int _fullMoveIndex;
         private readonly List<NotationItem> _notationItems = new();
+
+        private readonly CompositeDisposable _disposable = new();
 
         [Inject]
         public void Construct(Game game, UciBuffer uciBuffer, CoreEvents coreEvents)
         {
             _game = game;
             _uciBuffer = uciBuffer;
-            _coreEvents = coreEvents;
 
-            _coreEvents.OnEnd += NotateEndGame;
+            coreEvents.OnEnd.Subscribe(_ => NotateEndGame()).AddTo(_disposable);
             _uciBuffer.OnAdd += OnAdd;
             _uciBuffer.OnUndo += OnUndo;
             _uciBuffer.OnRedo += OnRedo;
@@ -43,12 +44,8 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.AlgebraicNotation
 
         public void Dispose()
         {
-            if (_coreEvents is null)
-            {
-                return;
-            }
+            _disposable.Dispose();
 
-            _coreEvents.OnEnd -= NotateEndGame;
             _uciBuffer.OnAdd -= OnAdd;
             _uciBuffer.OnUndo -= OnUndo;
             _uciBuffer.OnRedo -= OnRedo;

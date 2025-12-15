@@ -6,6 +6,7 @@ using Chess3D.Runtime.Core.ChessBoard.Info;
 using Chess3D.Runtime.Core.ChessBoard.Pieces;
 using Chess3D.Runtime.Core.Effects;
 using Chess3D.Runtime.Core.Logic;
+using UniRx;
 
 namespace Chess3D.Runtime.Core.Highlighting
 {
@@ -14,7 +15,6 @@ namespace Chess3D.Runtime.Core.Highlighting
     {
         private readonly Game _game;
         private readonly Board _board;
-        private readonly CoreEvents _coreEvents;
         private readonly CommonPieceSettings _commonSettings;
 
         private bool isDebugUnderAttackSquares;
@@ -22,24 +22,20 @@ namespace Chess3D.Runtime.Core.Highlighting
 
         private SquareHighlighter _oldPieceHighlighter;
 
+        private readonly CompositeDisposable _disposables = new();
+
         public Highlighter(Game game, Board board, CoreEvents coreEvents, CommonPieceSettings commonSettings)
         {
             _game = game;
             _board = board;
-            _coreEvents = coreEvents;
             _commonSettings = commonSettings;
 
-            coreEvents.OnEndMove += UpdateHighlighting;
+            coreEvents.OnEndMove.Subscribe(_ => UpdateHighlighting()).AddTo(_disposables);
         }
 
         public void Dispose()
         {
-            if (_coreEvents is null)
-            {
-                return;
-            }
-
-            _coreEvents.OnEndMove -= UpdateHighlighting;
+            _disposables.Dispose();
         }
 
         public void UpdateHighlighting()

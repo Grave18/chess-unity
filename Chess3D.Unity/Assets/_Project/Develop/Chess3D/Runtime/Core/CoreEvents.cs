@@ -1,4 +1,5 @@
-﻿using UnityEngine.Events;
+﻿using UniRx;
+using UnityEngine.Events;
 using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Core
@@ -7,20 +8,19 @@ namespace Chess3D.Runtime.Core
     public class CoreEvents
     {
         // Events and invokers
-        public event UnityAction OnWarmup;
-        public event UnityAction OnStart;
-        public event UnityAction OnIdle;
-        public event UnityAction OnEnd;
-        public event UnityAction OnEndMove;
-        public event UnityAction OnPlay;
-        public event UnityAction OnPause;
+        public readonly Subject<Unit> OnWarmup = new();
+        public readonly Subject<Unit> OnStart = new();
+        public readonly Subject<Unit> OnIdle = new();
+        public readonly Subject<Unit> OnEnd = new();
+        public readonly Subject<Unit> OnEndMove = new();
+        public readonly Subject<Unit> OnPlay = new();
+        public readonly Subject<Unit> OnPause = new();
 
-        public void FireWarmup() => OnWarmup?.Invoke();
-        public void FireStart() => OnStart?.Invoke();
-        public void FireIdle() => OnIdle?.Invoke();
-        public void FireEnd() => OnEnd?.Invoke();
-        public void FireEndMove() => OnEndMove?.Invoke();
-        public void FirePlay() => OnPlay?.Invoke();
-        public void FirePause() => OnPause?.Invoke();
+        public void FireStart() => OnStart.OnNext(Unit.Default);
+        public void FireIdle() => OnIdle.OnNext(Unit.Default);
+        public void FireEnd() => OnEnd.OnNext(Unit.Default);
+        public void FireEndMove() => OnEndMove.OnNext(Unit.Default);
+        public void FirePlay() => OnPlay.OnNext(Unit.Default);
+        public void FirePause() => OnPause.OnNext(Unit.Default);
     }
 }
