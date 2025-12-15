@@ -6,6 +6,7 @@ using Chess3D.Runtime.Utilities;
 using Chess3D.Runtime.Utilities.Logging;
 using Cysharp.Threading.Tasks;
 using PurrNet;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -26,19 +27,18 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
         private Lobby _lastKnownState;
         private bool _isStarting;
 
-        // Events exposed by the manager
-        public UnityEvent<Lobby> OnRoomJoined = new();
-        public UnityEvent<string> OnRoomJoinFailed = new();
-        public UnityEvent OnRoomLeft = new();
-        public UnityEvent<Lobby> OnRoomUpdated = new();
-        public UnityEvent<List<LobbyUser>> OnPlayerListUpdated = new();
-        public UnityEvent<List<Lobby>> OnRoomSearchResults = new();
-        public UnityEvent<List<FriendItem>> OnFriendListPulled = new();
-        public UnityEvent OnAllReady = new();
-        public UnityEvent<string> OnError = new();
+        public readonly Subject<Lobby> OnRoomJoined = new();
+        public readonly Subject<string> OnRoomJoinFailed = new();
+        public readonly Subject<Unit> OnRoomLeft = new();
+        public readonly Subject<Lobby> OnRoomUpdated = new();
+        public readonly Subject<List<LobbyUser>> OnPlayerListUpdated = new();
+        public readonly Subject<List<Lobby>> OnRoomSearchResults = new();
+        public readonly Subject<List<FriendItem>> OnFriendListPulled = new();
+        public readonly Subject<Unit> OnAllReady = new();
+        public readonly Subject<string> OnError = new();
 
-        public UnityEvent onInitialized = new();
-        public UnityEvent onShutdown = new();
+        public readonly Subject<Unit> OnInitialized = new();
+        public readonly Subject<Unit> OnShutdown = new();
 
         private Lobby _oldLobby;
 
@@ -120,7 +120,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
                 RunTask(async () =>
                 {
                     await _currentProvider.InitializeAsync();
-                    InvokeDelayed(() => onInitialized?.Invoke());
+                    InvokeDelayed(() => OnInitialized.OnNext(Unit.Default));
                 });
             }
         }
@@ -147,12 +147,12 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
 
         private void OnCurrentProviderOnError(string error)
         {
-            InvokeDelayed(() => OnError.Invoke(error));
+            InvokeDelayed(() => OnError.OnNext(error));
         }
 
         private void OnCurrentProviderOnLobbyPlayerListUpdated(List<LobbyUser> players)
         {
-            InvokeDelayed(() => OnPlayerListUpdated.Invoke(players));
+            InvokeDelayed(() => OnPlayerListUpdated.OnNext(players));
         }
 
         private void OnCurrentProviderOnLobbyUpdated(Lobby lobby)
@@ -167,12 +167,12 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
                 if (lobby.IsValid && lobby.Members.Count != _oldLobby.Members?.Count)
                 {
                     _oldLobby = lobby;
-                    OnRoomJoined?.Invoke(lobby);
+                    OnRoomJoined.OnNext(lobby);
                 }
 
                 _lastKnownState = lobby;
                 CurrentLobby = lobby;
-                OnRoomUpdated?.Invoke(lobby);
+                OnRoomUpdated.OnNext(lobby);
 
                 if (!_isStarting && lobby.Members.TrueForAll(x => x.IsReady))
                 {
@@ -188,13 +188,13 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
             {
                 _oldLobby = default;
                 CurrentLobby = default;
-                OnRoomLeft?.Invoke();
+                OnRoomLeft.OnNext(Unit.Default);
             });
         }
 
         private void OnCurrentProviderOnLobbyJoinFailed(string message)
         {
-            InvokeDelayed(() => OnRoomJoinFailed.Invoke(message));
+            InvokeDelayed(() => OnRoomJoinFailed.OnNext(message));
         }
 
         private void InvokeDelayed(Action action)
@@ -218,7 +218,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
             {
                 EnsureProviderSet();
                 List<FriendItem> friends = await _currentProvider.GetFriendsAsync(filter);
-                OnFriendListPulled?.Invoke(friends);
+                OnFriendListPulled.OnNext(friends);
             });
         }
 
@@ -254,7 +254,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
                 Lobby room = await _currentProvider.CreateLobbyAsync(maxPlayers, roomProperties);
                 _oldLobby = default;
                 CurrentLobby = room;
-                OnRoomUpdated?.Invoke(room);
+                OnRoomUpdated.OnNext(room);
             });
         }
 
@@ -290,7 +290,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
         {
             if (string.IsNullOrEmpty(roomId))
             {
-                OnRoomJoinFailed?.Invoke("Null or empty room ID.");
+                OnRoomJoinFailed.OnNext("Null or empty room ID.");
                 return;
             }
 
@@ -300,11 +300,11 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
                 Lobby room = await _currentProvider.JoinLobbyAsync(roomId);
                 if (room.IsValid)
                 {
-                    OnRoomJoined?.Invoke(room);
+                    OnRoomJoined.OnNext(room);
                 }
                 else
                 {
-                    OnRoomJoinFailed?.Invoke($"Failed to join room {roomId}");
+                    OnRoomJoinFailed.OnNext($"Failed to join room {roomId}");
                 }
             });
         }
@@ -325,7 +325,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
             {
                 EnsureProviderSet();
                 var rooms = await _currentProvider.SearchLobbiesAsync(maxRoomsToFind, filters);
-                OnRoomSearchResults?.Invoke(rooms);
+                OnRoomSearchResults.OnNext(rooms);
             });
         }
 
@@ -361,7 +361,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
         {
             EnsureProviderSet();
             _currentProvider.Shutdown();
-            onShutdown?.Invoke();
+            OnShutdown.OnNext(Unit.Default);
         }
 
         /// <summary>
@@ -410,7 +410,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
             {
                 await _currentProvider.SetAllReadyAsync();
 
-                OnAllReady?.Invoke();
+                OnAllReady.OnNext(Unit.Default);
             }
         }
 

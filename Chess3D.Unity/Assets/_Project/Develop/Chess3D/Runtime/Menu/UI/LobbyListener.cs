@@ -4,6 +4,7 @@ using Chess3D.Runtime.Menu.LobbyManagement;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities.Logging;
 using UnityEngine.Scripting;
+using UniRx;
 
 namespace Chess3D.Runtime.Menu.UI
 {
@@ -11,36 +12,23 @@ namespace Chess3D.Runtime.Menu.UI
     [Preserve]
     public class LobbyListener : IDisposable
     {
-        private readonly LobbyManager _lobbyManager;
-        private readonly AppEvents _appEvents;
         private readonly ViewNavigator _viewNavigator;
+
+        private readonly CompositeDisposable _disposables = new();
 
         public LobbyListener(LobbyManager lobbyManager, AppEvents appEvents, ViewNavigator viewNavigator)
         {
-            _lobbyManager = lobbyManager;
-            _appEvents = appEvents;
             _viewNavigator = viewNavigator;
 
-            _lobbyManager.OnRoomJoined.AddListener(ShowLobbyView);
-            _lobbyManager.OnRoomJoinFailed.AddListener(OnRoomJoinFailed);
-            _lobbyManager.OnRoomLeft.AddListener(GoBack);
-
-            _appEvents.OnPause += OnApplicationPause;
+            lobbyManager.OnRoomJoined.Subscribe(ShowLobbyView).AddTo(_disposables);
+            lobbyManager.OnRoomJoinFailed.Subscribe(OnRoomJoinFailed).AddTo(_disposables);
+            lobbyManager.OnRoomLeft.Subscribe(_ => GoBack()).AddTo(_disposables);
+            appEvents.OnPause.Subscribe(OnApplicationPause).AddTo(_disposables);
         }
 
         public void Dispose()
         {
-            if (_lobbyManager is not null)
-            {
-                _lobbyManager.OnRoomJoined.RemoveListener(ShowLobbyView);
-                _lobbyManager.OnRoomJoinFailed.RemoveListener(OnRoomJoinFailed);
-                _lobbyManager.OnRoomLeft.RemoveListener(GoBack);
-            }
-
-            if (_appEvents is not null)
-            {
-                _appEvents.OnPause -= OnApplicationPause;
-            }
+            _disposables.Dispose();
         }
 
         private void OnApplicationPause(bool isPause)

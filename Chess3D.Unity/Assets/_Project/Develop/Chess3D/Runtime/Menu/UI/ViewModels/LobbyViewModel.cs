@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Chess3D.Runtime.Menu.LobbyManagement;
 using MvvmTool;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Scripting;
 using VContainer.Unity;
@@ -26,25 +27,19 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private readonly LobbyManager _lobbyManager;
 
+        private readonly CompositeDisposable _disposables = new();
         public LobbyViewModel(LobbyManager lobbyManager)
         {
             _lobbyManager = lobbyManager;
 
-            _lobbyManager.OnFriendListPulled.AddListener(PopulateFriends);
-            _lobbyManager.OnRoomLeft.AddListener(OnLobbyLeave);
-            _lobbyManager.OnRoomUpdated.AddListener(LobbyDataUpdate);
+            _lobbyManager.OnFriendListPulled.Subscribe(PopulateFriends).AddTo(_disposables);
+            _lobbyManager.OnRoomLeft.Subscribe(_ => OnLobbyLeave()).AddTo(_disposables);
+            _lobbyManager.OnRoomUpdated.Subscribe(LobbyDataUpdate).AddTo(_disposables);
         }
 
         public void Dispose()
         {
-            if (_lobbyManager is null)
-            {
-                return;
-            }
-
-            _lobbyManager.OnFriendListPulled.RemoveListener(PopulateFriends);
-            _lobbyManager.OnRoomLeft.RemoveListener(OnLobbyLeave);
-            _lobbyManager.OnRoomUpdated.RemoveListener(LobbyDataUpdate);
+            _disposables.Dispose();
         }
 
         public void Tick()
