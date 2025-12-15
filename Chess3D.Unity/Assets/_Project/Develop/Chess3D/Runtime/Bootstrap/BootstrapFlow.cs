@@ -2,6 +2,8 @@
 using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
+using UniRx;
+using UnityEngine;
 using UnityEngine.Scripting;
 using VContainer.Unity;
 
@@ -29,7 +31,10 @@ namespace Chess3D.Runtime.Bootstrap
             await _loadingService.BeginLoading(_settingsService);
             await _loadingService.BeginLoading(_applicationConfigurationLoadUnit);
 
+            UniRxUtils.Initialize();
             await _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu);
         }
+
+
     }
 }

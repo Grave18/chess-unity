@@ -1,5 +1,4 @@
 ﻿using System;
-using Chess3D.Runtime.Bootstrap;
 using Chess3D.Runtime.Menu.LobbyManagement;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities.Logging;
@@ -12,46 +11,36 @@ namespace Chess3D.Runtime.Menu.UI
     [Preserve]
     public class LobbyListener : IDisposable
     {
-        private readonly ViewNavigator _viewNavigator;
-
         private readonly CompositeDisposable _disposables = new();
 
-        public LobbyListener(LobbyManager lobbyManager, AppEvents appEvents, ViewNavigator viewNavigator)
+        public LobbyListener(LobbyManager lobbyManager, ViewNavigator viewNavigator)
         {
-            _viewNavigator = viewNavigator;
+            lobbyManager.OnRoomJoined
+                .Subscribe(_ => viewNavigator.GoTo<LobbyViewModel>())
+                .AddTo(_disposables);
 
-            lobbyManager.OnRoomJoined.Subscribe(ShowLobbyView).AddTo(_disposables);
-            lobbyManager.OnRoomJoinFailed.Subscribe(OnRoomJoinFailed).AddTo(_disposables);
-            lobbyManager.OnRoomLeft.Subscribe(_ => GoBack()).AddTo(_disposables);
-            appEvents.OnPause.Subscribe(OnApplicationPause).AddTo(_disposables);
+            lobbyManager.OnRoomLeft
+                .Subscribe(_ => viewNavigator.GoBack())
+                .AddTo(_disposables);
+
+            lobbyManager.OnRoomJoinFailed
+                .Subscribe(message => Log.Lobby.D(message))
+                .AddTo(_disposables);
+
+            Observable.EveryApplicationPause()
+                .Subscribe(isPause =>
+                {
+                    if (!isPause)
+                    {
+                        viewNavigator.GoTo<LobbyViewModel>();
+                    }
+                })
+                .AddTo(_disposables);
         }
 
         public void Dispose()
         {
             _disposables.Dispose();
-        }
-
-        private void OnApplicationPause(bool isPause)
-        {
-            if (!isPause)
-            {
-                ShowLobbyView();
-            }
-        }
-
-        private void ShowLobbyView(Lobby _ = default)
-        {
-            _viewNavigator.GoTo<LobbyViewModel>();
-        }
-
-        private static void OnRoomJoinFailed(string message)
-        {
-            Log.Lobby.D(message);
-        }
-
-        private void GoBack()
-        {
-            _viewNavigator.GoBack();
         }
     }
 }
