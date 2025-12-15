@@ -22,34 +22,27 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.AlgebraicNotation
         [SerializeField] private GameObject notationItemPrefab;
 
         private Game _game;
-        private UciBuffer _uciBuffer;
 
         private int _fullMoveIndex;
         private readonly List<NotationItem> _notationItems = new();
 
-        private readonly CompositeDisposable _disposable = new();
+        private readonly CompositeDisposable _disposables = new();
 
         [Inject]
         public void Construct(Game game, UciBuffer uciBuffer, CoreEvents coreEvents)
         {
             _game = game;
-            _uciBuffer = uciBuffer;
 
-            coreEvents.OnEnd.Subscribe(_ => NotateEndGame()).AddTo(_disposable);
-            _uciBuffer.OnAdd += OnAdd;
-            _uciBuffer.OnUndo += OnUndo;
-            _uciBuffer.OnRedo += OnRedo;
-            _uciBuffer.OnDelete += OnDelete;
+            coreEvents.OnEnd.Subscribe(_ => NotateEndGame()).AddTo(_disposables);
+            uciBuffer.OnAdd.Subscribe(OnAdd).AddTo(_disposables);
+            uciBuffer.OnUndo.Subscribe(OnUndo).AddTo(_disposables);
+            uciBuffer.OnRedo.Subscribe(OnRedo).AddTo(_disposables);
+            uciBuffer.OnDelete.Subscribe(OnDelete).AddTo(_disposables);
         }
 
         public void Dispose()
         {
-            _disposable.Dispose();
-
-            _uciBuffer.OnAdd -= OnAdd;
-            _uciBuffer.OnUndo -= OnUndo;
-            _uciBuffer.OnRedo -= OnRedo;
-            _uciBuffer.OnDelete -= OnDelete;
+            _disposables.Dispose();
         }
 
         public UniTask Load()

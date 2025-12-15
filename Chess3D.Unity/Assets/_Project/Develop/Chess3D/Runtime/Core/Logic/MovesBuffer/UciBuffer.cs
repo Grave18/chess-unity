@@ -4,6 +4,7 @@ using System.Text;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
+using UniRx;
 using UnityEngine.Events;
 using UnityEngine.Scripting;
 
@@ -21,10 +22,10 @@ namespace Chess3D.Runtime.Core.Logic.MovesBuffer
         private readonly LinkedList<MoveData> _buffer = new();
         private readonly Dictionary<string, int> _threefoldRepetition = new();
 
-        public event UnityAction<MoveData> OnAdd;
-        public event UnityAction<MoveData> OnUndo;
-        public event UnityAction<MoveData> OnRedo;
-        public event UnityAction<MoveData> OnDelete;
+        public readonly Subject<MoveData> OnAdd = new();
+        public readonly Subject<MoveData> OnUndo = new();
+        public readonly Subject<MoveData> OnRedo = new();
+        public readonly Subject<MoveData> OnDelete = new();
 
         /// Returns half moves of the 50 moves rule
         public int HalfMoveClock => _head != null ? _head.Value.HalfMoveClock : _initialHalfMoveClock;
@@ -78,7 +79,7 @@ namespace Chess3D.Runtime.Core.Logic.MovesBuffer
             RemoveRedundantMoves();
             AddThreefoldRule(moveData);
 
-            OnAdd?.Invoke(newNode.Value);
+            OnAdd.OnNext(newNode.Value);
         }
 
         private void RemoveRedundantMoves()
@@ -86,7 +87,7 @@ namespace Chess3D.Runtime.Core.Logic.MovesBuffer
             // Remove old redundant moves
             while (_buffer.Last != _head)
             {
-                OnDelete?.Invoke(_buffer.Last.Value);
+                OnDelete.OnNext(_buffer.Last.Value);
                 _buffer.RemoveLast();
             }
         }
@@ -118,7 +119,7 @@ namespace Chess3D.Runtime.Core.Logic.MovesBuffer
 
         public void Undo()
         {
-            OnUndo?.Invoke(_head?.Value);
+            OnUndo.OnNext(_head?.Value);
             UndoThreefoldRule(_head);
             _head = _head?.Previous;
         }
@@ -142,7 +143,7 @@ namespace Chess3D.Runtime.Core.Logic.MovesBuffer
         public void Redo()
         {
             _head = _head?.Next ?? _buffer.First;
-            OnRedo?.Invoke(_head?.Value);
+            OnRedo.OnNext(_head?.Value);
 
             RedoThreefoldRule(_head);
         }
