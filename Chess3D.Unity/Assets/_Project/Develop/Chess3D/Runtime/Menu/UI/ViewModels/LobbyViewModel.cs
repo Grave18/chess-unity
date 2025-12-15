@@ -5,15 +5,13 @@ using System.Linq;
 using Chess3D.Runtime.Menu.LobbyManagement;
 using MvvmTool;
 using UniRx;
-using UnityEngine;
 using UnityEngine.Scripting;
-using VContainer.Unity;
 
 namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
     [INotifyPropertyChanged]
-    public partial class LobbyViewModel : IViewModel, IDisposable, ITickable
+    public partial class LobbyViewModel : IViewModel, IDisposable
     {
         // TODO: Move to config
         private const float UpdateIntervalSec = 3f;
@@ -23,11 +21,10 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         [ObservableProperty] private LobbyManager.FriendFilter _friendFilter = LobbyManager.FriendFilter.Online;
 
-        private float _lastUpdateTime;
-
         private readonly LobbyManager _lobbyManager;
 
         private readonly CompositeDisposable _disposables = new();
+
         public LobbyViewModel(LobbyManager lobbyManager)
         {
             _lobbyManager = lobbyManager;
@@ -35,6 +32,11 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _lobbyManager.OnFriendListPulled.Subscribe(PopulateFriends).AddTo(_disposables);
             _lobbyManager.OnRoomLeft.Subscribe(_ => OnLobbyLeave()).AddTo(_disposables);
             _lobbyManager.OnRoomUpdated.Subscribe(LobbyDataUpdate).AddTo(_disposables);
+
+            Observable.Interval(TimeSpan.FromSeconds(UpdateIntervalSec))
+                .Where(_ => _lobbyManager.IsInLobby)
+                .Subscribe(_ => PullFriends())
+                .AddTo(_disposables);
         }
 
         public void Dispose()
@@ -42,22 +44,8 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _disposables.Dispose();
         }
 
-        public void Tick()
-        {
-            if(IsNeedToPullFriends())
-            {
-                PullFriends();
-            }
-        }
-
-        private bool IsNeedToPullFriends()
-        {
-            return _lobbyManager.IsInLobby && _lastUpdateTime + UpdateIntervalSec < Time.time;
-        }
-
         private void PullFriends()
         {
-            _lastUpdateTime = Time.time;
             _lobbyManager.PullFriends(FriendFilter);
         }
 

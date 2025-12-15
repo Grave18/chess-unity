@@ -53,7 +53,6 @@ namespace Chess3D.Runtime.Menu
             builder.RegisterBuildCallback(ServiceLocator.Initialize);
 
             // Entry points
-            builder.RegisterEntryPoint<LobbyViewModel>(Lifetime.Scoped);
             builder.RegisterEntryPoint<MenuFlow>(Lifetime.Scoped);
         }
     }
