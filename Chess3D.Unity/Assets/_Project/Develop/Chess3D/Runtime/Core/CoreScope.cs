@@ -1,9 +1,8 @@
-﻿using System;
-using Chess3D.Runtime.Bootstrap.Settings;
-using Chess3D.Runtime.Core.AI;
-using UnityEngine;
+﻿using UnityEngine;
 using VContainer;
 using VContainer.Unity;
+using Chess3D.Runtime.Bootstrap.Settings;
+using Chess3D.Runtime.Core.AI;
 using Chess3D.Runtime.Core.AssetManagement;
 using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.Highlighting;
@@ -128,7 +127,7 @@ namespace Chess3D.Runtime.Core
             builder.RegisterComponent(algebraicNotationPanel);
             builder.RegisterComponent(undoRedoPausePanel);
             // Clock UI
-            builder.RegisterFactory(ClockPanelFactory, Lifetime.Scoped);
+            builder.Register<ClockPanelFactory>(Lifetime.Scoped);
             builder.RegisterComponentInNewPrefab(whiteClockPrefab, Lifetime.Scoped).Keyed(PieceColor.White);
             builder.RegisterComponentInNewPrefab(blackClockPrefab, Lifetime.Scoped).Keyed(PieceColor.Black);
             // Views
@@ -164,22 +163,6 @@ namespace Chess3D.Runtime.Core
         {
             builder.RegisterComponentInNewPrefab(stateDebugPanelPrefab, Lifetime.Scoped).UnderTransform(gameCanvas.transform);
             builder.RegisterComponentInNewPrefab(bufferDebugPanelPrefab, Lifetime.Scoped).UnderTransform(gameCanvas.transform);
-        }
-
-        private static Func<ClockPanelCanvas> ClockPanelFactory(IObjectResolver resolver)
-        {
-            return () =>
-            {
-                var settingsService = resolver.Resolve<ISettingsService>();
-                var game = resolver.Resolve<Game>();
-                var clock = resolver.Resolve<IClock>();
-                var uiCamera = resolver.Resolve<Camera>(CameraKeys.Ui);
-                var coreEvents = resolver.Resolve<CoreEvents>();
-                var instance = resolver.Resolve<ClockPanelCanvas>(settingsService.S.GameSettings.PlayerColor);
-                instance.Construct(game, coreEvents, clock, uiCamera);
-
-                return instance;
-            };
         }
     }
 }

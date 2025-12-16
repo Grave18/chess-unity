@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Chess3D.Runtime.Core.AssetManagement;
 using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.Logic;
@@ -9,11 +8,9 @@ using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.MainCamera;
 using Chess3D.Runtime.Core.Notation;
-using Chess3D.Runtime.Core.UI;
 using Chess3D.Runtime.Core.UI.UnityGUI;
 using Chess3D.Runtime.Core.UI.UnityGUI.AlgebraicNotation;
 using Chess3D.Runtime.Core.UI.UnityGUI.BoardUi;
-using Chess3D.Runtime.Core.UI.UnityGUI.ClockUi;
 using Chess3D.Runtime.Core.UI.UnityGUI.DebugUi;
 using Chess3D.Runtime.Core.UI.ViewModels;
 using Chess3D.Runtime.Menu.UI;
@@ -52,6 +49,7 @@ namespace Chess3D.Runtime.Core
         private readonly CoreMainViewModel _coreMainViewModel;
         private readonly CoreHomeViewModel _homeViewModel;
         private readonly ViewNavigator _viewNavigator;
+        private readonly ClockPanelFactory _clockPanelFactory;
 
         public CoreFlow(IObjectResolver resolver, LoadingService loadingService, SceneManager sceneManager,
             FenFromString fenFromString, IGameStateMachine gameStateMachineOffline, MenuStateMachine menuStateMachine,
@@ -60,7 +58,7 @@ namespace Chess3D.Runtime.Core
             StateDebugPanel stateDebugPanel, BufferDebugPanel bufferDebugPanel,
             GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel,
             AlgebraicNotationPanel algebraicNotationPanel, UndoRedoPausePanel undoRedoPausePanel,
-            MainViewLoader mainViewLoader, CoreMainViewModel coreMainViewModel, CoreHomeViewModel homeViewModel, ViewNavigator viewNavigator, GameSettingsViewModel gameSettingsViewModel, FenTextBoxViewModel fenTextBoxViewModel)
+            MainViewLoader mainViewLoader, CoreMainViewModel coreMainViewModel, CoreHomeViewModel homeViewModel, ViewNavigator viewNavigator, GameSettingsViewModel gameSettingsViewModel, FenTextBoxViewModel fenTextBoxViewModel, ClockPanelFactory clockPanelFactory)
         {
             _resolver = resolver;
             _loadingService = loadingService;
@@ -86,6 +84,7 @@ namespace Chess3D.Runtime.Core
             _viewNavigator = viewNavigator;
             _gameSettingsViewModel = gameSettingsViewModel;
             _fenTextBoxViewModel = fenTextBoxViewModel;
+            _clockPanelFactory = clockPanelFactory;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = new())
@@ -113,15 +112,10 @@ namespace Chess3D.Runtime.Core
             await _loadingService.BeginLoading(_fenTextBoxViewModel);
             await _loadingService.BeginLoading(_algebraicNotationPanel);
             await _loadingService.BeginLoading(_undoRedoPausePanel);
-            SpawnClockPanel();
+
+            _clockPanelFactory.Create();
 
             await _loadingService.BeginLoading(_gameStateMachineOffline, _resolver.Resolve<WarmUpState>());
-        }
-
-        private void SpawnClockPanel()
-        {
-            var clockPanelFactory = _resolver.Resolve<Func<ClockPanelCanvas>>();
-            clockPanelFactory();
         }
     }
 }
