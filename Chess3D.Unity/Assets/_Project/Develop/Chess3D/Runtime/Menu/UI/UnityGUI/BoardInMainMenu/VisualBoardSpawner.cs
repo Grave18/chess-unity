@@ -22,7 +22,7 @@ namespace Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu
         [SerializeField] private AssetLabelReference piecesLabel;
         [SerializeField] private PieceSpawnPoint[] pieceSpawnPoints;
 
-        private ISettingsService _settingsService;
+        private ISettingsContainer settingsContainer;
 
         private AsyncOperationHandle<GameObject> _boardHandle;
         private GameObject _boardInstance;
@@ -31,15 +31,15 @@ namespace Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu
         private readonly List<GameObject> _pieceInstances = new();
 
         [Inject]
-        public void Construct(ISettingsService settingsService)
+        public void Construct(ISettingsContainer settingsContainer)
         {
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
         }
 
         public UniTask Load()
         {
-            SpawnBoard(_settingsService.S.GameSettings.BoardModelAddress);
-            SpawnPieces(_settingsService.S.GameSettings.PiecesModelAddress);
+            SpawnBoard(settingsContainer.S.GameSettings.BoardModelAddress);
+            SpawnPieces(settingsContainer.S.GameSettings.PiecesModelAddress);
 
             return UniTask.CompletedTask;
         }

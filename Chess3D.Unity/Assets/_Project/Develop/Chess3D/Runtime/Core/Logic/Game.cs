@@ -23,10 +23,10 @@ namespace Chess3D.Runtime.Core.Logic
         private UciBuffer _uciBuffer;
         private Board _board;
         private FenFromString _fenFromString;
-        private ISettingsService _settingsService;
+        private ISettingsContainer settingsContainer;
 
         /// Is it turn of current player
-        public bool IsMyTurn => CurrentTurnColor == _settingsService.S.GameSettings.PlayerColor;
+        public bool IsMyTurn => CurrentTurnColor == settingsContainer.S.GameSettings.PlayerColor;
         public bool IsWhiteTurn => CurrentTurnColor == PieceColor.White;
         public bool IsBlackTurn => CurrentTurnColor == PieceColor.Black;
 
@@ -47,12 +47,12 @@ namespace Chess3D.Runtime.Core.Logic
 
 
         [Inject]
-        public void Construct(Board board, FenFromString fenFromString, UciBuffer uciBuffer, ISettingsService settingsService)
+        public void Construct(Board board, FenFromString fenFromString, UciBuffer uciBuffer, ISettingsContainer settingsContainer)
         {
             _board = board;
             _fenFromString = fenFromString;
             _uciBuffer = uciBuffer;
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
         }
 
         public UniTask Load()
@@ -267,14 +267,14 @@ namespace Chess3D.Runtime.Core.Logic
 
         private bool IsThreefoldRule()
         {
-            bool isThreefold = _uciBuffer.ThreefoldRepetitionCount >= _settingsService.S.GameSettings.ThreefoldRepetitionCount;
+            bool isThreefold = _uciBuffer.ThreefoldRepetitionCount >= settingsContainer.S.GameSettings.ThreefoldRepetitionCount;
 
             return isThreefold;
         }
 
         private bool IsRule50()
         {
-            return _uciBuffer.HalfMoveClock == _settingsService.S.GameSettings.FiftyMoveRuleCount * 2;
+            return _uciBuffer.HalfMoveClock == settingsContainer.S.GameSettings.FiftyMoveRuleCount * 2;
         }
 
         private bool IsInsufficientMaterial(out string checkDescription)

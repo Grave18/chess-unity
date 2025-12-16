@@ -11,7 +11,7 @@ namespace Chess3D.Runtime.Core.Logic
     public sealed class ClockOnline : NetworkBehaviour, IClock, IDisposable
     {
         private Game _game;
-        private ISettingsService _settingsService;
+        private ISettingsContainer settingsContainer;
 
         private TimeSpan _initialWhiteTime;
         private TimeSpan _initialBlackTime;
@@ -27,10 +27,10 @@ namespace Chess3D.Runtime.Core.Logic
         private readonly CompositeDisposable _disposables = new();
 
         [Inject]
-        public void Construct(Game game, ISettingsService settingsService, CoreEvents coreEvents)
+        public void Construct(Game game, ISettingsContainer settingsContainer, CoreEvents coreEvents)
         {
             _game = game;
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
 
             coreEvents.OnWarmup.Subscribe(_ => InitTime()).AddTo(_disposables);
             coreEvents.OnStart.Subscribe(_ => StartTimer()).AddTo(_disposables);
@@ -47,7 +47,7 @@ namespace Chess3D.Runtime.Core.Logic
 
         public UniTask Load()
         {
-            Vector2Int time = _settingsService.S.GameSettings.Time;
+            Vector2Int time = settingsContainer.S.GameSettings.Time;
             _initialWhiteTime = TimeSpan.FromMinutes(time.x) + TimeSpan.FromSeconds(time.y);
             _initialBlackTime = _initialWhiteTime;
 

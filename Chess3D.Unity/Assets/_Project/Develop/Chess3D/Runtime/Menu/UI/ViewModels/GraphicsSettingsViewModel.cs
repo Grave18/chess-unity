@@ -22,13 +22,13 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [ObservableProperty] private ResolutionUi _selectedResolution;
         [ObservableProperty] private string _selectedQuality;
 
-        private readonly ISettingsService _settingsService;
+        private readonly ISettingsContainer settingsContainer;
 
         private bool _isNeedToApplySettings;
 
-        public GraphicsSettingsViewModel(ISettingsService settingsService)
+        public GraphicsSettingsViewModel(ISettingsContainer settingsContainer)
         {
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
         }
 
         public UniTask Load()
@@ -48,7 +48,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
                 new("Windowed", 3),
             };
 
-            _selectedFullscreenMode = FullscreenModes.FirstOrDefault(mode => mode.Index == _settingsService.S.GraphicsSettings.FullScreenMode);
+            _selectedFullscreenMode = FullscreenModes.FirstOrDefault(mode => mode.Index == settingsContainer.S.GraphicsSettings.FullScreenMode);
         }
 
         private void InitResolution()
@@ -59,7 +59,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
                 Reverse();
 
             Resolutions = new ObservableCollection<ResolutionUi>(availableResolutions);
-            _selectedResolution = Resolutions.FirstOrDefault(res => res.Width == _settingsService.S.GraphicsSettings.Width && res.Height == _settingsService.S.GraphicsSettings.Height);
+            _selectedResolution = Resolutions.FirstOrDefault(res => res.Width == settingsContainer.S.GraphicsSettings.Width && res.Height == settingsContainer.S.GraphicsSettings.Height);
         }
 
         private void InitQuality()
@@ -69,8 +69,8 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             Qualities = new ObservableCollection<string>(levelsForPlatform);
             _selectedQuality = Qualities.FirstOrDefault(quality =>
             {
-                string name = _settingsService.S.GraphicsSettings.Quality < QualitySettings.names.Length
-                    ? QualitySettings.names[_settingsService.S.GraphicsSettings.Quality]
+                string name = settingsContainer.S.GraphicsSettings.Quality < QualitySettings.names.Length
+                    ? QualitySettings.names[settingsContainer.S.GraphicsSettings.Quality]
                     : QualitySettings.names.FirstOrDefault();
                 return quality == name;
             });
@@ -78,22 +78,22 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         partial void OnSelectedFullscreenModeChanged(FullscreenModeUi value)
         {
-            _settingsService.S.GraphicsSettings.FullScreenMode = value.Index;
+            settingsContainer.S.GraphicsSettings.FullScreenMode = value.Index;
             _isNeedToApplySettings = true;
             ApplySettingsCommand.NotifyCanExecuteChanged();
         }
 
         partial void OnSelectedResolutionChanged(ResolutionUi value)
         {
-            _settingsService.S.GraphicsSettings.Height = value.Height;
-            _settingsService.S.GraphicsSettings.Width = value.Width;
+            settingsContainer.S.GraphicsSettings.Height = value.Height;
+            settingsContainer.S.GraphicsSettings.Width = value.Width;
             _isNeedToApplySettings = true;
             ApplySettingsCommand.NotifyCanExecuteChanged();
         }
 
         partial void OnSelectedQualityChanged(string value)
         {
-            _settingsService.S.GraphicsSettings.Quality = QualitySettings.names.ToList().IndexOf(value);
+            settingsContainer.S.GraphicsSettings.Quality = QualitySettings.names.ToList().IndexOf(value);
             _isNeedToApplySettings = true;
             ApplySettingsCommand.NotifyCanExecuteChanged();
         }
@@ -106,16 +106,16 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [RelayCommand(CanExecute = nameof(CanExecuteApply))]
         private void ApplySettings()
         {
-            int width = _settingsService.S.GraphicsSettings.Width;
-            int height = _settingsService.S.GraphicsSettings.Height;
-            int fullScreenMode = _settingsService.S.GraphicsSettings.FullScreenMode;
-            int qualityIndex = _settingsService.S.GraphicsSettings.Quality;
+            int width = settingsContainer.S.GraphicsSettings.Width;
+            int height = settingsContainer.S.GraphicsSettings.Height;
+            int fullScreenMode = settingsContainer.S.GraphicsSettings.FullScreenMode;
+            int qualityIndex = settingsContainer.S.GraphicsSettings.Quality;
 
             Screen.SetResolution(width, height, (FullScreenMode)fullScreenMode);
             QualitySettings.SetQualityLevel(qualityIndex);
 
             _isNeedToApplySettings = false;
-            _settingsService.Save();
+            settingsContainer.Save();
             ApplySettingsCommand.NotifyCanExecuteChanged();
         }
     }

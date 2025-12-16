@@ -5,7 +5,7 @@ using Chess3D.Runtime.Core.Logic;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
-using AudioSettings = Chess3D.Runtime.Bootstrap.Settings.AudioSettings;
+using AudioSettings = Chess3D.Runtime.AudioSettings;
 using PlayerSettings = Chess3D.Runtime.Bootstrap.Settings.PlayerSettings;
 
 namespace Chess3D.Editor

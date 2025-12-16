@@ -15,23 +15,23 @@ namespace Chess3D.Runtime.Core.AssetManagement
     {
         public LoadedPrefabs Prefabs;
 
-        private readonly ISettingsService _settingsService;
+        private readonly ISettingsContainer settingsContainer;
 
         private AsyncOperationHandle<GameObject> _boardHandle;
         private AsyncOperationHandle<IList<GameObject>> _piecesHandle;
 
-        public Assets(ISettingsService settingsService)
+        public Assets(ISettingsContainer settingsContainer)
         {
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
         }
 
         public async UniTask Load()
         {
-            string boardModelAddress = _settingsService.S.GameSettings.BoardModelAddress;
+            string boardModelAddress = settingsContainer.S.GameSettings.BoardModelAddress;
             _boardHandle = Addressables.LoadAssetAsync<GameObject>(boardModelAddress);
             GameObject boardPrefab = await _boardHandle;
 
-            string piecesModelAddress = _settingsService.S.GameSettings.PiecesModelAddress;
+            string piecesModelAddress = settingsContainer.S.GameSettings.PiecesModelAddress;
             _piecesHandle =  Addressables.LoadAssetsAsync<GameObject>(piecesModelAddress, _ => { });
             IList<GameObject> piecePrefabs = await _piecesHandle;
 

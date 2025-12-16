@@ -14,21 +14,21 @@ namespace Chess3D.Runtime.Bootstrap
     {
         private readonly LoadingService _loadingService;
         private readonly SceneManager _sceneManager;
-        private readonly ISettingsService _settingsService;
+        private readonly ISettingsContainer settingsContainer;
         private readonly ApplicationConfigurationLoadUnit _applicationConfigurationLoadUnit;
 
-        public BootstrapFlow(LoadingService loadingService, SceneManager sceneManager, ISettingsService settingsService,
+        public BootstrapFlow(LoadingService loadingService, SceneManager sceneManager, ISettingsContainer settingsContainer,
             ApplicationConfigurationLoadUnit applicationConfigurationLoadUnit)
         {
             _loadingService = loadingService;
             _sceneManager = sceneManager;
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
             _applicationConfigurationLoadUnit = applicationConfigurationLoadUnit;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = new())
         {
-            await _loadingService.BeginLoading(_settingsService);
+            await _loadingService.BeginLoading(settingsContainer);
             await _loadingService.BeginLoading(_applicationConfigurationLoadUnit);
 
             UniRxUtils.Initialize();

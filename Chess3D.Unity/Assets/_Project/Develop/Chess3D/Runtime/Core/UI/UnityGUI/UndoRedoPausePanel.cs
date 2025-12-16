@@ -25,7 +25,7 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI
         [SerializeField] private Sprite pauseSprite;
 
         private Game _game;
-        private ISettingsService _settingsService;
+        private ISettingsContainer settingsContainer;
         private IGameStateMachine _gameStateMachine;
 
         private bool _isPause;
@@ -33,10 +33,10 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI
         private readonly CompositeDisposable _disposables = new();
 
         [Inject]
-        public void Construct(Game game, CoreEvents coreEvents, ISettingsService settingsService, IGameStateMachine gameStateMachine)
+        public void Construct(Game game, CoreEvents coreEvents, ISettingsContainer settingsContainer, IGameStateMachine gameStateMachine)
         {
             _game = game;
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
             _gameStateMachine = gameStateMachine;
 
             coreEvents.OnPlay.Subscribe(_ => OnPlay()).AddTo(_disposables);
@@ -76,7 +76,7 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI
         {
             if (OnlineInstanceHandler.IsOnline)
             {
-                PieceColor playerColor = _settingsService.S.GameSettings.PlayerColor;
+                PieceColor playerColor = settingsContainer.S.GameSettings.PlayerColor;
                 pause.interactable = playerColor == _game.CurrentTurnColor;
             }
             else

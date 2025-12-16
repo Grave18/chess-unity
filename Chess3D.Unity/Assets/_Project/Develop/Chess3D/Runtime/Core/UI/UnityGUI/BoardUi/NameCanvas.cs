@@ -9,21 +9,21 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.BoardUi
 {
     public class NameCanvas : MonoBehaviour, ILoadUnit
     {
-        private ISettingsService _settingsService;
+        private ISettingsContainer settingsContainer;
 
         [SerializeField] private TMP_Text whitePlayerNameText;
         [SerializeField] private TMP_Text blackPlayerNameText;
 
         [Inject]
-        public void Construct(ISettingsService settingsService)
+        public void Construct(ISettingsContainer settingsContainer)
         {
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
         }
 
         public UniTask Load()
         {
-            whitePlayerNameText.text = _settingsService.S.GameSettings.PlayerWhite.Name;
-            blackPlayerNameText.text = _settingsService.S.GameSettings.PlayerBlack.Name;
+            whitePlayerNameText.text = settingsContainer.S.GameSettings.PlayerWhite.Name;
+            blackPlayerNameText.text = settingsContainer.S.GameSettings.PlayerBlack.Name;
 
             return UniTask.CompletedTask;
         }

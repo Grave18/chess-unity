@@ -14,7 +14,7 @@ namespace Chess3D.Runtime.Core.Logic.Players
         public IPlayer CurrentPlayer { get; private set; }
 
         private readonly Game _game;
-        private readonly ISettingsService _settingsService;
+        private readonly ISettingsContainer settingsContainer;
         private readonly FenFromString _fenFromString;
         private readonly PlayerFactory _playerFactory;
 
@@ -22,12 +22,12 @@ namespace Chess3D.Runtime.Core.Logic.Players
         private IPlayer _playerBlack;
 
         private readonly CompositeDisposable _disposables = new();
-        public Competitors(Game game, FenFromString fenFromString, PlayerFactory playerFactory, CoreEvents coreEvents, ISettingsService settingsService)
+        public Competitors(Game game, FenFromString fenFromString, PlayerFactory playerFactory, CoreEvents coreEvents, ISettingsContainer settingsContainer)
         {
             _game = game;
             _fenFromString = fenFromString;
             _playerFactory = playerFactory;
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
 
             coreEvents.OnEndMove.Subscribe(_ => SwapCurrentPlayer()).AddTo(_disposables);
         }
@@ -39,8 +39,8 @@ namespace Chess3D.Runtime.Core.Logic.Players
 
         public UniTask Load()
         {
-            _playerWhite = _playerFactory.Create(_settingsService.S.GameSettings.PlayerWhite.PlayerType);
-            _playerBlack = _playerFactory.Create(_settingsService.S.GameSettings.PlayerBlack.PlayerType);
+            _playerWhite = _playerFactory.Create(settingsContainer.S.GameSettings.PlayerWhite.PlayerType);
+            _playerBlack = _playerFactory.Create(settingsContainer.S.GameSettings.PlayerBlack.PlayerType);
             CurrentPlayer = _fenFromString.TurnColor == PieceColor.White ? _playerWhite : _playerBlack;
 
             return UniTask.CompletedTask;

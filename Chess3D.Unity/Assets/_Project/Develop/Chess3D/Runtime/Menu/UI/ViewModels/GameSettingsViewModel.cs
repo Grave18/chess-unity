@@ -21,11 +21,11 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [ObservableProperty] private string _selectedTime;
         [ObservableProperty] private string _selectedDifficulty;
 
-        private readonly ISettingsService _settingsService;
+        private readonly ISettingsContainer settingsContainer;
 
-        public GameSettingsViewModel(ISettingsService settingsService)
+        public GameSettingsViewModel(ISettingsContainer settingsContainer)
         {
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
         }
 
         public UniTask Load()
@@ -38,33 +38,33 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private void InitName()
         {
-            _playerName = _settingsService.S.GameSettings.PlayerWhite.Name;
+            _playerName = settingsContainer.S.GameSettings.PlayerWhite.Name;
         }
 
         private void IntiTime()
         {
             Times = new ObservableCollection<string> { "1", "3", "5", "10", "20", "30", "40", "50", "60" };
-            _selectedTime = _settingsService.S.GameSettings.Time.x.ToString();
+            _selectedTime = settingsContainer.S.GameSettings.Time.x.ToString();
         }
 
         private void InitDifficulty()
         {
             var difficulties = Enum.GetNames(typeof(ComputerSkillLevel));
             Difficulties = new ObservableCollection<string>(difficulties);
-            _selectedDifficulty = _settingsService.S.GameSettings.PlayerBlack.ComputerSkillLevel.ToString();
+            _selectedDifficulty = settingsContainer.S.GameSettings.PlayerBlack.ComputerSkillLevel.ToString();
         }
 
         partial void OnPlayerNameChanged(string value)
         {
-            _settingsService.S.GameSettings.PlayerWhite.Name = value;
+            settingsContainer.S.GameSettings.PlayerWhite.Name = value;
         }
 
         partial void OnSelectedTimeChanged(string value)
         {
             if (int.TryParse(value, out int result))
             {
-                _settingsService.S.GameSettings.Time = new Vector2Int(result, 0);
-                _settingsService.Save();
+                settingsContainer.S.GameSettings.Time = new Vector2Int(result, 0);
+                settingsContainer.Save();
             }
         }
 
@@ -72,8 +72,8 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         {
             if (Enum.TryParse(value, out ComputerSkillLevel computerSkillLevel))
             {
-                _settingsService.S.GameSettings.PlayerBlack.ComputerSkillLevel = computerSkillLevel;
-                _settingsService.Save();
+                settingsContainer.S.GameSettings.PlayerBlack.ComputerSkillLevel = computerSkillLevel;
+                settingsContainer.Save();
             }
         }
     }

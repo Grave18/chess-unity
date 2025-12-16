@@ -17,7 +17,7 @@ namespace Chess3D.Runtime.Core.AI
     public sealed class Stockfish : IDisposable
     {
         private readonly UciBuffer _uciBuffer;
-        private readonly ISettingsService _settingsService;
+        private readonly ISettingsContainer settingsContainer;
 
         private PlayerSettings _playerSettings;
 
@@ -38,10 +38,10 @@ namespace Chess3D.Runtime.Core.AI
 
         private readonly TaskCompletionSource<bool> _isAiLoaded = new();
 
-        public Stockfish(UciBuffer uciBuffer, ISettingsService settingsService)
+        public Stockfish(UciBuffer uciBuffer, ISettingsContainer settingsContainer)
         {
             _uciBuffer = uciBuffer;
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
         }
 
         public void Dispose()
@@ -239,7 +239,7 @@ namespace Chess3D.Runtime.Core.AI
 
             // Set start position
             // Todo: get uci from command buffer _buffer.GetUciMoves()
-            string positionCommand = $"position fen {_settingsService.S.GameSettings.CurrentFen} {_uciBuffer.GetMovesUci()}";
+            string positionCommand = $"position fen {settingsContainer.S.GameSettings.CurrentFen} {_uciBuffer.GetMovesUci()}";
             Log.AI.D(positionCommand);
             PostCommand(positionCommand);
 

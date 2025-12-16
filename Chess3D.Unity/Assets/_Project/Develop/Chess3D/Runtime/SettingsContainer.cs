@@ -1,21 +1,22 @@
 ﻿using System;
 using System.IO;
+using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Scripting;
 
-namespace Chess3D.Runtime.Bootstrap.Settings
+namespace Chess3D.Runtime
 {
-    public interface ISettingsService : ILoadUnit
+    public interface ISettingsContainer : ILoadUnit
     {
         Settings S { get; }
         void Save();
     }
 
     [Preserve]
-    public sealed class SettingsService : ISettingsService
+    public sealed class SettingsContainer : ISettingsContainer
     {
         public Settings S { get; private set; }
 

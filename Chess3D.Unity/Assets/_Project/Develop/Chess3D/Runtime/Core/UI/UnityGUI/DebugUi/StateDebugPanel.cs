@@ -20,14 +20,14 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.DebugUi
 
         private Game _game;
         private IGameStateMachine _gameStateMachine;
-        private ISettingsService _settingsService;
+        private ISettingsContainer settingsContainer;
 
         [Inject]
-        public void Construct(Game game, IGameStateMachine gameStateMachine, ISettingsService settingsService)
+        public void Construct(Game game, IGameStateMachine gameStateMachine, ISettingsContainer settingsContainer)
         {
             _game = game;
             _gameStateMachine = gameStateMachine;
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
         }
 
         private void Update()
@@ -41,7 +41,7 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.DebugUi
             stateText.text = "State: " + _gameStateMachine?.StateName;
             turnText.text = "Turn: " + _game.CurrentTurnColor;
             checkText.text = "Check: " + _game.CheckType;
-            playerTypeText.text = "Player: " + _settingsService.S.GameSettings.PlayerWhite.PlayerType;
+            playerTypeText.text = "Player: " + settingsContainer.S.GameSettings.PlayerWhite.PlayerType;
         }
 
         private static string GetAuthority()

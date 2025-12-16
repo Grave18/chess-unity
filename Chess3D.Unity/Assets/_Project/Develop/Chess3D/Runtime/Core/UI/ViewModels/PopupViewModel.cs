@@ -24,18 +24,18 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
         private readonly FenFromBoard _fenFromBoard;
         private readonly MenuStateMachine _menuStateMachine;
         private readonly SceneManager _sceneManager;
-        private readonly ISettingsService _settingsService;
+        private readonly ISettingsContainer settingsContainer;
         private readonly ConnectionTerminator _connectionTerminator;
 
         public RelayCommand PopupYesCommand { get; set; } = new();
         public RelayCommand PopupNoCommand { get; set; } = new();
 
-        public PopupViewModel(FenFromBoard fenFromBoard, MenuStateMachine menuStateMachine, SceneManager sceneManager, ISettingsService settingsService, ConnectionTerminator connectionTerminator)
+        public PopupViewModel(FenFromBoard fenFromBoard, MenuStateMachine menuStateMachine, SceneManager sceneManager, ISettingsContainer settingsContainer, ConnectionTerminator connectionTerminator)
         {
             _fenFromBoard = fenFromBoard;
             _menuStateMachine = menuStateMachine;
             _sceneManager = sceneManager;
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
             _connectionTerminator = connectionTerminator;
         }
 
@@ -112,8 +112,8 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
             if (IsSaveCheckBoxChecked)
             {
                 string fen = _fenFromBoard.Get();
-                _settingsService.S.GameSettings.SavedFen = fen;
-                _settingsService.Save();
+                settingsContainer.S.GameSettings.SavedFen = fen;
+                settingsContainer.Save();
             }
         }
 

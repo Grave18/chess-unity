@@ -17,7 +17,7 @@ namespace Chess3D.Runtime.Bootstrap
         {
             builder.Register<LoadingService>(Lifetime.Scoped);
             builder.Register<SceneManager>(Lifetime.Singleton);
-            builder.Register<SettingsService>(Lifetime.Singleton).As<ISettingsService>();
+            builder.Register<SettingsContainer>(Lifetime.Singleton).As<ISettingsContainer>();
             builder.Register<ApplicationConfigurationLoadUnit>(Lifetime.Scoped);
 
             builder.RegisterEntryPoint<BootstrapFlow>();

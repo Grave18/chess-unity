@@ -14,11 +14,11 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
     {
         [ObservableProperty] private string _currentFen;
 
-        private readonly ISettingsService _settingsService;
+        private readonly ISettingsContainer settingsContainer;
 
-        public FenTextBoxViewModel(ISettingsService settingsService)
+        public FenTextBoxViewModel(ISettingsContainer settingsContainer)
         {
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
         }
 
         public UniTask Load()
@@ -29,31 +29,31 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private void InitFen()
         {
-            _currentFen = _settingsService.S.GameSettings.CurrentFen;
+            _currentFen = settingsContainer.S.GameSettings.CurrentFen;
         }
 
         [RelayCommand]
         private void GetDefaultFen()
         {
-            CurrentFen = _settingsService.S.GameSettings.DefaultFen;
+            CurrentFen = settingsContainer.S.GameSettings.DefaultFen;
         }
 
         [RelayCommand]
         private void GetSavedFen()
         {
-            CurrentFen = _settingsService.S.GameSettings.SavedFen;
+            CurrentFen = settingsContainer.S.GameSettings.SavedFen;
         }
 
         partial void OnCurrentFenChanged(string value)
         {
             if (FenValidator.IsValid(value, out string errorMessage))
             {
-                _settingsService.S.GameSettings.CurrentFen = value;
-                _settingsService.Save();
+                settingsContainer.S.GameSettings.CurrentFen = value;
+                settingsContainer.Save();
             }
             else
             {
-                CurrentFen = _settingsService.S.GameSettings.CurrentFen;
+                CurrentFen = settingsContainer.S.GameSettings.CurrentFen;
                 Log.Editor.W(errorMessage);
             }
         }

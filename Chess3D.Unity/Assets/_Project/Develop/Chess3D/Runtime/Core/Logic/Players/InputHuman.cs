@@ -21,7 +21,7 @@ namespace Chess3D.Runtime.Core.Logic.Players
         private readonly IGameStateMachine _gameStateMachine;
         private readonly Camera _mainCamera;
         private readonly Highlighter _highlighter;
-        private readonly ISettingsService _settingsService;
+        private readonly ISettingsContainer settingsContainer;
         private readonly PromotionPanel _promotionPanel;
 
         // TODO: Move to config
@@ -29,13 +29,13 @@ namespace Chess3D.Runtime.Core.Logic.Players
         private bool _isPlaying;
 
         public InputHuman(Game game, IGameStateMachine gameStateMachine,
-            ISettingsService settingsService, [Key(CameraKeys.Main)] Camera mainCamera,
+            ISettingsContainer settingsContainer, [Key(CameraKeys.Main)] Camera mainCamera,
             Highlighter highlighter, PromotionPanel promotionPanel)
         {
             _game = game;
             _highlighter = highlighter;
             _mainCamera = mainCamera;
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
             _promotionPanel = promotionPanel;
             _gameStateMachine = gameStateMachine;
         }
@@ -122,7 +122,7 @@ namespace Chess3D.Runtime.Core.Logic.Players
 
             if (CanPromote(piece, toSquare))
             {
-                if (_settingsService.S.GameSettings.IsAutoPromoteToQueen)
+                if (settingsContainer.S.GameSettings.IsAutoPromoteToQueen)
                 {
                     uci += "q";
                     _gameStateMachine.Move(uci);

@@ -25,7 +25,7 @@ namespace Chess3D.Runtime.Core.ChessBoard
         private Assets _assets;
         private UciBuffer _commandUciBuffer;
         private FenFromString _fenFromString;
-        private ISettingsService _settingsService;
+        private ISettingsContainer settingsContainer;
         [SerializeField] private Transform piecesParent;
         [SerializeField] private Transform squaresParent;
         [SerializeField] private BeatenPieces beatenPieces;
@@ -42,13 +42,13 @@ namespace Chess3D.Runtime.Core.ChessBoard
         public Transform PiecesParent => piecesParent;
 
         [Inject]
-        public void Construct(PieceFactory pieceFactory, Assets assets, UciBuffer commandUciBuffer, FenFromString fenFromString, ISettingsService settingsService)
+        public void Construct(PieceFactory pieceFactory, Assets assets, UciBuffer commandUciBuffer, FenFromString fenFromString, ISettingsContainer settingsContainer)
         {
             this.pieceFactory = pieceFactory;
             _assets = assets;
             _commandUciBuffer = commandUciBuffer;
             _fenFromString = fenFromString;
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
         }
 
         public UniTask Load()
@@ -239,12 +239,12 @@ namespace Chess3D.Runtime.Core.ChessBoard
 
         private void RotateBoard()
         {
-            if (_settingsService.S.GameSettings.PlayerColor == PieceColor.White)
+            if (settingsContainer.S.GameSettings.PlayerColor == PieceColor.White)
             {
                 transform.localRotation = Quaternion.identity;
                 beatenPieces.gameObject.transform.localScale = Vector3.one;
             }
-            else if (_settingsService.S.GameSettings.PlayerColor == PieceColor.Black)
+            else if (settingsContainer.S.GameSettings.PlayerColor == PieceColor.Black)
             {
                 transform.localRotation = Quaternion.Euler(0, 180, 0);
                 beatenPieces.gameObject.transform.localScale = new Vector3(-1, 1, 1);

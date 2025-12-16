@@ -14,14 +14,14 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
     {
         [ObservableProperty] private bool _isOnlineEnabled;
 
-        private readonly ISettingsService _settingsService;
+        private readonly ISettingsContainer settingsContainer;
         private readonly LobbyManager _lobbyManager;
         private readonly SceneManager _sceneManager;
         private readonly ViewNavigator _viewNavigator;
 
-        public PlayViewModel(ISettingsService settingsService, LobbyManager lobbyManager, SceneManager sceneManager, ViewNavigator viewNavigator)
+        public PlayViewModel(ISettingsContainer settingsContainer, LobbyManager lobbyManager, SceneManager sceneManager, ViewNavigator viewNavigator)
         {
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
             _lobbyManager = lobbyManager;
             _sceneManager = sceneManager;
             _viewNavigator = viewNavigator;
@@ -42,10 +42,10 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private void SetupGameHumanVsHumanOffline()
         {
-            _settingsService.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
-            _settingsService.S.GameSettings.PlayerBlack.PlayerType = PlayerType.Human;
+            settingsContainer.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
+            settingsContainer.S.GameSettings.PlayerBlack.PlayerType = PlayerType.Human;
 
-            _settingsService.S.GameSettings.PlayerBlack.Name = "Player 2";
+            settingsContainer.S.GameSettings.PlayerBlack.Name = "Player 2";
         }
 
         [RelayCommand]
@@ -57,11 +57,11 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private void SetupGameHumanVsComputerOffline()
         {
-            _settingsService.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
-            _settingsService.S.GameSettings.PlayerBlack.PlayerType = PlayerType.Computer;
+            settingsContainer.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
+            settingsContainer.S.GameSettings.PlayerBlack.PlayerType = PlayerType.Computer;
 
-            ComputerSkillLevel skill = _settingsService.S.GameSettings.PlayerBlack.ComputerSkillLevel;
-            _settingsService.S.GameSettings.PlayerBlack.Name = $"Computer({skill})";
+            ComputerSkillLevel skill = settingsContainer.S.GameSettings.PlayerBlack.ComputerSkillLevel;
+            settingsContainer.S.GameSettings.PlayerBlack.Name = $"Computer({skill})";
         }
 
         [RelayCommand]

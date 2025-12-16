@@ -54,7 +54,7 @@ namespace Chess3D.Runtime.Core.MainCamera
 
         private Game _game;
         private Camera _mainCamera;
-        private ISettingsService _settingsService;
+        private ISettingsContainer settingsContainer;
         private FenFromString _fenFromString;
 
         private bool _isUpdating;
@@ -73,18 +73,18 @@ namespace Chess3D.Runtime.Core.MainCamera
         private Vector3 _newPosition;
         private float _tPitch;
 
-        private bool IsVsPlayer => _settingsService.S.GameSettings.PlayerWhite.PlayerType == PlayerType.Human
-                                   && _settingsService.S.GameSettings.PlayerBlack.PlayerType == PlayerType.Human;
+        private bool IsVsPlayer => settingsContainer.S.GameSettings.PlayerWhite.PlayerType == PlayerType.Human
+                                   && settingsContainer.S.GameSettings.PlayerBlack.PlayerType == PlayerType.Human;
 
         private readonly CompositeDisposable _disposables = new();
 
         [Inject]
         public void Construct(Game game, [Key(CameraKeys.Main)] Camera mainCamera,
-            ISettingsService settingsService, CoreEvents coreEvents, FenFromString fenFromString)
+            ISettingsContainer settingsContainer, CoreEvents coreEvents, FenFromString fenFromString)
         {
             _game = game;
             _mainCamera = mainCamera;
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
             _fenFromString = fenFromString;
 
             coreEvents.OnEndMove.Subscribe(_ => AutoRotate()).AddTo(_disposables);
@@ -98,10 +98,10 @@ namespace Chess3D.Runtime.Core.MainCamera
 
         public UniTask Load()
         {
-            _rotateCameraToColor = IsVsPlayer ? _fenFromString.TurnColor : _settingsService.S.GameSettings.PlayerColor;
-            _isStartRotationOn = _settingsService.S.GameSettings.IsRotateCameraOnStart;
+            _rotateCameraToColor = IsVsPlayer ? _fenFromString.TurnColor : settingsContainer.S.GameSettings.PlayerColor;
+            _isStartRotationOn = settingsContainer.S.GameSettings.IsRotateCameraOnStart;
             // TODO: refactor online camera
-            _isAutoRotateCamera = IsVsPlayer && OnlineInstanceHandler.IsOffline && _settingsService.S.GameSettings.IsAutoRotateCamera;
+            _isAutoRotateCamera = IsVsPlayer && OnlineInstanceHandler.IsOffline && settingsContainer.S.GameSettings.IsAutoRotateCamera;
 
             _newDistance = distance;
             _newYawRad = yawRad;

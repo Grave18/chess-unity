@@ -17,18 +17,18 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private AudioMixer _audioMixer;
 
-        private readonly ISettingsService _settingsService;
+        private readonly ISettingsContainer settingsContainer;
 
-        public AudioSettingsViewModel(ISettingsService settingsService)
+        public AudioSettingsViewModel(ISettingsContainer settingsContainer)
         {
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
         }
 
         public UniTask Load()
         {
-            _masterVolume = _settingsService.S.AudioSettings.MasterVolume;
-            _musicVolume = _settingsService.S.AudioSettings.MusicVolume;
-            _effectsVolume = _settingsService.S.AudioSettings.EffectsVolume;
+            _masterVolume = settingsContainer.S.AudioSettings.MasterVolume;
+            _musicVolume = settingsContainer.S.AudioSettings.MusicVolume;
+            _effectsVolume = settingsContainer.S.AudioSettings.EffectsVolume;
             _audioMixer = AssetService.R.Load<AudioMixer>(RuntimeConstants.Settings.AudioMixerFileName);
 
             return UniTask.CompletedTask;
@@ -36,23 +36,23 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         partial void OnMasterVolumeChanged(float value)
         {
-            _settingsService.S.AudioSettings.MasterVolume = value;
+            settingsContainer.S.AudioSettings.MasterVolume = value;
             _audioMixer.SetFloat(RuntimeConstants.Settings.MasterVolumeKey, VolumeUtil.Map01ToDb(value));
-            _settingsService.Save();
+            settingsContainer.Save();
         }
 
         partial void OnMusicVolumeChanged(float value)
         {
-            _settingsService.S.AudioSettings.MusicVolume = value;
+            settingsContainer.S.AudioSettings.MusicVolume = value;
             _audioMixer.SetFloat(RuntimeConstants.Settings.MusicVolumeKey, VolumeUtil.Map01ToDb(value));
-            _settingsService.Save();
+            settingsContainer.Save();
         }
 
         partial void OnEffectsVolumeChanged(float value)
         {
-            _settingsService.S.AudioSettings.EffectsVolume = value;
+            settingsContainer.S.AudioSettings.EffectsVolume = value;
             _audioMixer.SetFloat(RuntimeConstants.Settings.EffectsVolumeKey, VolumeUtil.Map01ToDb(value));
-            _settingsService.Save();
+            settingsContainer.Save();
         }
     }
 }

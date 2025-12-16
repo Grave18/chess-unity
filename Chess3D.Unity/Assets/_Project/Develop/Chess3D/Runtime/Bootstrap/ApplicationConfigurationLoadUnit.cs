@@ -10,11 +10,11 @@ namespace Chess3D.Runtime.Bootstrap
     [Preserve]
     public class ApplicationConfigurationLoadUnit : ILoadUnit
     {
-        private readonly ISettingsService _settingsService;
+        private readonly ISettingsContainer settingsContainer;
 
-        public ApplicationConfigurationLoadUnit(ISettingsService settingsService)
+        public ApplicationConfigurationLoadUnit(ISettingsContainer settingsContainer)
         {
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
         }
 
         public UniTask Load()
@@ -34,34 +34,34 @@ namespace Chess3D.Runtime.Bootstrap
 
         private void SetQuality()
         {
-            QualitySettings.SetQualityLevel(_settingsService.S.GraphicsSettings.Quality);
+            QualitySettings.SetQualityLevel(settingsContainer.S.GraphicsSettings.Quality);
         }
 
         private void SetResolution()
         {
             InitializeResolution();
-            Screen.SetResolution(_settingsService.S.GraphicsSettings.Width,
-                _settingsService.S.GraphicsSettings.Height,
-                (FullScreenMode)_settingsService.S.GraphicsSettings.FullScreenMode);
+            Screen.SetResolution(settingsContainer.S.GraphicsSettings.Width,
+                settingsContainer.S.GraphicsSettings.Height,
+                (FullScreenMode)settingsContainer.S.GraphicsSettings.FullScreenMode);
         }
 
         private void InitializeResolution()
         {
-            if (_settingsService.S.GraphicsSettings.Width == 0 ||
-                _settingsService.S.GraphicsSettings.Height == 0)
+            if (settingsContainer.S.GraphicsSettings.Width == 0 ||
+                settingsContainer.S.GraphicsSettings.Height == 0)
             {
-                _settingsService.S.GraphicsSettings.Width = Screen.currentResolution.width;
-                _settingsService.S.GraphicsSettings.Height = Screen.currentResolution.height;
-                _settingsService.Save();
+                settingsContainer.S.GraphicsSettings.Width = Screen.currentResolution.width;
+                settingsContainer.S.GraphicsSettings.Height = Screen.currentResolution.height;
+                settingsContainer.Save();
             }
         }
 
         private void SetVolume()
         {
             var audioMixer = AssetService.R.Load<AudioMixer>(RuntimeConstants.Settings.AudioMixerFileName);
-            audioMixer.SetFloat(RuntimeConstants.Settings.MasterVolumeKey, VolumeUtil.Map01ToDb(_settingsService.S.AudioSettings.MasterVolume));
-            audioMixer.SetFloat(RuntimeConstants.Settings.MusicVolumeKey, VolumeUtil.Map01ToDb(_settingsService.S.AudioSettings.MusicVolume));
-            audioMixer.SetFloat(RuntimeConstants.Settings.EffectsVolumeKey, VolumeUtil.Map01ToDb(_settingsService.S.AudioSettings.EffectsVolume));
+            audioMixer.SetFloat(RuntimeConstants.Settings.MasterVolumeKey, VolumeUtil.Map01ToDb(settingsContainer.S.AudioSettings.MasterVolume));
+            audioMixer.SetFloat(RuntimeConstants.Settings.MusicVolumeKey, VolumeUtil.Map01ToDb(settingsContainer.S.AudioSettings.MusicVolume));
+            audioMixer.SetFloat(RuntimeConstants.Settings.EffectsVolumeKey, VolumeUtil.Map01ToDb(settingsContainer.S.AudioSettings.EffectsVolume));
         }
     }
 }

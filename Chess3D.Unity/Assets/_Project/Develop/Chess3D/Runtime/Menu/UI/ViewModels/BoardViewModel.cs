@@ -18,13 +18,13 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [ObservableProperty] private string _selectedPiece;
         [ObservableProperty] private string _selectedBoard;
 
-        private readonly ISettingsService _settingsService;
+        private readonly ISettingsContainer settingsContainer;
         private readonly VisualBoardSpawner _visualBoardSpawner;
         private readonly ViewNavigator _viewNavigator;
 
-        public BoardViewModel(ISettingsService settingsService, VisualBoardSpawner visualBoardSpawner, ViewNavigator viewNavigator)
+        public BoardViewModel(ISettingsContainer settingsContainer, VisualBoardSpawner visualBoardSpawner, ViewNavigator viewNavigator)
         {
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
             _visualBoardSpawner = visualBoardSpawner;
             _viewNavigator = viewNavigator;
         }
@@ -38,7 +38,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private void InitPieces()
         {
-            _selectedPiece = _settingsService.S.GameSettings.PiecesModelAddress;
+            _selectedPiece = settingsContainer.S.GameSettings.PiecesModelAddress;
 
             Pieces = new ObservableCollection<string>
             {
@@ -49,7 +49,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private void InitBoards()
         {
-            _selectedBoard = _settingsService.S.GameSettings.BoardModelAddress;
+            _selectedBoard = settingsContainer.S.GameSettings.BoardModelAddress;
 
             Boards = new ObservableCollection<string>
             {
@@ -60,15 +60,15 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         partial void OnSelectedBoardChanged(string value)
         {
-            _settingsService.S.GameSettings.BoardModelAddress = value;
-            _settingsService.Save();
+            settingsContainer.S.GameSettings.BoardModelAddress = value;
+            settingsContainer.Save();
             _visualBoardSpawner.SpawnBoard(value);
         }
 
         partial void OnSelectedPieceChanged(string value)
         {
-            _settingsService.S.GameSettings.PiecesModelAddress = value;
-            _settingsService.Save();
+            settingsContainer.S.GameSettings.PiecesModelAddress = value;
+            settingsContainer.Save();
             _visualBoardSpawner.SpawnPieces(value);
         }
 

@@ -10,17 +10,17 @@ namespace Chess3D.Runtime.Core.Logic
         private ClockPanelCanvas _cachedInstance;
 
         private readonly IObjectResolver _resolver;
-        private readonly ISettingsService _settingsService;
+        private readonly ISettingsContainer settingsContainer;
 
-        public ClockPanelFactory(IObjectResolver resolver, ISettingsService settingsService)
+        public ClockPanelFactory(IObjectResolver resolver, ISettingsContainer settingsContainer)
         {
             _resolver = resolver;
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
         }
 
         public ClockPanelCanvas Create()
         {
-            return _cachedInstance ??= _resolver.Resolve<ClockPanelCanvas>(_settingsService.S.GameSettings.PlayerColor);
+            return _cachedInstance ??= _resolver.Resolve<ClockPanelCanvas>(settingsContainer.S.GameSettings.PlayerColor);
         }
     }
 }

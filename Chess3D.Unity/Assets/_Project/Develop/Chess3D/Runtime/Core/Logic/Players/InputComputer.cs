@@ -12,14 +12,14 @@ namespace Chess3D.Runtime.Core.Logic.Players
     public sealed class InputComputer : IInputHandler
     {
         private readonly Stockfish _stockfish;
-        private readonly ISettingsService _settingsService;
+        private readonly ISettingsContainer settingsContainer;
         private readonly IGameStateMachine _gameStateMachine;
 
         private CancellationTokenSource _moveCts = new();
 
-        public InputComputer(Stockfish stockfish, ISettingsService settingsService, IGameStateMachine gameStateMachine)
+        public InputComputer(Stockfish stockfish, ISettingsContainer settingsContainer, IGameStateMachine gameStateMachine)
         {
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
             _stockfish = stockfish;
             _gameStateMachine = gameStateMachine;
         }
@@ -34,7 +34,7 @@ namespace Chess3D.Runtime.Core.Logic.Players
             string uci;
             try
             {
-                PlayerSettings player2Settings = _settingsService.S.GameSettings.PlayerBlack;
+                PlayerSettings player2Settings = settingsContainer.S.GameSettings.PlayerBlack;
                 uci = await _stockfish.GetUci(player2Settings, _moveCts.Token);
             }
             catch (Exception ex)

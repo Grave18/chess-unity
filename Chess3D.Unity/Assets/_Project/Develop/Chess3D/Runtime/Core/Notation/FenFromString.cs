@@ -17,21 +17,21 @@ namespace Chess3D.Runtime.Core.Notation
         public int FullMoveCounter { get; private set; }
         public IList<PieceInfo> PieceInfos { get; private set; }
 
-        private readonly ISettingsService _settingsService;
+        private readonly ISettingsContainer settingsContainer;
         private FenSplit _fenSplit;
 
         public string EnPassantAddress => _fenSplit.EnPassant;
 
 
         /// Fen string must be valid
-        public FenFromString(ISettingsService settingsService)
+        public FenFromString(ISettingsContainer settingsContainer)
         {
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
         }
 
         public UniTask Load()
         {
-            string[] splitPreset = _settingsService.S.GameSettings.CurrentFen.Split(' ');
+            string[] splitPreset = settingsContainer.S.GameSettings.CurrentFen.Split(' ');
 
             _fenSplit = new FenSplit
             {

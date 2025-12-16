@@ -7,12 +7,12 @@ namespace Chess3D.Runtime.Core.Logic.Players
     public class PlayerFactory
     {
         private readonly IObjectResolver _resolver;
-        private readonly ISettingsService _settingsService;
+        private readonly ISettingsContainer settingsContainer;
 
-        public PlayerFactory(IObjectResolver resolver, ISettingsService settingsService)
+        public PlayerFactory(IObjectResolver resolver, ISettingsContainer settingsContainer)
         {
             _resolver = resolver;
-            _settingsService = settingsService;
+            this.settingsContainer = settingsContainer;
         }
 
         public IPlayer Create(PlayerType playerType)
