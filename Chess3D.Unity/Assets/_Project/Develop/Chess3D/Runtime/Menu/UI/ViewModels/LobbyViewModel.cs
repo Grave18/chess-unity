@@ -29,24 +29,31 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         {
             _lobbyManager = lobbyManager;
 
-            _lobbyManager.OnFriendListPulled.Subscribe(PopulateFriends).AddTo(_disposables);
-            _lobbyManager.OnRoomLeft.Subscribe(_ => OnLobbyLeave()).AddTo(_disposables);
-            _lobbyManager.OnRoomUpdated.Subscribe(LobbyDataUpdate).AddTo(_disposables);
+            _lobbyManager.OnRoomJoined
+                .Subscribe(_ => _lobbyManager.PullFriends(FriendFilter))
+                .AddTo(_disposables);
+
+            _lobbyManager.OnRoomLeft
+                .Subscribe(_ => LobbyUsers.Clear())
+                .AddTo(_disposables);
+
+            _lobbyManager.OnFriendListPulled
+                .Subscribe(PopulateFriends)
+                .AddTo(_disposables);
+
+            _lobbyManager.OnRoomUpdated
+                .Subscribe(LobbyDataUpdate)
+                .AddTo(_disposables);
 
             Observable.Interval(TimeSpan.FromSeconds(UpdateIntervalSec))
                 .Where(_ => _lobbyManager.IsInLobby)
-                .Subscribe(_ => PullFriends())
+                .Subscribe(_ => _lobbyManager.PullFriends(FriendFilter))
                 .AddTo(_disposables);
         }
 
         public void Dispose()
         {
             _disposables.Dispose();
-        }
-
-        private void PullFriends()
-        {
-            _lobbyManager.PullFriends(FriendFilter);
         }
 
         private void PopulateFriends(List<FriendItem> newQuery)
@@ -85,11 +92,6 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
                 Friends.Add(friend);
             }
-        }
-
-        private void OnLobbyLeave()
-        {
-            LobbyUsers.Clear();
         }
 
         private void LobbyDataUpdate(Lobby lobby)
@@ -136,23 +138,17 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         private void ChangeFriendFilter()
         {
             CycleThroughFilters();
-            PullFriends();
+            _lobbyManager.PullFriends(FriendFilter);
         }
 
         private void CycleThroughFilters()
         {
-            if (FriendFilter == LobbyManager.FriendFilter.InThisGame)
+            FriendFilter = FriendFilter switch
             {
-                FriendFilter = LobbyManager.FriendFilter.Online;
-            }
-            else if (FriendFilter == LobbyManager.FriendFilter.Online)
-            {
-                FriendFilter = LobbyManager.FriendFilter.All;
-            }
-            else if (FriendFilter == LobbyManager.FriendFilter.All)
-            {
-                FriendFilter = LobbyManager.FriendFilter.InThisGame;
-            }
+                LobbyManager.FriendFilter.Online => LobbyManager.FriendFilter.InThisGame,
+                LobbyManager.FriendFilter.InThisGame => LobbyManager.FriendFilter.All,
+                _ => LobbyManager.FriendFilter.Online
+            };
         }
 
         [RelayCommand]
