@@ -13,7 +13,7 @@ namespace Chess3D.Editor.GameSetup
     // TODO: Refactor or delete LocalhostSetupLoader
     public static class LocalhostSetupLoader
     {
-        [MenuItem("Tools/GameSetup/Play And Load Localhost ^#w")]
+        [MenuItem("Chess3D/GameSetup/Play And Load Localhost ^#w")]
         public static void PlayAndLoadLocalhost()
         {
             LoadScene("MainMenuScene");

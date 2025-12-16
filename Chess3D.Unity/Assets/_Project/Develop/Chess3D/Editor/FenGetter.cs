@@ -1,5 +1,4 @@
-﻿using Chess3D.Runtime.Core;
-using Chess3D.Runtime.Core.Notation;
+﻿using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Utilities;
 using Chess3D.Runtime.Utilities.Logging;
 using UnityEditor;
@@ -8,7 +7,7 @@ namespace Chess3D.Editor
 {
     public static class FenGetter
     {
-        [MenuItem("Tools/Grave/Get Fen")]
+        [MenuItem("Chess3D/Get Fen")]
         public static void GetFen()
         {
             if (!ServiceLocator.IsValid)

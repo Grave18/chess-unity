@@ -10,9 +10,9 @@ using PlayerSettings = Chess3D.Runtime.Bootstrap.Settings.PlayerSettings;
 
 namespace Chess3D.Editor
 {
-    public static class SettingsTool
+    public static class SettingsGenerator
     {
-        [MenuItem("Tools/Grave/Settings/Generate Settings")]
+        [MenuItem("Chess3D/Settings/Generate Settings")]
         public static void Generate()
         {
             var settings = new Settings
@@ -62,13 +62,13 @@ namespace Chess3D.Editor
             File.WriteAllText(path, settingsJson);
         }
 
-        [MenuItem("Tools/Grave/Settings/Open External Settings")]
+        [MenuItem("Chess3D/Settings/Open External Settings")]
         public static void OpenExternalSettings()
         {
             InternalEditorUtility.OpenFileAtLineExternal(RuntimeConstants.Settings.FilePath, 1);
         }
 
-        [MenuItem("Tools/Grave/Settings/Open Default Settings")]
+        [MenuItem("Chess3D/Settings/Open Default Settings")]
         public static void OpenInternalSettings()
         {
             var path = Path.Combine(Application.dataPath, "_Project", "Resources", RuntimeConstants.Settings.FileName + ".json");

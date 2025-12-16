@@ -13,7 +13,7 @@ namespace Chess3D.Runtime.Utilities.Common.BuildTool
         private static string _locationPathName;
         private static BuildPlayerOptions _buildPlayerOptions;
 
-        [MenuItem("Tools/Grave/Build Player &b")]
+        [MenuItem("Chess3D/Build Player &b")]
         public static void Build()
         {
             if (EditorApplication.isPlaying)
