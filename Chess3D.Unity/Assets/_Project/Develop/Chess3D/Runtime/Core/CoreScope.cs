@@ -152,7 +152,7 @@ namespace Chess3D.Runtime.Core
 
             // Entry points
             builder.RegisterEntryPoint<GameStateMachineOffline>().As<IGameStateMachine>();
-            builder.RegisterEntryPoint<CoreFlow>();
+            builder.RegisterEntryPoint<CoreFlow>().AsSelf();
 
 #if !GRAVEBOX_PROD
             RegisterDebugUI(builder);

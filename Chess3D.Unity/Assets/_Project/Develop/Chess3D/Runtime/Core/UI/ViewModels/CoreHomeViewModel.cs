@@ -4,6 +4,7 @@ using Chess3D.Runtime.Core.Sound;
 using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Online;
+using Cysharp.Threading.Tasks;
 using MvvmTool;
 using PurrNet;
 using VContainer;
@@ -17,6 +18,7 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
         public bool IsRematchRequested { get; set; }
         public bool IsDrawRequested { get; set; }
 
+        private IObjectResolver _resolver;
         private Game _game;
         private PopupViewModel _popupViewModel;
         private EffectsPlayer _effectsPlayer;
@@ -25,9 +27,10 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
         private readonly CompositeDisposable _disposables = new();
 
         [Inject]
-        public void Construct(Game game, PopupViewModel popupViewModel, CoreMainViewModel coreMainViewModel,
+        public void Construct(IObjectResolver resolver, Game game, PopupViewModel popupViewModel, CoreMainViewModel coreMainViewModel,
             EffectsPlayer effectsPlayer, ViewNavigator viewNavigator)
         {
+            _resolver = resolver;
             _game = game;
             _popupViewModel = popupViewModel;
             _effectsPlayer = effectsPlayer;
@@ -142,8 +145,8 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
 
         private void RematchOffline()
         {
-            // TODO: Flow
-            // _game.Rematch();
+            var coreFlow = _resolver.Resolve<CoreFlow>();
+            coreFlow?.StartAsync().Forget();
         }
 
         private void RematchOnline()
@@ -172,8 +175,7 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
 
         private void RematchApprove()
         {
-            // TODO: Flow
-            // _game.Rematch();
+            RematchOffline();
             _popupViewModel.ClosePopupToGame();
 
             PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
@@ -184,8 +186,7 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
         private void RematchApprove_TargetRpc(PlayerID player)
         {
             IsRematchRequested = false;
-            // TODO: Flow
-            // _game.Rematch();
+            RematchOffline();
             _popupViewModel.ClosePopupToGame();
         }
 
