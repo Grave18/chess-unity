@@ -8,14 +8,12 @@ using Cysharp.Threading.Tasks;
 using PurrNet;
 using UniRx;
 using UnityEngine;
-using UnityEngine.Events;
+using VContainer;
 
 namespace Chess3D.Runtime.Menu.LobbyManagement
 {
     public class LobbyManager : MonoBehaviour, ILoadUnit, IDisposable
     {
-        private const int PlayersToStart = 2;
-
         public CreateRoomArgs createRoomArgs = new();
         public SerializableDictionary<string, string> searchRoomArgs = new();
         [SerializeField] private MonoBehaviour currentProvider;
@@ -50,6 +48,14 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
 
         public bool IsInLobby => CurrentLobby.IsValid;
         public ILobbyProvider CurrentProvider => currentProvider as ILobbyProvider;
+
+        private ConfigContainer _configContainer;
+
+        [Inject]
+        public void Construct(ConfigContainer configContainer)
+        {
+            _configContainer = configContainer;
+        }
 
         public UniTask Load()
         {
@@ -405,7 +411,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
             await WaitForAllTasksAsync();
 
             if(CurrentLobby.IsValid
-               && CurrentLobby.Members.Count == PlayersToStart
+               && CurrentLobby.Members.Count == _configContainer.LobbyConfig.PlayersToStart
                && CurrentLobby.Members.TrueForAll(x => x.IsReady))
             {
                 await _currentProvider.SetAllReadyAsync();

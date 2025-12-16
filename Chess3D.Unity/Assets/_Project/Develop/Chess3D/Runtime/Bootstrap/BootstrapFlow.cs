@@ -1,9 +1,6 @@
 ﻿using System.Threading;
-using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
-using UniRx;
-using UnityEngine;
 using UnityEngine.Scripting;
 using VContainer.Unity;
 
@@ -14,21 +11,24 @@ namespace Chess3D.Runtime.Bootstrap
     {
         private readonly LoadingService _loadingService;
         private readonly SceneManager _sceneManager;
-        private readonly ISettingsContainer settingsContainer;
+        private readonly ISettingsContainer _settingsContainer;
+        private readonly ConfigContainer _configContainer;
         private readonly ApplicationConfigurationLoadUnit _applicationConfigurationLoadUnit;
 
         public BootstrapFlow(LoadingService loadingService, SceneManager sceneManager, ISettingsContainer settingsContainer,
-            ApplicationConfigurationLoadUnit applicationConfigurationLoadUnit)
+            ApplicationConfigurationLoadUnit applicationConfigurationLoadUnit, ConfigContainer configContainer)
         {
             _loadingService = loadingService;
             _sceneManager = sceneManager;
-            this.settingsContainer = settingsContainer;
+            _settingsContainer = settingsContainer;
             _applicationConfigurationLoadUnit = applicationConfigurationLoadUnit;
+            _configContainer = configContainer;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = new())
         {
-            await _loadingService.BeginLoading(settingsContainer);
+            await _loadingService.BeginLoading(_settingsContainer);
+            await _loadingService.BeginLoading(_configContainer);
             await _loadingService.BeginLoading(_applicationConfigurationLoadUnit);
 
             UniRxUtils.Initialize();

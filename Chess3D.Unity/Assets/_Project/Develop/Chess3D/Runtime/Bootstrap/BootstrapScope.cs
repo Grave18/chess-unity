@@ -1,5 +1,4 @@
-﻿using Chess3D.Runtime.Bootstrap.Settings;
-using Chess3D.Runtime.Utilities;
+﻿using Chess3D.Runtime.Utilities;
 using VContainer;
 using VContainer.Unity;
 
@@ -18,6 +17,7 @@ namespace Chess3D.Runtime.Bootstrap
             builder.Register<LoadingService>(Lifetime.Scoped);
             builder.Register<SceneManager>(Lifetime.Singleton);
             builder.Register<SettingsContainer>(Lifetime.Singleton).As<ISettingsContainer>();
+            builder.Register<ConfigContainer>(Lifetime.Singleton);
             builder.Register<ApplicationConfigurationLoadUnit>(Lifetime.Scoped);
 
             builder.RegisterEntryPoint<BootstrapFlow>();

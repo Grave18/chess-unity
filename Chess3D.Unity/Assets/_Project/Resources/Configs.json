@@ -1,0 +1,6 @@
+{
+  "LobbyConfig": {
+    "UpdateIntervalSec": 3.0,
+    "PlayersToStart": 2
+  }
+}

@@ -25,5 +25,10 @@ namespace Chess3D.Runtime
             public const string MusicVolumeKey = "MusicVolume";
             public const string EffectsVolumeKey = "EffectsVolume";
         }
+
+        public static class Configs
+        {
+            public const string FileName = "Configs";
+        }
     }
 }

@@ -13,9 +13,6 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
     [INotifyPropertyChanged]
     public partial class LobbyViewModel : IViewModel, IDisposable
     {
-        // TODO: Move to config
-        private const float UpdateIntervalSec = 3f;
-
         public ObservableCollection<FriendItem> Friends { get; set; } = new();
         public ObservableCollection<LobbyUser> LobbyUsers { get; set; } = new();
 
@@ -25,7 +22,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private readonly CompositeDisposable _disposables = new();
 
-        public LobbyViewModel(LobbyManager lobbyManager)
+        public LobbyViewModel(LobbyManager lobbyManager, ConfigContainer configContainer)
         {
             _lobbyManager = lobbyManager;
 
@@ -45,7 +42,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
                 .Subscribe(LobbyDataUpdate)
                 .AddTo(_disposables);
 
-            Observable.Interval(TimeSpan.FromSeconds(UpdateIntervalSec))
+            Observable.Interval(TimeSpan.FromSeconds(configContainer.LobbyConfig.UpdateIntervalSec))
                 .Where(_ => _lobbyManager.IsInLobby)
                 .Subscribe(_ => _lobbyManager.PullFriends(FriendFilter))
                 .AddTo(_disposables);
