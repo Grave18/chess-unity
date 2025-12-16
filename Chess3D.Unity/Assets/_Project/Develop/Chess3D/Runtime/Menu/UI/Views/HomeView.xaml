@@ -41,7 +41,6 @@
         <!-- Popup -->
         <Popup Grid.Row="0"
                x:Name="Popup"
-               Focusable="True"
                Style="{StaticResource PopupStyle}">
             <Viewbox Stretch="Uniform">
                 <Grid Style="{StaticResource UniformGridStyle}">

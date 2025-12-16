@@ -1,4 +1,5 @@
-﻿using Chess3D.Runtime.Core.Logic;
+﻿using System;
+using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Core.Sound;
 using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.ViewModels;
@@ -6,19 +7,22 @@ using Chess3D.Runtime.Online;
 using MvvmTool;
 using PurrNet;
 using VContainer;
+using UniRx;
 
 namespace Chess3D.Runtime.Core.UI.ViewModels
 {
-    public partial class CoreHomeViewModel : NetworkBehaviour, IViewModel
+    // TODO: Refactor NetworkBehaviour out of this class
+    public partial class CoreHomeViewModel : NetworkBehaviour, IViewModel, IDisposable
     {
         public bool IsRematchRequested { get; set; }
         public bool IsDrawRequested { get; set; }
 
         private Game _game;
         private PopupViewModel _popupViewModel;
-        private CoreMainViewModel _coreMainViewModel;
         private EffectsPlayer _effectsPlayer;
         private ViewNavigator _viewNavigator;
+
+        private readonly CompositeDisposable _disposables = new();
 
         [Inject]
         public void Construct(Game game, PopupViewModel popupViewModel, CoreMainViewModel coreMainViewModel,
@@ -26,26 +30,35 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
         {
             _game = game;
             _popupViewModel = popupViewModel;
-            _coreMainViewModel = coreMainViewModel;
             _effectsPlayer = effectsPlayer;
             _viewNavigator = viewNavigator;
+
+            coreMainViewModel.OnOpenedChanged
+                .Subscribe(UpdateButtonState)
+                .AddTo(_disposables);
         }
 
-        private void OnEnable()
+        public void Dispose()
         {
-            _coreMainViewModel.OnOpenedChanged += OnCoreMainOpenedChanged;
+            _disposables.Dispose();
         }
 
-        private void OnDisable()
+        private void UpdateButtonState(bool isOpened)
         {
-            _coreMainViewModel.OnOpenedChanged -= OnCoreMainOpenedChanged;
-        }
+            if (!isOpened)
+            {
+                return;
+            }
 
-        private void OnCoreMainOpenedChanged(bool isOpened)
-        {
             OpenRematchPopupCommand.NotifyCanExecuteChanged();
             OpenDrawPopupCommand.NotifyCanExecuteChanged();
             OpenResignPopupCommand.NotifyCanExecuteChanged();
+        }
+
+        [RelayCommand]
+        private void Settings()
+        {
+            _viewNavigator.GoTo<SettingsViewModel>();
         }
 
         private bool OpenRematchPopup_CanExecute()
@@ -54,12 +67,6 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
             bool isOnline = OnlineInstanceHandler.IsOnline && !IsRematchRequested && !IsDrawRequested && _game.IsEndGame;
             bool canOpen = isOffline || isOnline;
             return canOpen;
-        }
-
-        [RelayCommand]
-        private void Settings()
-        {
-            _viewNavigator.GoTo<SettingsViewModel>();
         }
 
         [RelayCommand(CanExecute = nameof(OpenRematchPopup_CanExecute))]

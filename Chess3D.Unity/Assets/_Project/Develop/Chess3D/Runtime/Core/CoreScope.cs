@@ -89,7 +89,6 @@ namespace Chess3D.Runtime.Core
             builder.RegisterComponent(effectsPlayer);
 
             // State Machines
-            builder.RegisterEntryPoint<GameStateMachineOffline>().As<IGameStateMachine>();
             builder.RegisterComponent(gameStateMachineOnline).AsSelf();
             builder.RegisterComponent(warmupState).AsSelf();
             builder.RegisterComponent(idleState).AsSelf();
@@ -153,13 +152,18 @@ namespace Chess3D.Runtime.Core
             builder.RegisterBuildCallback(ServiceLocator.Initialize);
 
             // Entry points
+            builder.RegisterEntryPoint<GameStateMachineOffline>().As<IGameStateMachine>();
             builder.RegisterEntryPoint<CoreFlow>();
 
 #if !GRAVEBOX_PROD
-            // Debug Ui
+            RegisterDebugUI(builder);
+#endif
+        }
+
+        private void RegisterDebugUI(IContainerBuilder builder)
+        {
             builder.RegisterComponentInNewPrefab(stateDebugPanelPrefab, Lifetime.Scoped).UnderTransform(gameCanvas.transform);
             builder.RegisterComponentInNewPrefab(bufferDebugPanelPrefab, Lifetime.Scoped).UnderTransform(gameCanvas.transform);
-#endif
         }
 
         private static Func<ClockPanelCanvas> ClockPanelFactory(IObjectResolver resolver)

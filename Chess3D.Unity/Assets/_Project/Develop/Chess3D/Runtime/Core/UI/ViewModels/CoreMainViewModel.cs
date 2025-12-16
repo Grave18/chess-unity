@@ -1,9 +1,9 @@
-﻿using System;
-using Chess3D.Runtime.Core.Logic.MenuStates;
+﻿using Chess3D.Runtime.Core.Logic.MenuStates;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using MvvmTool;
+using UniRx;
 using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Core.UI.ViewModels
@@ -14,10 +14,10 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
     {
         [ObservableProperty] private IViewModel _currentViewModel;
         [ObservableProperty] private bool _isOpened;
-        public event Action<bool> OnOpenedChanged;
+
+        public readonly Subject<bool> OnOpenedChanged = new();
 
         private readonly MenuStateMachine _menuStateMachine;
-
 
         public CoreMainViewModel(MenuStateMachine menuStateMachine)
         {
@@ -43,7 +43,7 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
                 _menuStateMachine.OpenPause();
             }
 
-            OnOpenedChanged?.Invoke(IsOpened);
+            OnOpenedChanged.OnNext(IsOpened);
         }
     }
 }

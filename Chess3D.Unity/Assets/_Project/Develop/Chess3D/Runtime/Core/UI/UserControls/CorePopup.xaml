@@ -7,6 +7,10 @@
              Focusable="True"
              d:DesignHeight="600" d:DesignWidth="600">
 
+    <UserControl.InputBindings>
+        <KeyBinding Key="Escape" Command="{Binding PopupNoCommand}" />
+    </UserControl.InputBindings>
+
     <Popup Name="Popup"
            IsOpen="{Binding IsPopupOpen}"
            Opened="Popup_OnOpened"
@@ -24,6 +28,7 @@
                                Style="{StaticResource Header2TextBlockStyle}" />
                         <!-- Save Checkbox -->
                         <CheckBox Name="SaveCheckBox"
+                                  Focusable="False"
                               DockPanel.Dock="Top"
                               Visibility="{Binding IsSaveCheckBoxEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
                               Content="Do you want to save game?"

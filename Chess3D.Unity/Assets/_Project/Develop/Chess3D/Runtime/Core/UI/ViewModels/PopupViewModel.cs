@@ -13,12 +13,6 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
     [INotifyPropertyChanged]
     public sealed partial class PopupViewModel
     {
-        private readonly FenFromBoard _fenFromBoard;
-        private readonly MenuStateMachine _menuStateMachine;
-        private readonly SceneManager _sceneManager;
-        private readonly ISettingsService _settingsService;
-        private readonly ConnectionTerminator _connectionTerminator;
-
         [ObservableProperty] private bool _isPopupOpen;
         [ObservableProperty] private string _popupText;
         [ObservableProperty] private string _popupYesButtonText;
@@ -26,6 +20,15 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
         [ObservableProperty] private bool _isPopupNoButtonEnabled;
         [ObservableProperty] private bool _isSaveCheckBoxEnabled;
         [ObservableProperty] private bool _isSaveCheckBoxChecked;
+
+        private readonly FenFromBoard _fenFromBoard;
+        private readonly MenuStateMachine _menuStateMachine;
+        private readonly SceneManager _sceneManager;
+        private readonly ISettingsService _settingsService;
+        private readonly ConnectionTerminator _connectionTerminator;
+
+        public RelayCommand PopupYesCommand { get; set; } = new();
+        public RelayCommand PopupNoCommand { get; set; } = new();
 
         public PopupViewModel(FenFromBoard fenFromBoard, MenuStateMachine menuStateMachine, SceneManager sceneManager, ISettingsService settingsService, ConnectionTerminator connectionTerminator)
         {
@@ -35,9 +38,6 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
             _settingsService = settingsService;
             _connectionTerminator = connectionTerminator;
         }
-
-        public RelayCommand PopupYesCommand { get; set; } = new();
-        public RelayCommand PopupNoCommand { get; set; } = new();
 
         public void OpenConfigurablePopup(PopupSettings popupSettings)
         {
