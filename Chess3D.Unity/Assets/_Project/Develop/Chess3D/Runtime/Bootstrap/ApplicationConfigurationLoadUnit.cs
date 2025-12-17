@@ -1,5 +1,4 @@
-﻿using Chess3D.Runtime.Bootstrap.Settings;
-using Chess3D.Runtime.Utilities;
+﻿using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -11,10 +10,12 @@ namespace Chess3D.Runtime.Bootstrap
     public class ApplicationConfigurationLoadUnit : ILoadUnit
     {
         private readonly ISettingsContainer settingsContainer;
+        private readonly AudioMixer _audioMixer;
 
-        public ApplicationConfigurationLoadUnit(ISettingsContainer settingsContainer)
+        public ApplicationConfigurationLoadUnit(ISettingsContainer settingsContainer, AudioMixer audioMixer)
         {
             this.settingsContainer = settingsContainer;
+            _audioMixer = audioMixer;
         }
 
         public UniTask Load()
@@ -58,10 +59,9 @@ namespace Chess3D.Runtime.Bootstrap
 
         private void SetVolume()
         {
-            var audioMixer = AssetService.R.Load<AudioMixer>(RuntimeConstants.Settings.AudioMixerFileName);
-            audioMixer.SetFloat(RuntimeConstants.Settings.MasterVolumeKey, VolumeUtil.Map01ToDb(settingsContainer.S.AudioSettings.MasterVolume));
-            audioMixer.SetFloat(RuntimeConstants.Settings.MusicVolumeKey, VolumeUtil.Map01ToDb(settingsContainer.S.AudioSettings.MusicVolume));
-            audioMixer.SetFloat(RuntimeConstants.Settings.EffectsVolumeKey, VolumeUtil.Map01ToDb(settingsContainer.S.AudioSettings.EffectsVolume));
+            _audioMixer.SetFloat(RuntimeConstants.Settings.MasterVolumeKey, VolumeUtil.Map01ToDb(settingsContainer.S.AudioSettings.MasterVolume));
+            _audioMixer.SetFloat(RuntimeConstants.Settings.MusicVolumeKey, VolumeUtil.Map01ToDb(settingsContainer.S.AudioSettings.MusicVolume));
+            _audioMixer.SetFloat(RuntimeConstants.Settings.EffectsVolumeKey, VolumeUtil.Map01ToDb(settingsContainer.S.AudioSettings.EffectsVolume));
         }
     }
 }

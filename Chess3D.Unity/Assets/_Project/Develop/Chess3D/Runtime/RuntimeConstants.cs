@@ -17,7 +17,6 @@ namespace Chess3D.Runtime
         public static class Settings
         {
             public const string FileName = "Settings";
-            public const string AudioMixerFileName = "AudioMixer";
             public const string MasterVolumeKey = "MasterVolume";
             public const string MusicVolumeKey = "MusicVolume";
             public const string EffectsVolumeKey = "EffectsVolume";
