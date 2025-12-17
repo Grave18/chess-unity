@@ -22,6 +22,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         private IGameStateMachine _gameStateMachine;
         private CoreEvents _coreEvents;
         private ConfigContainer _configContainer;
+        private EffectsPlayer _effectsPlayer;
 
         private MoveData _moveData;
         private Turn _turn;
@@ -31,7 +32,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         [Inject]
         public void Construct(Game game, Board board, UciBuffer uciBuffer,
             IGameStateMachine gameStateMachine, CoreEvents coreEvents,
-            ConfigContainer configContainer)
+            ConfigContainer configContainer, EffectsPlayer effectsPlayer)
         {
             _game = game;
             _board = board;
@@ -39,6 +40,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             _gameStateMachine = gameStateMachine;
             _coreEvents = coreEvents;
             _configContainer = configContainer;
+            _effectsPlayer = effectsPlayer;
         }
 
         public string Name => "Undo";
@@ -93,7 +95,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
             if (_moveData.MoveType == MoveType.Move)
             {
-                _turn = new SimpleMove(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
+                _turn = new SimpleMove(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove, _effectsPlayer);
                 return true;
             }
 
@@ -101,14 +103,14 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             {
                 // Piece and Promoted piece swapped
                 Piece promotedPiece = parsedUci.ToSquare.GetPiece();
-                _turn = new MovePromotion(_game, promotedPiece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.HiddenPawn);
+                _turn = new MovePromotion(_game, promotedPiece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.HiddenPawn, _effectsPlayer);
                 return true;
             }
 
             if (_moveData.MoveType is MoveType.Capture or MoveType.EnPassant)
             {
                 _turn = new Capture(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
-                    _moveData.IsFirstMove);
+                    _moveData.IsFirstMove, _effectsPlayer);
                 return true;
             }
 
@@ -117,13 +119,13 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
                 Piece promotedPiece = parsedUci.ToSquare.GetPiece();
                 // Piece and Promoted piece swapped
                 _turn = new CapturePromotion(_game, promotedPiece, parsedUci.FromSquare, parsedUci.ToSquare,
-                    _moveData.HiddenPawn, _moveData.BeatenPiece);
+                    _moveData.HiddenPawn, _moveData.BeatenPiece, _effectsPlayer);
                 return true;
             }
 
             if (_moveData.MoveType is MoveType.CastlingShort or MoveType.CastlingLong)
             {
-                _turn = new Castling(_game, _moveData.CastlingInfo, _moveData.IsFirstMove);
+                _turn = new Castling(_game, _moveData.CastlingInfo, _moveData.IsFirstMove, _effectsPlayer);
                 return true;
             }
 
@@ -198,7 +200,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         {
             if (_game.IsCheck)
             {
-                EffectsPlayer.Instance.PlayCheckSound();
+                _effectsPlayer.PlayCheckSound();
             }
         }
 

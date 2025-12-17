@@ -1,5 +1,6 @@
 ﻿using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.MainCamera;
+using Chess3D.Runtime.Core.Sound;
 using Cysharp.Threading.Tasks;
 using PurrNet.StateMachine;
 using UniRx;
@@ -14,6 +15,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         private CameraController _cameraController;
         private CoreEvents _coreEvents;
         private ConfigContainer _configContainer;
+        private EffectsPlayer _effectsPlayer;
 
         [SerializeField] private IdleState idleState;
 
@@ -23,12 +25,14 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         [Inject]
         public void Construct(IGameStateMachine gameStateMachine,
-            CameraController cameraController, CoreEvents coreEvents, ConfigContainer configContainer)
+            CameraController cameraController, CoreEvents coreEvents,
+            ConfigContainer configContainer, EffectsPlayer effectsPlayer)
         {
             _gameStateMachine = gameStateMachine;
             _cameraController = cameraController;
             _coreEvents = coreEvents;
             _configContainer = configContainer;
+            _effectsPlayer = effectsPlayer;
         }
 
         public override void Enter()
@@ -42,6 +46,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         public override void Exit()
         {
+            _effectsPlayer.PlayGameStartSound();
             _coreEvents.OnStart.OnNext(Unit.Default);
         }
 

@@ -7,11 +7,13 @@ namespace Chess3D.Runtime.Core.Logic.Moves
     {
         private readonly SimpleMove _kingMove;
         private readonly SimpleMove _rookMove;
+        private readonly EffectsPlayer _effectsPlayer;
 
-        public Castling(Game game, CastlingInfo castlingInfo, bool isFirstMove)
+        public Castling(Game game, CastlingInfo castlingInfo, bool isFirstMove, EffectsPlayer effectsPlayer)
         {
-            _kingMove = new SimpleMove(game, castlingInfo.King, castlingInfo.KingFromSquare, castlingInfo.KingToSquare, isFirstMove);
-            _rookMove = new SimpleMove(game, castlingInfo.Rook, castlingInfo.RookFromSquare, castlingInfo.RookToSquare, isFirstMove);
+            _kingMove = new SimpleMove(game, castlingInfo.King, castlingInfo.KingFromSquare, castlingInfo.KingToSquare, isFirstMove, effectsPlayer);
+            _rookMove = new SimpleMove(game, castlingInfo.Rook, castlingInfo.RookFromSquare, castlingInfo.RookToSquare, isFirstMove, effectsPlayer);
+            _effectsPlayer = effectsPlayer;
         }
 
         public override void Progress(float t)
@@ -40,7 +42,7 @@ namespace Chess3D.Runtime.Core.Logic.Moves
 
         public override void PlaySound()
         {
-            EffectsPlayer.Instance.PlayCastleSound();
+            _effectsPlayer.PlayCastleSound();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Core.Logic.Players;
+using Chess3D.Runtime.Core.Sound;
 using PurrNet.StateMachine;
 using UniRx;
 using VContainer;
@@ -13,22 +14,25 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         private UciBuffer _uciBuffer;
         private UndoState _undoState;
         private IdleState _idleState;
+        private EffectsPlayer _effectsPlayer;
 
         [Inject]
         public void Construct(IGameStateMachine gameStateMachine, CoreEvents coreEvents, UciBuffer uciBuffer,
-            UndoState undoState, IdleState idleState)
+            UndoState undoState, IdleState idleState, EffectsPlayer effectsPlayer)
         {
             _gameStateMachine = gameStateMachine;
             _coreEvents = coreEvents;
             _uciBuffer = uciBuffer;
             _undoState = undoState;
             _idleState = idleState;
+            _effectsPlayer = effectsPlayer;
         }
 
         public string Name => "End Game";
 
         public override void Enter()
         {
+            _effectsPlayer.PlayGameEndSound();
             _coreEvents.OnEnd.OnNext(Unit.Default);
         }
 

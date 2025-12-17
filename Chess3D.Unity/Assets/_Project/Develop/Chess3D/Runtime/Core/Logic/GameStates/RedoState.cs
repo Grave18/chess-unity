@@ -28,10 +28,12 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         private IGameStateMachine _gameStateMachine;
         private CoreEvents _coreEvents;
         private ConfigContainer _configContainer;
+        private EffectsPlayer _effectsPlayer;
 
         [Inject]
         public void Construct(Game game, Board board, PieceFactory pieceFactory, UciBuffer uciBuffer,
-            IGameStateMachine gameStateMachine, CoreEvents coreEvents, ConfigContainer configContainer)
+            IGameStateMachine gameStateMachine, CoreEvents coreEvents, ConfigContainer configContainer,
+            EffectsPlayer effectsPlayer)
         {
             _game = game;
             _board = board;
@@ -40,6 +42,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             _gameStateMachine = gameStateMachine;
             _coreEvents = coreEvents;
             _configContainer = configContainer;
+            _effectsPlayer = effectsPlayer;
         }
 
         public string Name => "Redo";
@@ -94,7 +97,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
             if (_moveData.MoveType == MoveType.Move)
             {
-                _turn = new SimpleMove(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
+                _turn = new SimpleMove(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove, _effectsPlayer);
                 return true;
             }
 
@@ -102,7 +105,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             {
                 Piece promotedPiece = _pieceFactory.Create(parsedUci.PromotedPieceType, _game.CurrentTurnColor,
                     parsedUci.ToSquare);
-                _turn = new MovePromotion(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece);
+                _turn = new MovePromotion(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece, _effectsPlayer);
                 return true;
             }
 
@@ -110,7 +113,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             {
                 _moveData.BeatenPiece = parsedUci.ToSquare.GetPiece();
                 _turn = new Capture(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
-                    _moveData.IsFirstMove);
+                    _moveData.IsFirstMove, _effectsPlayer);
                 return true;
             }
 
@@ -118,7 +121,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             {
                 // No need to update _moveData.BeatenPiece because it cannot be promoted piece
                 _turn = new Capture(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
-                    _moveData.IsFirstMove);
+                    _moveData.IsFirstMove, _effectsPlayer);
                 return true;
             }
 
@@ -129,13 +132,13 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
                 Piece promotedPiece = _pieceFactory.Create(parsedUci.PromotedPieceType, _game.CurrentTurnColor,
                     parsedUci.ToSquare);
                 _turn = new CapturePromotion(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare,
-                    promotedPiece, _moveData.BeatenPiece);
+                    promotedPiece, _moveData.BeatenPiece, _effectsPlayer);
                 return true;
             }
 
             if (_moveData.MoveType is MoveType.CastlingShort or MoveType.CastlingLong)
             {
-                _turn = new Castling(_game, _moveData.CastlingInfo, _moveData.IsFirstMove);
+                _turn = new Castling(_game, _moveData.CastlingInfo, _moveData.IsFirstMove, _effectsPlayer);
                 return true;
             }
 
@@ -212,7 +215,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         {
             if (_game.IsCheck)
             {
-                EffectsPlayer.Instance.PlayCheckSound();
+                _effectsPlayer.PlayCheckSound();
             }
         }
 

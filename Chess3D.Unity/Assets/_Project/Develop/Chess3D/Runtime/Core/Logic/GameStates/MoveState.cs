@@ -32,10 +32,12 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         private IGameStateMachine _gameStateMachine;
         private CoreEvents _coreEvents;
         private ConfigContainer _configContainer;
+        private EffectsPlayer _effectsPlayer;
 
         [Inject]
         public void Construct(Game game, Board board, PieceFactory pieceFactory, UciBuffer uciBuffer,
-            IGameStateMachine gameStateMachine, CoreEvents coreEvents, ConfigContainer configContainer)
+            IGameStateMachine gameStateMachine, CoreEvents coreEvents, ConfigContainer configContainer,
+            EffectsPlayer effectsPlayer)
         {
             _game = game;
             _board = board;
@@ -44,6 +46,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             _gameStateMachine = gameStateMachine;
             _coreEvents = coreEvents;
             _configContainer = configContainer;
+            _effectsPlayer = effectsPlayer;
         }
 
         public string Name => "Move";
@@ -114,7 +117,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
                 if (parsedUci.PromotedPieceType == PieceType.None)
                 {
                     _moveData.MoveType = MoveType.Move;
-                    _turn = new SimpleMove(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove);
+                    _turn = new SimpleMove(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.IsFirstMove, _effectsPlayer);
                 }
                 else
                 {
@@ -123,7 +126,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
                     promotedPiece = _pieceFactory.Create(parsedUci.PromotedPieceType, _game.CurrentTurnColor,
                         parsedUci.ToSquare);
                     _turn = new MovePromotion(_game,_moveData.HiddenPawn, parsedUci.FromSquare, parsedUci.ToSquare,
-                        promotedPiece);
+                        promotedPiece, _effectsPlayer);
                 }
 
                 // Reset rule 50 if pawn move
@@ -143,7 +146,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
                 {
                     _moveData.MoveType = captureInfo.MoveType;
                     _turn = new Capture(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare, _moveData.BeatenPiece,
-                        _moveData.IsFirstMove);
+                        _moveData.IsFirstMove, _effectsPlayer);
                 }
                 else
                 {
@@ -152,7 +155,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
                     promotedPiece = _pieceFactory.Create(parsedUci.PromotedPieceType, _game.CurrentTurnColor,
                         parsedUci.ToSquare);
                     _turn = new CapturePromotion(_game, piece, parsedUci.FromSquare, parsedUci.ToSquare, promotedPiece,
-                        _moveData.BeatenPiece);
+                        _moveData.BeatenPiece, _effectsPlayer);
                 }
 
                 // Reset rule 50 if capture move
@@ -166,7 +169,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             {
                 _moveData.MoveType = castlingInfo.MoveType;
                 _moveData.CastlingInfo = castlingInfo;
-                _turn = new Castling(_game,_moveData.CastlingInfo, _moveData.IsFirstMove);
+                _turn = new Castling(_game,_moveData.CastlingInfo, _moveData.IsFirstMove, _effectsPlayer);
                 isValid = true;
             }
 
@@ -271,7 +274,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         {
             if (_game.IsCheck)
             {
-                EffectsPlayer.Instance.PlayCheckSound();
+                _effectsPlayer.PlayCheckSound();
             }
         }
 

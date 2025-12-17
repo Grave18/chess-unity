@@ -13,14 +13,16 @@ namespace Chess3D.Runtime.Core.Logic.Moves
         private readonly Square _toSquare;
         private readonly bool _isFirstMove;
         private readonly bool _isComposite;
+        private readonly EffectsPlayer _effectsPlayer;
 
-        public SimpleMove(Game game, Piece movedPiece, Square fromSquare, Square toSquare, bool isFirstMove, bool isComposite = false)
+        public SimpleMove(Game game, Piece movedPiece, Square fromSquare, Square toSquare, bool isFirstMove, EffectsPlayer effectsPlayer, bool isComposite = false)
         {
             _game = game;
             _movedPiece = movedPiece;
             _fromSquare = fromSquare;
             _toSquare = toSquare;
             _isFirstMove = isFirstMove;
+            _effectsPlayer = effectsPlayer;
             _isComposite = isComposite;
         }
 
@@ -57,11 +59,11 @@ namespace Chess3D.Runtime.Core.Logic.Moves
             {
                 if (_game.CurrentTurnColor == PieceColor.White)
                 {
-                    EffectsPlayer.Instance.PlayMoveSound();
+                    _effectsPlayer.PlayMoveSound();
                 }
                 else
                 {
-                    EffectsPlayer.Instance.PlayMoveOpponentSound();
+                    _effectsPlayer.PlayMoveOpponentSound();
                 }
             }
         }

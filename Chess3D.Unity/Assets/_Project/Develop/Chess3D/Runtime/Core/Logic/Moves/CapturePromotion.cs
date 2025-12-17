@@ -8,10 +8,13 @@ namespace Chess3D.Runtime.Core.Logic.Moves
     {
         private readonly Capture _capture;
         private readonly Promotion _promotion;
+        private readonly EffectsPlayer _effectsPlayer;
 
-        public CapturePromotion(Game game, Piece piece, Square fromSquare, Square toSquare, Piece otherPiece, Piece beatenPiece)
+        public CapturePromotion(Game game, Piece piece, Square fromSquare, Square toSquare, Piece otherPiece,
+            Piece beatenPiece, EffectsPlayer effectsPlayer)
         {
-            _capture = new Capture(game, piece, fromSquare, toSquare, beatenPiece, isFirstMove: false);
+            _effectsPlayer = effectsPlayer;
+            _capture = new Capture(game, piece, fromSquare, toSquare, beatenPiece, isFirstMove: false, effectsPlayer);
             _promotion = new Promotion(piece, fromSquare, toSquare, otherPiece);
         }
 
@@ -34,7 +37,7 @@ namespace Chess3D.Runtime.Core.Logic.Moves
 
         public override void PlaySound()
         {
-            EffectsPlayer.Instance.PlayPromoteSound();
+            _effectsPlayer.PlayPromoteSound();
         }
     }
 }

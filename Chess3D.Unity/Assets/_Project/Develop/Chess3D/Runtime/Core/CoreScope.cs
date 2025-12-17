@@ -39,7 +39,7 @@ namespace Chess3D.Runtime.Core
         [SerializeField] private GameStateMachineOnline gameStateMachineOnline; // TODO: Add online
 
         [Header("Sound")]
-        [SerializeField] private EffectsPlayer effectsPlayer;
+        [SerializeField] private EffectsPlayer effectsPlayerPrefab;
 
         [Header("Ui")]
         [SerializeField] public NoesisXaml mainViewXaml;
@@ -85,7 +85,7 @@ namespace Chess3D.Runtime.Core
             builder.Register<FenFromString>(Lifetime.Scoped);
             builder.Register<Highlighter>(Lifetime.Scoped);
             builder.Register<UciBuffer>(Lifetime.Scoped);
-            builder.RegisterComponent(effectsPlayer);
+            builder.RegisterComponentInNewPrefab(effectsPlayerPrefab, Lifetime.Scoped);
 
             // State Machines
             builder.RegisterComponent(gameStateMachineOnline).AsSelf();

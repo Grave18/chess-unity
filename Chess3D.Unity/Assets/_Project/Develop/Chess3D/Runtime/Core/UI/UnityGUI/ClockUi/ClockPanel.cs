@@ -8,8 +8,6 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUi
 {
     public class ClockPanel : MonoBehaviour
     {
-        private CoreEvents _coreEvents;
-
         [Header("Ui")]
         [SerializeField] private TMP_Text whiteText;
         [SerializeField] private TMP_Text blackText;
@@ -19,16 +17,19 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUi
         [SerializeField] private Color normalColor;
         [SerializeField] private Color alertColor;
 
-        private IClock _clock;
-
         private bool _isInitialized;
+
+        private CoreEvents _coreEvents;
+        private IClock _clock;
+        private EffectsPlayer _effectsPlayer;
 
         private readonly CompositeDisposable _disposables = new();
 
-        public void Construct(CoreEvents coreEvents, IClock clock)
+        public void Construct(CoreEvents coreEvents, IClock clock, EffectsPlayer effectsPlayer)
         {
             _clock = clock;
             _coreEvents = coreEvents;
+            _effectsPlayer = effectsPlayer;
 
             _coreEvents.OnWarmup.Subscribe(_ => ResetColors()).AddTo(_disposables);
 
@@ -78,12 +79,12 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUi
             if (wSec > time - halfDt && wSec < time + halfDt)
             {
                 whiteText.color = alertColor;
-                EffectsPlayer.Instance.PlayTenSecondsSound();
+                _effectsPlayer.PlayTenSecondsSound();
             }
             else if (bSec > time - halfDt && bSec < time + halfDt)
             {
                 blackText.color = alertColor;
-                EffectsPlayer.Instance.PlayTenSecondsSound();
+                _effectsPlayer.PlayTenSecondsSound();
             }
         }
     }

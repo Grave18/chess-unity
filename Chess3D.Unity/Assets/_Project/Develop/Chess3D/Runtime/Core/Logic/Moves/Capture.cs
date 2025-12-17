@@ -10,11 +10,13 @@ namespace Chess3D.Runtime.Core.Logic.Moves
         private readonly Piece _beatenPiece;
         private readonly Turn _simpleMove;
         private readonly EffectsRunner effectsRunner;
+        private readonly EffectsPlayer _effectsPlayer;
 
-        public Capture(Game game, Piece movedPiece, Square fromSquare, Square toSquare, Piece beatenPiece, bool isFirstMove)
+        public Capture(Game game, Piece movedPiece, Square fromSquare, Square toSquare, Piece beatenPiece, bool isFirstMove, EffectsPlayer effectsPlayer)
         {
             _beatenPiece = beatenPiece;
-            _simpleMove = new SimpleMove(game,movedPiece, fromSquare,toSquare, isFirstMove, isComposite: true);
+            _simpleMove = new SimpleMove(game,movedPiece, fromSquare,toSquare, isFirstMove, effectsPlayer, isComposite: true);
+            _effectsPlayer = effectsPlayer;
 
             effectsRunner = _beatenPiece.GetComponent<EffectsRunner>();
         }
@@ -50,7 +52,7 @@ namespace Chess3D.Runtime.Core.Logic.Moves
 
         public override void PlaySound()
         {
-            EffectsPlayer.Instance.PlayCaptureSound();
+            _effectsPlayer.PlayCaptureSound();
         }
     }
 }

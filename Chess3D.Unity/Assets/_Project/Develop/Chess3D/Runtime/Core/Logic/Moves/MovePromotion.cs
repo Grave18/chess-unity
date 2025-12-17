@@ -8,10 +8,11 @@ namespace Chess3D.Runtime.Core.Logic.Moves
     {
         private readonly SimpleMove _simpleMove;
         private readonly Promotion _promotion;
+        private readonly EffectsPlayer _effectsPlayer;
 
-        public MovePromotion(Game game, Piece piece, Square fromSquare, Square toSquare, Piece otherPiece)
+        public MovePromotion(Game game, Piece piece, Square fromSquare, Square toSquare, Piece otherPiece, EffectsPlayer effectsPlayer)
         {
-            _simpleMove = new SimpleMove(game, piece, fromSquare, toSquare, isFirstMove: false);
+            _simpleMove = new SimpleMove(game, piece, fromSquare, toSquare, isFirstMove: false, effectsPlayer);
             _promotion = new Promotion(piece, fromSquare, toSquare, otherPiece);
         }
 
@@ -34,7 +35,7 @@ namespace Chess3D.Runtime.Core.Logic.Moves
 
         public override void PlaySound()
         {
-            EffectsPlayer.Instance.PlayPromoteSound();
+            _effectsPlayer.PlayPromoteSound();
         }
     }
 }

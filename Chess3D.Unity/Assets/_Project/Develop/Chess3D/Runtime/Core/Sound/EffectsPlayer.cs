@@ -1,12 +1,12 @@
-using Chess3D.Runtime.Utilities.Common.Singleton;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Chess3D.Runtime.Core.Sound
 {
-    [RequireComponent(typeof(AudioSource))]
-    public class EffectsPlayer : SingletonBehaviour<EffectsPlayer>
+    public class EffectsPlayer : MonoBehaviour
     {
+        [Header("References")]
+        [SerializeField] private AudioSource audioSource;
+
         [Header("Clips")]
         [SerializeField] private AudioClip gameStart;
         [SerializeField] private AudioClip gameEnd;
@@ -19,64 +19,54 @@ namespace Chess3D.Runtime.Core.Sound
         [SerializeField] private AudioClip notify;
         [SerializeField] private AudioClip tenSeconds;
 
-        private AudioSource _audioSource;
-
-        protected override void Awake()
-        {
-            base.Awake();
-
-            _audioSource = GetComponent<AudioSource>();
-            Assert.IsNotNull(_audioSource);
-        }
-
         public void PlayGameStartSound()
         {
-            _audioSource.PlayOneShot(gameStart);
+            audioSource.PlayOneShot(gameStart);
         }
 
         public void PlayGameEndSound()
         {
-            _audioSource.PlayOneShot(gameEnd);
+            audioSource.PlayOneShot(gameEnd);
         }
 
         public void PlayTenSecondsSound()
         {
-            _audioSource.PlayOneShot(tenSeconds);
+            audioSource.PlayOneShot(tenSeconds);
         }
 
         public void PlayMoveSound()
         {
-            _audioSource.PlayOneShot(move);
+            audioSource.PlayOneShot(move);
         }
 
         public void PlayMoveOpponentSound()
         {
-            _audioSource.PlayOneShot(moveOpponent);
+            audioSource.PlayOneShot(moveOpponent);
         }
 
         public void PlayCaptureSound()
         {
-            _audioSource.PlayOneShot(capture);
+            audioSource.PlayOneShot(capture);
         }
 
         public void PlayCastleSound()
         {
-            _audioSource.PlayOneShot(castle);
+            audioSource.PlayOneShot(castle);
         }
 
         public void PlayCheckSound()
         {
-            _audioSource.PlayOneShot(check);
+            audioSource.PlayOneShot(check);
         }
 
         public void PlayPromoteSound()
         {
-            _audioSource.PlayOneShot(promote);
+            audioSource.PlayOneShot(promote);
         }
 
         public void PlayNotifySound()
         {
-            _audioSource.PlayOneShot(notify);
+            audioSource.PlayOneShot(notify);
         }
     }
 }
