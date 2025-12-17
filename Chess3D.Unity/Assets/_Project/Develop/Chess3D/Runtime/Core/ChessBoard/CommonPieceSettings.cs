@@ -1,5 +1,4 @@
-﻿using DG.Tweening;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Chess3D.Runtime.Core.ChessBoard
 {
@@ -7,11 +6,6 @@ namespace Chess3D.Runtime.Core.ChessBoard
     [System.Serializable]
     public sealed class CommonPieceSettings
     {
-        [Header("Animation")]
-        public LayerMask SquareLayer = LayerMask.GetMask("Square");
-        public Ease Ease = Ease.InOutCubic;
-        public float Speed = 0.7f;
-
         [Header("Highlight Colors")]
         public Color DefaultColor = Color.black;
         public Color SelectColor = Color.red;

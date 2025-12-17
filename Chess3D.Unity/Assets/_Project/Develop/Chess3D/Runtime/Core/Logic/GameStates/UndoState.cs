@@ -14,14 +14,14 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 {
     public class UndoState : StateNode<MoveData>, IGameState<MoveData>
     {
+        private const float SoundT = 0.4f;
+
         private Game _game;
         private Board _board;
         private UciBuffer _uciBuffer;
         private IGameStateMachine _gameStateMachine;
         private CoreEvents _coreEvents;
-
-        private const float MoveTimeSec = 0.1f;
-        private const float SoundT = 0.4f;
+        private ConfigContainer _configContainer;
 
         private MoveData _moveData;
         private Turn _turn;
@@ -29,13 +29,16 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         private bool _isRunning;
 
         [Inject]
-        public void Construct(Game game, Board board, UciBuffer uciBuffer, IGameStateMachine gameStateMachine, CoreEvents coreEvents)
+        public void Construct(Game game, Board board, UciBuffer uciBuffer,
+            IGameStateMachine gameStateMachine, CoreEvents coreEvents,
+            ConfigContainer configContainer)
         {
             _game = game;
             _board = board;
             _uciBuffer = uciBuffer;
             _gameStateMachine = gameStateMachine;
             _coreEvents = coreEvents;
+            _configContainer = configContainer;
         }
 
         public string Name => "Undo";
@@ -174,7 +177,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         private void ProgressMove()
         {
-            float delta = Time.deltaTime / MoveTimeSec;
+            float delta = Time.deltaTime / _configContainer.ChessConfig.UndoMoveTimeSec;
             _t -= delta;
 
             _turn.Progress(_t);

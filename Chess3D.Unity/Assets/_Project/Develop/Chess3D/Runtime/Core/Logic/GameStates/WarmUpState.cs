@@ -13,26 +13,27 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         private IGameStateMachine _gameStateMachine;
         private CameraController _cameraController;
         private CoreEvents _coreEvents;
+        private ConfigContainer _configContainer;
 
         [SerializeField] private IdleState idleState;
 
-        private const float WarmupTimeSec = 3f; // TODO: Make configurable
         private float t;
 
         public string Name => "WarmUp";
 
         [Inject]
         public void Construct(IGameStateMachine gameStateMachine,
-            CameraController cameraController, CoreEvents coreEvents)
+            CameraController cameraController, CoreEvents coreEvents, ConfigContainer configContainer)
         {
             _gameStateMachine = gameStateMachine;
             _cameraController = cameraController;
             _coreEvents = coreEvents;
+            _configContainer = configContainer;
         }
 
         public override void Enter()
         {
-            t = WarmupTimeSec;
+            t = _configContainer.ChessConfig.WarmupTimeSec;
 
             _cameraController.RotateToStartPosition().Forget();
 

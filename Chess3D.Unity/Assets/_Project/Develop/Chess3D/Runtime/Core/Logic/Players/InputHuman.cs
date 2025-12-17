@@ -1,5 +1,4 @@
 ﻿using System;
-using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.ChessBoard.Pieces;
 using Chess3D.Runtime.Core.Highlighting;
@@ -15,7 +14,9 @@ namespace Chess3D.Runtime.Core.Logic.Players
     [UnityEngine.Scripting.Preserve]
     public class InputHuman : IInputHandler
     {
+        // TODO: Move LayerMask to SO
         private const float MaxDistance = 100;
+        private readonly LayerMask _layerMask = LayerMask.GetMask("Piece", "Square");
 
         private readonly Game _game;
         private readonly IGameStateMachine _gameStateMachine;
@@ -24,8 +25,6 @@ namespace Chess3D.Runtime.Core.Logic.Players
         private readonly ISettingsContainer settingsContainer;
         private readonly PromotionPanel _promotionPanel;
 
-        // TODO: Move LayerMask to SO
-        private readonly LayerMask _layerMask = LayerMask.GetMask("Piece", "Square");
         private bool _isPlaying;
 
         public InputHuman(Game game, IGameStateMachine gameStateMachine,

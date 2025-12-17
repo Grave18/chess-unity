@@ -15,17 +15,9 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 {
     public class MoveState : StateNode<string>, IGameState<string>
     {
-        private Game _game;
-        private Board _board;
-        private PieceFactory _pieceFactory;
-        private UciBuffer _uciBuffer;
-        private IGameStateMachine _gameStateMachine;
-        private CoreEvents _coreEvents;
+        private const float SoundT = 0.6f;
 
         [SerializeField] private IdleState idleState;
-
-        private const float MoveTimeSec = 0.3f;
-        private const float SoundT = 0.6f;
 
         private string _uci;
         private MoveData _moveData;
@@ -33,9 +25,17 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         private float _t;
         private bool _isRunning;
 
+        private Game _game;
+        private Board _board;
+        private PieceFactory _pieceFactory;
+        private UciBuffer _uciBuffer;
+        private IGameStateMachine _gameStateMachine;
+        private CoreEvents _coreEvents;
+        private ConfigContainer _configContainer;
+
         [Inject]
         public void Construct(Game game, Board board, PieceFactory pieceFactory, UciBuffer uciBuffer,
-            IGameStateMachine gameStateMachine, CoreEvents coreEvents)
+            IGameStateMachine gameStateMachine, CoreEvents coreEvents, ConfigContainer configContainer)
         {
             _game = game;
             _board = board;
@@ -43,6 +43,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             _uciBuffer = uciBuffer;
             _gameStateMachine = gameStateMachine;
             _coreEvents = coreEvents;
+            _configContainer = configContainer;
         }
 
         public string Name => "Move";
@@ -244,7 +245,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         private void ProgressMove()
         {
-            float delta = Time.deltaTime / MoveTimeSec;
+            float delta = Time.deltaTime / _configContainer.ChessConfig.MoveTimeSec;
             _t += delta;
 
             _turn.Progress(_t);

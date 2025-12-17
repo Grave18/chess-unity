@@ -9,6 +9,7 @@ namespace Chess3D.Runtime
     public sealed class ConfigContainer : ILoadUnit
     {
         public LobbyConfig LobbyConfig;
+        public ChessConfig ChessConfig;
 
         public UniTask Load()
         {
@@ -23,5 +24,14 @@ namespace Chess3D.Runtime
     {
         public float UpdateIntervalSec;
         public int PlayersToStart;
+    }
+
+    [Serializable]
+    public sealed class ChessConfig
+    {
+        public float WarmupTimeSec;
+        public float UndoMoveTimeSec;
+        public float RedoMoveTimeSec;
+        public float MoveTimeSec;
     }
 }

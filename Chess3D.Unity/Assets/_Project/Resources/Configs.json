@@ -2,5 +2,11 @@
   "LobbyConfig": {
     "UpdateIntervalSec": 3.0,
     "PlayersToStart": 2
+  },
+  "ChessConfig": {
+    "WarmupTimeSec": 3.0,
+    "UndoMoveTimeSec": 0.1,
+    "RedoMoveTimeSec": 0.1,
+    "MoveTimeSec": 0.3
   }
 }

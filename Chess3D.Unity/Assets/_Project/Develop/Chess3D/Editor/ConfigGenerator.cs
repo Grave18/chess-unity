@@ -9,6 +9,8 @@ namespace Chess3D.Editor
 {
     public static class ConfigGenerator
     {
+        private static readonly string ConfigPath = Path.Combine(Application.dataPath, "_Project", "Resources", RuntimeConstants.Configs.FileName + ".json");
+
         [MenuItem("Chess3D/Configs/Generate Config", priority = 0)]
         public static void Generate()
         {
@@ -17,20 +19,25 @@ namespace Chess3D.Editor
                 LobbyConfig = new LobbyConfig
                 {
                     UpdateIntervalSec = 3f,
-                    PlayersToStart = 2
+                    PlayersToStart = 2,
+                },
+                ChessConfig = new ChessConfig
+                {
+                    WarmupTimeSec = 3f,
+                    UndoMoveTimeSec = 0.1f,
+                    RedoMoveTimeSec = 0.1f,
+                    MoveTimeSec = 0.3f,
                 }
             };
 
             string configJson = JsonConvert.SerializeObject(config, Formatting.Indented);
-            var configPath = Path.Combine(Application.dataPath, "_Project", "Resources", RuntimeConstants.Configs.FileName + ".json");
-            File.WriteAllText(configPath, configJson);
+            File.WriteAllText(ConfigPath, configJson);
         }
 
         [MenuItem("Chess3D/Configs/Open Config", priority = 0)]
         public static void Open()
         {
-            var configPath = Path.Combine(Application.dataPath, "_Project", "Resources", RuntimeConstants.Configs.FileName + ".json");
-            InternalEditorUtility.OpenFileAtLineExternal(configPath, 1);
+            InternalEditorUtility.OpenFileAtLineExternal(ConfigPath, 1);
         }
     }
 }
