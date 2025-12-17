@@ -29,7 +29,7 @@ namespace Chess3D.Runtime.Core.ChessBoard
         [SerializeField] private Transform piecesParent;
         [SerializeField] private Transform squaresParent;
         [SerializeField] private BeatenPieces beatenPieces;
-        // TODO: remove this
+        // TODO: remove nullSquare
         [SerializeField] private Square nullSquare;
 
         private Dictionary<string, Square> SquaresHash { get; } = new();

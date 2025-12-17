@@ -20,6 +20,7 @@ namespace Chess3D.Runtime.Core.MainCamera
         private const float WhiteInitialYawRad = Mathf.PI*1.5f;
         private const float BlackInitialYawRad = Mathf.PI*0.5f;
 
+        // TODO: move some CameraController values in config
         [Header("Target")]
         [SerializeField] private Vector3 offset = new(0, 0.15f, 0);
 

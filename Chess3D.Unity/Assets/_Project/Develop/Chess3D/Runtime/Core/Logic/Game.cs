@@ -76,14 +76,6 @@ namespace Chess3D.Runtime.Core.Logic
             CurrentTurnColor = CurrentTurnColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
         }
 
-        // TODO: This functionality must be in Flow
-        // public void Rematch()
-        // {
-        //     Competitors.Restart();
-        //     Board.Build();
-        //     StartGame().Forget();
-        // }
-
         public void TimeOutSetup(PieceColor pieceColor)
         {
             if (pieceColor == PieceColor.White)

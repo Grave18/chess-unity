@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Core.ChessBoard
 {
-    // TODO: move to configs
+    // TODO: move CommonPieceSettings to configs or SO
     [System.Serializable]
     public sealed class CommonPieceSettings
     {

@@ -49,7 +49,6 @@ namespace Chess3D.Runtime.Core.Notation
 
         private void AppendLetters()
         {
-            // TODO: Hidden dependency
             var board = _resolver.Resolve<Board>();
             var squares = board.Squares;
 
@@ -118,7 +117,6 @@ namespace Chess3D.Runtime.Core.Notation
 
         private void AppendColor()
         {
-            // TODO: hidden dependency
             var game = _resolver.Resolve<Game>();
             string color = game.CurrentTurnColor switch
             {
@@ -152,7 +150,6 @@ namespace Chess3D.Runtime.Core.Notation
 
         private bool IsPieceFirstMove(string squareAddress)
         {
-            // TODO: Hidden dependency
             var board = _resolver.Resolve<Board>();
             Piece piece = board.GetSquare(squareAddress).GetPiece();
             bool pieceIsFirstMove = piece != null && piece.IsFirstMove;
@@ -161,7 +158,6 @@ namespace Chess3D.Runtime.Core.Notation
 
         private void AppendEnPassantSquare()
         {
-            // TODO: Hidden dependency
             var board = _resolver.Resolve<Board>();
             EnPassantInfo enPassantInfo = board.GetEnPassantInfo();
             string enPassant = enPassantInfo != null
@@ -172,7 +168,6 @@ namespace Chess3D.Runtime.Core.Notation
 
         private void AppendHalfMoveClock()
         {
-            // TODO: hidden dependency
             var uciBuffer = _resolver.Resolve<UciBuffer>();
             int halfMoveClock = uciBuffer.HalfMoveClock;
 
@@ -181,7 +176,6 @@ namespace Chess3D.Runtime.Core.Notation
 
         private void AppendFullMoveCounter()
         {
-            // TODO: hidden dependency
             var uciBuffer = _resolver.Resolve<UciBuffer>();
             int fullMoveCounter = uciBuffer.FullMoveCounter;
 

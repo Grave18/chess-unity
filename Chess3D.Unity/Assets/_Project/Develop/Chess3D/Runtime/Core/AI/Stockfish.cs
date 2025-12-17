@@ -238,7 +238,6 @@ namespace Chess3D.Runtime.Core.AI
             Log.AI.D($"<color=green>{name} calculating move...</color>");
 
             // Set start position
-            // Todo: get uci from command buffer _buffer.GetUciMoves()
             string positionCommand = $"position fen {settingsContainer.S.GameSettings.CurrentFen} {_uciBuffer.GetMovesUci()}";
             Log.AI.D(positionCommand);
             PostCommand(positionCommand);

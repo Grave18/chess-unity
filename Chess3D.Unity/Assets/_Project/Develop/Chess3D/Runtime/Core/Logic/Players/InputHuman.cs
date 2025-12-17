@@ -24,7 +24,7 @@ namespace Chess3D.Runtime.Core.Logic.Players
         private readonly ISettingsContainer settingsContainer;
         private readonly PromotionPanel _promotionPanel;
 
-        // TODO: Move to config
+        // TODO: Move LayerMask to SO
         private readonly LayerMask _layerMask = LayerMask.GetMask("Piece", "Square");
         private bool _isPlaying;
 
@@ -42,7 +42,6 @@ namespace Chess3D.Runtime.Core.Logic.Players
 
         public UniTask Load()
         {
-            // TODO: Remove
             return UniTask.CompletedTask;
         }
 

@@ -35,8 +35,8 @@ namespace Chess3D.Runtime.Core
     {
         [Header("Game")]
         [SerializeField] private Board board;
-        [SerializeField] private ClockOffline clockOffline; // TODO: Make entry point, Factory. used now
-        [SerializeField] private GameStateMachineOnline gameStateMachineOnline; // TODO: Factory
+        [SerializeField] private ClockOffline clockOffline; // TODO: Make entry point. Add online
+        [SerializeField] private GameStateMachineOnline gameStateMachineOnline; // TODO: Add online
 
         [Header("Sound")]
         [SerializeField] private EffectsPlayer effectsPlayer;
