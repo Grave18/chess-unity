@@ -64,7 +64,8 @@ namespace Chess3D.Editor
         [MenuItem("Chess3D/Settings/Open External Settings", priority = 1)]
         public static void OpenExternalSettings()
         {
-            InternalEditorUtility.OpenFileAtLineExternal(RuntimeConstants.Settings.FilePath, 1);
+            string filePath = Path.Combine(Application.persistentDataPath, RuntimeConstants.Settings.FileName + ".json");
+            InternalEditorUtility.OpenFileAtLineExternal(filePath, 1);
         }
 
         [MenuItem("Chess3D/Settings/Open Default Settings", priority = 1)]

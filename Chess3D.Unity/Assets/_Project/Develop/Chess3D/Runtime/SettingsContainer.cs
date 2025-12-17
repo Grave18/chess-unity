@@ -20,12 +20,14 @@ namespace Chess3D.Runtime
     {
         public Settings S { get; private set; }
 
+        private static readonly string FilePath = Path.Combine(Application.persistentDataPath, RuntimeConstants.Settings.FileName + ".json");
+
         public UniTask Load()
         {
             string settingsJson;
-            if (File.Exists(RuntimeConstants.Settings.FilePath))
+            if (File.Exists(FilePath))
             {
-                settingsJson = File.ReadAllText(RuntimeConstants.Settings.FilePath);
+                settingsJson = File.ReadAllText(FilePath);
             }
             else
             {
@@ -41,7 +43,7 @@ namespace Chess3D.Runtime
         public void Save()
         {
             string settingsJson = JsonUtility.ToJson(S, prettyPrint: true);
-            File.WriteAllText(RuntimeConstants.Settings.FilePath, settingsJson);
+            File.WriteAllText(FilePath, settingsJson);
         }
     }
 

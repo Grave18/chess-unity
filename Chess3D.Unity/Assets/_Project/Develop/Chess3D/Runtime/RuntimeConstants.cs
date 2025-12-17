@@ -1,6 +1,4 @@
-﻿using System.IO;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine.SceneManagement;
 
 namespace Chess3D.Runtime
 {
@@ -19,7 +17,6 @@ namespace Chess3D.Runtime
         public static class Settings
         {
             public const string FileName = "Settings";
-            public static readonly string FilePath = Path.Combine(Application.persistentDataPath, FileName + ".json");
             public const string AudioMixerFileName = "AudioMixer";
             public const string MasterVolumeKey = "MasterVolume";
             public const string MusicVolumeKey = "MusicVolume";
