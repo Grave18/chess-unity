@@ -4,11 +4,6 @@ namespace Chess3D.Runtime.Menu.UI.UnityGUI
 {
     public class BuildVersionDisplayer : MonoBehaviour
     {
-        private void Awake()
-        {
-            DontDestroyOnLoad(gameObject);
-        }
-
         private void OnGUI()
         {
             int w = Screen.width;
