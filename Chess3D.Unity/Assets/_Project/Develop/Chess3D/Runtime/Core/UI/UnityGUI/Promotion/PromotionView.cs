@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.Promotion
 {
-    public class PromotionPanel : MonoBehaviour
+    public class PromotionView : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] private GameObject whiteRoot;

@@ -1,16 +1,17 @@
 ﻿using Chess3D.Runtime.Core.InputManagement;
 using Chess3D.Runtime.Core.UI;
 using Chess3D.Runtime.Core.UI.UnityGUI;
+using Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel;
 
 namespace Chess3D.Runtime.Core.Logic.MenuStates
 {
     public class PopupState : MenuState
     {
-        private readonly GameCanvas _gameCanvas;
+        private readonly GameCanvasEnabler gameCanvasEnabler;
 
-        public PopupState(MenuStateMachine stateMachine, GameCanvas gameCanvas) : base(stateMachine)
+        public PopupState(MenuStateMachine stateMachine, GameCanvasEnabler gameCanvasEnabler) : base(stateMachine)
         {
-            _gameCanvas = gameCanvas;
+            this.gameCanvasEnabler = gameCanvasEnabler;
         }
 
         public override void OnEnter()
@@ -38,12 +39,12 @@ namespace Chess3D.Runtime.Core.Logic.MenuStates
             if (isProtectionEnabled)
             {
                 InputController.IsEnabled = false;
-                _gameCanvas.Hide();
+                gameCanvasEnabler.Hide();
             }
             else
             {
                 InputController.IsEnabled = true;
-                _gameCanvas.Show();
+                gameCanvasEnabler.Show();
             }
         }
     }

@@ -23,19 +23,17 @@ namespace Chess3D.Runtime.Core.Logic.Players
         private readonly Camera _mainCamera;
         private readonly Highlighter _highlighter;
         private readonly ISettingsContainer settingsContainer;
-        private readonly PromotionPanel _promotionPanel;
 
         private bool _isPlaying;
 
         public InputHuman(Game game, IGameStateMachine gameStateMachine,
             ISettingsContainer settingsContainer, [Key(CameraKeys.Main)] Camera mainCamera,
-            Highlighter highlighter, PromotionPanel promotionPanel)
+            Highlighter highlighter)
         {
             _game = game;
             _highlighter = highlighter;
             _mainCamera = mainCamera;
             this.settingsContainer = settingsContainer;
-            _promotionPanel = promotionPanel;
             _gameStateMachine = gameStateMachine;
         }
 
@@ -129,13 +127,14 @@ namespace Chess3D.Runtime.Core.Logic.Players
                 }
 
                 _gameStateMachine.Pause();
-                _promotionPanel.RequestPromotedPiece(_game.CurrentTurnColor, pieceLetter =>
-                {
-                    _gameStateMachine.Play();
-                    uci += pieceLetter;
-                    _gameStateMachine.Move(uci);
-                    _game.Deselect();
-                });
+                // TODO: refactor Promotion
+                // promotionView.RequestPromotedPiece(_game.CurrentTurnColor, pieceLetter =>
+                // {
+                //     _gameStateMachine.Play();
+                //     uci += pieceLetter;
+                //     _gameStateMachine.Move(uci);
+                //     _game.Deselect();
+                // });
             }
             else
             {

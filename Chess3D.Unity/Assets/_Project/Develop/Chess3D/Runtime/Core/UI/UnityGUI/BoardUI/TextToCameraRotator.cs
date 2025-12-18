@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Chess3D.Runtime.Core.UI.UnityGUI.BoardUi
+namespace Chess3D.Runtime.Core.UI.UnityGUI.BoardUI
 {
     public class TextToCameraRotator : MonoBehaviour
     {

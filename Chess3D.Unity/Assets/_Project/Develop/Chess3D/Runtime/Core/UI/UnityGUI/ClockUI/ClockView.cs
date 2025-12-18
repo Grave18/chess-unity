@@ -4,9 +4,9 @@ using TMPro;
 using UniRx;
 using UnityEngine;
 
-namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUi
+namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUI
 {
-    public class ClockPanel : MonoBehaviour
+    public class ClockView : MonoBehaviour
     {
         [Header("Ui")]
         [SerializeField] private TMP_Text whiteText;
@@ -23,22 +23,15 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUi
         private IClock _clock;
         private EffectsPlayer _effectsPlayer;
 
-        private readonly CompositeDisposable _disposables = new();
-
         public void Construct(CoreEvents coreEvents, IClock clock, EffectsPlayer effectsPlayer)
         {
             _clock = clock;
             _coreEvents = coreEvents;
             _effectsPlayer = effectsPlayer;
 
-            _coreEvents.OnWarmup.Subscribe(_ => ResetColors()).AddTo(_disposables);
+            _coreEvents.OnWarmup.Subscribe(_ => ResetColors()).AddTo(this);
 
             _isInitialized = true;
-        }
-
-        private void OnDestroy()
-        {
-            _disposables.Dispose();
         }
 
         private void Update()

@@ -14,12 +14,8 @@ using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.MainCamera;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Core.Sound;
-using Chess3D.Runtime.Core.UI.UnityGUI;
-using Chess3D.Runtime.Core.UI.UnityGUI.AlgebraicNotation;
-using Chess3D.Runtime.Core.UI.UnityGUI.BoardUi;
-using Chess3D.Runtime.Core.UI.UnityGUI.ClockUi;
-using Chess3D.Runtime.Core.UI.UnityGUI.DebugUi;
-using Chess3D.Runtime.Core.UI.UnityGUI.Promotion;
+using Chess3D.Runtime.Core.UI.UnityGUI.ClockUI;
+using Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel;
 using Chess3D.Runtime.Core.UI.ViewModels;
 using Chess3D.Runtime.Core.UI.Views;
 using Chess3D.Runtime.Menu.UI;
@@ -36,29 +32,22 @@ namespace Chess3D.Runtime.Core
         [Header("Game")]
         [SerializeField] private Board board;
         [SerializeField] private ClockOffline clockOffline; // TODO: Make entry point. Add online
-        [SerializeField] private GameStateMachineOnline gameStateMachineOnline; // TODO: Add online
 
         [Header("Sound")]
         [SerializeField] private EffectsPlayer effectsPlayerPrefab;
 
-        [Header("Ui")]
-        [SerializeField] public NoesisXaml mainViewXaml;
+        [Header("UI")]
+        [SerializeField] private GameCanvasEnabler gameCanvasEnabler;
+        [SerializeField] private NoesisXaml mainViewXaml;
         [SerializeField] private NoesisView noesisView;
-        [SerializeField] private GameCanvas gameCanvas;
-        [SerializeField] private NameCanvas nameCanvas;
-        [SerializeField] private StateDebugPanel stateDebugPanelPrefab;
-        [SerializeField] private BufferDebugPanel bufferDebugPanelPrefab;
-        [SerializeField] private ClockPanelCanvas whiteClockPrefab;
-        [SerializeField] private ClockPanelCanvas blackClockPrefab;
-        [SerializeField] private PromotionPanel promotionPanel;
-        [SerializeField] private NotificationPanel notificationPanel;
-        [SerializeField] private AlgebraicNotationPanel algebraicNotationPanel;
-        [SerializeField] private UndoRedoPausePanel undoRedoPausePanel;
+        [SerializeField] private ClockCanvas whiteClockPrefab;
+        [SerializeField] private ClockCanvas blackClockPrefab;
 
         [Header("ViewModels")]
         [SerializeField] private CoreHomeViewModel coreHomeViewModel; // Because NetworkBehaviour
 
         [Header("Game states")]
+        [SerializeField] private GameStateMachineOnline gameStateMachineOnline; // TODO: Add online
         [SerializeField] private WarmUpState warmupState;
         [SerializeField] private IdleState idleState;
         [SerializeField] private MoveState moveState;
@@ -115,17 +104,12 @@ namespace Chess3D.Runtime.Core
             builder.Register<StartEndSoundPlayer>(Lifetime.Scoped);
 
             // UI
+            builder.RegisterComponent(gameCanvasEnabler);
             builder.Register<MainViewLoader>(Lifetime.Scoped);
             builder.RegisterComponent(mainViewXaml);
             builder.RegisterComponent(noesisView);
             builder.Register<ViewNavigator>(Lifetime.Scoped);
             builder.Register<MenuStateMachine>(Lifetime.Scoped);
-            builder.RegisterComponent(gameCanvas);
-            builder.RegisterComponent(nameCanvas);
-            builder.RegisterComponent(promotionPanel);
-            builder.RegisterComponent(notificationPanel);
-            builder.RegisterComponent(algebraicNotationPanel);
-            builder.RegisterComponent(undoRedoPausePanel);
             // Clock UI
             builder.Register<ClockPanelFactory>(Lifetime.Scoped);
             builder.RegisterComponentInNewPrefab(whiteClockPrefab, Lifetime.Scoped).Keyed(PieceColor.White);
@@ -151,18 +135,8 @@ namespace Chess3D.Runtime.Core
             builder.RegisterBuildCallback(ServiceLocator.Initialize);
 
             // Entry points
-            builder.RegisterEntryPoint<GameStateMachineOffline>().As<IGameStateMachine>();
+            builder.RegisterEntryPoint<GameStateMachineOffline>().As<IGameStateMachine>(); // TODO: add online GameStateMachine
             builder.RegisterEntryPoint<CoreFlow>().AsSelf();
-
-#if !GRAVEBOX_PROD
-            RegisterDebugUI(builder);
-#endif
-        }
-
-        private void RegisterDebugUI(IContainerBuilder builder)
-        {
-            builder.RegisterComponentInNewPrefab(stateDebugPanelPrefab, Lifetime.Scoped).UnderTransform(gameCanvas.transform);
-            builder.RegisterComponentInNewPrefab(bufferDebugPanelPrefab, Lifetime.Scoped).UnderTransform(gameCanvas.transform);
         }
     }
 }

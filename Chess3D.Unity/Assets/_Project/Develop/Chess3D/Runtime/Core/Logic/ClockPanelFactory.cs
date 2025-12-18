@@ -1,5 +1,5 @@
 ﻿using Chess3D.Runtime.Bootstrap.Settings;
-using Chess3D.Runtime.Core.UI.UnityGUI.ClockUi;
+using Chess3D.Runtime.Core.UI.UnityGUI.ClockUI;
 using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic
@@ -7,7 +7,7 @@ namespace Chess3D.Runtime.Core.Logic
     [UnityEngine.Scripting.Preserve]
     public class ClockPanelFactory
     {
-        private ClockPanelCanvas _cachedInstance;
+        private ClockCanvas _cachedInstance;
 
         private readonly IObjectResolver _resolver;
         private readonly ISettingsContainer settingsContainer;
@@ -18,9 +18,9 @@ namespace Chess3D.Runtime.Core.Logic
             this.settingsContainer = settingsContainer;
         }
 
-        public ClockPanelCanvas Create()
+        public ClockCanvas Create()
         {
-            return _cachedInstance ??= _resolver.Resolve<ClockPanelCanvas>(settingsContainer.S.GameSettings.PlayerColor);
+            return _cachedInstance ??= _resolver.Resolve<ClockCanvas>(settingsContainer.S.GameSettings.PlayerColor);
         }
     }
 }

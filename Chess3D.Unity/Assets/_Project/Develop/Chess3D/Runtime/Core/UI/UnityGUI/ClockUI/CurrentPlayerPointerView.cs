@@ -2,9 +2,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Chess3D.Runtime.Core.UI.UnityGUI
+namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUI
 {
-    public class CurrentPlayerPointerPanel : MonoBehaviour
+    public class CurrentPlayerPointerView : MonoBehaviour
     {
         private Logic.Game _game;
         [SerializeField] private Image whiteImage;

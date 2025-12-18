@@ -1,5 +1,6 @@
 ﻿using Chess3D.Runtime.Core.UI;
 using Chess3D.Runtime.Core.UI.UnityGUI;
+using Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel;
 using Chess3D.Runtime.Core.UI.ViewModels;
 using Cysharp.Threading.Tasks;
 using Chess3D.Runtime.Utilities;
@@ -36,18 +37,18 @@ namespace Chess3D.Runtime.Core.Logic.MenuStates
             }
             if (typeof(T) == typeof(PlayState))
             {
-                var gameCanvas = _resolver.Resolve<GameCanvas>();
+                var gameCanvas = _resolver.Resolve<GameCanvasEnabler>();
                 _currentState = new PlayState(this, gameCanvas);
             }
             else if (typeof(T) == typeof(PauseState))
             {
                 var inGameMenuViewModel = _resolver.Resolve<CoreMainViewModel>();
-                var gameCanvas = _resolver.Resolve<GameCanvas>();
+                var gameCanvas = _resolver.Resolve<GameCanvasEnabler>();
                 _currentState = new PauseState(this, inGameMenuViewModel, gameCanvas);
             }
             else if (typeof(T) == typeof(PopupState))
             {
-                var gameCanvas = _resolver.Resolve<GameCanvas>();
+                var gameCanvas = _resolver.Resolve<GameCanvasEnabler>();
                 _currentState = new PopupState(this, gameCanvas);
             }
             else

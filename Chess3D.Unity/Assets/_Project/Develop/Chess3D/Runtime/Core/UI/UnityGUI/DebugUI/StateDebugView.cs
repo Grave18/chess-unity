@@ -1,4 +1,3 @@
-using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Online;
@@ -7,9 +6,9 @@ using TMPro;
 using UnityEngine;
 using VContainer;
 
-namespace Chess3D.Runtime.Core.UI.UnityGUI.DebugUi
+namespace Chess3D.Runtime.Core.UI.UnityGUI.DebugUI
 {
-    public class StateDebugPanel : MonoBehaviour
+    public class StateDebugView : MonoBehaviour
     {
         [Header("Ui texts")]
         [SerializeField] private TMP_Text authorityText;

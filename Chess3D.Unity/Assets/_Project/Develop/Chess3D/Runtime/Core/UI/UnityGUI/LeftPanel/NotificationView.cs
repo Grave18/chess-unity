@@ -4,9 +4,9 @@ using UniRx;
 using UnityEngine;
 using VContainer;
 
-namespace Chess3D.Runtime.Core.UI.UnityGUI
+namespace Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel
 {
-    public class NotificationPanel : MonoBehaviour
+    public class NotificationView : MonoBehaviour
     {
         [Header("Panels")]
         [SerializeField] private GameObject additionalPanel;
@@ -17,25 +17,18 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI
 
         private Game _game;
 
-        private readonly CompositeDisposable _disposables = new();
-
         [Inject]
         private void Construct(Game game, CoreEvents coreEvents)
         {
             _game = game;
 
-            coreEvents.OnWarmup.Subscribe(_ => UpdateNotificationText()).AddTo(_disposables);
-            coreEvents.OnWarmup.Subscribe(_ => Warmup()).AddTo(_disposables);
-            coreEvents.OnStart.Subscribe(_ => UpdateNotificationText()).AddTo(_disposables);
-            coreEvents.OnIdle.Subscribe(_ => UpdateNotificationText()).AddTo(_disposables);
-            coreEvents.OnEndMove.Subscribe(_ => UpdateNotificationText()).AddTo(_disposables);
-            coreEvents.OnEnd.Subscribe(_ => UpdateNotificationText()).AddTo(_disposables);
-            coreEvents.OnPause.Subscribe(_ => Pause()).AddTo(_disposables);
-        }
-
-        private void OnDisable()
-        {
-            _disposables.Dispose();
+            coreEvents.OnWarmup.Subscribe(_ => UpdateNotificationText()).AddTo(this);
+            coreEvents.OnWarmup.Subscribe(_ => Warmup()).AddTo(this);
+            coreEvents.OnStart.Subscribe(_ => UpdateNotificationText()).AddTo(this);
+            coreEvents.OnIdle.Subscribe(_ => UpdateNotificationText()).AddTo(this);
+            coreEvents.OnEndMove.Subscribe(_ => UpdateNotificationText()).AddTo(this);
+            coreEvents.OnEnd.Subscribe(_ => UpdateNotificationText()).AddTo(this);
+            coreEvents.OnPause.Subscribe(_ => Pause()).AddTo(this);
         }
 
         private void UpdateNotificationText()

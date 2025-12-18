@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace Chess3D.Runtime.Core.UI.UnityGUI
+namespace Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel
 {
-    public class GameCanvas : MonoBehaviour
+    public class GameCanvasEnabler : MonoBehaviour
     {
         public void Show()
         {

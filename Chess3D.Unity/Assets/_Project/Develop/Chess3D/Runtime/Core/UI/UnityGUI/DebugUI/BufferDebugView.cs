@@ -3,9 +3,9 @@ using TMPro;
 using UnityEngine;
 using VContainer;
 
-namespace Chess3D.Runtime.Core.UI.UnityGUI.DebugUi
+namespace Chess3D.Runtime.Core.UI.UnityGUI.DebugUI
 {
-    public class BufferDebugPanel : MonoBehaviour
+    public class BufferDebugView : MonoBehaviour
     {
         [SerializeField] private TMP_Text uciText;
 

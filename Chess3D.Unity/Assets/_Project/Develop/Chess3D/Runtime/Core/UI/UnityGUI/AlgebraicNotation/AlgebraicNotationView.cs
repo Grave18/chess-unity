@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Core.Logic.MovesBuffer;
-using Chess3D.Runtime.Utilities;
-using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,39 +10,34 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.AlgebraicNotation
 {
-    public class AlgebraicNotationPanel : MonoBehaviour, IDisposable, ILoadUnit
+    public class AlgebraicNotationView : MonoBehaviour
     {
-        private const int NumOfVisibleItems = 5;
-
-        [Header("Ui")]
+        [Header("UI")]
         [SerializeField] private ScrollRect scrollView;
         [SerializeField] private GameObject notationItemPrefab;
 
-        private Game _game;
+        [Header("Settings")]
+        [SerializeField] private int numOfVisibleItems = 5;
 
-        private int _fullMoveIndex;
         private readonly List<NotationItem> _notationItems = new();
+        private int _fullMoveIndex;
 
-        private readonly CompositeDisposable _disposables = new();
+        private Game _game;
 
         [Inject]
         public void Construct(Game game, UciBuffer uciBuffer, CoreEvents coreEvents)
         {
             _game = game;
 
-            coreEvents.OnEnd.Subscribe(_ => NotateEndGame()).AddTo(_disposables);
-            uciBuffer.OnAdd.Subscribe(OnAdd).AddTo(_disposables);
-            uciBuffer.OnUndo.Subscribe(OnUndo).AddTo(_disposables);
-            uciBuffer.OnRedo.Subscribe(OnRedo).AddTo(_disposables);
-            uciBuffer.OnDelete.Subscribe(OnDelete).AddTo(_disposables);
+            coreEvents.OnWarmup.Subscribe(_ => Initialize()).AddTo(this);
+            coreEvents.OnEnd.Subscribe(_ => NotateEndGame()).AddTo(this);
+            uciBuffer.OnAdd.Subscribe(OnAdd).AddTo(this);
+            uciBuffer.OnUndo.Subscribe(OnUndo).AddTo(this);
+            uciBuffer.OnRedo.Subscribe(OnRedo).AddTo(this);
+            uciBuffer.OnDelete.Subscribe(OnDelete).AddTo(this);
         }
 
-        public void Dispose()
-        {
-            _disposables.Dispose();
-        }
-
-        public UniTask Load()
+        private void Initialize()
         {
             foreach (NotationItem notationItem in _notationItems)
             {
@@ -53,8 +45,6 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.AlgebraicNotation
             }
             _notationItems.Clear();
             _fullMoveIndex = 0;
-
-            return UniTask.CompletedTask;
         }
 
         private void OnAdd(MoveData moveData)
@@ -201,10 +191,10 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.AlgebraicNotation
 
         private float GetPositionFromIndex()
         {
-            if (_fullMoveIndex >= NumOfVisibleItems)
+            if (_fullMoveIndex >= numOfVisibleItems)
             {
                 // Do not count indices what already on screen
-                float verticalNormalizedPosition = 1f - (_fullMoveIndex + 1f - NumOfVisibleItems)/(_notationItems.Count - NumOfVisibleItems);
+                float verticalNormalizedPosition = 1f - (_fullMoveIndex + 1f - numOfVisibleItems)/(_notationItems.Count - numOfVisibleItems);
                 return verticalNormalizedPosition;
             }
 

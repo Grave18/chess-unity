@@ -1,6 +1,7 @@
 ﻿using Chess3D.Runtime.Core.InputManagement;
 using Chess3D.Runtime.Core.UI;
 using Chess3D.Runtime.Core.UI.UnityGUI;
+using Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel;
 using Chess3D.Runtime.Core.UI.ViewModels;
 
 namespace Chess3D.Runtime.Core.Logic.MenuStates
@@ -8,11 +9,11 @@ namespace Chess3D.Runtime.Core.Logic.MenuStates
     public class PauseState : MenuState
     {
         private readonly CoreMainViewModel coreMainViewModel;
-        private readonly GameCanvas _gameCanvas;
+        private readonly GameCanvasEnabler gameCanvasEnabler;
 
-        public PauseState(MenuStateMachine stateMachine, CoreMainViewModel coreMainViewModel, GameCanvas gameCanvas) : base(stateMachine)
+        public PauseState(MenuStateMachine stateMachine, CoreMainViewModel coreMainViewModel, GameCanvasEnabler gameCanvasEnabler) : base(stateMachine)
         {
-            _gameCanvas = gameCanvas;
+            this.gameCanvasEnabler = gameCanvasEnabler;
             this.coreMainViewModel = coreMainViewModel;
         }
 
@@ -43,12 +44,12 @@ namespace Chess3D.Runtime.Core.Logic.MenuStates
             if (isProtectionEnabled)
             {
                 InputController.IsEnabled = false;
-                _gameCanvas.Hide();
+                gameCanvasEnabler.Hide();
             }
             else
             {
                 InputController.IsEnabled = true;
-                _gameCanvas.Show();
+                gameCanvasEnabler.Show();
             }
         }
     }

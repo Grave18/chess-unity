@@ -1,12 +1,13 @@
 ﻿using Chess3D.Runtime.Core.ChessBoard.Info;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.Promotion
 {
     public class ConcreteColorPromotion : MonoBehaviour
     {
-        [SerializeField] private PromotionPanel promotionPanel;
+        [FormerlySerializedAs("promotionPanel")] [SerializeField] private PromotionView promotionView;
 
         [Space]
         [SerializeField] private Button queenButton;
@@ -22,9 +23,9 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.Promotion
             knightButton.onClick.AddListener(SelectKnight);
         }
 
-        private void SelectQueen() => promotionPanel.Select(PieceType.Queen);
-        private void SelectRook() => promotionPanel.Select(PieceType.Rook);
-        private void SelectBishop() => promotionPanel.Select(PieceType.Bishop);
-        private void SelectKnight() => promotionPanel.Select(PieceType.Knight);
+        private void SelectQueen() => promotionView.Select(PieceType.Queen);
+        private void SelectRook() => promotionView.Select(PieceType.Rook);
+        private void SelectBishop() => promotionView.Select(PieceType.Bishop);
+        private void SelectKnight() => promotionView.Select(PieceType.Knight);
     }
 }

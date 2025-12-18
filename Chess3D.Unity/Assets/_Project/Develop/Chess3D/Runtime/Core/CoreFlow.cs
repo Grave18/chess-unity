@@ -10,8 +10,6 @@ using Chess3D.Runtime.Core.MainCamera;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Core.UI.UnityGUI;
 using Chess3D.Runtime.Core.UI.UnityGUI.AlgebraicNotation;
-using Chess3D.Runtime.Core.UI.UnityGUI.BoardUi;
-using Chess3D.Runtime.Core.UI.UnityGUI.DebugUi;
 using Chess3D.Runtime.Core.UI.ViewModels;
 using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.ViewModels;
@@ -38,13 +36,10 @@ namespace Chess3D.Runtime.Core
         private readonly Competitors _competitors;
         private readonly IClock _clock;
         private readonly CameraController _cameraController;
-        private readonly NameCanvas _nameCanvas;
         private readonly GameSettingsViewModel _gameSettingsViewModel;
         private readonly GraphicsSettingsViewModel _graphicsSettingsViewModel;
         private readonly AudioSettingsViewModel _audioSettingsViewModel;
         private readonly FenTextBoxViewModel _fenTextBoxViewModel;
-        private readonly AlgebraicNotationPanel _algebraicNotationPanel;
-        private readonly UndoRedoPausePanel _undoRedoPausePanel;
         private readonly MainViewLoader _mainViewLoader;
         private readonly CoreMainViewModel _coreMainViewModel;
         private readonly CoreHomeViewModel _homeViewModel;
@@ -54,11 +49,12 @@ namespace Chess3D.Runtime.Core
         public CoreFlow(IObjectResolver resolver, LoadingService loadingService, SceneManager sceneManager,
             FenFromString fenFromString, IGameStateMachine gameStateMachineOffline, MenuStateMachine menuStateMachine,
             Assets assets, Board board, Game game, UciBuffer uciBuffer, Competitors competitors, IClock clock,
-            CameraController cameraController, NameCanvas nameCanvas,
-            StateDebugPanel stateDebugPanel, BufferDebugPanel bufferDebugPanel,
+            CameraController cameraController,
             GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel,
-            AlgebraicNotationPanel algebraicNotationPanel, UndoRedoPausePanel undoRedoPausePanel,
-            MainViewLoader mainViewLoader, CoreMainViewModel coreMainViewModel, CoreHomeViewModel homeViewModel, ViewNavigator viewNavigator, GameSettingsViewModel gameSettingsViewModel, FenTextBoxViewModel fenTextBoxViewModel, ClockPanelFactory clockPanelFactory)
+            MainViewLoader mainViewLoader,
+            CoreMainViewModel coreMainViewModel, CoreHomeViewModel homeViewModel,
+            ViewNavigator viewNavigator, GameSettingsViewModel gameSettingsViewModel,
+            FenTextBoxViewModel fenTextBoxViewModel, ClockPanelFactory clockPanelFactory)
         {
             _resolver = resolver;
             _loadingService = loadingService;
@@ -73,11 +69,8 @@ namespace Chess3D.Runtime.Core
             _competitors = competitors;
             _clock = clock;
             _cameraController = cameraController;
-            _nameCanvas = nameCanvas;
             _graphicsSettingsViewModel = graphicsSettingsViewModel;
             _audioSettingsViewModel = audioSettingsViewModel;
-            _algebraicNotationPanel = algebraicNotationPanel;
-            _undoRedoPausePanel = undoRedoPausePanel;
             _mainViewLoader = mainViewLoader;
             _coreMainViewModel = coreMainViewModel;
             _homeViewModel = homeViewModel;
@@ -104,14 +97,11 @@ namespace Chess3D.Runtime.Core
             await _loadingService.BeginLoading(_mainViewLoader);
             await _loadingService.BeginLoading(_viewNavigator);
             await _loadingService.BeginLoading(_coreMainViewModel, _homeViewModel);
-            await _loadingService.BeginLoading(_nameCanvas);
             await _loadingService.BeginLoading(_menuStateMachine);
             await _loadingService.BeginLoading(_gameSettingsViewModel);
             await _loadingService.BeginLoading(_graphicsSettingsViewModel);
             await _loadingService.BeginLoading(_audioSettingsViewModel);
             await _loadingService.BeginLoading(_fenTextBoxViewModel);
-            await _loadingService.BeginLoading(_algebraicNotationPanel);
-            await _loadingService.BeginLoading(_undoRedoPausePanel);
 
             _clockPanelFactory.Create();
 
