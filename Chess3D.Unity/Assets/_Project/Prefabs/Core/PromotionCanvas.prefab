@@ -54,6 +54,7 @@ MonoBehaviour:
   blackRoot: {fileID: 5624040976572875687}
   canvasGroup: {fileID: 7470896688549398585}
   appearTimeSec: 0.3
+  appearEasing: 8
 --- !u!1 &3543374035178631984
 GameObject:
   m_ObjectHideFlags: 0
@@ -115,7 +116,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &6780465557896296482
 MonoBehaviour:
