@@ -40,8 +40,6 @@ namespace Chess3D.Runtime.Core
         [SerializeField] private GameCanvasEnabler gameCanvasEnabler;
         [SerializeField] private NoesisXaml mainViewXaml;
         [SerializeField] private NoesisView noesisView;
-        [SerializeField] private ClockCanvas whiteClockPrefab;
-        [SerializeField] private ClockCanvas blackClockPrefab;
 
         [Header("ViewModels")]
         [SerializeField] private CoreHomeViewModel coreHomeViewModel; // Because NetworkBehaviour
@@ -110,10 +108,6 @@ namespace Chess3D.Runtime.Core
             builder.RegisterComponent(noesisView);
             builder.Register<ViewNavigator>(Lifetime.Scoped);
             builder.Register<MenuStateMachine>(Lifetime.Scoped);
-            // Clock UI
-            builder.Register<ClockPanelFactory>(Lifetime.Scoped);
-            builder.RegisterComponentInNewPrefab(whiteClockPrefab, Lifetime.Scoped).Keyed(PieceColor.White);
-            builder.RegisterComponentInNewPrefab(blackClockPrefab, Lifetime.Scoped).Keyed(PieceColor.Black);
             // Views
             builder.Register<CoreHomeView>(Lifetime.Scoped);
             builder.Register<SettingsView>(Lifetime.Scoped);

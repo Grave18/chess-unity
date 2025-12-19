@@ -8,8 +8,6 @@ using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.MainCamera;
 using Chess3D.Runtime.Core.Notation;
-using Chess3D.Runtime.Core.UI.UnityGUI;
-using Chess3D.Runtime.Core.UI.UnityGUI.AlgebraicNotation;
 using Chess3D.Runtime.Core.UI.ViewModels;
 using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.ViewModels;
@@ -44,17 +42,15 @@ namespace Chess3D.Runtime.Core
         private readonly CoreMainViewModel _coreMainViewModel;
         private readonly CoreHomeViewModel _homeViewModel;
         private readonly ViewNavigator _viewNavigator;
-        private readonly ClockPanelFactory _clockPanelFactory;
 
         public CoreFlow(IObjectResolver resolver, LoadingService loadingService, SceneManager sceneManager,
             FenFromString fenFromString, IGameStateMachine gameStateMachineOffline, MenuStateMachine menuStateMachine,
             Assets assets, Board board, Game game, UciBuffer uciBuffer, Competitors competitors, IClock clock,
-            CameraController cameraController,
+            CameraController cameraController, MainViewLoader mainViewLoader,
             GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel,
-            MainViewLoader mainViewLoader,
             CoreMainViewModel coreMainViewModel, CoreHomeViewModel homeViewModel,
             ViewNavigator viewNavigator, GameSettingsViewModel gameSettingsViewModel,
-            FenTextBoxViewModel fenTextBoxViewModel, ClockPanelFactory clockPanelFactory)
+            FenTextBoxViewModel fenTextBoxViewModel)
         {
             _resolver = resolver;
             _loadingService = loadingService;
@@ -77,7 +73,6 @@ namespace Chess3D.Runtime.Core
             _viewNavigator = viewNavigator;
             _gameSettingsViewModel = gameSettingsViewModel;
             _fenTextBoxViewModel = fenTextBoxViewModel;
-            _clockPanelFactory = clockPanelFactory;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = new())
@@ -102,8 +97,6 @@ namespace Chess3D.Runtime.Core
             await _loadingService.BeginLoading(_graphicsSettingsViewModel);
             await _loadingService.BeginLoading(_audioSettingsViewModel);
             await _loadingService.BeginLoading(_fenTextBoxViewModel);
-
-            _clockPanelFactory.Create();
 
             await _loadingService.BeginLoading(_gameStateMachineOffline, _resolver.Resolve<WarmUpState>());
         }
