@@ -29,6 +29,13 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.DebugUI
             this.settingsContainer = settingsContainer;
         }
 
+        private void Awake()
+        {
+#if GRAVEBOX_PROD
+            gameObject.SetActive(false);
+#endif
+        }
+
         private void Update()
         {
             if (_game is null)

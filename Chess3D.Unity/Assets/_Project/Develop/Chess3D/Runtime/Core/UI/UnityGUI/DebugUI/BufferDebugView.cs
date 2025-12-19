@@ -17,6 +17,13 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.DebugUI
             _uciBuffer = uciBuffer;
         }
 
+        private void Awake()
+        {
+#if GRAVEBOX_PROD
+            gameObject.SetActive(false);
+#endif
+        }
+
         private void Update()
         {
             if(_uciBuffer == null)
