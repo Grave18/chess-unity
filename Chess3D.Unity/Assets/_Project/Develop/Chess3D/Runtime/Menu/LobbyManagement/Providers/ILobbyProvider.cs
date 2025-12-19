@@ -1,11 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using LobbyManagement;
 using UnityEngine.Events;
 
 namespace Chess3D.Runtime.Menu.LobbyManagement.Providers {
     public interface ILobbyProvider {
-        // Initialization
         Task InitializeAsync();
         void Shutdown();
 

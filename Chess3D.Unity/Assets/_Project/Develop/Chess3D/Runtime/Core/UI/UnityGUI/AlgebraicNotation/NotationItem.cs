@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.AlgebraicNotation
 {
-    public class NotationItem : MonoBehaviour
+    public sealed class NotationItem : MonoBehaviour
     {
         [Header("Ui")]
         [SerializeField] private RectTransform rectTransform;

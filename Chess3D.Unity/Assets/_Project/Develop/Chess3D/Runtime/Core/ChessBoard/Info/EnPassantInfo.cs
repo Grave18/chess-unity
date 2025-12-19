@@ -2,7 +2,7 @@
 
 namespace Chess3D.Runtime.Core.ChessBoard.Info
 {
-    public class EnPassantInfo
+    public sealed class EnPassantInfo
     {
         public Square Square { get;}
         public Piece Piece { get; }

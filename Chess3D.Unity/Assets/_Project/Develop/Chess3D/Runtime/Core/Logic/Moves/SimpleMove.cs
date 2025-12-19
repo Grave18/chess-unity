@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Core.Logic.Moves
 {
-    public class SimpleMove : Turn
+    public sealed class SimpleMove : Turn
     {
         private readonly Game _game;
         private readonly Piece _movedPiece;

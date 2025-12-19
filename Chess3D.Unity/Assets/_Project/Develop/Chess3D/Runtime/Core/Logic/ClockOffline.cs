@@ -7,7 +7,7 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic
 {
-    public class ClockOffline : MonoBehaviour, IClock, IDisposable
+    public sealed class ClockOffline : MonoBehaviour, IClock, IDisposable
     {
         private Game _game;
         private ISettingsContainer settingsContainer;

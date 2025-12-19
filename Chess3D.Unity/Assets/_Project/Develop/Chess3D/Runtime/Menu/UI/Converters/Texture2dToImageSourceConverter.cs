@@ -12,7 +12,7 @@ using System.Globalization;
 
 namespace Chess3D.Runtime.Menu.UI.Converters
 {
-    public class Texture2dToImageSourceConverter : IValueConverter
+    public sealed class Texture2dToImageSourceConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

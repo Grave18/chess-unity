@@ -1,12 +1,11 @@
-﻿using Chess3D.Runtime.Bootstrap.Settings;
-using ParrelSync;
+﻿using ParrelSync;
 using UnityEditor;
 using UnityEngine;
 
 namespace Chess3D.Editor.GameSetup
 {
     [InitializeOnLoad]
-    public class CloneCommandListener
+    public sealed class CloneCommandListener
     {
         static CloneCommandListener()
         {

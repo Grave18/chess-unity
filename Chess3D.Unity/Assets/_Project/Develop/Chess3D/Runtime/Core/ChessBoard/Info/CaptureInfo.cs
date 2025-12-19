@@ -3,7 +3,7 @@ using Chess3D.Runtime.Core.Logic.MovesBuffer;
 
 namespace Chess3D.Runtime.Core.ChessBoard.Info
 {
-    public class CaptureInfo
+    public sealed class CaptureInfo
     {
         public readonly Piece BeatenPiece;
         public readonly MoveType MoveType;

@@ -4,7 +4,7 @@ using Chess3D.Runtime.Core.Logic.GameStates;
 
 namespace Chess3D.Runtime.Core.Logic.MovesBuffer
 {
-    public class MoveData
+    public sealed class MoveData
     {
         public string Uci;
         public MoveType MoveType;

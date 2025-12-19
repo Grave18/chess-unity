@@ -8,7 +8,7 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.DebugUI
 {
-    public class StateDebugView : MonoBehaviour
+    public sealed class StateDebugView : MonoBehaviour
     {
         [Header("Ui texts")]
         [SerializeField] private TMP_Text authorityText;

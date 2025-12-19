@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Utilities.Common.BuildTool
 {
-    public class PostBuildProcessor : IPostprocessBuildWithReport, IPreprocessBuildWithReport
+    public sealed class PostBuildProcessor : IPostprocessBuildWithReport, IPreprocessBuildWithReport
     {
         public int callbackOrder { get; }
 

@@ -9,7 +9,7 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
-    public class WarmUpState : StateNode, IGameState
+    public sealed class WarmUpState : StateNode, IGameState
     {
         private IGameStateMachine _gameStateMachine;
         private CameraController _cameraController;

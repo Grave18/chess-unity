@@ -6,7 +6,7 @@ using VContainer.Unity;
 
 namespace Chess3D.Runtime.Bootstrap
 {
-    public class BootstrapScope : LifetimeScope
+    public sealed class BootstrapScope : LifetimeScope
     {
         [SerializeField] private AudioMixer audioMixer;
 

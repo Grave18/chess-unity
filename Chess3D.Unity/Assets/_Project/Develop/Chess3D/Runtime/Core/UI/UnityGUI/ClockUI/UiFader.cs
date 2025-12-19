@@ -4,7 +4,7 @@ using UnityEngine.Assertions;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUI
 {
-    public class UiFader : MonoBehaviour
+    public sealed class UiFader : MonoBehaviour
     {
         [Header("Settings")]
         [SerializeField] private float speed = 1f;

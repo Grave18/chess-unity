@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Core.Logic.Moves
 {
-    public class Promotion
+    public sealed class Promotion
     {
         private readonly Piece _piece;
         private readonly Square _toSquare;

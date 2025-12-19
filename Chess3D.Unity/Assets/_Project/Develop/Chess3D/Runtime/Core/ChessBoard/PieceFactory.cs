@@ -10,7 +10,7 @@ using VContainer.Unity;
 namespace Chess3D.Runtime.Core.ChessBoard
 {
     [UnityEngine.Scripting.Preserve]
-    public class PieceFactory
+    public sealed class PieceFactory
     {
         private readonly Assets _assets;
         private readonly IObjectResolver _resolver;

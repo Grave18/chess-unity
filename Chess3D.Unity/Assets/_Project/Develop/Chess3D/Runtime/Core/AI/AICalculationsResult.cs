@@ -3,7 +3,7 @@ using Chess3D.Runtime.Core.ChessBoard.Info;
 
 namespace Chess3D.Runtime.Core.AI
 {
-    public class AICalculationsResult
+    public sealed class AICalculationsResult
     {
         public Square MoveFrom { get; }
         public Square MoveTo { get; }

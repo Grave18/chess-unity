@@ -2,7 +2,7 @@
 
 namespace Chess3D.Runtime.Menu.UI.UnityGUI
 {
-    public class BuildVersionDisplayer : MonoBehaviour
+    public sealed class BuildVersionDisplayer : MonoBehaviour
     {
         private void OnGUI()
         {

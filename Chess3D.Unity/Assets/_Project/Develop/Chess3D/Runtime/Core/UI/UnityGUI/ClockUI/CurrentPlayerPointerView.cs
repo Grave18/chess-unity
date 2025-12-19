@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUI
 {
-    public class CurrentPlayerPointerView : MonoBehaviour
+    public sealed class CurrentPlayerPointerView : MonoBehaviour
     {
         private Logic.Game _game;
         [SerializeField] private Image whiteImage;

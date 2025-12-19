@@ -7,7 +7,7 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
-    public class IdleState : StateNode, IGameState
+    public sealed class IdleState : StateNode, IGameState
     {
         private Game _game;
         private Competitors _competitors;

@@ -4,7 +4,7 @@ using UnityEngine.Serialization;
 namespace Chess3D.Runtime.Core.AssetManagement
 {
     [CreateAssetMenu(fileName = "BoardPreset", menuName = "Board/BoardPreset")]
-    public class BoardPreset : ScriptableObject
+    public sealed class BoardPreset : ScriptableObject
     {
         [TextArea(8, 8)]
         [FormerlySerializedAs("preset")]

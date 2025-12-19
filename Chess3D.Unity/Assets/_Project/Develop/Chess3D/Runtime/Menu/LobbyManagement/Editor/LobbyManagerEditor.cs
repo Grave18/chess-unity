@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Chess3D.Runtime.Menu.LobbyManagement.Providers;
-using LobbyManagement;
 using UnityEditor;
 using UnityEngine;
 
 namespace Chess3D.Runtime.Menu.LobbyManagement.Editor
 {
     [CustomEditor(typeof(LobbyManager))]
-    public class LobbyManagerEditor : UnityEditor.Editor
+    public sealed class LobbyManagerEditor : UnityEditor.Editor
     {
         private bool showCreateRoomArgs = false;
         private bool showSearchRoomArgs = false;
@@ -26,7 +25,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement.Editor
             EditorGUILayout.Space();
 
             DrawCreateRoomArgs();
-            
+
             EditorGUILayout.Space();
 
             DrawSearchRoomArgs();
@@ -42,7 +41,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement.Editor
 
         private void DrawProviderDropdown(LobbyManager lobbyManager)
         {
-            var providers = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude, FindObjectsSortMode.None); 
+            var providers = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
             var providerOptions = new List<MonoBehaviour>();
             foreach (var provider in providers)
             {
@@ -161,7 +160,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement.Editor
 
             if (!lobbyManager)
                 return;
-            
+
             var currentRoom = lobbyManager.CurrentLobby;
 
             if (currentRoom.IsValid)

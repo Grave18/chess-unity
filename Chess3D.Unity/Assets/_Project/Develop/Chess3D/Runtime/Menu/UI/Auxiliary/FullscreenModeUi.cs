@@ -1,6 +1,6 @@
 ﻿namespace Chess3D.Runtime.Menu.UI.Auxiliary
 {
-    public class FullscreenModeUi
+    public sealed class FullscreenModeUi
     {
         public string Mode { get; }
         public int Index {get; }

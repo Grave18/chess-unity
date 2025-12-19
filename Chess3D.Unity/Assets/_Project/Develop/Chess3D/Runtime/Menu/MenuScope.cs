@@ -10,7 +10,7 @@ using VContainer.Unity;
 
 namespace Chess3D.Runtime.Menu
 {
-    public class MenuScope : LifetimeScope
+    public sealed class MenuScope : LifetimeScope
     {
         [SerializeField] private RenderTexture renderTexture;
         [SerializeField] private LobbyManager lobbyManager;

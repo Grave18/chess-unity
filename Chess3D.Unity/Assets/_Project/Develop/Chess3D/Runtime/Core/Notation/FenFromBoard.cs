@@ -9,7 +9,7 @@ using VContainer;
 namespace Chess3D.Runtime.Core.Notation
 {
     [UnityEngine.Scripting.Preserve]
-    public class FenFromBoard
+    public sealed class FenFromBoard
     {
         private readonly IObjectResolver _resolver;
 

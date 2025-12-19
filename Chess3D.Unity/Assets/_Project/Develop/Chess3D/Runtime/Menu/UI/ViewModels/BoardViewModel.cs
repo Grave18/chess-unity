@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
@@ -10,7 +9,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
     [INotifyPropertyChanged]
-    public partial class BoardViewModel : IViewModel, ILoadUnit
+    public sealed partial class BoardViewModel : IViewModel, ILoadUnit
     {
         public ObservableCollection<string> Pieces { get; set; }
         public ObservableCollection<string> Boards { get; set; }

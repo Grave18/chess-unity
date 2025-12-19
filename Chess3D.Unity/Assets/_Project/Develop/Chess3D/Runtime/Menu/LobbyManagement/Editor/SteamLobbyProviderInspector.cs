@@ -10,7 +10,7 @@ using Steamworks;
 namespace Chess3D.Runtime.Menu.LobbyManagement.Editor
 {
     [CustomEditor(typeof(SteamLobbyProvider))]
-    public class SteamLobbyProviderInspector : UnityEditor.Editor
+    public sealed class SteamLobbyProviderInspector : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {

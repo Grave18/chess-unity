@@ -11,7 +11,7 @@ using VContainer;
 namespace Chess3D.Runtime.Core.Logic.Players
 {
     [UnityEngine.Scripting.Preserve]
-    public class InputHuman : IInputHandler
+    public sealed class InputHuman : IInputHandler
     {
         // TODO: Move LayerMask to SO
         private const float MaxDistance = 100;

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Menu.LobbyManagement.Editor {
     [CustomEditor(typeof(UnityLobbyProvider))]
-    public class UnityLobbyProviderInspector : UnityEditor.Editor {
+    public sealed class UnityLobbyProviderInspector : UnityEditor.Editor {
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
 

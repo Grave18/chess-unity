@@ -2,11 +2,9 @@
 #define NOESIS
 using UnityEngine.Scripting;
 using Noesis;
-using Chess3D.Runtime.Core;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities;
 using GUI = Noesis.GUI;
-using EventArgs = Noesis.EventArgs;
 
 #else
 using System;
@@ -21,7 +19,7 @@ namespace Chess3D.Runtime.Menu.UI.Views
 #if NOESIS
     [Preserve]
 #endif
-    public partial class SettingsView : UserControl
+    public sealed  partial class SettingsView : UserControl
     {
         public SettingsView()
         {

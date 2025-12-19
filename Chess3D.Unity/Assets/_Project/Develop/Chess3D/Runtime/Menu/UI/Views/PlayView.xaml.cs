@@ -1,7 +1,6 @@
 #if UNITY_5_3_OR_NEWER
 #define NOESIS
 using Noesis;
-using Chess3D.Runtime.Core;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities;
 using UnityEngine.Scripting;
@@ -19,7 +18,7 @@ namespace Chess3D.Runtime.Menu.UI.Views
 #if NOESIS
     [Preserve]
 #endif
-    public partial class PlayView : UserControl
+    public sealed partial class PlayView : UserControl
     {
         private readonly string _selectedTab;
         public PlayView()

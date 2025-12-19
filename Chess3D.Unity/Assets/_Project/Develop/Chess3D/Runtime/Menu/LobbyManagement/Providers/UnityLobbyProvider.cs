@@ -12,7 +12,7 @@ using Unity.Services.Relay.Models;
 #endif
 
 namespace Chess3D.Runtime.Menu.LobbyManagement.Providers {
-    public class UnityLobbyProvider : MonoBehaviour
+    public sealed class UnityLobbyProvider : MonoBehaviour
 #if UTP_LOBBYRELAY && UTP_AUTH
         , ILobbyProvider
 #endif
@@ -119,7 +119,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement.Providers {
 
         private void LobbyEventCallbacks_LobbyChanged(ILobbyChanges obj) {
             if(CurrentLobby == null) { return; }
-            
+
             obj.ApplyToLobby(CurrentLobby);
 
             OnLobbyUpdate();
@@ -420,7 +420,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement.Providers {
             PurrLogger.LogWarning($"Max String Indexed Properties reached. '{key}' will not be indexed for search queries.");
             return 0;
         }
-        
+
         public DataObject.IndexOptions GetNextAvailableNumericIndex(string key = "", DataObject.IndexOptions desiredIndex = 0) {
             var usedIndices = new HashSet<DataObject.IndexOptions>();
 

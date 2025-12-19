@@ -16,7 +16,7 @@ namespace Chess3D.Runtime.Menu.UI.Views
 #if NOESIS
     [Preserve]
 #endif
-    public partial class LobbyView : UserControl
+    public sealed partial class LobbyView : UserControl
     {
         public LobbyView()
         {

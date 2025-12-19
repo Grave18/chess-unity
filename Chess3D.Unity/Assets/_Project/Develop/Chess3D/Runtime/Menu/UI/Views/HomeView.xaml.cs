@@ -18,7 +18,7 @@ namespace Chess3D.Runtime.Menu.UI.Views
 #if NOESIS
     [Preserve]
 #endif
-    public partial class HomeView : UserControl
+    public sealed partial class HomeView : UserControl
     {
         public HomeView()
         {

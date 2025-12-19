@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Utilities.Common
 {
-    public class GameObjectDestroyer : MonoBehaviour
+    public sealed class GameObjectDestroyer : MonoBehaviour
     {
         [SerializeField] private bool destroyInEditor;
         [SerializeField] private bool destroyInDevelopmentBuild;

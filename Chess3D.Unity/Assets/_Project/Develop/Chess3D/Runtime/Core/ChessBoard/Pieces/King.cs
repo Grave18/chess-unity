@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Core.ChessBoard.Pieces
 {
-    public class King : Piece
+    public sealed class King : Piece
     {
         [Header("King")]
         [SerializeField] private Vector2Int[] moves;

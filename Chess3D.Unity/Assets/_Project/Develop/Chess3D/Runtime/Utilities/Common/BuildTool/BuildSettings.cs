@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Chess3D.Runtime.Utilities.Common.BuildTool
 {
     [CreateAssetMenu(menuName = "Build/Build Settings", fileName = "BuildSettings")]
-    public class BuildSettings : ScriptableObject
+    public sealed class BuildSettings : ScriptableObject
     {
         [Header("Build Settings")]
         public string BuildPath;

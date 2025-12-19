@@ -16,7 +16,7 @@ namespace Chess3D.Runtime.Core.UI.UserControls
 #if NOESIS
     [Preserve]
 #endif
-    public partial class CorePopup : UserControl
+    public sealed partial class CorePopup : UserControl
     {
         public CorePopup()
         {

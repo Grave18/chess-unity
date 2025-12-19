@@ -2,7 +2,7 @@
 
 namespace Chess3D.Runtime.Core.Logic.Players
 {
-    public class PlayerOnline : NetworkBehaviour, IPlayer
+    public sealed class PlayerOnline : NetworkBehaviour, IPlayer
     {
         private IInputHandler _inputHandler;
 

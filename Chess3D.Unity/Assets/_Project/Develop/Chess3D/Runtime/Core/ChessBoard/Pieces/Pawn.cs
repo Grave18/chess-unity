@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Core.ChessBoard.Pieces
 {
-    public class Pawn : Piece
+    public sealed class Pawn : Piece
     {
         [Header("Pawn")]
         [SerializeField] private Vector2Int[] movesFirstMove;

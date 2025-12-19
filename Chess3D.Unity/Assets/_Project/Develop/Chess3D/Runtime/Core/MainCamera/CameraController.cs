@@ -15,7 +15,7 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.MainCamera
 {
-    public class CameraController : MonoBehaviour, ILoadUnit, IDisposable
+    public sealed class CameraController : MonoBehaviour, ILoadUnit, IDisposable
     {
         private const float WhiteInitialYawRad = Mathf.PI*1.5f;
         private const float BlackInitialYawRad = Mathf.PI*0.5f;

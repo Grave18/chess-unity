@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Utilities.Project
 {
-    public class TransferSquares : MonoBehaviour
+    public sealed class TransferSquares : MonoBehaviour
     {
 #if UNITY_EDITOR
 

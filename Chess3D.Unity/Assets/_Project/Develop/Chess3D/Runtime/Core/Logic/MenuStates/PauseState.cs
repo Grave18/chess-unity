@@ -1,12 +1,10 @@
 ﻿using Chess3D.Runtime.Core.InputManagement;
-using Chess3D.Runtime.Core.UI;
-using Chess3D.Runtime.Core.UI.UnityGUI;
 using Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel;
 using Chess3D.Runtime.Core.UI.ViewModels;
 
 namespace Chess3D.Runtime.Core.Logic.MenuStates
 {
-    public class PauseState : MenuState
+    public sealed class PauseState : MenuState
     {
         private readonly CoreMainViewModel coreMainViewModel;
         private readonly GameCanvasEnabler gameCanvasEnabler;

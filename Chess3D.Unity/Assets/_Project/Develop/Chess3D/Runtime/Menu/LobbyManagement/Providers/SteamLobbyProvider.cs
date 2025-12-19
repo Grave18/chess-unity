@@ -24,7 +24,7 @@ using FriendItem = Chess3D.Runtime.Menu.LobbyManagement.FriendItem;
 
 namespace LobbyManagement.Providers
 {
-    public class SteamLobbyProvider : MonoBehaviour
+    public sealed class SteamLobbyProvider : MonoBehaviour
 #if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
         , ILobbyProvider
 #endif

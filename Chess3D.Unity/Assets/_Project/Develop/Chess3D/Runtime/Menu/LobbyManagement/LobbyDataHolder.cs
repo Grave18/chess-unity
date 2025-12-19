@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Menu.LobbyManagement
 {
-    public class LobbyDataHolder : MonoBehaviour
+    public sealed  class LobbyDataHolder : MonoBehaviour
     {
         [SerializeField] private Lobby serializedLobby;
         public Lobby CurrentLobby { get; private set; }
@@ -12,7 +12,7 @@ namespace Chess3D.Runtime.Menu.LobbyManagement
             CurrentLobby = newLobby;
             serializedLobby = newLobby;
         }
-        
+
         private void Awake()
         {
             DontDestroyOnLoad(gameObject);

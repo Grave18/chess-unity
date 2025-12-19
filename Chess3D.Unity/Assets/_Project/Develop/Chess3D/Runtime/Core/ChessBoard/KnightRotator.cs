@@ -2,7 +2,7 @@
 
 namespace Chess3D.Runtime.Core.ChessBoard
 {
-    public class KnightRotator : MonoBehaviour
+    public sealed class KnightRotator : MonoBehaviour
     {
         [Tooltip("Angle in degrees toward center of the board")]
         [Range(-90, 90)]

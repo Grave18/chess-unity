@@ -1,11 +1,9 @@
 ﻿using Chess3D.Runtime.Core.InputManagement;
-using Chess3D.Runtime.Core.UI;
-using Chess3D.Runtime.Core.UI.UnityGUI;
 using Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel;
 
 namespace Chess3D.Runtime.Core.Logic.MenuStates
 {
-    public class PopupState : MenuState
+    public sealed class PopupState : MenuState
     {
         private readonly GameCanvasEnabler gameCanvasEnabler;
 

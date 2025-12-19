@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUI
 {
-    public class ClockView : MonoBehaviour
+    public sealed class ClockView : MonoBehaviour
     {
         [Header("Ui")]
         [SerializeField] private TMP_Text whiteText;

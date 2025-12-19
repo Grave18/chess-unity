@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.AssetManagement;
 using Chess3D.Runtime.Core.ChessBoard.Info;
 using Chess3D.Runtime.Core.ChessBoard.Pieces;

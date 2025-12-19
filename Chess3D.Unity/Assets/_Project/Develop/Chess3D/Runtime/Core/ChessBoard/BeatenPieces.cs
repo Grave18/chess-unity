@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Core.ChessBoard
 {
-    public class BeatenPieces : MonoBehaviour
+    public sealed class BeatenPieces : MonoBehaviour
     {
         [SerializeField] private Transform whitePlaces;
         [SerializeField] private Transform blackPlaces;

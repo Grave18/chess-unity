@@ -4,7 +4,7 @@ using UnityEngine.Scripting;
 namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
-    public partial class SettingsViewModel : IViewModel
+    public sealed partial class SettingsViewModel : IViewModel
     {
         private readonly ViewNavigator _viewNavigator;
 

@@ -10,7 +10,7 @@ using System.Windows.Data;
 
 namespace Chess3D.Runtime.Menu.UI.Converters
 {
-    public class FriendFilterConverter : IValueConverter
+    public sealed class FriendFilterConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Core.Effects
 {
-    public class EffectsRunner : MonoBehaviour
+    public sealed class EffectsRunner : MonoBehaviour
     {
         [SerializeField] private float dissolveTime = 1f;
 

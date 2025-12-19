@@ -3,7 +3,7 @@ using Chess3D.Runtime.Core.Sound;
 
 namespace Chess3D.Runtime.Core.Logic.Moves
 {
-    public class Castling : Turn
+    public sealed class Castling : Turn
     {
         private readonly SimpleMove _kingMove;
         private readonly SimpleMove _rookMove;

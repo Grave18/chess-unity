@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.ChessBoard.Info;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Utilities;
@@ -12,7 +11,7 @@ using VContainer;
 
 namespace Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu
 {
-    public class VisualBoardSpawner : MonoBehaviour, ILoadUnit
+    public sealed class VisualBoardSpawner : MonoBehaviour, ILoadUnit
     {
         [Header("Board")]
         [SerializeField] private AssetLabelReference boardLabel;

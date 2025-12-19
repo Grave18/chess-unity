@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.BoardUI
 {
-    public class TextToCameraRotator : MonoBehaviour
+    public sealed class TextToCameraRotator : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] private NameView mainView;

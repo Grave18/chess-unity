@@ -5,7 +5,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
     [INotifyPropertyChanged]
-    public partial class HomeViewModel : IViewModel
+    public sealed partial class HomeViewModel : IViewModel
     {
         private readonly ViewNavigator _viewNavigator;
         [ObservableProperty] private bool _isPopupOpen;

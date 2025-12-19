@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Core.Sound
 {
-    public class EffectsPlayer : MonoBehaviour
+    public sealed class EffectsPlayer : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] private AudioSource audioSource;

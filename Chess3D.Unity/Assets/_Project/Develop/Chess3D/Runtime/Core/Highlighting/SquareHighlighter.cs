@@ -2,7 +2,7 @@
 
 namespace Chess3D.Runtime.Core.Highlighting
 {
-    public class SquareHighlighter : MonoBehaviour
+    public sealed class SquareHighlighter : MonoBehaviour
     {
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Sprite dot;

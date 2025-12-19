@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu
 {
-    public class Rotator : MonoBehaviour
+    public sealed class Rotator : MonoBehaviour
     {
         [SerializeField] private float angle = 30f;
 

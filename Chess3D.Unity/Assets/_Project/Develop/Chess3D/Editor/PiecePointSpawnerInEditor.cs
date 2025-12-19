@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Chess3D.Editor
 {
-    public class PiecePointSpawnerInEditor : MonoBehaviour
+    public sealed class PiecePointSpawnerInEditor : MonoBehaviour
     {
         [SerializeField] private Transform piecesRoot;
         [SerializeField] private GameObject pieceSpawnPointPrefab;

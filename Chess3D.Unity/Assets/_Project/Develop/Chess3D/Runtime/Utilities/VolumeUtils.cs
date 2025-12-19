@@ -2,7 +2,7 @@
 
 namespace Chess3D.Runtime.Utilities
 {
-    public static class VolumeUtil
+    public static class VolumeUtils
     {
         public static float Map01ToDb(float volume)
         {

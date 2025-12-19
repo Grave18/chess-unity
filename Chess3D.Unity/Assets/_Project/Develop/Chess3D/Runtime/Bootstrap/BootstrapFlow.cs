@@ -7,7 +7,7 @@ using VContainer.Unity;
 namespace Chess3D.Runtime.Bootstrap
 {
     [Preserve]
-    public class BootstrapFlow : IAsyncStartable
+    public sealed class BootstrapFlow : IAsyncStartable
     {
         private readonly LoadingService _loadingService;
         private readonly SceneManager _sceneManager;

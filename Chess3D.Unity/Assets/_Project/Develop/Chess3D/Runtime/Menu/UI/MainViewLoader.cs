@@ -6,7 +6,7 @@ using Noesis;
 namespace Chess3D.Runtime.Menu.UI
 {
     [UnityEngine.Scripting.Preserve]
-    public class MainViewLoader : ILoadUnit
+    public sealed class MainViewLoader : ILoadUnit
     {
         private readonly IMainViewModel _mainViewModel;
         private readonly NoesisXaml _mainViewXaml;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Utilities.Common
 {
-    public class CoroutineRunner : MonoBehaviour
+    public sealed class CoroutineRunner : MonoBehaviour
     {
         private static CoroutineRunner _instance;
 

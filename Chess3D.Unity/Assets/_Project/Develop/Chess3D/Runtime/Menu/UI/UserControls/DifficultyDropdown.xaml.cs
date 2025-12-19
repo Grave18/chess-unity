@@ -14,7 +14,7 @@ namespace Chess3D.Runtime.Menu.UI.UserControls
 #if NOESIS
     [Preserve]
 #endif
-    public partial class DifficultyDropdown : UserControl
+    public sealed partial class DifficultyDropdown : UserControl
     {
         public DifficultyDropdown()
         {

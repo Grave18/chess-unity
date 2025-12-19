@@ -7,7 +7,7 @@ namespace Chess3D.Runtime.Utilities.Common.SceneTool
     /// A wrapper that provides the means to safely serialize Scene Asset References.
     /// </summary>
     [System.Serializable]
-    public class SceneReference : ISerializationCallbackReceiver
+    public sealed class SceneReference : ISerializationCallbackReceiver
     {
 #if UNITY_EDITOR
         // What we use in editor to select the scene

@@ -5,7 +5,7 @@ using UnityEngine.Scripting;
 namespace Chess3D.Runtime.Core
 {
     [Preserve]
-    public class CoreEvents
+    public sealed class CoreEvents
     {
         public readonly Subject<Unit> OnWarmup = new();
         public readonly Subject<Unit> OnStart = new();

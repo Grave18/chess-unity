@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Core.ChessBoard.Pieces
 {
-    public class Knight : Piece
+    public sealed class Knight : Piece
     {
         [Header("Knight")]
         [SerializeField] private Vector2Int[] moves;

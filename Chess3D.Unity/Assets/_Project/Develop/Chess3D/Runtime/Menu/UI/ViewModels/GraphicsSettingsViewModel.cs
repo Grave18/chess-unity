@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
-using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using MvvmTool;
@@ -12,7 +11,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
     [INotifyPropertyChanged]
-    public partial class GraphicsSettingsViewModel: ILoadUnit
+    public sealed partial class GraphicsSettingsViewModel: ILoadUnit
     {
         public ObservableCollection<FullscreenModeUi> FullscreenModes { get; set; }
         public ObservableCollection<ResolutionUi> Resolutions { get; set; }

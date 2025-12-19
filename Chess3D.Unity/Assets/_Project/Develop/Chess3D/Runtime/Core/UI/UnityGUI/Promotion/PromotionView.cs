@@ -10,7 +10,7 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.Promotion
 {
-    public class PromotionView : MonoBehaviour
+    public sealed class PromotionView : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] private GameObject whiteRoot;

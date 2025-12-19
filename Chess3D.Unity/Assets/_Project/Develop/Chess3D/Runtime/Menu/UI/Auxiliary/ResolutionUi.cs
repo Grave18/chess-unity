@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Menu.UI.Auxiliary
 {
-    public class ResolutionUi
+    public sealed class ResolutionUi
     {
         public int Width { get; }
         public int Height { get; }

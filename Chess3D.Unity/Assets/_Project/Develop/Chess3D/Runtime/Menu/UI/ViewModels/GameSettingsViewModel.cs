@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.AI;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
@@ -12,7 +11,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
     [INotifyPropertyChanged]
-    public partial class GameSettingsViewModel : ILoadUnit
+    public sealed partial class GameSettingsViewModel : ILoadUnit
     {
         public ObservableCollection<string> Times { get; set; }
         public ObservableCollection<string> Difficulties { get; set; }

@@ -17,7 +17,7 @@ namespace Chess3D.Runtime.Core.UI
 #if NOESIS
     [Preserve]
 #endif
-    public partial class CoreMainView : UserControl
+    public sealed partial class CoreMainView : UserControl
     {
         public CoreMainView()
         {

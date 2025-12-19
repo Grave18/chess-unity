@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace Chess3D.Runtime.Logo
 {
     // TODO: Refactor or delete LogoFader
-    public class Fader : MonoBehaviour
+    public sealed class Fader : MonoBehaviour
     {
         [Header("References")]
         // [SerializeField] private SceneLoader sceneLoader;

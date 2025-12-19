@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Chess3D.Runtime.Menu.LobbyManagement
 {
     [INotifyPropertyChanged]
-    public partial class FriendItem
+    public sealed  partial class FriendItem
     {
         public string Id {get; set;}
         public string Name {get; set;}

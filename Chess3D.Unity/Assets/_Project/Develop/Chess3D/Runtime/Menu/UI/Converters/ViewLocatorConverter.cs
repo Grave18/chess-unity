@@ -17,7 +17,7 @@ namespace Chess3D.Runtime.Menu.UI.Converters
 {
 #if NOESIS
     [Preserve]
-    public class ViewLocatorConverter : IValueConverter
+    public sealed class ViewLocatorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

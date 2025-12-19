@@ -18,7 +18,7 @@ namespace Chess3D.Runtime.Menu.UI.Views
 #if NOESIS
     [Preserve]
 #endif
-    public partial class BoardView : UserControl
+    public sealed partial class BoardView : UserControl
     {
         public BoardView()
         {

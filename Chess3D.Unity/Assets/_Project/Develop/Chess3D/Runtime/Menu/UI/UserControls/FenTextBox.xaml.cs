@@ -2,7 +2,6 @@
 #define NOESIS
 using Noesis;
 using UnityEngine.Scripting;
-using Chess3D.Runtime.Core;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities;
 using GUI = Noesis.GUI;
@@ -19,7 +18,7 @@ namespace Chess3D.Runtime.Menu.UI.UserControls
 #if NOESIS
     [Preserve]
 #endif
-    public partial class FenTextBox : UserControl
+    public sealed partial class FenTextBox : UserControl
     {
         public FenTextBox()
         {

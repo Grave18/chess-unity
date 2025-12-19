@@ -12,7 +12,7 @@ using VContainer;
 
 namespace Chess3D.Runtime.Menu.LobbyManagement
 {
-    public class LobbyManager : MonoBehaviour, ILoadUnit, IDisposable
+    public sealed class LobbyManager : MonoBehaviour, ILoadUnit, IDisposable
     {
         public CreateRoomArgs createRoomArgs = new();
         public SerializableDictionary<string, string> searchRoomArgs = new();

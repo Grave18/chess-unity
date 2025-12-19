@@ -18,7 +18,7 @@ namespace Chess3D.Runtime.Menu.UI.UserControls
 #if NOESIS
     [Preserve]
 #endif
-    public partial class Dropdown : UserControl
+    public sealed  partial class Dropdown : UserControl
     {
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
             nameof(Text), typeof(string), typeof(Dropdown), new PropertyMetadata(default(string)));

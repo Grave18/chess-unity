@@ -11,7 +11,7 @@ using UniRx;
 namespace Chess3D.Runtime.Core.Highlighting
 {
     [Preserve]
-    public class Highlighter: IDisposable
+    public sealed class Highlighter: IDisposable
     {
         private readonly Game _game;
         private readonly Board _board;

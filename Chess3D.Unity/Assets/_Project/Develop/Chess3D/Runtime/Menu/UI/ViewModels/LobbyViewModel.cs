@@ -11,7 +11,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
     [INotifyPropertyChanged]
-    public partial class LobbyViewModel : IViewModel, IDisposable
+    public sealed partial class LobbyViewModel : IViewModel, IDisposable
     {
         public ObservableCollection<FriendItem> Friends { get; set; } = new();
         public ObservableCollection<LobbyUser> LobbyUsers { get; set; } = new();

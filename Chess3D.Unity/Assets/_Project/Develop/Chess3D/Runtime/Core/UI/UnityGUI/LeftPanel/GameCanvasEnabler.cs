@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel
 {
-    public class GameCanvasEnabler : MonoBehaviour
+    public sealed class GameCanvasEnabler : MonoBehaviour
     {
         public void Show()
         {

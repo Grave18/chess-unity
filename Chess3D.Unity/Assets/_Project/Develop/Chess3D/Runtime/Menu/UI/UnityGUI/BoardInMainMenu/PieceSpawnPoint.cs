@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu
 {
-    public class PieceSpawnPoint : MonoBehaviour
+    public sealed class PieceSpawnPoint : MonoBehaviour
     {
         [SerializeField] private PieceType pieceType = PieceType.Pawn;
         [SerializeField] private PieceColor pieceColor = PieceColor.White;

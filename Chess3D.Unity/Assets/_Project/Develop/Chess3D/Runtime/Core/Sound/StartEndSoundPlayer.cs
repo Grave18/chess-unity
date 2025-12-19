@@ -5,7 +5,7 @@ using UnityEngine.Scripting;
 namespace Chess3D.Runtime.Core.Sound
 {
     [Preserve]
-    public class StartEndSoundPlayer : IDisposable
+    public sealed class StartEndSoundPlayer : IDisposable
     {
         private readonly CompositeDisposable _disposables = new();
 

@@ -6,7 +6,7 @@ using Chess3D.Runtime.Core.ChessBoard.Pieces;
 
 namespace Chess3D.Runtime.Core.Logic
 {
-    public class AttackLine
+    public sealed class AttackLine
     {
         public Piece Attacker { get; }
         public HashSet<Square> Line  { get; }

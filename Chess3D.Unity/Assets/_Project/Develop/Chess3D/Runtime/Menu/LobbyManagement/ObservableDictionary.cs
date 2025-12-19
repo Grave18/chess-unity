@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace Chess3D.Runtime.Menu.LobbyManagement
 {
-    public class ObservableDictionary<TKey, TValue> :
+    public sealed class ObservableDictionary<TKey, TValue> :
         IDictionary<TKey, TValue>,
         INotifyCollectionChanged,
         INotifyPropertyChanged

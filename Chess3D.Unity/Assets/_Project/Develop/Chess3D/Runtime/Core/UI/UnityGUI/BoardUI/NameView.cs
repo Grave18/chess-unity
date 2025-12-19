@@ -6,7 +6,7 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.BoardUI
 {
-    public class NameView : MonoBehaviour
+    public sealed class NameView : MonoBehaviour
     {
         [Header("UI")]
         [SerializeField] private TMP_Text whitePlayerNameText;

@@ -9,7 +9,7 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel
 {
-    public class UndoRedoPauseView : MonoBehaviour
+    public sealed class UndoRedoPauseView : MonoBehaviour
     {
         [Header("UI")]
         [FormerlySerializedAs("undo")]

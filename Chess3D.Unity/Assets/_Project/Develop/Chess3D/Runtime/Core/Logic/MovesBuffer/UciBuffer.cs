@@ -5,13 +5,12 @@ using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using UniRx;
-using UnityEngine.Events;
 using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Core.Logic.MovesBuffer
 {
     [Preserve]
-    public class UciBuffer : ILoadUnit
+    public sealed class UciBuffer : ILoadUnit
     {
         private readonly FenFromBoard _fenFromBoard;
         private readonly FenFromString _fenFromString;

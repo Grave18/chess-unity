@@ -8,7 +8,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
     [INotifyPropertyChanged]
-    public partial class AudioSettingsViewModel : ILoadUnit
+    public sealed partial class AudioSettingsViewModel : ILoadUnit
     {
         [ObservableProperty] private float _masterVolume;
         [ObservableProperty] private float _musicVolume;
@@ -35,21 +35,21 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         partial void OnMasterVolumeChanged(float value)
         {
             _settingsContainer.S.AudioSettings.MasterVolume = value;
-            _audioMixer.SetFloat(RuntimeConstants.Settings.MasterVolumeKey, VolumeUtil.Map01ToDb(value));
+            _audioMixer.SetFloat(RuntimeConstants.Settings.MasterVolumeKey, VolumeUtils.Map01ToDb(value));
             _settingsContainer.Save();
         }
 
         partial void OnMusicVolumeChanged(float value)
         {
             _settingsContainer.S.AudioSettings.MusicVolume = value;
-            _audioMixer.SetFloat(RuntimeConstants.Settings.MusicVolumeKey, VolumeUtil.Map01ToDb(value));
+            _audioMixer.SetFloat(RuntimeConstants.Settings.MusicVolumeKey, VolumeUtils.Map01ToDb(value));
             _settingsContainer.Save();
         }
 
         partial void OnEffectsVolumeChanged(float value)
         {
             _settingsContainer.S.AudioSettings.EffectsVolume = value;
-            _audioMixer.SetFloat(RuntimeConstants.Settings.EffectsVolumeKey, VolumeUtil.Map01ToDb(value));
+            _audioMixer.SetFloat(RuntimeConstants.Settings.EffectsVolumeKey, VolumeUtils.Map01ToDb(value));
             _settingsContainer.Save();
         }
     }

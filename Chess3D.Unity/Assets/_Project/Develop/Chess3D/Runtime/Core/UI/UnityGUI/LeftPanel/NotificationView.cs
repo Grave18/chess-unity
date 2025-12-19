@@ -6,7 +6,7 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel
 {
-    public class NotificationView : MonoBehaviour
+    public sealed class NotificationView : MonoBehaviour
     {
         [Header("Panels")]
         [SerializeField] private GameObject additionalPanel;

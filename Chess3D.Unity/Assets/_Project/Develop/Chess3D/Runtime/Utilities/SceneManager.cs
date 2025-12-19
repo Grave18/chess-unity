@@ -7,7 +7,7 @@ using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
 namespace Chess3D.Runtime.Utilities
 {
     [Preserve]
-    public class SceneManager
+    public sealed class SceneManager
     {
         private const string LogTag = "SCENE";
 

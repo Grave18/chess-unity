@@ -10,7 +10,7 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.AlgebraicNotation
 {
-    public class AlgebraicNotationView : MonoBehaviour
+    public sealed class AlgebraicNotationView : MonoBehaviour
     {
         [Header("UI")]
         [SerializeField] private ScrollRect scrollView;

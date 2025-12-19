@@ -5,7 +5,7 @@ using Chess3D.Runtime.Core.Sound;
 
 namespace Chess3D.Runtime.Core.Logic.Moves
 {
-    public class Capture : Turn
+    public sealed class Capture : Turn
     {
         private readonly Piece _beatenPiece;
         private readonly Turn _simpleMove;

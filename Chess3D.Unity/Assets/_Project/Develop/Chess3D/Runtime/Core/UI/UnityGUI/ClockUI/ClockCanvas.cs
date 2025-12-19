@@ -7,7 +7,7 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUI
 {
-    public class ClockCanvas : MonoBehaviour
+    public sealed class ClockCanvas : MonoBehaviour
     {
         [FormerlySerializedAs("clockPanel")] [SerializeField] private ClockView clockView;
         [FormerlySerializedAs("currentPlayerPointerPanel")] [SerializeField] private CurrentPlayerPointerView currentPlayerPointerView;

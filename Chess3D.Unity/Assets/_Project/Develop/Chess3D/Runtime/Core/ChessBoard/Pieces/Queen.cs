@@ -1,6 +1,6 @@
 ﻿namespace Chess3D.Runtime.Core.ChessBoard.Pieces
 {
-    public class Queen : LongRange
+    public sealed class Queen : LongRange
     {
         // Empty
     }

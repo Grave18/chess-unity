@@ -4,7 +4,7 @@ using Chess3D.Runtime.Core.Sound;
 
 namespace Chess3D.Runtime.Core.Logic.Moves
 {
-    internal class MovePromotion : Turn
+    internal sealed class MovePromotion : Turn
     {
         private readonly SimpleMove _simpleMove;
         private readonly Promotion _promotion;

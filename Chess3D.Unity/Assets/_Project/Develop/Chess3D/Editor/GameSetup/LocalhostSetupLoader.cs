@@ -1,12 +1,8 @@
 ﻿using System.Linq;
-using Chess3D.Runtime.Bootstrap.Settings;
-using Chess3D.Runtime.Core.Logic;
-using Chess3D.Runtime.Menu.LobbyManagement;
 using Cysharp.Threading.Tasks;
 using ParrelSync;
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using UnityEngine;
 
 namespace Chess3D.Editor.GameSetup
 {

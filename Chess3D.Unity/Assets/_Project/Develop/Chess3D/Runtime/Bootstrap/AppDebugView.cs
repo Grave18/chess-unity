@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Bootstrap
 {
-    public class AppDebugView : MonoBehaviour
+    public sealed class AppDebugView : MonoBehaviour
     {
         [SerializeField] private BuildVersionDisplayer buildVersionDisplayer;
         [SerializeField] private DebugLogManager debugLogManager;

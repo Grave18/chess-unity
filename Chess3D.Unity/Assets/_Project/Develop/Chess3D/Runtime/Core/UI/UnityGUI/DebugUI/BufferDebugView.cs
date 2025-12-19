@@ -5,7 +5,7 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.DebugUI
 {
-    public class BufferDebugView : MonoBehaviour
+    public sealed class BufferDebugView : MonoBehaviour
     {
         [SerializeField] private TMP_Text uciText;
 

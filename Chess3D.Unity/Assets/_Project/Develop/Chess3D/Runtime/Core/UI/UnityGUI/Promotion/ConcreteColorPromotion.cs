@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.Promotion
 {
-    public class ConcreteColorPromotion : MonoBehaviour
+    public sealed class ConcreteColorPromotion : MonoBehaviour
     {
         [FormerlySerializedAs("promotionPanel")]
         [SerializeField] private PromotionView promotionView;

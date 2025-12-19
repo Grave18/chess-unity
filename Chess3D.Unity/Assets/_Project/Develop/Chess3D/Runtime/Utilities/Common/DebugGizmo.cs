@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Utilities.Common
 {
-    public class DebugGizmo : MonoBehaviour
+    public sealed class DebugGizmo : MonoBehaviour
     {
 #if UNITY_EDITOR
 

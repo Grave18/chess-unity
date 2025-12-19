@@ -19,7 +19,7 @@ namespace Chess3D.Runtime.Core.UI.Views
 #if NOESIS
     [Preserve]
 #endif
-    public partial class CoreHomeView : UserControl
+    public sealed partial class CoreHomeView : UserControl
     {
         public CoreHomeView()
         {

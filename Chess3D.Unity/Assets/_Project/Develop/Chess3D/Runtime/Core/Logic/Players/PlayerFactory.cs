@@ -4,7 +4,7 @@ using VContainer;
 namespace Chess3D.Runtime.Core.Logic.Players
 {
     [UnityEngine.Scripting.Preserve]
-    public class PlayerFactory
+    public sealed class PlayerFactory
     {
         private readonly IObjectResolver _resolver;
         private readonly ISettingsContainer settingsContainer;

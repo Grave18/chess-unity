@@ -12,7 +12,7 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
-    public class RedoState : StateNode<MoveData>, IGameState<MoveData>
+    public sealed class RedoState : StateNode<MoveData>, IGameState<MoveData>
     {
         private const float SoundT = 0.6f;
 

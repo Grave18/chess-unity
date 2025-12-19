@@ -15,7 +15,7 @@ namespace Chess3D.Runtime.Menu.UI
 #if NOESIS
     [Preserve]
 #endif
-    public partial class MainView : UserControl
+    public sealed partial class MainView : UserControl
     {
         public MainView()
         {

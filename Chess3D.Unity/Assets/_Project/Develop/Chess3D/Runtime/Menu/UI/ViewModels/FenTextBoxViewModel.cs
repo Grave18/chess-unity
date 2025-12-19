@@ -1,5 +1,4 @@
-﻿using Chess3D.Runtime.Bootstrap.Settings;
-using Chess3D.Runtime.Core.Notation;
+﻿using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Utilities;
 using Chess3D.Runtime.Utilities.Logging;
 using Cysharp.Threading.Tasks;
@@ -10,7 +9,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
     [INotifyPropertyChanged]
-    public partial class FenTextBoxViewModel : ILoadUnit
+    public sealed partial class FenTextBoxViewModel : ILoadUnit
     {
         [ObservableProperty] private string _currentFen;
 

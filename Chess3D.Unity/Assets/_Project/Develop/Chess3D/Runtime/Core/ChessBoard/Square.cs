@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Core.ChessBoard
 {
-    public class Square : MonoBehaviour, ISelectable
+    public sealed class Square : MonoBehaviour, ISelectable
     {
         [field:SerializeField] public int X { get; set; }
         [field:SerializeField] public int Y { get; set; }

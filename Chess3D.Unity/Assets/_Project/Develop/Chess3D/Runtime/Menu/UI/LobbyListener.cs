@@ -9,7 +9,7 @@ namespace Chess3D.Runtime.Menu.UI
 {
     /// Listen to Lobby events and switch views accordingly
     [Preserve]
-    public class LobbyListener : IDisposable
+    public sealed class LobbyListener : IDisposable
     {
         private readonly CompositeDisposable _disposables = new();
 

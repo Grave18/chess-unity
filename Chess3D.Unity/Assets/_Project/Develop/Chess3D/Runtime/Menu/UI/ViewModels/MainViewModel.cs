@@ -8,7 +8,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [INotifyPropertyChanged]
     [UnityEngine.Scripting.Preserve]
-    public partial class MainViewModel : IMainViewModel, ILoadUnit<IViewModel>
+    public sealed partial class MainViewModel : IMainViewModel, ILoadUnit<IViewModel>
     {
         [ObservableProperty] private IViewModel _currentViewModel;
         public ImageSource ImageSource { get; private set; }

@@ -10,7 +10,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
     [INotifyPropertyChanged]
-    public partial class PlayViewModel : IViewModel, ILoadUnit
+    public sealed partial class PlayViewModel : IViewModel, ILoadUnit
     {
         [ObservableProperty] private bool _isOnlineEnabled;
 

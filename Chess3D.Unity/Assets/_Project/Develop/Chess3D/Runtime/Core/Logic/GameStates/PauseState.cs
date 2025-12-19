@@ -7,7 +7,7 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
-    public class PauseState : StateNode,IGameState
+    public sealed class PauseState : StateNode,IGameState
     {
         private UciBuffer _uciBuffer;
         private IGameStateMachine _gameStateMachine;

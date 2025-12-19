@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities;
 using Chess3D.Runtime.Utilities.Logging;
@@ -9,7 +8,7 @@ using VContainer;
 namespace Chess3D.Runtime.Menu.UI
 {
     [UnityEngine.Scripting.Preserve]
-    public class ViewNavigator : ILoadUnit
+    public sealed class ViewNavigator : ILoadUnit
     {
         private readonly Stack<IViewModel> _viewModels = new();
         private IMainViewModel _mainViewModel;

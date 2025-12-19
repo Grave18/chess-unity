@@ -1,11 +1,10 @@
-﻿using Chess3D.Runtime.Bootstrap.Settings;
-using Chess3D.Runtime.Core.UI.UnityGUI.ClockUI;
+﻿using Chess3D.Runtime.Core.UI.UnityGUI.ClockUI;
 using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic
 {
     [UnityEngine.Scripting.Preserve]
-    public class ClockPanelFactory
+    public sealed class ClockPanelFactory
     {
         private ClockCanvas _cachedInstance;
 

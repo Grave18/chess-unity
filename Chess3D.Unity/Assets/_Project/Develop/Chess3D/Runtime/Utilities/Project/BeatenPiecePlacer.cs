@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Utilities.Project
 {
-    public class BeatenPiecePlacer : MonoBehaviour
+    public sealed class BeatenPiecePlacer : MonoBehaviour
     {
 #if UNITY_EDITOR
 

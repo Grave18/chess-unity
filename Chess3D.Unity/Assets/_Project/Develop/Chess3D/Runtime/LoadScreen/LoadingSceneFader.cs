@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Chess3D.Runtime.LoadScreen
 {
-    public class LoadingSceneFader : SingletonBehaviour<LoadingSceneFader>
+    public sealed class LoadingSceneFader : SingletonBehaviour<LoadingSceneFader>
     {
         [SerializeField] private Image loadingBarImage;
         [SerializeField] private RectTransform loadingPanel;

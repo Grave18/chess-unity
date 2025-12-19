@@ -7,7 +7,7 @@ using UnityEngine.Scripting;
 namespace Chess3D.Runtime.Bootstrap
 {
     [Preserve]
-    public class ApplicationConfigurationLoadUnit : ILoadUnit
+    public sealed class ApplicationConfigurationLoadUnit : ILoadUnit
     {
         private readonly ISettingsContainer settingsContainer;
         private readonly AudioMixer _audioMixer;
@@ -59,9 +59,9 @@ namespace Chess3D.Runtime.Bootstrap
 
         private void SetVolume()
         {
-            _audioMixer.SetFloat(RuntimeConstants.Settings.MasterVolumeKey, VolumeUtil.Map01ToDb(settingsContainer.S.AudioSettings.MasterVolume));
-            _audioMixer.SetFloat(RuntimeConstants.Settings.MusicVolumeKey, VolumeUtil.Map01ToDb(settingsContainer.S.AudioSettings.MusicVolume));
-            _audioMixer.SetFloat(RuntimeConstants.Settings.EffectsVolumeKey, VolumeUtil.Map01ToDb(settingsContainer.S.AudioSettings.EffectsVolume));
+            _audioMixer.SetFloat(RuntimeConstants.Settings.MasterVolumeKey, VolumeUtils.Map01ToDb(settingsContainer.S.AudioSettings.MasterVolume));
+            _audioMixer.SetFloat(RuntimeConstants.Settings.MusicVolumeKey, VolumeUtils.Map01ToDb(settingsContainer.S.AudioSettings.MusicVolume));
+            _audioMixer.SetFloat(RuntimeConstants.Settings.EffectsVolumeKey, VolumeUtils.Map01ToDb(settingsContainer.S.AudioSettings.EffectsVolume));
         }
     }
 }
