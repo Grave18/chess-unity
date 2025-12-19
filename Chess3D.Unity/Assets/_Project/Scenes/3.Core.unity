@@ -1631,11 +1631,6 @@ PrefabInstance:
       propertyPath: cam
       value: 
       objectReference: {fileID: 152712387}
-    - target: {fileID: 5900289076227779490, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
-        type: 3}
-      propertyPath: cam
-      value: 
-      objectReference: {fileID: 152712387}
     - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1674,21 +1669,6 @@ PrefabInstance:
     - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
-        type: 3}
-      propertyPath: m_LocalScale.z
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
@@ -1756,11 +1736,6 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 152712387}
-    - target: {fileID: 8848143427095639357, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
-        type: 3}
-      propertyPath: m_PresetInfoIsWorld
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

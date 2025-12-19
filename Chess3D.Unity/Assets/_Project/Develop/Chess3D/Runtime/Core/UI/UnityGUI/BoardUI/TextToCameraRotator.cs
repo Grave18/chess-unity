@@ -8,13 +8,12 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.BoardUI
     public class TextToCameraRotator : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private Camera cam;
+        [SerializeField] private NameView mainView;
 
+        [Header("UI")]
         [SerializeField] private RectTransform nameTextTransform;
 
         [Header("Settings")]
-        [SerializeField] private float duration = 0.5f;
-        [SerializeField] private Ease easing = Ease.Linear;
         [SerializeField] private bool isUpsideDown;
 
         private bool _isRotating;
@@ -41,7 +40,7 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.BoardUI
         private bool IsNeedToFlip()
         {
             Vector3 nameTextUp = transform.up;
-            Vector3 camUp = cam.transform.up;
+            Vector3 camUp = mainView.UGUICamera.transform.up;
 
             var dot = Vector3.Dot(nameTextUp, camUp);
             bool isNeedToFlip = dot <= 0f && !isUpsideDown;
@@ -57,7 +56,7 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.BoardUI
         private bool NeedToFlipBack()
         {
             Vector3 nameTextUp = transform.up;
-            Vector3 camUp = cam.transform.up;
+            Vector3 camUp = mainView.UGUICamera.transform.up;
 
             var dot = Vector3.Dot(nameTextUp, camUp);
             bool isNeedToFlipBack = dot > 0f && isUpsideDown;
@@ -80,20 +79,19 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.BoardUI
             _isRotating = true;
 
             DOTween.Sequence()
-                .Append(text.DOFade(0f, duration).SetEase(easing))
+                .Append(text.DOFade(0f, mainView.FadeDuration).SetEase(mainView.FadeEasing))
                 .AppendCallback(() =>
                 {
                     float zAngle = isBecomeUpsideDown ? 180f : 0f;
                     nameTextTransform.localRotation = Quaternion.Euler(0f, 0f, zAngle);
                 })
-                .Append(text.DOFade(1f, duration).SetEase(easing))
+                .Append(text.DOFade(1f, mainView.FadeDuration).SetEase(mainView.FadeEasing))
                 .AppendCallback(() =>
                 {
                     isUpsideDown = isBecomeUpsideDown;
                     _isRotating = false;
                 })
                 .Play();
-            return;
         }
 
     }
