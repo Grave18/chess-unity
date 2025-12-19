@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using Chess3D.Runtime.Core.ChessBoard;
+﻿using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.ChessBoard.Info;
 using Chess3D.Runtime.Core.Logic;
-using Chess3D.Runtime.Utilities.Common.Mathematics;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
@@ -19,7 +18,8 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.Promotion
         [SerializeField] private CanvasGroup canvasGroup;
 
         [Header("Settings")]
-        [SerializeField] private float appearTimeSec = 0.2f;
+        [SerializeField] private float appearTimeSec = 0.3f;
+        [SerializeField] private Ease appearEasing = Ease.InCubic;
 
         private Game _game;
         private PieceType _promotedPieceType;
@@ -63,39 +63,19 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.Promotion
                 blackRoot.SetActive(true);
             }
 
-            StartCoroutine(ShowContinue());
-            return;
-
-            IEnumerator ShowContinue()
-            {
-                float t = 0;
-                while (t < 1)
-                {
-                    t += Time.deltaTime/appearTimeSec;
-                    canvasGroup.alpha = Easing.OutCubic(t);
-                    yield return null;
-                }
-            }
+            canvasGroup.DOFade(1, appearTimeSec)
+                .From(0)
+                .SetEase(appearEasing);
         }
 
         private void Hide()
         {
-            StartCoroutine(HideContinue());
-            return;
+            whiteRoot.SetActive(false);
+            blackRoot.SetActive(false);
 
-            IEnumerator HideContinue()
-            {
-                float t = 1;
-                while (t > 0)
-                {
-                    t -= Time.deltaTime / appearTimeSec;
-                    canvasGroup.alpha = Easing.InCubic(t);
-                    yield return null;
-                }
-
-                whiteRoot.SetActive(false);
-                blackRoot.SetActive(false);
-            }
+            canvasGroup.DOFade(0, appearTimeSec)
+                .From(0)
+                .SetEase(appearEasing);
         }
     }
 }
