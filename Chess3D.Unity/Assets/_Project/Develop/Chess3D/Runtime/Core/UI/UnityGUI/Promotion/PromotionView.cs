@@ -1,10 +1,13 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.ChessBoard.Info;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Utilities.Common.Mathematics;
+using Cysharp.Threading.Tasks;
+using UniRx;
 using UnityEngine;
+using UnityEngine.Events;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.Promotion
 {
@@ -18,7 +21,16 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.Promotion
         [Header("Settings")]
         [SerializeField] private float appearTimeSec = 0.2f;
 
+        private Game _game;
         private PieceType _promotedPieceType;
+
+        [Inject]
+        public void Construct(Game game, CoreEvents coreEvents)
+        {
+            _game = game;
+
+            coreEvents.RequestPromotion.Subscribe(RequestPromotedPiece).AddTo(this);
+        }
 
         public void Select(PieceType pieceType)
         {
@@ -26,22 +38,18 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.Promotion
         }
 
         /// Callback is continuation for call site
-        public void RequestPromotedPiece(PieceColor turnColor, Action<string> callback)
+        private async void RequestPromotedPiece(UnityAction<string> callback)
         {
-            Show(turnColor);
-            StartCoroutine(RequestPromotedPieceContinuation());
-            return;
+            Show(_game.CurrentTurnColor);
 
-            IEnumerator RequestPromotedPieceContinuation()
-            {
-                yield return new WaitWhile(() => _promotedPieceType == PieceType.None);
-                Hide();
+            await UniTask.WaitWhile(() => _promotedPieceType == PieceType.None);
 
-                string pieceLetter = Board.GetPieceLetter(_promotedPieceType);
-                _promotedPieceType = PieceType.None;
+            Hide();
 
-                callback?.Invoke(pieceLetter);
-            }
+            string pieceLetter = Board.GetPieceLetter(_promotedPieceType);
+            _promotedPieceType = PieceType.None;
+
+            callback?.Invoke(pieceLetter);
         }
 
         private void Show(PieceColor pieceColor)

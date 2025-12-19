@@ -4,7 +4,6 @@ using Chess3D.Runtime.Core.ChessBoard.Pieces;
 using Chess3D.Runtime.Core.Highlighting;
 using Chess3D.Runtime.Core.InputManagement;
 using Chess3D.Runtime.Core.MainCamera;
-using Chess3D.Runtime.Core.UI.UnityGUI.Promotion;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
@@ -22,18 +21,20 @@ namespace Chess3D.Runtime.Core.Logic.Players
         private readonly IGameStateMachine _gameStateMachine;
         private readonly Camera _mainCamera;
         private readonly Highlighter _highlighter;
-        private readonly ISettingsContainer settingsContainer;
+        private readonly ISettingsContainer _settingsContainer;
+        private readonly CoreEvents _coreEvents;
 
         private bool _isPlaying;
 
         public InputHuman(Game game, IGameStateMachine gameStateMachine,
             ISettingsContainer settingsContainer, [Key(CameraKeys.Main)] Camera mainCamera,
-            Highlighter highlighter)
+            Highlighter highlighter, CoreEvents coreEvents)
         {
             _game = game;
             _highlighter = highlighter;
+            _coreEvents = coreEvents;
             _mainCamera = mainCamera;
-            this.settingsContainer = settingsContainer;
+            _settingsContainer = settingsContainer;
             _gameStateMachine = gameStateMachine;
         }
 
@@ -118,7 +119,7 @@ namespace Chess3D.Runtime.Core.Logic.Players
 
             if (CanPromote(piece, toSquare))
             {
-                if (settingsContainer.S.GameSettings.IsAutoPromoteToQueen)
+                if (_settingsContainer.S.GameSettings.IsAutoPromoteToQueen)
                 {
                     uci += "q";
                     _gameStateMachine.Move(uci);
@@ -127,14 +128,14 @@ namespace Chess3D.Runtime.Core.Logic.Players
                 }
 
                 _gameStateMachine.Pause();
-                // TODO: refactor Promotion
-                // promotionView.RequestPromotedPiece(_game.CurrentTurnColor, pieceLetter =>
-                // {
-                //     _gameStateMachine.Play();
-                //     uci += pieceLetter;
-                //     _gameStateMachine.Move(uci);
-                //     _game.Deselect();
-                // });
+
+                _coreEvents.RequestPromotion.OnNext(letter =>
+                {
+                    _gameStateMachine.Play();
+                    _gameStateMachine.Move(uci+letter);
+                    _game.Deselect();
+                });
+
             }
             else
             {
@@ -142,6 +143,8 @@ namespace Chess3D.Runtime.Core.Logic.Players
                 _game.Deselect();
             }
         }
+
+        // Get uci with appended letter from presenter
 
         private static bool CanPromote(Piece piece, Square toSquare)
         {

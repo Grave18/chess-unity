@@ -1,4 +1,5 @@
 ﻿using UniRx;
+using UnityEngine.Events;
 using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Core
@@ -13,5 +14,7 @@ namespace Chess3D.Runtime.Core
         public readonly Subject<Unit> OnEndMove = new();
         public readonly Subject<Unit> OnPlay = new();
         public readonly Subject<Unit> OnPause = new();
+        public readonly Subject<UnityAction<string>> RequestPromotion = new();
+
     }
 }

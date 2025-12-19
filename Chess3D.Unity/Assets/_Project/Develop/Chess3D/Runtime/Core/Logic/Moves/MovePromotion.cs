@@ -12,6 +12,7 @@ namespace Chess3D.Runtime.Core.Logic.Moves
 
         public MovePromotion(Game game, Piece piece, Square fromSquare, Square toSquare, Piece otherPiece, EffectsPlayer effectsPlayer)
         {
+            _effectsPlayer = effectsPlayer;
             _simpleMove = new SimpleMove(game, piece, fromSquare, toSquare, isFirstMove: false, effectsPlayer);
             _promotion = new Promotion(piece, fromSquare, toSquare, otherPiece);
         }

@@ -565,6 +565,7 @@ MonoBehaviour:
   - {fileID: 1351301122}
   - {fileID: 948061432}
   - {fileID: 8853006503446665226}
+  - {fileID: 7364690138440289586}
   board: {fileID: 1190829613}
   clockOffline: {fileID: 428172018}
   effectsPlayerPrefab: {fileID: 4751063103470420076, guid: fdff42779c5b8bf4d9c7923ffa77b320,
@@ -572,9 +573,9 @@ MonoBehaviour:
   gameCanvasEnabler: {fileID: 1535418988}
   mainViewXaml: {fileID: 11400000, guid: 1ed4d9beda375524c9a6cf7aeff39640, type: 2}
   noesisView: {fileID: 1670835133}
-  whiteClockPrefab: {fileID: 7944437879434264550, guid: e028a4c506fb2ee40a5c18ae5bf50d90,
+  whiteClockPrefab: {fileID: 2256790390665527009, guid: e028a4c506fb2ee40a5c18ae5bf50d90,
     type: 3}
-  blackClockPrefab: {fileID: 7313132116599355226, guid: 995b4dbbc0d5b884da75a67691c69c15,
+  blackClockPrefab: {fileID: 1471722867322500701, guid: 995b4dbbc0d5b884da75a67691c69c15,
     type: 3}
   coreHomeViewModel: {fileID: 117839665}
   gameStateMachineOnline: {fileID: 231309765}
@@ -1102,7 +1103,7 @@ PrefabInstance:
     - target: {fileID: 2965289706935689684, guid: c1b47814b3efb3744833657382632aa6,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00012207031
+      value: 0.00018310547
       objectReference: {fileID: 0}
     - target: {fileID: 3189794985598275098, guid: c1b47814b3efb3744833657382632aa6,
         type: 3}
@@ -1417,7 +1418,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Camera
       value: 
-      objectReference: {fileID: 330585545}
+      objectReference: {fileID: 152712387}
+    - target: {fileID: 803211940277425382, guid: 4b581f21a8eca7e4eaec18313ff4d600,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1317569343778968299, guid: 4b581f21a8eca7e4eaec18313ff4d600,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1528,6 +1534,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4b581f21a8eca7e4eaec18313ff4d600, type: 3}
+--- !u!1 &7364690138440289586 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1967547138956948544, guid: 4b581f21a8eca7e4eaec18313ff4d600,
+    type: 3}
+  m_PrefabInstance: {fileID: 7364690138440289585}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7447451872676261689
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1627,12 +1639,12 @@ PrefabInstance:
     - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
         type: 3}
       propertyPath: m_Pivot.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
         type: 3}
       propertyPath: m_Pivot.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
         type: 3}
@@ -1657,12 +1669,27 @@ PrefabInstance:
     - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 2000
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 2000
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
         type: 3}
@@ -1682,22 +1709,22 @@ PrefabInstance:
     - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.7071068
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
         type: 3}
@@ -1707,7 +1734,7 @@ PrefabInstance:
     - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.067
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7676111470112600831, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
         type: 3}
@@ -1729,6 +1756,11 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 152712387}
+    - target: {fileID: 8848143427095639357, guid: 0ca5da93dd1ac4747a78d9ef20f75cba,
+        type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

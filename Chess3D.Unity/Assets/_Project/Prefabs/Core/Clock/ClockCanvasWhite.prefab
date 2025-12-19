@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8988958443057897835}
   - component: {fileID: 3665836793988875170}
   - component: {fileID: 4893502859090373187}
-  - component: {fileID: 7944437879434264550}
+  - component: {fileID: 2256790390665527009}
   m_Layer: 5
   m_Name: ClockCanvasWhite
   m_TagString: Untagged
@@ -88,7 +88,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &8988958443057897835
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,7 +133,7 @@ MonoBehaviour:
   speed: 0.5
   delay: 1
   isOnStart: 1
---- !u!114 &7944437879434264550
+--- !u!114 &2256790390665527009
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -145,7 +145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9976976cbe1c3c34abf56247facfc86e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clockView: {fileID: 6153234224318619062}
+  clockView: {fileID: 3384048876335907807}
   currentPlayerPointerView: {fileID: 1057315896095817612}
   canvas: {fileID: 4936400225845684946}
 --- !u!1 &1615901240670423560
@@ -293,7 +293,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8712606870674209317}
   - component: {fileID: 9164037827737967579}
-  - component: {fileID: 6153234224318619062}
+  - component: {fileID: 3384048876335907807}
   m_Layer: 5
   m_Name: ClockView
   m_TagString: Untagged
@@ -348,7 +348,7 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &6153234224318619062
+--- !u!114 &3384048876335907807
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

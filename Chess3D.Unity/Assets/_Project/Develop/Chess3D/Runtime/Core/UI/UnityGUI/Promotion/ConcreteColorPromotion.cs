@@ -1,4 +1,5 @@
 ﻿using Chess3D.Runtime.Core.ChessBoard.Info;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -7,7 +8,8 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.Promotion
 {
     public class ConcreteColorPromotion : MonoBehaviour
     {
-        [FormerlySerializedAs("promotionPanel")] [SerializeField] private PromotionView promotionView;
+        [FormerlySerializedAs("promotionPanel")]
+        [SerializeField] private PromotionView promotionView;
 
         [Space]
         [SerializeField] private Button queenButton;
@@ -15,17 +17,12 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.Promotion
         [SerializeField] private Button bishopButton;
         [SerializeField] private Button knightButton;
 
-        private void OnEnable()
+        private void Awake()
         {
-            queenButton.onClick.AddListener(SelectQueen);
-            rookButton.onClick.AddListener(SelectRook);
-            bishopButton.onClick.AddListener(SelectBishop);
-            knightButton.onClick.AddListener(SelectKnight);
+            queenButton.OnClickAsObservable().Subscribe(_ => promotionView.Select(PieceType.Queen)).AddTo(this);
+            rookButton.OnClickAsObservable().Subscribe(_ => promotionView.Select(PieceType.Rook)).AddTo(this);
+            bishopButton.OnClickAsObservable().Subscribe(_ => promotionView.Select(PieceType.Bishop)).AddTo(this);
+            knightButton.OnClickAsObservable().Subscribe(_ => promotionView.Select(PieceType.Knight)).AddTo(this);
         }
-
-        private void SelectQueen() => promotionView.Select(PieceType.Queen);
-        private void SelectRook() => promotionView.Select(PieceType.Rook);
-        private void SelectBishop() => promotionView.Select(PieceType.Bishop);
-        private void SelectKnight() => promotionView.Select(PieceType.Knight);
     }
 }
