@@ -20,8 +20,8 @@ namespace Chess3D.Runtime.Core.Logic
 
         private bool _isPlaying;
 
-        public TimeSpan WhiteTime => _whiteTime.value;
-        public TimeSpan BlackTime => _blackTime.value;
+        public TimeSpan WhiteTime1 => _whiteTime.value;
+        public TimeSpan BlackTime2 => _blackTime.value;
 
         private readonly CompositeDisposable _disposables = new();
 
@@ -127,5 +127,10 @@ namespace Chess3D.Runtime.Core.Logic
         {
             _game.TimeOutSetup(pieceColor);
         }
+
+        public IObservable<TimeSpan> WhiteTime { get; }
+        public IObservable<TimeSpan> BlackTime { get; }
+        public IObservable<Unit> WhiteTenSeconds { get; }
+        public IObservable<Unit> BlackTenSeconds { get; }
     }
 }

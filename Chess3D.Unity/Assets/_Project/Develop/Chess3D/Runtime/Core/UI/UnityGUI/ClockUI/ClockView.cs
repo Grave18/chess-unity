@@ -1,5 +1,5 @@
-﻿using Chess3D.Runtime.Core.Logic;
-using Chess3D.Runtime.Core.Sound;
+﻿using System;
+using Chess3D.Runtime.Core.Logic;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -17,32 +17,13 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUI
         [SerializeField] private Color normalColor;
         [SerializeField] private Color alertColor;
 
-        private bool _isInitialized;
-
-        private CoreEvents _coreEvents;
-        private IClock _clock;
-        private EffectsPlayer _effectsPlayer;
-
-        public void Construct(CoreEvents coreEvents, IClock clock, EffectsPlayer effectsPlayer)
+        public void Construct(CoreEvents coreEvents, IClock clock)
         {
-            _clock = clock;
-            _coreEvents = coreEvents;
-            _effectsPlayer = effectsPlayer;
-
-            _coreEvents.OnWarmup.Subscribe(_ => ResetColors()).AddTo(this);
-
-            _isInitialized = true;
-        }
-
-        private void Update()
-        {
-            if (!_isInitialized)
-            {
-                return;
-            }
-
-            FormatAndApplyTime();
-            PlayTenSecondsSoundAndChangeColor();
+            coreEvents.OnWarmup.Subscribe(_ => ResetColors()).AddTo(this);
+            clock.WhiteTime.Subscribe(time => FormatAndApplyTime(whiteText, time)).AddTo(this);
+            clock.BlackTime.Subscribe(time => FormatAndApplyTime(blackText, time)).AddTo(this);
+            clock.WhiteTenSeconds.Subscribe(_ => whiteText.color = alertColor).AddTo(this);
+            clock.BlackTenSeconds.Subscribe(_ => blackText.color = alertColor).AddTo(this);
         }
 
         private void ResetColors()
@@ -51,34 +32,11 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUI
             blackText.color = normalColor;
         }
 
-        private void FormatAndApplyTime()
+        private void FormatAndApplyTime(TMP_Text text, TimeSpan time)
         {
-            int wMin = (int)_clock.WhiteTime.TotalMinutes;
-            int wSec = _clock.WhiteTime.Seconds;
-            int bMin = (int)_clock.BlackTime.TotalMinutes;
-            int bSec = _clock.BlackTime.Seconds;
-
-            whiteText.text = $"{wMin:00}:{wSec:00}";
-            blackText.text = $"{bMin:00}:{bSec:00}";
-        }
-
-        private void PlayTenSecondsSoundAndChangeColor()
-        {
-            double wSec = _clock.WhiteTime.TotalSeconds;
-            double bSec = _clock.BlackTime.TotalSeconds;
-            const float time = 10f;
-            float halfDt = updateIntervalSec * 0.525f;
-
-            if (wSec > time - halfDt && wSec < time + halfDt)
-            {
-                whiteText.color = alertColor;
-                _effectsPlayer.PlayTenSecondsSound();
-            }
-            else if (bSec > time - halfDt && bSec < time + halfDt)
-            {
-                blackText.color = alertColor;
-                _effectsPlayer.PlayTenSecondsSound();
-            }
+            int min = (int)time.TotalMinutes;
+            int sec = time.Seconds;
+            text.text = $"{min:00}:{sec:00}";
         }
     }
 }

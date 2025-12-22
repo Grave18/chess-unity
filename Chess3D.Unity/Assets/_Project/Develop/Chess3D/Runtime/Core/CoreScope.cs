@@ -14,7 +14,6 @@ using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.MainCamera;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Core.Sound;
-using Chess3D.Runtime.Core.UI.UnityGUI.ClockUI;
 using Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel;
 using Chess3D.Runtime.Core.UI.ViewModels;
 using Chess3D.Runtime.Core.UI.Views;
@@ -31,7 +30,6 @@ namespace Chess3D.Runtime.Core
     {
         [Header("Game")]
         [SerializeField] private Board board;
-        [SerializeField] private ClockOffline clockOffline; // TODO: Make entry point. Add online
 
         [Header("Sound")]
         [SerializeField] private EffectsPlayer effectsPlayerPrefab;
@@ -62,7 +60,6 @@ namespace Chess3D.Runtime.Core
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterComponent(board);
-            builder.RegisterComponent(clockOffline).As<IClock>();
             builder.Register<Game>(Lifetime.Scoped);
             builder.Register<PieceFactory>(Lifetime.Scoped);
             builder.Register<Assets>(Lifetime.Scoped);
@@ -129,6 +126,7 @@ namespace Chess3D.Runtime.Core
             builder.RegisterBuildCallback(ServiceLocator.Initialize);
 
             // Entry points
+            builder.RegisterEntryPoint<ClockOffline>(Lifetime.Scoped).As<IClock>(); // TODO: Add online ClockOnline
             builder.RegisterEntryPoint<GameStateMachineOffline>().As<IGameStateMachine>(); // TODO: add online GameStateMachine
             builder.RegisterEntryPoint<CoreFlow>().AsSelf();
         }

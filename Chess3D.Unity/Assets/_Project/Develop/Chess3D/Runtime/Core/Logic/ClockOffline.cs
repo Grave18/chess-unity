@@ -1,42 +1,59 @@
 ﻿using System;
-using Chess3D.Runtime.Bootstrap.Settings;
+using Chess3D.Runtime.Core.Sound;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
-using VContainer;
+using UnityEngine.Scripting;
+using VContainer.Unity;
 
 namespace Chess3D.Runtime.Core.Logic
 {
-    public sealed class ClockOffline : MonoBehaviour, IClock, IDisposable
+    [Preserve]
+    public sealed class ClockOffline : IClock, ITickable, IDisposable
     {
-        private Game _game;
-        private ISettingsContainer settingsContainer;
-
-        private TimeSpan _initialWhiteTime;
-        private TimeSpan _initialBlackTime;
-
-        private TimeSpan _whiteTime;
-        private TimeSpan _blackTime;
+        private readonly ReactiveProperty<TimeSpan> _whiteTime = new();
+        private readonly ReactiveProperty<TimeSpan> _blackTime = new();
 
         private bool _isPlaying;
 
-        public TimeSpan WhiteTime => _whiteTime;
-        public TimeSpan BlackTime => _blackTime;
+        private readonly Game _game;
+        private readonly ISettingsContainer _settingsContainer;
+        private readonly CoreEvents _coreEvents;
 
         private readonly CompositeDisposable _disposables = new();
 
-        [Inject]
-        public void Construct(Game game, ISettingsContainer settingsContainer, CoreEvents coreEvents)
+        public IObservable<TimeSpan> WhiteTime => _whiteTime;
+        public IObservable<TimeSpan> BlackTime => _blackTime;
+
+        public IObservable<Unit> WhiteTenSeconds => _coreEvents.OnWarmup.SelectMany(_ =>
+            _whiteTime
+                .Where(t => (int)t.TotalSeconds == 10)
+                .Take(1)
+                .AsUnitObservable()
+        );
+
+        public IObservable<Unit> BlackTenSeconds => _coreEvents.OnWarmup.SelectMany(_ =>
+            _blackTime
+                .Where(t => (int)t.TotalSeconds == 10)
+                .Take(1)
+                .AsUnitObservable()
+        );
+
+        public ClockOffline(Game game, ISettingsContainer settingsContainer, CoreEvents coreEvents,
+            EffectsPlayer effectsPlayer)
         {
             _game = game;
-            this.settingsContainer = settingsContainer;
+            _settingsContainer = settingsContainer;
+            _coreEvents = coreEvents;
 
-            coreEvents.OnWarmup.Subscribe(_ => InitTime()).AddTo(_disposables);
-            coreEvents.OnStart.Subscribe(_ => StartTimer()).AddTo(_disposables);
+            coreEvents.OnWarmup.Subscribe(_ => Pause()).AddTo(_disposables);
+            coreEvents.OnStart.Subscribe(_ => Play()).AddTo(_disposables);
             coreEvents.OnEndMove.Subscribe(_ => Play()).AddTo(_disposables);
-            coreEvents.OnEnd.Subscribe(_ => Pause()).AddTo(_disposables);
             coreEvents.OnPlay.Subscribe(_ => Play()).AddTo(_disposables);
             coreEvents.OnPause.Subscribe(_ => Pause()).AddTo(_disposables);
+            coreEvents.OnEnd.Subscribe(_ => Pause()).AddTo(_disposables);
+            WhiteTenSeconds.Subscribe(_ => effectsPlayer.PlayTenSecondsSound()).AddTo(_disposables);
+            BlackTenSeconds.Subscribe(_ => effectsPlayer.PlayTenSecondsSound()).AddTo(_disposables);
         }
 
         public void Dispose()
@@ -46,23 +63,31 @@ namespace Chess3D.Runtime.Core.Logic
 
         public UniTask Load()
         {
-            Vector2Int time = settingsContainer.S.GameSettings.Time;
-            _initialWhiteTime = TimeSpan.FromMinutes(time.x) + TimeSpan.FromSeconds(time.y);
-            _initialBlackTime = _initialWhiteTime;
+            TimeSpan time = TimeSpan.FromMinutes(_settingsContainer.S.GameSettings.Time.x)
+                                   + TimeSpan.FromSeconds(_settingsContainer.S.GameSettings.Time.y);
+
+            _whiteTime.Value = time;
+            _blackTime.Value = time;
 
             return UniTask.CompletedTask;
         }
 
-        private void StartTimer()
+        public void Tick()
         {
-            InitTime();
-            Play();
-        }
+            if (!_isPlaying)
+            {
+                return;
+            }
 
-        private void InitTime()
-        {
-            _whiteTime = _initialWhiteTime;
-            _blackTime = _initialBlackTime;
+            PieceColor turnColor = _game.CurrentTurnColor;
+            if (turnColor == PieceColor.White)
+            {
+                ReduceTime(_whiteTime, turnColor);
+            }
+            else if (turnColor == PieceColor.Black)
+            {
+                ReduceTime(_blackTime, turnColor);
+            }
         }
 
         private void Play()
@@ -75,32 +100,14 @@ namespace Chess3D.Runtime.Core.Logic
             _isPlaying = false;
         }
 
-        private void Update()
+        private void ReduceTime(ReactiveProperty<TimeSpan> time, PieceColor pieceColor)
         {
-            if (!_isPlaying || _game == null)
-            {
-                return;
-            }
+            time.Value -= TimeSpan.FromSeconds(Time.deltaTime);
 
-            PieceColor turnColor = _game.CurrentTurnColor;
-            if (turnColor == PieceColor.White)
-            {
-                ReduceTime(ref _whiteTime, turnColor);
-            }
-            else if (turnColor == PieceColor.Black)
-            {
-                ReduceTime(ref _blackTime, turnColor);
-            }
-        }
-
-        private void ReduceTime(ref TimeSpan time, PieceColor pieceColor)
-        {
-            time -= TimeSpan.FromSeconds(Time.deltaTime);
-
-            if (time.TotalSeconds <= 0)
+            if (time.Value.TotalSeconds <= 0)
             {
                 _isPlaying = false;
-                time = TimeSpan.Zero;
+                time.Value = TimeSpan.Zero;
                 _game.TimeOutSetup(pieceColor);
             }
         }

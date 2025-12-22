@@ -1,9 +1,11 @@
 using DG.Tweening;
 using UnityEngine;
+using VContainer;
+using UniRx;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUI
 {
-    public sealed class UiFader : MonoBehaviour
+    public sealed class UIFader : MonoBehaviour
     {
         [Header("UI")]
         [SerializeField] private CanvasGroup canvasGroup;
@@ -12,15 +14,13 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUI
         [SerializeField] private float fadeDuration = 2f;
         [SerializeField] private float fadeDelay = 1f;
         [SerializeField] private Ease fadeEase = Ease.InOutCubic;
-        [SerializeField] private bool isFadeOnStart;
 
+        private readonly CoreEvents _coreEvents;
 
-        private void Start()
+        [Inject]
+        public void Construct(CoreEvents coreEvents)
         {
-            if (isFadeOnStart)
-            {
-                UnFade();
-            }
+            coreEvents.OnWarmup.Subscribe(_ => UnFade()).AddTo(this);
         }
 
         public void Fade()

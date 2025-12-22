@@ -1,5 +1,4 @@
 using Chess3D.Runtime.Core.Logic;
-using Chess3D.Runtime.Core.Sound;
 using UnityEngine;
 using VContainer;
 
@@ -16,21 +15,19 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUI
         [SerializeField] private GameObject blackClockRoot;
 
         [Inject]
-        public void Construct(Game game, CoreEvents coreEvents, IClock clock,
-            EffectsPlayer effectsPlayer, ISettingsContainer settingsContainer)
+        public void Construct(Game game, CoreEvents coreEvents, IClock clock, ISettingsContainer settingsContainer)
         {
-
             if (settingsContainer.S.GameSettings.PlayerColor == PieceColor.White)
             {
                 whiteCurrentPlayerPointerView.Construct(game, coreEvents);
-                whiteClockView.Construct(coreEvents, clock, effectsPlayer);
+                whiteClockView.Construct(coreEvents, clock);
                 whiteClockRoot.SetActive(true);
                 blackClockRoot.SetActive(false);
             }
             else
             {
                 blackCurrentPlayerPointerView.Construct(game, coreEvents);
-                blackClockView.Construct(coreEvents, clock, effectsPlayer);
+                blackClockView.Construct(coreEvents, clock);
                 whiteClockRoot.SetActive(false);
                 blackClockRoot.SetActive(true);
             }

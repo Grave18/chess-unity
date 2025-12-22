@@ -469,50 +469,6 @@ Light:
     type: 3}
   m_PrefabInstance: {fileID: 7447451872676261689}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &428172016
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 428172017}
-  - component: {fileID: 428172018}
-  m_Layer: 0
-  m_Name: ClockOffline
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &428172017
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 428172016}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &428172018
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 428172016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9270eb9d57a64c239a710eda3a922963, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &473361399
 GameObject:
   m_ObjectHideFlags: 0
@@ -570,7 +526,6 @@ MonoBehaviour:
   - {fileID: 1198468224131223290}
   - {fileID: 379557224799094087}
   board: {fileID: 1190829613}
-  clockOffline: {fileID: 428172018}
   effectsPlayerPrefab: {fileID: 4751063103470420076, guid: fdff42779c5b8bf4d9c7923ffa77b320,
     type: 3}
   gameCanvasEnabler: {fileID: 1535418988}
@@ -2165,4 +2120,3 @@ SceneRoots:
   - {fileID: 300705996}
   - {fileID: 117839664}
   - {fileID: 235572421}
-  - {fileID: 428172017}
