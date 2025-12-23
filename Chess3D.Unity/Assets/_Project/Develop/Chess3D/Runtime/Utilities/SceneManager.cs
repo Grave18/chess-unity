@@ -1,4 +1,5 @@
-﻿using Chess3D.Runtime.Utilities.Logging;
+﻿using Chess3D.Runtime.LoadScreen;
+using Chess3D.Runtime.Utilities.Logging;
 using Cysharp.Threading.Tasks;
 using UnityEngine.SceneManagement;
 using UnityEngine.Scripting;
@@ -14,27 +15,32 @@ namespace Chess3D.Runtime.Utilities
         public async UniTask LoadScene(int toLoadIndex)
         {
             int currentSceneIndex = UnitySceneManager.GetActiveScene().buildIndex;
-            bool isSkipEmpty = currentSceneIndex == RuntimeConstants.Scenes.Bootstrap || toLoadIndex == currentSceneIndex;
 
-            if (isSkipEmpty)
+            bool isNeedLoadingScene = currentSceneIndex == RuntimeConstants.Scenes.Menu && toLoadIndex == RuntimeConstants.Scenes.Core
+                                   || currentSceneIndex == RuntimeConstants.Scenes.Core && toLoadIndex == RuntimeConstants.Scenes.Menu;
+
+            if (isNeedLoadingScene)
             {
-                Log.Default.D(LogTag, $"Empty scene skipped. {SceneUtility.GetScenePathByBuildIndex(toLoadIndex)} is loading.");
-                UnitySceneManager.LoadScene(toLoadIndex);
+                Log.Default.D(LogTag, "LoadingScreen is loading.");
+                await UnitySceneManager.LoadSceneAsync(RuntimeConstants.Scenes.LoadScreen, LoadSceneMode.Additive);
+                await LoadingSceneFader.Instance.Fade();
+
+                Log.Default.D(LogTag, $"{SceneUtility.GetScenePathByBuildIndex(currentSceneIndex)} is unloading.");
+                await UnitySceneManager.UnloadSceneAsync(currentSceneIndex);
+                Log.Default.D(LogTag, $"{SceneUtility.GetScenePathByBuildIndex(toLoadIndex)} is loading.");
+                await UnitySceneManager.LoadSceneAsync(toLoadIndex, LoadSceneMode.Additive);
+
+                Log.Default.D(LogTag, "LoadingScreen is unloading.");
+                await LoadingSceneFader.Instance.UnFade();
+                await UnitySceneManager.UnloadSceneAsync(RuntimeConstants.Scenes.LoadScreen);
+
                 return;
-            }
-
-            bool needLoadEmpty = toLoadIndex == RuntimeConstants.Scenes.Menu || toLoadIndex == RuntimeConstants.Scenes.Core;
-
-            if (needLoadEmpty)
-            {
-                Log.Default.D(LogTag, $"{SceneUtility.GetScenePathByBuildIndex(RuntimeConstants.Scenes.LoadScreen)} is loading.");
-                UnitySceneManager.LoadScene(RuntimeConstants.Scenes.LoadScreen);
             }
 
             await UniTask.NextFrame();
 
             Log.Default.D(LogTag, $"{SceneUtility.GetScenePathByBuildIndex(toLoadIndex)} is loading.");
-            UnitySceneManager.LoadScene(toLoadIndex);
+            UnitySceneManager.LoadScene(toLoadIndex, LoadSceneMode.Single);
         }
 
         public void SetActiveScene(int sceneIndex)

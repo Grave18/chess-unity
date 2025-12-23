@@ -34,7 +34,5 @@ namespace Chess3D.Runtime.Bootstrap
             UniRxUtils.Initialize();
             await _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu);
         }
-
-
     }
 }
