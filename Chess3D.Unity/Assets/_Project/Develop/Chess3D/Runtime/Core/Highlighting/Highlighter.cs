@@ -22,6 +22,7 @@ namespace Chess3D.Runtime.Core.Highlighting
             _game = game;
             _board = board;
 
+            coreEvents.OnWarmup.Subscribe(_ => ClearAllHighlights()).AddTo(this);
             coreEvents.OnStart.Subscribe(UpdateHighlighting).AddTo(this);
             coreEvents.OnEndMove.Subscribe(UpdateHighlighting).AddTo(this);
             coreEvents.OnSelect.Subscribe(UpdateHighlighting).AddTo(this);
