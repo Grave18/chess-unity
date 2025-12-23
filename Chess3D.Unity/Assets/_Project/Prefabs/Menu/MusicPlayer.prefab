@@ -144,3 +144,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 6817918517598530930}
   mainTheme: {fileID: 8300000, guid: 49b11852dbb999f41ab80bed82740a95, type: 3}
+  fadeDuration: 2
+  easing: 9
