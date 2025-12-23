@@ -68,6 +68,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: B_Knight Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 3120915732225311960, guid: 2879e564d357a2d429bb6877b311b61b,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 1741957891003927863, guid: 739e62104bced414fbd85d915f2ebb0f,
+        type: 3}
     - target: {fileID: 3385638592101214282, guid: 2879e564d357a2d429bb6877b311b61b,
         type: 3}
       propertyPath: m_Mesh

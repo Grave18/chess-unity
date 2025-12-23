@@ -74,6 +74,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: W_Pawn Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 8243098615220300143, guid: 6139904639deaef488cc5008b381a182,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -6421842142149358145, guid: 739e62104bced414fbd85d915f2ebb0f,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
