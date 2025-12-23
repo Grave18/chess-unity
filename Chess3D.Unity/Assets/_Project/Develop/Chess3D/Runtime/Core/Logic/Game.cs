@@ -1,15 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
-using VContainer;
 using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.ChessBoard.Pieces;
 using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
+using UniRx;
+using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Core.Logic
 {
+    [Preserve]
     public sealed class Game : ILoadUnit
     {
         public PieceColor CurrentTurnColor { get; private set; } = PieceColor.White;
@@ -19,13 +21,14 @@ namespace Chess3D.Runtime.Core.Logic
         public HashSet<Square> UnderAttackSquares { get; private set; } = new();
         public AttackLinesList AttackLines { get; } = new();
 
-        private UciBuffer _uciBuffer;
-        private Board _board;
-        private FenFromString _fenFromString;
-        private ISettingsContainer settingsContainer;
+        private readonly UciBuffer _uciBuffer;
+        private readonly Board _board;
+        private readonly FenFromString _fenFromString;
+        private readonly ISettingsContainer _settingsContainer;
+        private readonly CoreEvents _coreEvents;
 
         /// Is it turn of current player
-        public bool IsMyTurn => CurrentTurnColor == settingsContainer.S.GameSettings.PlayerColor;
+        public bool IsMyTurn => CurrentTurnColor == _settingsContainer.S.GameSettings.PlayerColor;
         public bool IsWhiteTurn => CurrentTurnColor == PieceColor.White;
         public bool IsBlackTurn => CurrentTurnColor == PieceColor.Black;
 
@@ -44,14 +47,15 @@ namespace Chess3D.Runtime.Core.Logic
         public bool IsWinnerWhite => _winnerColor == PieceColor.White;
         public bool IsWinnerBlack => _winnerColor == PieceColor.Black;
 
-
-        [Inject]
-        public void Construct(Board board, FenFromString fenFromString, UciBuffer uciBuffer, ISettingsContainer settingsContainer)
+        public Game(Board board, FenFromString fenFromString, UciBuffer uciBuffer, ISettingsContainer settingsContainer, CoreEvents coreEvents)
         {
             _board = board;
             _fenFromString = fenFromString;
             _uciBuffer = uciBuffer;
-            this.settingsContainer = settingsContainer;
+            _settingsContainer = settingsContainer;
+            _coreEvents = coreEvents;
+
+            coreEvents.OnEndMove.Subscribe(_ => Deselect());
         }
 
         public UniTask Load()
@@ -258,14 +262,14 @@ namespace Chess3D.Runtime.Core.Logic
 
         private bool IsThreefoldRule()
         {
-            bool isThreefold = _uciBuffer.ThreefoldRepetitionCount >= settingsContainer.S.GameSettings.ThreefoldRepetitionCount;
+            bool isThreefold = _uciBuffer.ThreefoldRepetitionCount >= _settingsContainer.S.GameSettings.ThreefoldRepetitionCount;
 
             return isThreefold;
         }
 
         private bool IsRule50()
         {
-            return _uciBuffer.HalfMoveClock == settingsContainer.S.GameSettings.FiftyMoveRuleCount * 2;
+            return _uciBuffer.HalfMoveClock == _settingsContainer.S.GameSettings.FiftyMoveRuleCount * 2;
         }
 
         private bool IsInsufficientMaterial(out string checkDescription)
@@ -339,6 +343,7 @@ namespace Chess3D.Runtime.Core.Logic
         public void Select(ISelectable selectable)
         {
             Selected = selectable;
+            _coreEvents.OnSelect.OnNext(Unit.Default);
         }
 
         /// Deselect currently selected piece

@@ -1,39 +1,30 @@
 ﻿using System;
 using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.ChessBoard.Pieces;
-using Chess3D.Runtime.Core.Highlighting;
-using Chess3D.Runtime.Core.InputManagement;
 using Chess3D.Runtime.Core.MainCamera;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using VContainer;
+using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Core.Logic.Players
 {
-    [UnityEngine.Scripting.Preserve]
+    [Preserve]
     public sealed class InputHuman : IInputHandler
     {
-        // TODO: Move LayerMask to SO
-        private const float MaxDistance = 100;
-        private readonly LayerMask _layerMask = LayerMask.GetMask("Piece", "Square");
-
         private readonly Game _game;
         private readonly IGameStateMachine _gameStateMachine;
-        private readonly Camera _mainCamera;
-        private readonly Highlighter _highlighter;
         private readonly ISettingsContainer _settingsContainer;
         private readonly CoreEvents _coreEvents;
+        private readonly CameraController _cameraController;
 
         private bool _isPlaying;
 
         public InputHuman(Game game, IGameStateMachine gameStateMachine,
-            ISettingsContainer settingsContainer, [Key(CameraKeys.Main)] Camera mainCamera,
-            Highlighter highlighter, CoreEvents coreEvents)
+            ISettingsContainer settingsContainer, CoreEvents coreEvents, CameraController cameraController)
         {
             _game = game;
-            _highlighter = highlighter;
             _coreEvents = coreEvents;
-            _mainCamera = mainCamera;
+            _cameraController = cameraController;
             _settingsContainer = settingsContainer;
             _gameStateMachine = gameStateMachine;
         }
@@ -56,22 +47,9 @@ namespace Chess3D.Runtime.Core.Logic.Players
             }
 
             // Cast ray from cursor
-            Vector3 mousePos = InputController.MousePosition();
-            Ray ray = _mainCamera.ScreenPointToRay(mousePos);
-            Physics.Raycast(ray, out RaycastHit hit, MaxDistance, _layerMask);
-            Transform hitTransform = hit.transform;
-
-            if (InputController.Lmb())
+            if(_cameraController.IsHitSomething(out ISelectable selectable))
             {
-                ISelectable selectable = null;
-
-                if (hitTransform != null)
-                {
-                    hitTransform.TryGetComponent(out selectable);
-                }
-
                 Click(selectable);
-                _highlighter.UpdateHighlighting();
             }
         }
 

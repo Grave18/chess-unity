@@ -1,116 +1,90 @@
 ﻿using System;
-using UnityEngine;
-using UnityEngine.Scripting;
 using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.ChessBoard.Info;
 using Chess3D.Runtime.Core.ChessBoard.Pieces;
-using Chess3D.Runtime.Core.Effects;
 using Chess3D.Runtime.Core.Logic;
 using UniRx;
+using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Highlighting
 {
-    [Preserve]
-    public sealed class Highlighter: IDisposable
+    public sealed class Highlighter: MonoBehaviour
     {
-        private readonly Game _game;
-        private readonly Board _board;
-        private readonly CommonPieceSettings _commonSettings;
+        [SerializeField] private SquareColors squareColors;
 
-        private bool isDebugUnderAttackSquares;
-        private bool isDebugAttackLine;
+        private Game _game;
+        private Board _board;
 
-        private SquareHighlighter _oldPieceHighlighter;
-
-        private readonly CompositeDisposable _disposables = new();
-
-        public Highlighter(Game game, Board board, CoreEvents coreEvents, CommonPieceSettings commonSettings)
+        [Inject]
+        public void Construct(Game game, Board board, CoreEvents coreEvents)
         {
             _game = game;
             _board = board;
-            _commonSettings = commonSettings;
 
-            coreEvents.OnEndMove.Subscribe(_ => UpdateHighlighting()).AddTo(_disposables);
+            coreEvents.OnStart.Subscribe(UpdateHighlighting).AddTo(this);
+            coreEvents.OnEndMove.Subscribe(UpdateHighlighting).AddTo(this);
+            coreEvents.OnSelect.Subscribe(UpdateHighlighting).AddTo(this);
         }
 
-        public void Dispose()
+        private void UpdateHighlighting(Unit _ = default)
         {
-            _disposables.Dispose();
+            ClearAllHighlights();
+            HighlightCheck();
+            HighlightSquaresUnderSelected();
+            HighlightSquaresConnectedWithSelectedPiece();
         }
 
-        public void UpdateHighlighting()
+        private void HighlightSquaresUnderSelected()
+        {
+            Square pieceSquare = _game.Selected?.GetSquare();
+            var squareHighlighter = pieceSquare?.GetComponent<SquareHighlighter>();
+
+            squareHighlighter?.Show(SquareShape.Circle, squareColors.SelectColor);
+        }
+
+        private void HighlightCheck()
+        {
+            foreach (AttackLine attackLine in _game.AttackLines)
+            {
+                if (attackLine.IsCheck)
+                {
+                    var attackerSquareHighlighter = attackLine.Attacker.GetSquare().GetComponent<SquareHighlighter>();
+                    attackerSquareHighlighter?.Show(SquareShape.Circle, squareColors.CheckColor);
+
+                    // HighLight king square
+                    foreach (Piece assumeKing in _game.CurrentTurnPieces)
+                    {
+                        if (assumeKing is not King)
+                        {
+                            continue;
+                        }
+
+                        // Highlight king square with red circle
+                        Square kingSquare = assumeKing.GetSquare();
+                        if (kingSquare.TryGetComponent(out SquareHighlighter kingSquareHighlighter))
+                        {
+                            kingSquareHighlighter.Show(SquareShape.Circle, squareColors.CheckColor);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void HighlightSquaresConnectedWithSelectedPiece()
         {
             Piece piece = _game.Selected?.GetPiece();
-            Square pieceSquare = _game.Selected?.GetSquare();
-            var pieceHighlighter = pieceSquare?.GetComponent<SquareHighlighter>();
 
-            ClearAllHighlights();
-
-            if (isDebugUnderAttackSquares)
+            if (piece == null)
             {
-                DebugHighlightUnderAttackSquares();
-            }
-
-            if (isDebugAttackLine)
-            {
-                DebugAttackLine();
-            }
-
-            // Highlight check king and attacker pieces
-            if (_game.IsCheck)
-            {
-                HighlightCheck(piece);
-            }
-
-            // Highlight selected
-            if (pieceHighlighter == null)
-            {
-                _oldPieceHighlighter?.Show(SquareShape.None, _commonSettings.DefaultColor);
                 return;
             }
 
-            HighlightSelected(pieceHighlighter);
-            HighlightSquares(piece);
-        }
-
-        private void HighlightCheck(Piece piece)
-        {
-            // Attackers
-            foreach (AttackLine attackLine in _game.AttackLines)
-            {
-                if (attackLine.IsCheck && attackLine.Attacker.TryGetComponent(out EffectsRunner attackerFx))
-                {
-                    attackerFx.HighlightPiece(enableHighlight: true);
-                }
-            }
-
-            // King
-            foreach (Piece assumeKing in _game.CurrentTurnPieces)
-            {
-                if (assumeKing is not King)
-                {
-                    continue;
-                }
-
-                var pFx = assumeKing.GetComponent<EffectsRunner>();
-                pFx.HighlightPiece(enableHighlight: true);
-
-                // Highlight king square with red circle
-                Square kingSquare = assumeKing.GetSquare();
-                if (kingSquare.TryGetComponent(out SquareHighlighter squareHighlighter))
-                {
-                    squareHighlighter.Show(SquareShape.Circle, _commonSettings.CaptureColor);
-                }
-            }
-        }
-
-        private void HighlightSquares(Piece piece)
-        {
             foreach ((Square square, _) in piece.MoveSquares)
             {
                 if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
                 {
-                    squareHighlighter.Show(SquareShape.Dot, _commonSettings.MoveColor);
+                    squareHighlighter.Show(SquareShape.Dot, squareColors.MoveColor);
                 }
             }
 
@@ -118,7 +92,7 @@ namespace Chess3D.Runtime.Core.Highlighting
             {
                 if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
                 {
-                    squareHighlighter.Show(SquareShape.Circle, _commonSettings.CaptureColor);
+                    squareHighlighter.Show(SquareShape.Circle, squareColors.CaptureColor);
                 }
             }
 
@@ -128,7 +102,7 @@ namespace Chess3D.Runtime.Core.Highlighting
                 {
                     if (castlingInfo.KingToSquare.TryGetComponent(out SquareHighlighter squareHighlighter))
                     {
-                        squareHighlighter.Show(SquareShape.Dot, _commonSettings.CastlingColor);
+                        squareHighlighter.Show(SquareShape.Dot, squareColors.CastlingColor);
                     }
                 }
             }
@@ -137,20 +111,9 @@ namespace Chess3D.Runtime.Core.Highlighting
             {
                 if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
                 {
-                    squareHighlighter.Show(SquareShape.Dot, _commonSettings.CanNotMoveColor);
+                    squareHighlighter.Show(SquareShape.Dot, squareColors.CanNotMoveColor);
                 }
             }
-        }
-
-        private void HighlightSelected(SquareHighlighter pieceHighlighter)
-        {
-            if (_oldPieceHighlighter != pieceHighlighter)
-            {
-                _oldPieceHighlighter?.Show(SquareShape.None, _commonSettings.DefaultColor);
-                _oldPieceHighlighter = pieceHighlighter;
-            }
-
-            _oldPieceHighlighter.Show(SquareShape.Circle, _commonSettings.SelectColor);
         }
 
         private void ClearAllHighlights()
@@ -158,44 +121,21 @@ namespace Chess3D.Runtime.Core.Highlighting
             foreach (Square square in _board.Squares)
             {
                 var squareHighlighter = square.GetComponent<SquareHighlighter>();
-                squareHighlighter.Show(SquareShape.None, _commonSettings.DefaultColor);
-            }
-
-            foreach (Piece piece in _board.WhitePieces)
-            {
-                var pieceFx = piece.GetComponent<EffectsRunner>();
-                pieceFx.HighlightPiece(enableHighlight: false);
-            }
-
-            foreach (Piece piece in _board.BlackPieces)
-            {
-                var pieceFx = piece.GetComponent<EffectsRunner>();
-                pieceFx.HighlightPiece(enableHighlight: false);
+                squareHighlighter.Show(SquareShape.None, squareColors.DefaultColor);
             }
         }
 
-        private void DebugHighlightUnderAttackSquares()
+        [Serializable]
+        public sealed class SquareColors
         {
-            Color color = _game.CurrentTurnColor == PieceColor.White ? Color.black : Color.white;
-            foreach (Square square in _game.UnderAttackSquares)
-            {
-                if (square.TryGetComponent(out SquareHighlighter squareHighlighter))
-                {
-                    squareHighlighter.Show(SquareShape.Dot, color);
-                }
-            }
-        }
-
-        private void DebugAttackLine()
-        {
-            Color color = _game.CurrentTurnColor == PieceColor.White ? Color.black : Color.white;
-            foreach (AttackLine attackLine in _game.AttackLines)
-            {
-                if (attackLine.Attacker.TryGetComponent(out SquareHighlighter squareHighlighter))
-                {
-                    squareHighlighter.Show(SquareShape.Dot, color);
-                }
-            }
+            [Header("Highlight Colors")]
+            public Color DefaultColor = Color.black;
+            public Color SelectColor = Color.green;
+            public Color CheckColor = Color.magenta;
+            public Color MoveColor = Color.green;
+            public Color CaptureColor = Color.red;
+            public Color CanNotMoveColor = Color.gray;
+            public Color CastlingColor = Color.yellow;
         }
     }
 }

@@ -20,6 +20,10 @@ namespace Chess3D.Runtime.Core.MainCamera
         private const float WhiteInitialYawRad = Mathf.PI*1.5f;
         private const float BlackInitialYawRad = Mathf.PI*0.5f;
 
+        // TODO: Move LayerMask to SO
+        private const float MaxDistance = 100;
+        private LayerMask _layerMask;
+
         // TODO: move some CameraController values in config
         [Header("Target")]
         [SerializeField] private Vector3 offset = new(0, 0.15f, 0);
@@ -55,7 +59,7 @@ namespace Chess3D.Runtime.Core.MainCamera
 
         private Game _game;
         private Camera _mainCamera;
-        private ISettingsContainer settingsContainer;
+        private ISettingsContainer _settingsContainer;
         private FenFromString _fenFromString;
 
         private bool _isUpdating;
@@ -74,8 +78,8 @@ namespace Chess3D.Runtime.Core.MainCamera
         private Vector3 _newPosition;
         private float _tPitch;
 
-        private bool IsVsPlayer => settingsContainer.S.GameSettings.PlayerWhite.PlayerType == PlayerType.Human
-                                   && settingsContainer.S.GameSettings.PlayerBlack.PlayerType == PlayerType.Human;
+        private bool IsVsPlayer => _settingsContainer.S.GameSettings.PlayerWhite.PlayerType == PlayerType.Human
+                                   && _settingsContainer.S.GameSettings.PlayerBlack.PlayerType == PlayerType.Human;
 
         private readonly CompositeDisposable _disposables = new();
 
@@ -85,8 +89,9 @@ namespace Chess3D.Runtime.Core.MainCamera
         {
             _game = game;
             _mainCamera = mainCamera;
-            this.settingsContainer = settingsContainer;
+            _settingsContainer = settingsContainer;
             _fenFromString = fenFromString;
+            _layerMask = LayerMask.GetMask("Piece", "Square");
 
             coreEvents.OnEndMove.Subscribe(_ => AutoRotate()).AddTo(_disposables);
             coreEvents.OnEnd.Subscribe(_ => StopAutoRotate()).AddTo(_disposables);
@@ -99,10 +104,10 @@ namespace Chess3D.Runtime.Core.MainCamera
 
         public UniTask Load()
         {
-            _rotateCameraToColor = IsVsPlayer ? _fenFromString.TurnColor : settingsContainer.S.GameSettings.PlayerColor;
-            _isStartRotationOn = settingsContainer.S.GameSettings.IsRotateCameraOnStart;
+            _rotateCameraToColor = IsVsPlayer ? _fenFromString.TurnColor : _settingsContainer.S.GameSettings.PlayerColor;
+            _isStartRotationOn = _settingsContainer.S.GameSettings.IsRotateCameraOnStart;
             // TODO: refactor online camera
-            _isAutoRotateCamera = IsVsPlayer && OnlineInstanceHandler.IsOffline && settingsContainer.S.GameSettings.IsAutoRotateCamera;
+            _isAutoRotateCamera = IsVsPlayer && OnlineInstanceHandler.IsOffline && _settingsContainer.S.GameSettings.IsAutoRotateCamera;
 
             _newDistance = distance;
             _newYawRad = yawRad;
@@ -180,9 +185,28 @@ namespace Chess3D.Runtime.Core.MainCamera
             distance = Mathf.SmoothDamp(distance, _newDistance, ref _zoomCurrentVelocity, zoomSmoothTime);
         }
 
+        public bool IsHitSomething(out ISelectable selected)
+        {
+            selected = null;
+            Vector3 mousePos = InputController.MousePosition();
+            Ray ray = _mainCamera.ScreenPointToRay(mousePos);
+            Physics.Raycast(ray, out RaycastHit hit, MaxDistance, _layerMask);
+            Transform hitTransform = hit.transform;
+
+            if (InputController.GetLmbDown() && hitTransform != null)
+            {
+                hitTransform.TryGetComponent(out selected);
+                return true;
+            }
+
+            return false;
+        }
+
         private void CalculateOrbit()
         {
-            if (InputController.Rmb())
+            DisableOrbitIfHitChessPiece();
+
+            if (InputController.GetRmb() || InputController.GetLmb())
             {
                 _newYawRad -= InputController.Horizontal() * orbitSensitivity;
                 _newPitchRad -= InputController.Vertical() * orbitSensitivity;
@@ -193,6 +217,18 @@ namespace Chess3D.Runtime.Core.MainCamera
             // Smoothing orbit
             yawRad = Mathf.SmoothDamp(yawRad, _newYawRad, ref _yawCurrentVelocity, yawSmoothTime);
             pitchRad = Mathf.SmoothDamp(pitchRad, _newPitchRad, ref _pitchCurrentVelocity, pitchSmoothTime);
+        }
+
+        private void DisableOrbitIfHitChessPiece()
+        {
+            if (InputController.GetLmbDown() && IsHitSomething(out ISelectable selected) && _game.CanSelect(selected))
+            {
+                InputController.IsOrbitEnabled = false;
+            }
+            else if (InputController.GetLmbUp())
+            {
+                InputController.IsOrbitEnabled = true;
+            }
         }
 
         public void AutoRotate()

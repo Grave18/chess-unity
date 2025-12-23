@@ -5,7 +5,6 @@ using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.AI;
 using Chess3D.Runtime.Core.AssetManagement;
 using Chess3D.Runtime.Core.ChessBoard;
-using Chess3D.Runtime.Core.Highlighting;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Core.Logic.GameStates;
 using Chess3D.Runtime.Core.Logic.MenuStates;
@@ -67,7 +66,6 @@ namespace Chess3D.Runtime.Core
             builder.Register<Competitors>(Lifetime.Scoped);
             builder.Register<FenFromBoard>(Lifetime.Scoped);
             builder.Register<FenFromString>(Lifetime.Scoped);
-            builder.Register<Highlighter>(Lifetime.Scoped);
             builder.Register<UciBuffer>(Lifetime.Scoped);
             builder.RegisterComponentInNewPrefab(effectsPlayerPrefab, Lifetime.Scoped);
 
@@ -80,7 +78,6 @@ namespace Chess3D.Runtime.Core
             builder.RegisterComponent(undoState).AsSelf();
             builder.RegisterComponent(redoState).AsSelf();
             builder.RegisterComponent(endGameState).AsSelf();
-            builder.Register<CommonPieceSettings>(Lifetime.Scoped);
 
             // Player
             builder.Register<PlayerFactory>(Lifetime.Scoped);
