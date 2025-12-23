@@ -1,4 +1,5 @@
 using Chess3D.Runtime.Core.Logic;
+using Chess3D.Runtime.Core.MainCamera;
 using UnityEngine;
 using VContainer;
 
@@ -6,6 +7,8 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUI
 {
     public sealed class ClockCanvas : MonoBehaviour
     {
+        [SerializeField] private Canvas canvas;
+
         [Header("References")]
         [SerializeField] private ClockView whiteClockView;
         [SerializeField] private ClockView blackClockView;
@@ -15,8 +18,11 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUI
         [SerializeField] private GameObject blackClockRoot;
 
         [Inject]
-        public void Construct(Game game, CoreEvents coreEvents, IClock clock, ISettingsContainer settingsContainer)
+        public void Construct(Game game, CoreEvents coreEvents, IClock clock, ISettingsContainer settingsContainer,
+            [Key(CameraKeys.Ui)] Camera uiCamera)
         {
+            canvas.worldCamera = uiCamera;
+
             if (settingsContainer.S.GameSettings.PlayerColor == PieceColor.White)
             {
                 whiteCurrentPlayerPointerView.Construct(game, coreEvents);

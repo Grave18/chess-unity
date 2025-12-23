@@ -582,7 +582,6 @@ MonoBehaviour:
   fadeDuration: 2
   fadeDelay: 1
   fadeEase: 10
-  isFadeOnStart: 1
 --- !u!114 &5839254655975643175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -595,6 +594,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9976976cbe1c3c34abf56247facfc86e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 8886915526425131757}
   whiteClockView: {fileID: 471036113225288216}
   blackClockView: {fileID: 8067430073043732085}
   whiteCurrentPlayerPointerView: {fileID: 5908154607444691265}

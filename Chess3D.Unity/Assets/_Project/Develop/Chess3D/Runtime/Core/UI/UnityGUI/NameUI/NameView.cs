@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using VContainer;
 
-namespace Chess3D.Runtime.Core.UI.UnityGUI.BoardUI
+namespace Chess3D.Runtime.Core.UI.UnityGUI.NameUI
 {
     public sealed class NameView : MonoBehaviour
     {
