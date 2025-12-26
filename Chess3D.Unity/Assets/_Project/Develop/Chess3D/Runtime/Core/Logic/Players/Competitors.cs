@@ -1,5 +1,4 @@
 ﻿using System;
-using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
@@ -14,7 +13,8 @@ namespace Chess3D.Runtime.Core.Logic.Players
         public IPlayer CurrentPlayer { get; private set; }
 
         private readonly Game _game;
-        private readonly ISettingsContainer settingsContainer;
+        private readonly ISettingsContainer _settingsContainer;
+        private readonly ConfigContainer _configContainer;
         private readonly FenFromString _fenFromString;
         private readonly PlayerFactory _playerFactory;
 
@@ -22,12 +22,14 @@ namespace Chess3D.Runtime.Core.Logic.Players
         private IPlayer _playerBlack;
 
         private readonly CompositeDisposable _disposables = new();
-        public Competitors(Game game, FenFromString fenFromString, PlayerFactory playerFactory, CoreEvents coreEvents, ISettingsContainer settingsContainer)
+        public Competitors(Game game, FenFromString fenFromString, PlayerFactory playerFactory,
+            CoreEvents coreEvents, ISettingsContainer settingsContainer, ConfigContainer configContainer)
         {
             _game = game;
             _fenFromString = fenFromString;
             _playerFactory = playerFactory;
-            this.settingsContainer = settingsContainer;
+            _settingsContainer = settingsContainer;
+            _configContainer = configContainer;
 
             coreEvents.OnEndMove.Subscribe(_ => SwapCurrentPlayer()).AddTo(_disposables);
         }
@@ -39,8 +41,8 @@ namespace Chess3D.Runtime.Core.Logic.Players
 
         public UniTask Load()
         {
-            _playerWhite = _playerFactory.Create(settingsContainer.S.GameSettings.PlayerWhite.PlayerType);
-            _playerBlack = _playerFactory.Create(settingsContainer.S.GameSettings.PlayerBlack.PlayerType);
+            _playerWhite = _playerFactory.Create(_settingsContainer.S.GameSettings.PlayerWhite.PlayerType, _configContainer.OnlineConfig.ConnectionType);
+            _playerBlack = _playerFactory.Create(_settingsContainer.S.GameSettings.PlayerBlack.PlayerType, _configContainer.OnlineConfig.ConnectionType);
             CurrentPlayer = _fenFromString.TurnColor == PieceColor.White ? _playerWhite : _playerBlack;
 
             return UniTask.CompletedTask;

@@ -1,4 +1,3 @@
-using Chess3D.Runtime.Bootstrap.Settings;
 using Cysharp.Threading.Tasks;
 using PurrNet;
 using PurrNet.Transports;
@@ -6,16 +5,10 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Online
 {
-    public class ConnectionTerminator : NetworkBehaviour
+    public class ConnectionTerminator : MonoBehaviour
     {
         [Header("References")]
-        // [SerializeField] private GameSettingsContainer gameSettingsContainer;
-        [SerializeField] private OnlineSceneLoader onlineSceneLoader;
-
-        public void DisconnectFromServer()
-        {
-            InstanceHandler.NetworkManager?.StopClient();
-        }
+        [SerializeField] private OnlineSceneManager onlineSceneManager;
 
         private void Awake()
         {
@@ -25,7 +18,7 @@ namespace Chess3D.Runtime.Online
             }
         }
 
-        protected override void OnDestroy()
+        private void OnDestroy()
         {
             if (InstanceHandler.NetworkManager != null)
             {
@@ -37,7 +30,7 @@ namespace Chess3D.Runtime.Online
         {
             if (state == ConnectionState.Disconnected)
             {
-                if (isServer)
+                if (InstanceHandler.NetworkManager?.isServer == true)
                 {
                     HostDisconnect().Forget();
                 }
@@ -50,7 +43,7 @@ namespace Chess3D.Runtime.Online
 
         private async UniTaskVoid HostDisconnect()
         {
-            await onlineSceneLoader.UnloadGameAndLoadMainMenu();
+            await onlineSceneManager.LoadMenu();
 
             InstanceHandler.NetworkManager?.StopServer();
         }
@@ -58,7 +51,7 @@ namespace Chess3D.Runtime.Online
         // Add delay to game scene to unload and load main menu
         private void ClientDisconnect()
         {
-            onlineSceneLoader.UnloadGameAndLoadMainMenu().Forget();
+            onlineSceneManager.LoadMenu().Forget();
         }
     }
 }

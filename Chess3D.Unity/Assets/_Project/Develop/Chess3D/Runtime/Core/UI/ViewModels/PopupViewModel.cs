@@ -5,6 +5,7 @@ using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using MvvmTool;
+using PurrNet;
 using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Core.UI.ViewModels
@@ -25,18 +26,16 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
         private readonly MenuStateMachine _menuStateMachine;
         private readonly SceneManager _sceneManager;
         private readonly ISettingsContainer settingsContainer;
-        private readonly ConnectionTerminator _connectionTerminator;
 
         public RelayCommand PopupYesCommand { get; set; } = new();
         public RelayCommand PopupNoCommand { get; set; } = new();
 
-        public PopupViewModel(FenFromBoard fenFromBoard, MenuStateMachine menuStateMachine, SceneManager sceneManager, ISettingsContainer settingsContainer, ConnectionTerminator connectionTerminator)
+        public PopupViewModel(FenFromBoard fenFromBoard, MenuStateMachine menuStateMachine, SceneManager sceneManager, ISettingsContainer settingsContainer)
         {
             _fenFromBoard = fenFromBoard;
             _menuStateMachine = menuStateMachine;
             _sceneManager = sceneManager;
             this.settingsContainer = settingsContainer;
-            _connectionTerminator = connectionTerminator;
         }
 
         public void OpenConfigurablePopup(PopupSettings popupSettings)
@@ -99,7 +98,7 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
 
             if (OnlineInstanceHandler.IsOnline)
             {
-                _connectionTerminator.DisconnectFromServer();
+                InstanceHandler.NetworkManager?.StopClient();
             }
             else
             {

@@ -10,11 +10,12 @@ namespace Chess3D.Runtime.Core.Logic.Players
     {
         [Header("References")]
         [SerializeField] private StateMachine stateMachine;
+        [SerializeField] private WarmUpState warmupState;
 
         public string StateName => State?.Name ?? "No State";
         public IGameState State => stateMachine.currentStateNode as IGameState;
 
-        public async UniTask Load(IGameState warmupState)
+        public async UniTask Load()
         {
             SetState(warmupState);
             await UniTask.WaitUntil(() => State is not WarmUpState);

@@ -1,4 +1,5 @@
 ﻿using System;
+using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
@@ -10,6 +11,7 @@ namespace Chess3D.Runtime
     {
         public LobbyConfig LobbyConfig;
         public ChessConfig ChessConfig;
+        public OnlineConfig OnlineConfig;
 
         public UniTask Load()
         {
@@ -24,6 +26,14 @@ namespace Chess3D.Runtime
     {
         public float UpdateIntervalSec;
         public int PlayersToStart;
+    }
+
+    [Serializable]
+    public sealed class OnlineConfig
+    {
+        public ConnectionType ConnectionType;
+        public AuthorityType AuthorityType;
+        public bool IsLocal;
     }
 
     [Serializable]

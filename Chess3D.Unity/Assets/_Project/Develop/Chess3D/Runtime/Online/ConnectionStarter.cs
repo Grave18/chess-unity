@@ -1,9 +1,9 @@
-using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Menu.LobbyManagement;
 using Cysharp.Threading.Tasks;
 using PurrNet;
 using PurrNet.Transports;
 using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Online
 {
@@ -14,33 +14,44 @@ namespace Chess3D.Runtime.Online
         [SerializeField] private LocalTransport localTransport;
         [SerializeField] private UDPTransport udpTransport;
 
-        public void SetupTransports(Lobby currentLobby)
+        private ConfigContainer _configContainer;
+        private Lobby _currentLobby;
+
+        [Inject]
+        public void Construct(ConfigContainer configContainer, Lobby currentLobby)
         {
-            // if (GameSettingsContainer.IsLocal)
-            // {
-                // networkManager.transport = udpTransport;
-            // }
-            // else
-            // {
-                // networkManager.transport = purrTransport;
-                // purrTransport.roomName = currentLobby.LobbyId;
-            // }
+            _configContainer = configContainer;
+            _currentLobby = currentLobby;
         }
 
-        public async UniTask StartServerIfHost()
+        public async UniTask Load()
         {
-            // if (GameSettingsContainer.IsHost)
-            // {
-            //     networkManager.StartServer();
-            //
-            //     await UniTask.WaitUntil(() => networkManager.serverState == ConnectionState.Connected);
-            // }
+            SetupTransports();
+            await StartHostOrClient();
         }
 
-        public async UniTask StartClient()
+        public void SetupTransports()
         {
+            if (_configContainer.OnlineConfig.IsLocal)
+            {
+                networkManager.transport = udpTransport;
+            }
+            else
+            {
+                networkManager.transport = purrTransport;
+                purrTransport.roomName = _currentLobby.LobbyId;
+            }
+        }
+
+        public async UniTask StartHostOrClient()
+        {
+            if (_configContainer.OnlineConfig.AuthorityType == AuthorityType.Host)
+            {
+                networkManager.StartServer();
+                await UniTask.WaitUntil(() => networkManager.serverState == ConnectionState.Connected);
+            }
+
             networkManager.StartClient();
-
             await UniTask.WaitUntil(() => networkManager.clientState == ConnectionState.Connected);
         }
     }

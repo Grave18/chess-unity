@@ -1,20 +1,23 @@
 ﻿using Chess3D.Runtime.Core.Logic.GameStates;
 using Cysharp.Threading.Tasks;
-using UnityEngine.Scripting;
-using VContainer.Unity;
+using UnityEngine;
 
 namespace Chess3D.Runtime.Core.Logic.Players
 {
-    [Preserve]
-    public sealed class GameStateMachineOffline : IGameStateMachine, ITickable
+    [UnityEngine.Scripting.Preserve]
+    public sealed class GameStateMachineOffline : MonoBehaviour, IGameStateMachine
     {
+        [SerializeField] private WarmUpState warmUpState;
+        [SerializeField] private GameStateMachineScope gameStateMachineScope;
+
         public IGameState State { get; private set; }
 
         public string StateName => State?.Name ?? "No State";
 
-        public async UniTask Load(IGameState warmupState)
+        public async UniTask Load()
         {
-            SetState(warmupState);
+            gameStateMachineScope.Build();
+            SetState(warmUpState);
             await UniTask.WaitUntil(() => State is not WarmUpState);
         }
 
@@ -57,7 +60,7 @@ namespace Chess3D.Runtime.Core.Logic.Players
             State?.Pause();
         }
 
-        public void Tick()
+        public void Update()
         {
             State?.StateUpdate();
         }

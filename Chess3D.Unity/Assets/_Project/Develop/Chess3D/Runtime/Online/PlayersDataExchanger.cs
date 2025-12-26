@@ -1,47 +1,59 @@
 ﻿using System.Threading.Tasks;
-using Chess3D.Runtime.Bootstrap.Settings;
+using Cysharp.Threading.Tasks;
 using PurrNet;
 using PurrNet.Packing;
-using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Online
 {
     public class PlayersDataExchanger : NetworkBehaviour
     {
-        // [SerializeField] private GameSettingsContainer gameSettingsContainer;
+        private SettingsContainer _settingsContainer;
+        private ConfigContainer _configContainer;
 
-        public int ObserversCount => observers.Count;
-
-        public async Task Exchange()
+        [Inject]
+        public void Construct(SettingsContainer settingsContainer, ConfigContainer configContainer)
         {
-            // PlayerID connectedPlayer = OnlineInstanceHandler.OtherPlayerID;
-            // string serversFenPreset = gameSettingsContainer.GetCurrentFen();
-            // string playerName = gameSettingsContainer.GameSettings.Player1Settings.Name;
-            //
-            // var connectionInfo = new ConnectionInfo
-            // {
-            //     FenPreset = serversFenPreset,
-            //     PlayerName = playerName,
-            // };
-            //
-            // ConnectionInfo clientConnectionInfo = await Exchange_TargetRpc(connectedPlayer, connectionInfo);
-            //
-            // gameSettingsContainer.SetPlayer2Name(clientConnectionInfo.PlayerName);
+            _settingsContainer = settingsContainer;
+            _configContainer = configContainer;
+        }
+
+        public async UniTask Load()
+        {
+            await UniTask.WaitUntil(IsAllObserversAdded);
+
+            PlayerID connectedPlayer = OnlineInstanceHandler.OtherPlayerID;
+            string serversFenPreset = _settingsContainer.S.GameSettings.CurrentFen;
+            string playerName = _settingsContainer.S.GameSettings.PlayerWhite.Name;
+
+            var connectionInfo = new ConnectionInfo
+            {
+                FenPreset = serversFenPreset,
+                PlayerName = playerName,
+            };
+
+            ConnectionInfo clientConnectionInfo = await Exchange_TargetRpc(connectedPlayer, connectionInfo);
+
+            _settingsContainer.S.GameSettings.PlayerBlack.Name = clientConnectionInfo.PlayerName;
+        }
+
+        private bool IsAllObserversAdded()
+        {
+            return observers.Count == _configContainer.LobbyConfig.PlayersToStart;
         }
 
         [TargetRpc(asyncTimeoutInSec:60)]
         private Task<ConnectionInfo> Exchange_TargetRpc(PlayerID target, ConnectionInfo serverConnectionInfo)
         {
-            // gameSettingsContainer.SetPlayer2Name(serverConnectionInfo.PlayerName);
-            // gameSettingsContainer.SetCurrentFen(serverConnectionInfo.FenPreset);
-            //
-            // var clientConnectionInfo = new ConnectionInfo
-            // {
-            //     PlayerName = gameSettingsContainer.GameSettings.Player1Settings.Name,
-            // };
-            //
-            // return Task.FromResult(clientConnectionInfo);
-            return Task.FromResult(new ConnectionInfo());
+            _settingsContainer.S.GameSettings.PlayerBlack.Name = serverConnectionInfo.PlayerName;
+            _settingsContainer.S.GameSettings.CurrentFen = serverConnectionInfo.FenPreset;
+
+            var clientConnectionInfo = new ConnectionInfo
+            {
+                PlayerName = _settingsContainer.S.GameSettings.PlayerWhite.Name,
+            };
+
+            return Task.FromResult(clientConnectionInfo);
         }
     }
 

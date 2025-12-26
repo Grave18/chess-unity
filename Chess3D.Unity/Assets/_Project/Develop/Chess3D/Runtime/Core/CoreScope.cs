@@ -6,7 +6,6 @@ using Chess3D.Runtime.Core.AI;
 using Chess3D.Runtime.Core.AssetManagement;
 using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.Logic;
-using Chess3D.Runtime.Core.Logic.GameStates;
 using Chess3D.Runtime.Core.Logic.MenuStates;
 using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Core.Logic.Players;
@@ -21,7 +20,6 @@ using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Menu.UI.Views;
 using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities;
-using PauseState = Chess3D.Runtime.Core.Logic.GameStates.PauseState;
 
 namespace Chess3D.Runtime.Core
 {
@@ -29,6 +27,7 @@ namespace Chess3D.Runtime.Core
     {
         [Header("Game")]
         [SerializeField] private Board board;
+        [SerializeField] private GameStateMachineOffline gameStateMachineOfflinePrefab;
 
         [Header("Sound")]
         [SerializeField] private EffectsPlayer effectsPlayerPrefab;
@@ -41,46 +40,33 @@ namespace Chess3D.Runtime.Core
         [Header("ViewModels")]
         [SerializeField] private CoreHomeViewModel coreHomeViewModel; // Because NetworkBehaviour
 
-        [Header("Game states")]
-        [SerializeField] private GameStateMachineOnline gameStateMachineOnline; // TODO: Add online
-        [SerializeField] private WarmUpState warmupState;
-        [SerializeField] private IdleState idleState;
-        [SerializeField] private MoveState moveState;
-        [SerializeField] private PauseState pauseState;
-        [SerializeField] private UndoState undoState;
-        [SerializeField] private RedoState redoState;
-        [SerializeField] private EndGameState endGameState;
-
         [Header("Camera")]
         [SerializeField] private CameraController cameraController;
         [SerializeField] private Camera mainCamera;
         [SerializeField] private Camera uiCamera;
 
+        [Header("Online")]
+        [SerializeField] private OnlineScope onlineScopePrefab;
+        [SerializeField] private GameStateMachineOnline gameStateMachineOnlinePrefab;
+        [SerializeField] private ClockOnline clockOnlinePrefab;
+        [SerializeField] private PlayerOnline playerOnlinePrefab;
+
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterComponent(board);
-            builder.Register<Game>(Lifetime.Scoped);
-            builder.Register<PieceFactory>(Lifetime.Scoped);
-            builder.Register<Assets>(Lifetime.Scoped);
-            builder.Register<CoreEvents>(Lifetime.Scoped);
-            builder.Register<Competitors>(Lifetime.Scoped);
-            builder.Register<FenFromBoard>(Lifetime.Scoped);
-            builder.Register<FenFromString>(Lifetime.Scoped);
-            builder.Register<UciBuffer>(Lifetime.Scoped);
-            builder.RegisterComponentInNewPrefab(effectsPlayerPrefab, Lifetime.Scoped);
-
-            // State Machines
-            builder.RegisterComponent(gameStateMachineOnline).AsSelf();
-            builder.RegisterComponent(warmupState).AsSelf();
-            builder.RegisterComponent(idleState).AsSelf();
-            builder.RegisterComponent(moveState).AsSelf();
-            builder.RegisterComponent(pauseState).AsSelf();
-            builder.RegisterComponent(undoState).AsSelf();
-            builder.RegisterComponent(redoState).AsSelf();
-            builder.RegisterComponent(endGameState).AsSelf();
+            builder.Register<Game>(Lifetime.Singleton);
+            builder.Register<PieceFactory>(Lifetime.Singleton);
+            builder.Register<Assets>(Lifetime.Singleton);
+            builder.Register<CoreEvents>(Lifetime.Singleton);
+            builder.Register<Competitors>(Lifetime.Singleton);
+            builder.Register<FenFromBoard>(Lifetime.Singleton);
+            builder.Register<FenFromString>(Lifetime.Singleton);
+            builder.Register<UciBuffer>(Lifetime.Singleton);
+            builder.RegisterComponentInNewPrefab(effectsPlayerPrefab, Lifetime.Singleton);
 
             // Player
-            builder.Register<PlayerFactory>(Lifetime.Scoped);
+            builder.RegisterComponentInNewPrefab(gameStateMachineOfflinePrefab, Lifetime.Singleton);
+            builder.Register<PlayerFactory>(Lifetime.Singleton);
             builder.Register<InputHuman>(Lifetime.Transient).As<IInputHandler>().Keyed(PlayerType.Human);
             builder.Register<InputComputer>(Lifetime.Transient).As<IInputHandler>().Keyed(PlayerType.Computer);
             // AI
@@ -93,38 +79,58 @@ namespace Chess3D.Runtime.Core
             builder.RegisterComponent(uiCamera).AsSelf().Keyed(CameraKeys.Ui);
 
             // Sound
-            builder.Register<StartEndSoundPlayer>(Lifetime.Scoped);
+            builder.Register<StartEndSoundPlayer>(Lifetime.Singleton);
 
             // UI
             builder.RegisterComponent(gameCanvasEnabler);
-            builder.Register<MainViewLoader>(Lifetime.Scoped);
+            builder.Register<MainViewLoader>(Lifetime.Singleton);
             builder.RegisterComponent(mainViewXaml);
             builder.RegisterComponent(noesisView);
-            builder.Register<ViewNavigator>(Lifetime.Scoped);
-            builder.Register<MenuStateMachine>(Lifetime.Scoped);
+            builder.Register<ViewNavigator>(Lifetime.Singleton);
+            builder.Register<MenuStateMachine>(Lifetime.Singleton);
             // Views
-            builder.Register<CoreHomeView>(Lifetime.Scoped);
-            builder.Register<SettingsView>(Lifetime.Scoped);
+            builder.Register<CoreHomeView>(Lifetime.Singleton);
+            builder.Register<SettingsView>(Lifetime.Singleton);
             // ViewModels
-            builder.Register<CoreMainViewModel>(Lifetime.Scoped).As<IMainViewModel>().AsSelf();
+            builder.Register<CoreMainViewModel>(Lifetime.Singleton).As<IMainViewModel>().AsSelf();
             builder.RegisterComponent(coreHomeViewModel); // Network behaviour
-            builder.Register<PopupViewModel>(Lifetime.Scoped);
+            builder.Register<PopupViewModel>(Lifetime.Singleton);
             // Settings VMs
-            builder.Register<SettingsViewModel>(Lifetime.Scoped);
-            builder.Register<GameSettingsViewModel>(Lifetime.Scoped);
-            builder.Register<GraphicsSettingsViewModel>(Lifetime.Scoped);
-            builder.Register<AudioSettingsViewModel>(Lifetime.Scoped);
-            builder.Register<FenTextBoxViewModel>(Lifetime.Scoped);
+            builder.Register<SettingsViewModel>(Lifetime.Singleton);
+            builder.Register<GameSettingsViewModel>(Lifetime.Singleton);
+            builder.Register<GraphicsSettingsViewModel>(Lifetime.Singleton);
+            builder.Register<AudioSettingsViewModel>(Lifetime.Singleton);
+            builder.Register<FenTextBoxViewModel>(Lifetime.Singleton);
 
             // Online
-            builder.RegisterComponentOnNewGameObject<ConnectionTerminator>(Lifetime.Scoped);
+            builder.RegisterComponentInNewPrefab(onlineScopePrefab, Lifetime.Singleton); // Instantiated in Flow
+            builder.RegisterComponentInNewPrefab(clockOnlinePrefab, Lifetime.Singleton); // Conditional registration
+            builder.RegisterComponentInNewPrefab(gameStateMachineOnlinePrefab, Lifetime.Singleton); // Conditional registration
+            builder.RegisterComponentInNewPrefab(playerOnlinePrefab, Lifetime.Transient); // Instantiated in PlayerFactory
+
+            builder.Register<IClock>(resolver =>
+            {
+                var configContainer = resolver.Resolve<ConfigContainer>();
+                return configContainer.OnlineConfig.ConnectionType == ConnectionType.Online
+                    ? resolver.Resolve<ClockOnline>()
+                    : resolver.Resolve<ClockOffline>();
+            }, Lifetime.Singleton);
+
+            builder.Register(resolver =>
+            {
+                var configContainer = resolver.Resolve<ConfigContainer>();
+                IGameStateMachine gameStateMachine = configContainer.OnlineConfig.ConnectionType == ConnectionType.Online
+                    ? resolver.Resolve<GameStateMachineOnline>()
+                    : resolver.Resolve<GameStateMachineOffline>();
+
+                return gameStateMachine;
+            }, Lifetime.Singleton);
 
             // Service Locator
             builder.RegisterBuildCallback(ServiceLocator.Initialize);
 
             // Entry points
-            builder.RegisterEntryPoint<ClockOffline>(Lifetime.Scoped).As<IClock>(); // TODO: Add online ClockOnline
-            builder.RegisterEntryPoint<GameStateMachineOffline>().As<IGameStateMachine>(); // TODO: add online GameStateMachine
+            builder.RegisterEntryPoint<ClockOffline>().As<IClock>(); // TODO: Add online ClockOnline
             builder.RegisterEntryPoint<CoreFlow>().AsSelf();
         }
     }

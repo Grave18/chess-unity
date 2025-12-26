@@ -8,5 +8,10 @@
     "UndoMoveTimeSec": 0.1,
     "RedoMoveTimeSec": 0.1,
     "MoveTimeSec": 0.3
+  },
+  "OnlineConfig": {
+    "ConnectionType": 0,
+    "AuthorityType": 0,
+    "IsLocal": false
   }
 }

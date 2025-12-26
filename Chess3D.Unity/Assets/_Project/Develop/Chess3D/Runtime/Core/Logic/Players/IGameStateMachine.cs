@@ -1,9 +1,10 @@
 ﻿using Chess3D.Runtime.Core.Logic.GameStates;
 using Chess3D.Runtime.Utilities;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.Players
 {
-    public interface IGameStateMachine : ILoadUnit<IGameState>
+    public interface IGameStateMachine : ILoadUnit
     {
         IGameState State { get; }
         string StateName { get; }

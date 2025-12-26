@@ -3,28 +3,28 @@ using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.Sound;
 using PurrNet.StateMachine;
 using UniRx;
+using UnityEngine;
 using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
     public sealed class EndGameState : StateNode, IGameState
     {
+        [SerializeField] private UndoState undoState;
+        [SerializeField] private IdleState idleState;
+
         private IGameStateMachine _gameStateMachine;
         private CoreEvents _coreEvents;
         private UciBuffer _uciBuffer;
-        private UndoState _undoState;
-        private IdleState _idleState;
         private EffectsPlayer _effectsPlayer;
 
         [Inject]
-        public void Construct(IGameStateMachine gameStateMachine, CoreEvents coreEvents, UciBuffer uciBuffer,
-            UndoState undoState, IdleState idleState, EffectsPlayer effectsPlayer)
+        public void Construct(IGameStateMachine gameStateMachine, CoreEvents coreEvents,
+            UciBuffer uciBuffer, EffectsPlayer effectsPlayer)
         {
             _gameStateMachine = gameStateMachine;
             _coreEvents = coreEvents;
             _uciBuffer = uciBuffer;
-            _undoState = undoState;
-            _idleState = idleState;
             _effectsPlayer = effectsPlayer;
         }
 
@@ -40,8 +40,8 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         {
             if (_uciBuffer.CanUndo(out MoveData moveData))
             {
-                moveData.PreviousState = _idleState;
-                _gameStateMachine.SetState(_undoState, moveData);
+                moveData.PreviousState = idleState;
+                _gameStateMachine.SetState(undoState, moveData);
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Chess3D.Runtime;
+using Chess3D.Runtime.Online;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEditorInternal;
@@ -27,6 +28,12 @@ namespace Chess3D.Editor
                     UndoMoveTimeSec = 0.1f,
                     RedoMoveTimeSec = 0.1f,
                     MoveTimeSec = 0.3f,
+                },
+                OnlineConfig = new OnlineConfig
+                {
+                    ConnectionType = ConnectionType.Offline,
+                    AuthorityType = AuthorityType.None,
+                    IsLocal = false,
                 }
             };
 
