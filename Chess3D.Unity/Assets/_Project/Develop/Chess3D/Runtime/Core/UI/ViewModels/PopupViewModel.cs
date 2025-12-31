@@ -25,17 +25,20 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
         private readonly FenFromBoard _fenFromBoard;
         private readonly MenuStateMachine _menuStateMachine;
         private readonly SceneManager _sceneManager;
-        private readonly ISettingsContainer settingsContainer;
+        private readonly ISettingsContainer _settingsContainer;
+        private readonly ConfigContainer _configContainer;
 
         public RelayCommand PopupYesCommand { get; set; } = new();
         public RelayCommand PopupNoCommand { get; set; } = new();
 
-        public PopupViewModel(FenFromBoard fenFromBoard, MenuStateMachine menuStateMachine, SceneManager sceneManager, ISettingsContainer settingsContainer)
+        public PopupViewModel(FenFromBoard fenFromBoard, MenuStateMachine menuStateMachine,
+            SceneManager sceneManager, ISettingsContainer settingsContainer, ConfigContainer configContainer)
         {
             _fenFromBoard = fenFromBoard;
             _menuStateMachine = menuStateMachine;
             _sceneManager = sceneManager;
-            this.settingsContainer = settingsContainer;
+            _settingsContainer = settingsContainer;
+            _configContainer = configContainer;
         }
 
         public void OpenConfigurablePopup(PopupSettings popupSettings)
@@ -96,7 +99,7 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
         {
             SaveBoard();
 
-            if (OnlineInstanceHandler.IsOnline)
+            if (_configContainer.OnlineConfig.ConnectionType == ConnectionType.Online)
             {
                 InstanceHandler.NetworkManager?.StopClient();
             }
@@ -111,8 +114,8 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
             if (IsSaveCheckBoxChecked)
             {
                 string fen = _fenFromBoard.Get();
-                settingsContainer.S.GameSettings.SavedFen = fen;
-                settingsContainer.Save();
+                _settingsContainer.S.GameSettings.SavedFen = fen;
+                _settingsContainer.Save();
             }
         }
 

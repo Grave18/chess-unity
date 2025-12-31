@@ -1,0 +1,43 @@
+{
+    "GameSettings": {
+        "PlayerColor": 1,
+        "PlayerWhite": {
+            "Name": "Player 1",
+            "PlayerType": 0,
+            "ComputerSkillLevel": 10,
+            "ComputerThinkTimeMs": 1000
+        },
+        "PlayerBlack": {
+            "Name": "Player 2",
+            "PlayerType": 0,
+            "ComputerSkillLevel": 10,
+            "ComputerThinkTimeMs": 1000
+        },
+        "Time": {
+            "x": 60,
+            "y": 0
+        },
+        "CurrentFen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "DefaultFen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "SavedFen": "",
+        "CustomFen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "IsAutoPromoteToQueen": false,
+        "IsAutoRotateCamera": true,
+        "IsRotateCameraOnStart": true,
+        "FiftyMoveRuleCount": 50,
+        "ThreefoldRepetitionCount": 3,
+        "PiecesModelAddress": "Day4 Pieces",
+        "BoardModelAddress": "Day4 Board"
+    },
+    "GraphicsSettings": {
+        "Width": 800,
+        "Height": 600,
+        "FullScreenMode": 0,
+        "Quality": 2
+    },
+    "AudioSettings": {
+        "MasterVolume": 1.0,
+        "MusicVolume": 1.0,
+        "EffectsVolume": 1.0
+    }
+}

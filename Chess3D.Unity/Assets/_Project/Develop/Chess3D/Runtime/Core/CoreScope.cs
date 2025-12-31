@@ -6,6 +6,7 @@ using Chess3D.Runtime.Core.AI;
 using Chess3D.Runtime.Core.AssetManagement;
 using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.Logic;
+using Chess3D.Runtime.Core.Logic.GameStates;
 using Chess3D.Runtime.Core.Logic.MenuStates;
 using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Core.Logic.Players;
@@ -20,6 +21,8 @@ using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Menu.UI.Views;
 using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities;
+using PurrNet.StateMachine;
+using Log = Chess3D.Runtime.Utilities.Logging.Log;
 
 namespace Chess3D.Runtime.Core
 {
@@ -27,10 +30,11 @@ namespace Chess3D.Runtime.Core
     {
         [Header("Game")]
         [SerializeField] private Board board;
-        [SerializeField] private GameStateMachineOffline gameStateMachineOfflinePrefab;
+        [SerializeField] private WarmUpState warmupState;
+        [SerializeField] private StateMachine stateMachine;
 
         [Header("Sound")]
-        [SerializeField] private EffectsPlayer effectsPlayerPrefab;
+        [SerializeField] private EffectsPlayer effectsPlayer;
 
         [Header("UI")]
         [SerializeField] private GameCanvasEnabler gameCanvasEnabler;
@@ -45,15 +49,16 @@ namespace Chess3D.Runtime.Core
         [SerializeField] private Camera mainCamera;
         [SerializeField] private Camera uiCamera;
 
-        [Header("Online")]
-        [SerializeField] private OnlineScope onlineScopePrefab;
-        [SerializeField] private GameStateMachineOnline gameStateMachineOnlinePrefab;
-        [SerializeField] private ClockOnline clockOnlinePrefab;
-        [SerializeField] private PlayerOnline playerOnlinePrefab;
+        protected override void Awake()
+        {
+            base.Awake();
+            Log.Default.D("CORESCOPE", $"parent is: {Parent}");
+        }
 
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterComponent(board);
+            builder.RegisterComponent(effectsPlayer);
             builder.Register<Game>(Lifetime.Singleton);
             builder.Register<PieceFactory>(Lifetime.Singleton);
             builder.Register<Assets>(Lifetime.Singleton);
@@ -62,10 +67,8 @@ namespace Chess3D.Runtime.Core
             builder.Register<FenFromBoard>(Lifetime.Singleton);
             builder.Register<FenFromString>(Lifetime.Singleton);
             builder.Register<UciBuffer>(Lifetime.Singleton);
-            builder.RegisterComponentInNewPrefab(effectsPlayerPrefab, Lifetime.Singleton);
 
             // Player
-            builder.RegisterComponentInNewPrefab(gameStateMachineOfflinePrefab, Lifetime.Singleton);
             builder.Register<PlayerFactory>(Lifetime.Singleton);
             builder.Register<InputHuman>(Lifetime.Transient).As<IInputHandler>().Keyed(PlayerType.Human);
             builder.Register<InputComputer>(Lifetime.Transient).As<IInputHandler>().Keyed(PlayerType.Computer);
@@ -102,36 +105,38 @@ namespace Chess3D.Runtime.Core
             builder.Register<AudioSettingsViewModel>(Lifetime.Singleton);
             builder.Register<FenTextBoxViewModel>(Lifetime.Singleton);
 
-            // Online
-            builder.RegisterComponentInNewPrefab(onlineScopePrefab, Lifetime.Singleton); // Instantiated in Flow
-            builder.RegisterComponentInNewPrefab(clockOnlinePrefab, Lifetime.Singleton); // Conditional registration
-            builder.RegisterComponentInNewPrefab(gameStateMachineOnlinePrefab, Lifetime.Singleton); // Conditional registration
-            builder.RegisterComponentInNewPrefab(playerOnlinePrefab, Lifetime.Transient); // Instantiated in PlayerFactory
-
-            builder.Register<IClock>(resolver =>
-            {
-                var configContainer = resolver.Resolve<ConfigContainer>();
-                return configContainer.OnlineConfig.ConnectionType == ConnectionType.Online
-                    ? resolver.Resolve<ClockOnline>()
-                    : resolver.Resolve<ClockOffline>();
-            }, Lifetime.Singleton);
-
-            builder.Register(resolver =>
-            {
-                var configContainer = resolver.Resolve<ConfigContainer>();
-                IGameStateMachine gameStateMachine = configContainer.OnlineConfig.ConnectionType == ConnectionType.Online
-                    ? resolver.Resolve<GameStateMachineOnline>()
-                    : resolver.Resolve<GameStateMachineOffline>();
-
-                return gameStateMachine;
-            }, Lifetime.Singleton);
+            // Offline part
+            builder.Register(RegisterGameStateMachine, Lifetime.Singleton);
+            builder.Register(RegisterClock, Lifetime.Singleton);
+            builder.RegisterComponent(warmupState);
+            builder.RegisterComponent(stateMachine);
 
             // Service Locator
             builder.RegisterBuildCallback(ServiceLocator.Initialize);
 
+            builder.Register<ClockOffline>(Lifetime.Singleton);
+            builder.Register<GameStateMachineOffline>(Lifetime.Singleton);
+
             // Entry points
-            builder.RegisterEntryPoint<ClockOffline>().As<IClock>(); // TODO: Add online ClockOnline
             builder.RegisterEntryPoint<CoreFlow>().AsSelf();
+        }
+
+        private static IClock RegisterClock(IObjectResolver resolver)
+        {
+            var configContainer = resolver.Resolve<ConfigContainer>();
+            IClock clock = configContainer.OnlineConfig.ConnectionType == ConnectionType.Online
+                ? resolver.Resolve<ClockOnline>()
+                : resolver.Resolve<ClockOffline>();
+            return clock;
+        }
+
+        private static IGameStateMachine RegisterGameStateMachine(IObjectResolver resolver)
+        {
+            var configContainer = resolver.Resolve<ConfigContainer>();
+            IGameStateMachine gameStateMachine = configContainer.OnlineConfig.ConnectionType == ConnectionType.Online
+                ? resolver.Resolve<GameStateMachineOnline>()
+                : resolver.Resolve<GameStateMachineOffline>();
+            return gameStateMachine;
         }
     }
 }

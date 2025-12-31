@@ -23,18 +23,20 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
         private PopupViewModel _popupViewModel;
         private EffectsPlayer _effectsPlayer;
         private ViewNavigator _viewNavigator;
+        private ConfigContainer _configContainer;
 
         private readonly CompositeDisposable _disposables = new();
 
         [Inject]
         public void Construct(IObjectResolver resolver, Game game, PopupViewModel popupViewModel, CoreMainViewModel coreMainViewModel,
-            EffectsPlayer effectsPlayer, ViewNavigator viewNavigator)
+            EffectsPlayer effectsPlayer, ViewNavigator viewNavigator, ConfigContainer configContainer)
         {
             _resolver = resolver;
             _game = game;
             _popupViewModel = popupViewModel;
             _effectsPlayer = effectsPlayer;
             _viewNavigator = viewNavigator;
+            _configContainer = configContainer;
 
             coreMainViewModel.OnOpenedChanged
                 .Subscribe(UpdateButtonState)
@@ -66,8 +68,8 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
 
         private bool OpenRematchPopup_CanExecute()
         {
-            bool isOffline = OnlineInstanceHandler.IsOffline;
-            bool isOnline = OnlineInstanceHandler.IsOnline && !IsRematchRequested && !IsDrawRequested && _game.IsEndGame;
+            bool isOffline = _configContainer.OnlineConfig.ConnectionType == ConnectionType.Offline;
+            bool isOnline = _configContainer.OnlineConfig.ConnectionType == ConnectionType.Online && !IsRematchRequested && !IsDrawRequested && _game.IsEndGame;
             bool canOpen = isOffline || isOnline;
             return canOpen;
         }
@@ -87,7 +89,7 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
 
         private bool OpenDrawPopup_CanExecute()
         {
-            bool isOnline = OnlineInstanceHandler.IsOnline && !IsRematchRequested && !IsDrawRequested && !_game.IsEndGame && _game.IsMyTurn;
+            bool isOnline = _configContainer.OnlineConfig.ConnectionType == ConnectionType.Online && !IsRematchRequested && !IsDrawRequested && !_game.IsEndGame && _game.IsMyTurn;
             return isOnline;
         }
 
@@ -106,7 +108,7 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
 
         private bool OpenResignPopup_CanExecute()
         {
-            bool isOnline = OnlineInstanceHandler.IsOnline && !IsRematchRequested && !IsDrawRequested&& !_game.IsEndGame && _game.IsMyTurn;
+            bool isOnline = _configContainer.OnlineConfig.ConnectionType == ConnectionType.Online && !IsRematchRequested && !IsDrawRequested&& !_game.IsEndGame && _game.IsMyTurn;
             return isOnline;
         }
 
@@ -131,7 +133,7 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
 
         private void Rematch()
         {
-            if (OnlineInstanceHandler.IsOffline)
+            if (_configContainer.OnlineConfig.ConnectionType == ConnectionType.Offline)
             {
                 RematchOffline();
             }

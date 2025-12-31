@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.InputManagement;
 using Chess3D.Runtime.Core.Logic;
@@ -15,7 +14,7 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.MainCamera
 {
-    public sealed class CameraController : MonoBehaviour, ILoadUnit, IDisposable
+    public sealed class CameraController : MonoBehaviour, ILoadUnit
     {
         private const float WhiteInitialYawRad = Mathf.PI*1.5f;
         private const float BlackInitialYawRad = Mathf.PI*0.5f;
@@ -57,11 +56,6 @@ namespace Chess3D.Runtime.Core.MainCamera
         [SerializeField] private float autoRotateTimeSec = 0.5f;
         [SerializeField] private EasingType autoRotateEasing = EasingType.InOutQuad;
 
-        private Game _game;
-        private Camera _mainCamera;
-        private ISettingsContainer _settingsContainer;
-        private FenFromString _fenFromString;
-
         private bool _isUpdating;
         private bool _isStartRotationOn;
         private bool _isAutoRotateCamera;
@@ -78,36 +72,38 @@ namespace Chess3D.Runtime.Core.MainCamera
         private Vector3 _newPosition;
         private float _tPitch;
 
+        private Game _game;
+        private Camera _mainCamera;
+        private ISettingsContainer _settingsContainer;
+        private FenFromString _fenFromString;
+        private ConfigContainer _configContainer;
+
         private bool IsVsPlayer => _settingsContainer.S.GameSettings.PlayerWhite.PlayerType == PlayerType.Human
                                    && _settingsContainer.S.GameSettings.PlayerBlack.PlayerType == PlayerType.Human;
 
-        private readonly CompositeDisposable _disposables = new();
-
         [Inject]
         public void Construct(Game game, [Key(CameraKeys.Main)] Camera mainCamera,
-            ISettingsContainer settingsContainer, CoreEvents coreEvents, FenFromString fenFromString)
+            ISettingsContainer settingsContainer, CoreEvents coreEvents, FenFromString fenFromString,
+            ConfigContainer configContainer)
         {
             _game = game;
             _mainCamera = mainCamera;
             _settingsContainer = settingsContainer;
             _fenFromString = fenFromString;
             _layerMask = LayerMask.GetMask("Piece", "Square");
+            _configContainer = configContainer;
 
-            coreEvents.OnEndMove.Subscribe(_ => AutoRotate()).AddTo(_disposables);
-            coreEvents.OnEnd.Subscribe(_ => StopAutoRotate()).AddTo(_disposables);
-        }
-
-        public void Dispose()
-        {
-            _disposables.Dispose();
+            coreEvents.OnEndMove.Subscribe(_ => AutoRotate()).AddTo(this);
+            coreEvents.OnEnd.Subscribe(_ => StopAutoRotate()).AddTo(this);
         }
 
         public UniTask Load()
         {
             _rotateCameraToColor = IsVsPlayer ? _fenFromString.TurnColor : _settingsContainer.S.GameSettings.PlayerColor;
             _isStartRotationOn = _settingsContainer.S.GameSettings.IsRotateCameraOnStart;
-            // TODO: refactor online camera
-            _isAutoRotateCamera = IsVsPlayer && OnlineInstanceHandler.IsOffline && _settingsContainer.S.GameSettings.IsAutoRotateCamera;
+            _isAutoRotateCamera = IsVsPlayer
+                                  && _configContainer.OnlineConfig.ConnectionType == ConnectionType.Offline
+                                  && _settingsContainer.S.GameSettings.IsAutoRotateCamera;
 
             _newDistance = distance;
             _newYawRad = yawRad;

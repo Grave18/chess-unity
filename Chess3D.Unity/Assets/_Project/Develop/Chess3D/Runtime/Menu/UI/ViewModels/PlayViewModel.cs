@@ -1,6 +1,7 @@
 ﻿using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.AI;
 using Chess3D.Runtime.Menu.LobbyManagement;
+using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using MvvmTool;
@@ -14,17 +15,20 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
     {
         [ObservableProperty] private bool _isOnlineEnabled;
 
-        private readonly ISettingsContainer settingsContainer;
+        private readonly ISettingsContainer _settingsContainer;
+        private readonly ConfigContainer _configContainer;
         private readonly LobbyManager _lobbyManager;
         private readonly SceneManager _sceneManager;
         private readonly ViewNavigator _viewNavigator;
 
-        public PlayViewModel(ISettingsContainer settingsContainer, LobbyManager lobbyManager, SceneManager sceneManager, ViewNavigator viewNavigator)
+        public PlayViewModel(ISettingsContainer settingsContainer, LobbyManager lobbyManager, SceneManager sceneManager,
+            ViewNavigator viewNavigator, ConfigContainer configContainer)
         {
-            this.settingsContainer = settingsContainer;
+            _settingsContainer = settingsContainer;
             _lobbyManager = lobbyManager;
             _sceneManager = sceneManager;
             _viewNavigator = viewNavigator;
+            _configContainer = configContainer;
         }
 
         public UniTask Load()
@@ -36,16 +40,11 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [RelayCommand]
         private void PlayOffline()
         {
-            SetupGameHumanVsHumanOffline();
+            _settingsContainer.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
+            _settingsContainer.S.GameSettings.PlayerBlack.PlayerType = PlayerType.Human;
+            _settingsContainer.S.GameSettings.PlayerBlack.Name = "Player 2";
+
             _sceneManager.LoadScene(RuntimeConstants.Scenes.Core).Forget();
-        }
-
-        private void SetupGameHumanVsHumanOffline()
-        {
-            settingsContainer.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
-            settingsContainer.S.GameSettings.PlayerBlack.PlayerType = PlayerType.Human;
-
-            settingsContainer.S.GameSettings.PlayerBlack.Name = "Player 2";
         }
 
         [RelayCommand]
@@ -57,11 +56,11 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private void SetupGameHumanVsComputerOffline()
         {
-            settingsContainer.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
-            settingsContainer.S.GameSettings.PlayerBlack.PlayerType = PlayerType.Computer;
+            _settingsContainer.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
+            _settingsContainer.S.GameSettings.PlayerBlack.PlayerType = PlayerType.Computer;
 
-            ComputerSkillLevel skill = settingsContainer.S.GameSettings.PlayerBlack.ComputerSkillLevel;
-            settingsContainer.S.GameSettings.PlayerBlack.Name = $"Computer({skill})";
+            ComputerSkillLevel skill = _settingsContainer.S.GameSettings.PlayerBlack.ComputerSkillLevel;
+            _settingsContainer.S.GameSettings.PlayerBlack.Name = $"Computer({skill})";
         }
 
         [RelayCommand]
@@ -73,18 +72,21 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [RelayCommand]
         public void StartLocalServer()
         {
-            // TODO: Fix online scene switching
-            // onlineSceneSwitcher
-                // .SetupAndSwitchScene(PieceColor.White, isHost: true, isLocal: true)
-                // .Forget();
+            _configContainer.OnlineConfig.ConnectionType = ConnectionType.Online;
+            _configContainer.OnlineConfig.IsLocal = true;
+            _configContainer.OnlineConfig.AuthorityType = AuthorityType.Host;
+
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Online).Forget();
         }
 
         [RelayCommand]
         public void StartLocalClient()
         {
-            // onlineSceneSwitcher
-                // .SetupAndSwitchScene(PieceColor.Black, isHost: false, isLocal: true)
-                // .Forget();
+            _configContainer.OnlineConfig.ConnectionType = ConnectionType.Online;
+            _configContainer.OnlineConfig.IsLocal = true;
+            _configContainer.OnlineConfig.AuthorityType = AuthorityType.Client;
+
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Online).Forget();
         }
 
         [RelayCommand]

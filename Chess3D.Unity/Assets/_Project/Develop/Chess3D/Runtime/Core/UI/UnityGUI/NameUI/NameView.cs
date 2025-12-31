@@ -12,6 +12,9 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.NameUI
         [SerializeField] private TMP_Text whitePlayerNameText;
         [SerializeField] private TMP_Text blackPlayerNameText;
 
+        [SerializeField] private TextToCameraRotator textToCameraRotatorWhite;
+        [SerializeField] private TextToCameraRotator textToCameraRotatorBlack;
+
         [Header("Settings")]
         [SerializeField] private float fadeDuration = 0.5f;
         [SerializeField] private Ease fadeEasing = Ease.InOutCubic;
@@ -28,6 +31,9 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.NameUI
         {
             _settingsContainer = settingsContainer;
             _uguiCamera = uguiCamera;
+
+            textToCameraRotatorWhite.Construct();
+            textToCameraRotatorBlack.Construct();
 
             whitePlayerNameText.text = _settingsContainer.S.GameSettings.PlayerWhite.Name;
             blackPlayerNameText.text = _settingsContainer.S.GameSettings.PlayerBlack.Name;

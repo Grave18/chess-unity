@@ -30,10 +30,7 @@ namespace Chess3D.Runtime.Menu.UI
             Observable.EveryApplicationPause()
                 .Subscribe(isPause =>
                 {
-                    if (!isPause)
-                    {
-                        viewNavigator.GoTo<LobbyViewModel>();
-                    }
+                    if (!isPause) viewNavigator.GoTo<LobbyViewModel>();
                 })
                 .AddTo(_disposables);
         }

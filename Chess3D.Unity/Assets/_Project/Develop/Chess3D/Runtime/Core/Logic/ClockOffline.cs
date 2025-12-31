@@ -4,12 +4,11 @@ using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Scripting;
-using VContainer.Unity;
 
 namespace Chess3D.Runtime.Core.Logic
 {
     [Preserve]
-    public sealed class ClockOffline : IClock, ITickable, IDisposable
+    public sealed class ClockOffline : IClock, IDisposable
     {
         private readonly ReactiveProperty<TimeSpan> _whiteTime = new();
         private readonly ReactiveProperty<TimeSpan> _blackTime = new();
@@ -46,6 +45,7 @@ namespace Chess3D.Runtime.Core.Logic
             _settingsContainer = settingsContainer;
             _coreEvents = coreEvents;
 
+            Observable.EveryGameObjectUpdate().Subscribe(Tick).AddTo(_disposables);
             coreEvents.OnWarmup.Subscribe(_ => Pause()).AddTo(_disposables);
             coreEvents.OnStart.Subscribe(_ => Play()).AddTo(_disposables);
             coreEvents.OnEndMove.Subscribe(_ => Play()).AddTo(_disposables);
@@ -72,7 +72,7 @@ namespace Chess3D.Runtime.Core.Logic
             return UniTask.CompletedTask;
         }
 
-        public void Tick()
+        private void Tick(long _)
         {
             if (!_isPlaying)
             {

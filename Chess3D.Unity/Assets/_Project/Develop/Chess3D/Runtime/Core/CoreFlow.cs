@@ -2,6 +2,7 @@
 using Chess3D.Runtime.Core.AssetManagement;
 using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.Logic;
+using Chess3D.Runtime.Core.Logic.GameStates;
 using Chess3D.Runtime.Core.Logic.MenuStates;
 using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Core.Logic.Players;
@@ -10,10 +11,8 @@ using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Core.UI.ViewModels;
 using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.ViewModels;
-using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
-using VContainer;
 using VContainer.Unity;
 
 namespace Chess3D.Runtime.Core
@@ -21,41 +20,37 @@ namespace Chess3D.Runtime.Core
     [UnityEngine.Scripting.Preserve]
     public sealed class CoreFlow : IAsyncStartable
     {
-        private readonly IObjectResolver _resolver;
         private readonly LoadingService _loadingService;
-        private readonly SceneManager _sceneManager;
         private readonly FenFromString _fenFromString;
         private readonly IGameStateMachine _gameStateMachine;
         private readonly MenuStateMachine _menuStateMachine;
+        private readonly UciBuffer _uciBuffer;
         private readonly Assets _assets;
         private readonly Board _board;
         private readonly Game _game;
-        private readonly UciBuffer _uciBuffer;
-        private readonly Competitors _competitors;
         private readonly IClock _clock;
+        private readonly Competitors _competitors;
+        private readonly MainViewLoader _mainViewLoader;
         private readonly CameraController _cameraController;
         private readonly GameSettingsViewModel _gameSettingsViewModel;
         private readonly GraphicsSettingsViewModel _graphicsSettingsViewModel;
         private readonly AudioSettingsViewModel _audioSettingsViewModel;
         private readonly FenTextBoxViewModel _fenTextBoxViewModel;
-        private readonly MainViewLoader _mainViewLoader;
         private readonly CoreMainViewModel _coreMainViewModel;
         private readonly CoreHomeViewModel _homeViewModel;
         private readonly ViewNavigator _viewNavigator;
-        private readonly ConfigContainer _configContainer;
+        private readonly WarmUpState _warmUpState;
 
-        public CoreFlow(IObjectResolver resolver, LoadingService loadingService, SceneManager sceneManager,
-            FenFromString fenFromString, IGameStateMachine gameStateMachine, MenuStateMachine menuStateMachine,
-            Assets assets, Board board, Game game, UciBuffer uciBuffer, Competitors competitors, IClock clock,
-            CameraController cameraController, MainViewLoader mainViewLoader,
+        public CoreFlow(LoadingService loadingService, FenFromString fenFromString,
+            IGameStateMachine gameStateMachine, MenuStateMachine menuStateMachine,
+            Assets assets, Board board, Game game, UciBuffer uciBuffer, Competitors competitors,
+            IClock clock, CameraController cameraController, MainViewLoader mainViewLoader,
             GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel,
             CoreMainViewModel coreMainViewModel, CoreHomeViewModel homeViewModel,
             ViewNavigator viewNavigator, GameSettingsViewModel gameSettingsViewModel,
-            FenTextBoxViewModel fenTextBoxViewModel, ConfigContainer configContainer)
+            FenTextBoxViewModel fenTextBoxViewModel, WarmUpState warmUpState)
         {
-            _resolver = resolver;
             _loadingService = loadingService;
-            _sceneManager = sceneManager;
             _fenFromString = fenFromString;
             _gameStateMachine = gameStateMachine;
             _menuStateMachine = menuStateMachine;
@@ -74,13 +69,11 @@ namespace Chess3D.Runtime.Core
             _viewNavigator = viewNavigator;
             _gameSettingsViewModel = gameSettingsViewModel;
             _fenTextBoxViewModel = fenTextBoxViewModel;
-            _configContainer = configContainer;
+            _warmUpState = warmUpState;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = new())
         {
-            SetupScene();
-
             await _loadingService.BeginLoading(_fenFromString);
             await _loadingService.BeginLoading(_assets);
             await _loadingService.BeginLoading(_board);
@@ -100,18 +93,7 @@ namespace Chess3D.Runtime.Core
             await _loadingService.BeginLoading(_audioSettingsViewModel);
             await _loadingService.BeginLoading(_fenTextBoxViewModel);
 
-            await _loadingService.BeginLoading(_gameStateMachine);
-        }
-
-        private void SetupScene()
-        {
-            _sceneManager.SetActiveScene(RuntimeConstants.Scenes.Core);
-
-            if (_configContainer.OnlineConfig.ConnectionType == ConnectionType.Online)
-            {
-                // Spawn online scene
-                _resolver.Resolve<OnlineScope>();
-            }
+            await _loadingService.BeginLoading(_gameStateMachine, _warmUpState);
         }
     }
 }

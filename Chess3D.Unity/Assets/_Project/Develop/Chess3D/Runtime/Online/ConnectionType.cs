@@ -9,8 +9,7 @@
     public enum AuthorityType
     {
         None,
-        Server,
-        Client,
         Host,
+        Client,
     }
 }

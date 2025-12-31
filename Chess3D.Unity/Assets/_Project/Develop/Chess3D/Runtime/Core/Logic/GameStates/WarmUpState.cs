@@ -23,6 +23,8 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         public string Name => "WarmUp";
 
+        private bool _isConstructed;
+
         [Inject]
         public void Construct(IGameStateMachine gameStateMachine,
             CameraController cameraController, CoreEvents coreEvents,
@@ -33,10 +35,16 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             _coreEvents = coreEvents;
             _configContainer = configContainer;
             _effectsPlayer = effectsPlayer;
+            _isConstructed = true;
         }
 
         public override void Enter()
         {
+            if (!_isConstructed)
+            {
+                return;
+            }
+
             t = _configContainer.ChessConfig.WarmupTimeSec;
 
             _cameraController.RotateToStartPosition().Forget();
@@ -52,6 +60,11 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         public override void StateUpdate()
         {
+            if (!_isConstructed)
+            {
+                return;
+            }
+
             if (t <= 0f)
             {
                 return;

@@ -26,16 +26,18 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel
 
         private Game _game;
         private ISettingsContainer _settingsContainer;
+        private ConfigContainer _configContainer;
         private IGameStateMachine _gameStateMachine;
 
         private bool _isPause;
 
         [Inject]
         public void Construct(Game game, CoreEvents coreEvents,
-            ISettingsContainer settingsContainer, IGameStateMachine gameStateMachine)
+            ISettingsContainer settingsContainer, IGameStateMachine gameStateMachine, ConfigContainer configContainer)
         {
             _game = game;
             _settingsContainer = settingsContainer;
+            _configContainer = configContainer;
             _gameStateMachine = gameStateMachine;
 
             coreEvents.OnWarmup.Subscribe(_ => Initialize()).AddTo(this);
@@ -55,7 +57,7 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel
         private void Initialize()
         {
             OnPlay();
-            if (OnlineInstanceHandler.IsOnline)
+            if (_configContainer.OnlineConfig.ConnectionType == ConnectionType.Online)
             {
                 undoButton.interactable = false;
                 redoButton.interactable = false;
@@ -69,7 +71,7 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel
 
         private void DisablePauseIfOnlineAndNotMoving()
         {
-            if (OnlineInstanceHandler.IsOnline)
+            if (_configContainer.OnlineConfig.ConnectionType == ConnectionType.Online)
             {
                 PieceColor playerColor = _settingsContainer.S.GameSettings.PlayerColor;
                 pauseButton.interactable = playerColor == _game.CurrentTurnColor;

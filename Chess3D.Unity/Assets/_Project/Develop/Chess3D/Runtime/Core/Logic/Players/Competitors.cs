@@ -41,8 +41,14 @@ namespace Chess3D.Runtime.Core.Logic.Players
 
         public UniTask Load()
         {
-            _playerWhite = _playerFactory.Create(_settingsContainer.S.GameSettings.PlayerWhite.PlayerType, _configContainer.OnlineConfig.ConnectionType);
-            _playerBlack = _playerFactory.Create(_settingsContainer.S.GameSettings.PlayerBlack.PlayerType, _configContainer.OnlineConfig.ConnectionType);
+            _playerWhite = _playerFactory.Create(_settingsContainer.S.GameSettings.PlayerWhite.PlayerType,
+                _configContainer.OnlineConfig.ConnectionType,
+                PieceColor.White);
+
+            _playerBlack = _playerFactory.Create(_settingsContainer.S.GameSettings.PlayerBlack.PlayerType,
+                _configContainer.OnlineConfig.ConnectionType,
+                PieceColor.Black);
+
             CurrentPlayer = _fenFromString.TurnColor == PieceColor.White ? _playerWhite : _playerBlack;
 
             return UniTask.CompletedTask;

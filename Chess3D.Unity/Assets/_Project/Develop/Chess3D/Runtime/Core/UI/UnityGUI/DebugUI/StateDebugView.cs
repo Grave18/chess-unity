@@ -19,14 +19,17 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.DebugUI
 
         private Game _game;
         private IGameStateMachine _gameStateMachine;
-        private ISettingsContainer settingsContainer;
+        private ISettingsContainer _settingsContainer;
+        private ConfigContainer _configContainer;
 
         [Inject]
-        public void Construct(Game game, IGameStateMachine gameStateMachine, ISettingsContainer settingsContainer)
+        public void Construct(Game game, IGameStateMachine gameStateMachine, ISettingsContainer settingsContainer,
+            ConfigContainer configContainer)
         {
             _game = game;
             _gameStateMachine = gameStateMachine;
-            this.settingsContainer = settingsContainer;
+            _settingsContainer = settingsContainer;
+            _configContainer = configContainer;
         }
 
         private void Awake()
@@ -47,27 +50,14 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.DebugUI
             stateText.text = "State: " + _gameStateMachine?.StateName;
             turnText.text = "Turn: " + _game.CurrentTurnColor;
             checkText.text = "Check: " + _game.CheckType;
-            playerTypeText.text = "Player: " + settingsContainer.S.GameSettings.PlayerWhite.PlayerType;
+            playerTypeText.text = "Player: " + _settingsContainer.S.GameSettings.PlayerWhite.PlayerType;
         }
 
-        private static string GetAuthority()
+        private string GetAuthority()
         {
-            if (InstanceHandler.NetworkManager == null || OnlineInstanceHandler.IsOffline)
-            {
-                return "Offline";
-            }
-
-            if (InstanceHandler.NetworkManager.isHost)
-            {
-                return "Host";
-            }
-
-            if (InstanceHandler.NetworkManager.isServer)
-            {
-                return "Server";
-            }
-
-            return "Client";
+            return _configContainer.OnlineConfig.ConnectionType == ConnectionType.Offline
+                ? "Offline"
+                : _configContainer.OnlineConfig.AuthorityType.ToString();
         }
     }
 }

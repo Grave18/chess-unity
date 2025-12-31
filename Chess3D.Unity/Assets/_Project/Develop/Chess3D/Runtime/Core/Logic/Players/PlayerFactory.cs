@@ -15,16 +15,15 @@ namespace Chess3D.Runtime.Core.Logic.Players
             _resolver = resolver;
         }
 
-        public IPlayer Create(PlayerType playerType, ConnectionType connectionType)
+        public IPlayer Create(PlayerType playerType, ConnectionType connectionType, PieceColor pieceColor)
         {
             var input = _resolver.Resolve<IInputHandler>(playerType);
             input.Load();
 
             if (connectionType == ConnectionType.Online)
             {
-                var player = _resolver.Resolve<PlayerOnline>();
-                player.Load(input);
-                player.GiveOwnership(PlayerID.Server);
+                var player = _resolver.Resolve<PlayerOnline>(pieceColor);
+                player.Construct(input);
                 return player;
             }
 
