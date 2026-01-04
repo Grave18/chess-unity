@@ -1,50 +1,60 @@
-﻿using UnityEditor;
+﻿using Chess3D.Runtime.Utilities.Logging;
+using JetBrains.Annotations;
+using UnityEditor;
 using UnityEditor.SceneManagement;
 
 namespace Chess3D.Editor
 {
     public static class SceneLoader
     {
+
+
         [MenuItem("Chess3D/Scenes/Load Bootstrap &1")]
-        private static void LoadBootstrap()
+        public static void LoadBootstrap()
         {
             LoadScene("0.Bootstrap");
         }
 
         [MenuItem("Chess3D/Scenes/Load Menu &2")]
-        private static void LoadMenu()
+        public static void LoadMenu()
         {
             LoadScene("2.Menu");
         }
 
         [MenuItem("Chess3D/Scenes/Load Game &3")]
-        private static void LoadCore()
+        public static void LoadCore()
         {
             LoadScene("3.Core");
         }
 
         [MenuItem("Chess3D/Scenes/Load Online &4")]
-        private static void LoadOnline()
+        public static void LoadOnline()
         {
             LoadScene("4.Online");
         }
 
         [MenuItem("Chess3D/Scenes/Load Logo &5")]
-        private static void LoadLogo()
+        public static void LoadLogo()
         {
             LoadScene("1.Logo");
         }
 
         [MenuItem("Chess3D/Scenes/Load LoadScreen &6")]
-        private static void LoadLoadScreen()
+        public static void LoadLoadScreen()
         {
             LoadScene("5.LoadScreen");
         }
 
-        private static void LoadScene(string scene)
+        public static void LoadScene([CanBeNull] string sceneName)
         {
+            if (sceneName == null)
+            {
+                Log.Default.D("SceneLoader", "Scene name is null");
+                return;
+            }
+
             EditorSceneManager.SaveOpenScenes();
-            EditorSceneManager.OpenScene($"Assets/_Project/Scenes/{scene}.unity");
+            EditorSceneManager.OpenScene($"Assets/_Project/Scenes/{sceneName}.unity");
         }
     }
 }
