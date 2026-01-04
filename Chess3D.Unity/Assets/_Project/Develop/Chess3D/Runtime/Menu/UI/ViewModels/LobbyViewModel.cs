@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Chess3D.Runtime.Menu.LobbyManagement;
+using Chess3D.Runtime.Online;
+using Chess3D.Runtime.Utilities;
+using Cysharp.Threading.Tasks;
 using MvvmTool;
 using UniRx;
 using UnityEngine.Scripting;
@@ -19,12 +22,16 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [ObservableProperty] private LobbyManager.FriendFilter _friendFilter = LobbyManager.FriendFilter.Online;
 
         private readonly LobbyManager _lobbyManager;
+        private readonly ConfigContainer _configContainer;
+        private readonly SceneManager _sceneManager;
 
         private readonly CompositeDisposable _disposables = new();
 
-        public LobbyViewModel(LobbyManager lobbyManager, ConfigContainer configContainer)
+        public LobbyViewModel(LobbyManager lobbyManager, ConfigContainer configContainer, SceneManager sceneManager)
         {
             _lobbyManager = lobbyManager;
+            _configContainer = configContainer;
+            _sceneManager = sceneManager;
 
             _lobbyManager.OnRoomJoined
                 .Subscribe(_ => _lobbyManager.PullFriends(FriendFilter))
@@ -40,6 +47,10 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
             _lobbyManager.OnRoomUpdated
                 .Subscribe(LobbyDataUpdate)
+                .AddTo(_disposables);
+
+            lobbyManager.OnAllReady
+                .Subscribe(_ => LoadCore().Forget())
                 .AddTo(_disposables);
 
             Observable.Interval(TimeSpan.FromSeconds(configContainer.LobbyConfig.UpdateIntervalSec))
@@ -123,6 +134,23 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             {
                 LobbyUsers.Remove(lobbyUser);
             }
+        }
+
+        private async UniTaskVoid LoadCore()
+        {
+            _configContainer.OnlineConfig.ConnectionType = ConnectionType.Online;
+            _configContainer.OnlineConfig.IsLocal = true;
+            if (_lobbyManager.CurrentLobby.IsOwner)
+            {
+                _configContainer.OnlineConfig.AuthorityType = AuthorityType.Host;
+            }
+            else
+            {
+                _configContainer.OnlineConfig.AuthorityType = AuthorityType.Client;
+                await UniTask.WaitForSeconds(2f, ignoreTimeScale: true);
+            }
+
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Core).Forget();
         }
 
         [RelayCommand]

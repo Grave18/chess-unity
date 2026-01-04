@@ -1,4 +1,5 @@
 ﻿using System;
+using Chess3D.Runtime.Core.Sound;
 using Cysharp.Threading.Tasks;
 using PurrNet;
 using UniRx;
@@ -7,94 +8,87 @@ using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic
 {
-    public sealed class ClockOnline : NetworkBehaviour, IClock, IDisposable
+    [UnityEngine.Scripting.Preserve]
+    public sealed class ClockOnline : NetworkBehaviour, IClock
     {
-        private Game _game;
-        private ISettingsContainer settingsContainer;
-
-        private TimeSpan _initialWhiteTime;
-        private TimeSpan _initialBlackTime;
-
         private readonly SyncVar<TimeSpan> _whiteTime = new();
         private readonly SyncVar<TimeSpan> _blackTime = new();
 
+        private readonly Subject<TimeSpan> _whiteTimeObservable = new();
+        private readonly Subject<TimeSpan> _blackTimeObservable = new();
+
         private bool _isPlaying;
 
-        public TimeSpan WhiteTime1 => _whiteTime.value;
-        public TimeSpan BlackTime2 => _blackTime.value;
+        private Game _game;
+        private ISettingsContainer _settingsContainer;
+        private CoreEvents _coreEvents;
 
-        private readonly CompositeDisposable _disposables = new();
+        public IObservable<TimeSpan> WhiteTime => _whiteTimeObservable;
+        public IObservable<TimeSpan> BlackTime => _blackTimeObservable;
+
+        public IObservable<Unit> WhiteTenSeconds => _coreEvents.OnWarmup.SelectMany(_ =>
+            WhiteTime
+                .Where(t => (int)t.TotalSeconds == 10)
+                .Take(1)
+                .AsUnitObservable()
+        );
+
+        public IObservable<Unit> BlackTenSeconds => _coreEvents.OnWarmup.SelectMany(_ =>
+            BlackTime
+                .Where(t => (int)t.TotalSeconds == 10)
+                .Take(1)
+                .AsUnitObservable()
+        );
 
         [Inject]
-        public void Construct(Game game, ISettingsContainer settingsContainer, CoreEvents coreEvents)
+        public void Construct(Game game, ISettingsContainer settingsContainer, CoreEvents coreEvents,
+            EffectsPlayer effectsPlayer)
         {
             _game = game;
-            this.settingsContainer = settingsContainer;
+            _settingsContainer = settingsContainer;
+            _coreEvents = coreEvents;
 
-            coreEvents.OnWarmup.Subscribe(_ => InitTime()).AddTo(_disposables);
-            coreEvents.OnStart.Subscribe(_ => StartTimer()).AddTo(_disposables);
-            coreEvents.OnEndMove.Subscribe(_ => Play()).AddTo(_disposables);
-            coreEvents.OnEnd.Subscribe(_ => Pause()).AddTo(_disposables);
-            coreEvents.OnPlay.Subscribe(_ => Play()).AddTo(_disposables);
-            coreEvents.OnPause.Subscribe(_ => Pause()).AddTo(_disposables);
+            Observable.EveryGameObjectUpdate().Subscribe(Tick).AddTo(this);
+            coreEvents.OnWarmup.Subscribe(_ => Pause()).AddTo(this);
+            coreEvents.OnStart.Subscribe(_ => Play()).AddTo(this);
+            coreEvents.OnEndMove.Subscribe(_ => Play()).AddTo(this);
+            coreEvents.OnPlay.Subscribe(_ => Play()).AddTo(this);
+            coreEvents.OnPause.Subscribe(_ => Pause()).AddTo(this);
+            coreEvents.OnEnd.Subscribe(_ => Pause()).AddTo(this);
+            WhiteTenSeconds.Subscribe(_ => effectsPlayer.PlayTenSecondsSound()).AddTo(this);
+            BlackTenSeconds.Subscribe(_ => effectsPlayer.PlayTenSecondsSound()).AddTo(this);
+
+            _whiteTime.onChanged += UpdateWhite;
+            _blackTime.onChanged += UpdateBlack;
         }
 
-        public void Dispose()
+        protected override void OnDestroy()
         {
-            _disposables.Dispose();
+            base.OnDestroy();
+            _whiteTime.onChanged -= UpdateWhite;
+            _blackTime.onChanged -= UpdateBlack;
         }
+
+        private void UpdateBlack(TimeSpan x) => _blackTimeObservable.OnNext(x);
+        private void UpdateWhite(TimeSpan x) => _whiteTimeObservable.OnNext(x);
 
         public UniTask Load()
         {
-            Vector2Int time = settingsContainer.S.GameSettings.Time;
-            _initialWhiteTime = TimeSpan.FromMinutes(time.x) + TimeSpan.FromSeconds(time.y);
-            _initialBlackTime = _initialWhiteTime;
+            TimeSpan time = TimeSpan.FromMinutes(_settingsContainer.S.GameSettings.Time.x)
+                                   + TimeSpan.FromSeconds(_settingsContainer.S.GameSettings.Time.y);
+
+            if (isController)
+            {
+                _whiteTime.value = time;
+                _blackTime.value = time;
+            }
 
             return UniTask.CompletedTask;
         }
 
-        private void StartTimer()
+        private void Tick(long _)
         {
-            if (!isHost)
-            {
-                return;
-            }
-
-            InitTime();
-            Play();
-        }
-
-        private void InitTime()
-        {
-            if (!isHost)
-            {
-                return;
-            }
-
-            _whiteTime.value = _initialWhiteTime;
-            _blackTime.value = _initialBlackTime;
-        }
-
-        [ObserversRpc]
-        private void Play()
-        {
-            _isPlaying = true;
-        }
-
-        [ObserversRpc]
-        private void Pause()
-        {
-            _isPlaying = false;
-        }
-
-        private void Update()
-        {
-            if (!_isPlaying)
-            {
-                return;
-            }
-
-            if (!isController)
+            if (!_isPlaying || !isController)
             {
                 return;
             }
@@ -110,6 +104,16 @@ namespace Chess3D.Runtime.Core.Logic
             }
         }
 
+        private void Play()
+        {
+            _isPlaying = true;
+        }
+
+        private void Pause()
+        {
+            _isPlaying = false;
+        }
+
         private void ReduceTime(SyncVar<TimeSpan> time, PieceColor pieceColor)
         {
             time.value -= TimeSpan.FromSeconds(Time.deltaTime);
@@ -118,19 +122,8 @@ namespace Chess3D.Runtime.Core.Logic
             {
                 _isPlaying = false;
                 time.value = TimeSpan.Zero;
-                SetTimeoutAll(pieceColor);
+                _game.TimeOutSetup(pieceColor);
             }
         }
-
-        [ObserversRpc]
-        private void SetTimeoutAll(PieceColor pieceColor)
-        {
-            _game.TimeOutSetup(pieceColor);
-        }
-
-        public IObservable<TimeSpan> WhiteTime { get; }
-        public IObservable<TimeSpan> BlackTime { get; }
-        public IObservable<Unit> WhiteTenSeconds { get; }
-        public IObservable<Unit> BlackTenSeconds { get; }
     }
 }

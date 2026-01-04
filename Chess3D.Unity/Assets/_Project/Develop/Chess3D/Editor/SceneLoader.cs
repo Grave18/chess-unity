@@ -1,5 +1,6 @@
 ﻿using Chess3D.Runtime.Utilities.Logging;
 using JetBrains.Annotations;
+using ParrelSync;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 
@@ -47,6 +48,11 @@ namespace Chess3D.Editor
 
         public static void LoadScene([CanBeNull] string sceneName)
         {
+            if (ClonesManager.IsClone())
+            {
+                return;
+            }
+
             if (sceneName == null)
             {
                 Log.Default.D("SceneLoader", "Scene name is null");

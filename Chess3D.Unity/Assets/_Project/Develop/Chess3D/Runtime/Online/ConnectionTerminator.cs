@@ -1,38 +1,41 @@
+using System;
+using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using PurrNet;
 using PurrNet.Transports;
-using UnityEngine;
+using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Online
 {
-    public class ConnectionTerminator : MonoBehaviour
+    [Preserve]
+    public class ConnectionTerminator : IDisposable
     {
-        [Header("References")]
-        [SerializeField] private OnlineSceneManager onlineSceneManager;
+        private readonly NetworkManager _networkManager;
+        private readonly ConfigContainer _configContainer;
+        private readonly SceneManager _sceneManager;
 
-        private void Awake()
+        public ConnectionTerminator(NetworkManager networkManager,
+            ConfigContainer configContainer, SceneManager sceneManager)
         {
-            if (InstanceHandler.NetworkManager != null)
-            {
-                InstanceHandler.NetworkManager.onClientConnectionState += OnClientConnectionState;
-            }
+            _networkManager = networkManager;
+            _configContainer = configContainer;
+            _sceneManager = sceneManager;
+
+            _networkManager.onClientConnectionState += OnClientConnectionState;
         }
 
-        private void OnDestroy()
+        public void Dispose()
         {
-            if (InstanceHandler.NetworkManager != null)
-            {
-                InstanceHandler.NetworkManager.onClientConnectionState -= OnClientConnectionState;
-            }
+            _networkManager.onClientConnectionState -= OnClientConnectionState;
         }
 
         private void OnClientConnectionState(ConnectionState state)
         {
             if (state == ConnectionState.Disconnected)
             {
-                if (InstanceHandler.NetworkManager?.isServer == true)
+                if (_configContainer.OnlineConfig.AuthorityType == AuthorityType.Host)
                 {
-                    HostDisconnect().Forget();
+                    HostDisconnect();
                 }
                 else
                 {
@@ -41,17 +44,17 @@ namespace Chess3D.Runtime.Online
             }
         }
 
-        private async UniTaskVoid HostDisconnect()
+        private void HostDisconnect()
         {
-            await onlineSceneManager.LoadMenu();
+            _networkManager?.StopServer();
 
-            InstanceHandler.NetworkManager?.StopServer();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu).Forget();
         }
 
         // Add delay to game scene to unload and load main menu
         private void ClientDisconnect()
         {
-            onlineSceneManager.LoadMenu().Forget();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu).Forget();
         }
     }
 }

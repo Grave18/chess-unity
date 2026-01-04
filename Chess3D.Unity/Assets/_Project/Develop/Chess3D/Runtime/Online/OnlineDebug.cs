@@ -3,18 +3,47 @@ using UnityEngine;
 
 namespace Chess3D.Runtime.Online
 {
-    public class OnlineDebug : MonoBehaviour
+    public class OnlineDebug : NetworkBehaviour
     {
-
-    #if !GRAVEBOX_PROD
-            private void OnGUI()
+#if !GRAVEBOX_PROD
+        private void Awake()
+        {
+            InstanceHandler.NetworkManager.onClientConnectionState += state =>
             {
-                int playerCount = InstanceHandler.NetworkManager?.playerCount ?? 0;
-                ulong playerID = InstanceHandler.NetworkManager?.localPlayer.id.value ?? 0;
-                string text = $"Is Host: {InstanceHandler.NetworkManager?.isHost}, PlayerCount: {playerCount}, id: {playerID}";
-                GUI.Label(new Rect(Screen.width*0.03f, Screen.height*0.96f, Screen.width, Screen.width*0.2f), text);
+                Debug.Log($"Client state is {state}");
+            };
+
+            InstanceHandler.NetworkManager.onServerConnectionState += state =>
+            {
+                Debug.Log($"Server state is {state}");
+            };
+
+            InstanceHandler.NetworkManager.onPlayerJoined += (player, reconnect, server) =>
+            {
+                Debug.Log($"Player joined. Id: {player.id}, is reconnect: {reconnect}, as server: {server}");
+            };
+        }
+
+        protected override void OnObserverAdded(PlayerID player)
+        {
+            Debug.Log($"Observer added. Id: {player.id}");
+        }
+
+        private void OnGUI()
+        {
+            if (InstanceHandler.NetworkManager == null)
+            {
+                return;
             }
-    #endif
+
+            string authority = InstanceHandler.NetworkManager.isHost ? "Host" : "Client";
+            int playerCount = InstanceHandler.NetworkManager.playerCount;
+            ulong playerID = InstanceHandler.NetworkManager.localPlayer.id.value;
+            string text = $"{authority}, PlayerCount: {playerCount}, id: {playerID:000}";
+
+            GUI.Label(new Rect(Screen.width*0.03f, Screen.height*0.96f, Screen.width, Screen.width*0.2f), text);
+        }
+#endif
 
     }
 }

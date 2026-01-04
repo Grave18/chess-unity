@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using PurrNet;
 using PurrNet.Packing;
@@ -8,11 +9,11 @@ namespace Chess3D.Runtime.Online
 {
     public class PlayersDataExchanger : NetworkBehaviour
     {
-        private SettingsContainer _settingsContainer;
+        private ISettingsContainer _settingsContainer;
         private ConfigContainer _configContainer;
 
         [Inject]
-        public void Construct(SettingsContainer settingsContainer, ConfigContainer configContainer)
+        public void Construct(ISettingsContainer settingsContainer, ConfigContainer configContainer)
         {
             _settingsContainer = settingsContainer;
             _configContainer = configContainer;
@@ -20,9 +21,14 @@ namespace Chess3D.Runtime.Online
 
         public async UniTask Load()
         {
-            await UniTask.WaitUntil(IsAllObserversAdded);
+            if (_configContainer.OnlineConfig.AuthorityType != AuthorityType.Host)
+            {
+                return;
+            }
 
-            PlayerID connectedPlayer = OnlineInstanceHandler.OtherPlayerID;
+            await UniTask.WaitUntil(IsAllObserversAdded);
+            // await UniTask.WaitUntil(() => networkManager.playerModule.localPlayerId != null);
+
             string serversFenPreset = _settingsContainer.S.GameSettings.CurrentFen;
             string playerName = _settingsContainer.S.GameSettings.PlayerWhite.Name;
 
@@ -32,7 +38,9 @@ namespace Chess3D.Runtime.Online
                 PlayerName = playerName,
             };
 
-            ConnectionInfo clientConnectionInfo = await Exchange_TargetRpc(connectedPlayer, connectionInfo);
+            PlayerID? thisPlayerID = localPlayer;
+            PlayerID? otherPlayerID = networkManager.players.FirstOrDefault(otherPlayerID => otherPlayerID != thisPlayerID);
+            ConnectionInfo clientConnectionInfo = await Exchange_TargetRpc(otherPlayerID.Value, connectionInfo);
 
             _settingsContainer.S.GameSettings.PlayerBlack.Name = clientConnectionInfo.PlayerName;
         }

@@ -2,26 +2,29 @@ using Chess3D.Runtime.Menu.LobbyManagement;
 using Cysharp.Threading.Tasks;
 using PurrNet;
 using PurrNet.Transports;
-using UnityEngine;
 using VContainer;
 
 namespace Chess3D.Runtime.Online
 {
-    public class ConnectionStarter : MonoBehaviour
+    public class ConnectionStarter
     {
-        [SerializeField] private NetworkManager networkManager;
-        [SerializeField] private PurrTransport purrTransport;
-        [SerializeField] private LocalTransport localTransport;
-        [SerializeField] private UDPTransport udpTransport;
-
+        private NetworkManager _networkManager;
+        private PurrTransport _purrTransport;
+        private LocalTransport _localTransport;
+        private UDPTransport _udpTransport;
         private ConfigContainer _configContainer;
         private Lobby _currentLobby;
 
         [Inject]
-        public void Construct(ConfigContainer configContainer, Lobby currentLobby)
+        public void Construct(NetworkManager networkManager, PurrTransport purrTransport, LocalTransport localTransport,
+            UDPTransport udpTransport, ConfigContainer configContainer, LobbyDataHolder lobbyDataHolder)
         {
+            _networkManager = networkManager;
+            _purrTransport = purrTransport;
+            _localTransport = localTransport;
+            _udpTransport = udpTransport;
             _configContainer = configContainer;
-            _currentLobby = currentLobby;
+            _currentLobby = lobbyDataHolder.CurrentLobby;
         }
 
         public async UniTask Load()
@@ -34,12 +37,12 @@ namespace Chess3D.Runtime.Online
         {
             if (_configContainer.OnlineConfig.IsLocal)
             {
-                networkManager.transport = udpTransport;
+                _networkManager.transport = _udpTransport;
             }
             else
             {
-                networkManager.transport = purrTransport;
-                purrTransport.roomName = _currentLobby.LobbyId;
+                _networkManager.transport = _purrTransport;
+                _purrTransport.roomName = _currentLobby.LobbyId;
             }
         }
 
@@ -47,12 +50,12 @@ namespace Chess3D.Runtime.Online
         {
             if (_configContainer.OnlineConfig.AuthorityType == AuthorityType.Host)
             {
-                networkManager.StartServer();
-                await UniTask.WaitUntil(() => networkManager.serverState == ConnectionState.Connected);
+                _networkManager.StartServer();
+                await UniTask.WaitUntil(() => _networkManager.serverState == ConnectionState.Connected);
             }
 
-            networkManager.StartClient();
-            await UniTask.WaitUntil(() => networkManager.clientState == ConnectionState.Connected);
+            _networkManager.StartClient();
+            await UniTask.WaitUntil(() => _networkManager.clientState == ConnectionState.Connected);
         }
     }
 }

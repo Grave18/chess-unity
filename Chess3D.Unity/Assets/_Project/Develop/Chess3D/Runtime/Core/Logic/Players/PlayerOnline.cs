@@ -6,6 +6,11 @@ namespace Chess3D.Runtime.Core.Logic.Players
     {
         private IInputHandler _inputHandler;
 
+        public void Construct(IInputHandler input)
+        {
+            _inputHandler = input;
+        }
+
         public void StartPlayer()
         {
             if (isController)
@@ -28,11 +33,6 @@ namespace Chess3D.Runtime.Core.Logic.Players
             {
                 _inputHandler.StopInput();
             }
-        }
-
-        public void Load(IInputHandler input)
-        {
-            _inputHandler = input;
         }
     }
 }

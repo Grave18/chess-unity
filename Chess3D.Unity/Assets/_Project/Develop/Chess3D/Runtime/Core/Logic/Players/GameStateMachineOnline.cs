@@ -2,23 +2,28 @@
 using Cysharp.Threading.Tasks;
 using PurrNet;
 using PurrNet.StateMachine;
-using UnityEngine;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.Players
 {
     public sealed class GameStateMachineOnline : NetworkBehaviour, IGameStateMachine
     {
-        [Header("References")]
-        [SerializeField] private StateMachine stateMachine;
-        [SerializeField] private WarmUpState warmupState;
+        private StateMachine _stateMachine;
 
         public string StateName => State?.Name ?? "No State";
-        public IGameState State => stateMachine.currentStateNode as IGameState;
+        public IGameState State => _stateMachine.currentStateNode as IGameState;
 
-        public async UniTask Load()
+        [Inject]
+        public void Construct(StateMachine stateMachine)
+        {
+            _stateMachine = stateMachine;
+        }
+
+        public UniTask Load(IGameState warmupState)
         {
             SetState(warmupState);
-            await UniTask.WaitUntil(() => State is not WarmUpState);
+
+            return UniTask.CompletedTask;
         }
 
         public void SetState(IGameState state)
@@ -28,7 +33,7 @@ namespace Chess3D.Runtime.Core.Logic.Players
                 return;
             }
 
-            stateMachine.SetState(state as StateNode);
+            _stateMachine.SetState(state as StateNode);
         }
 
         public void SetState<T>(IGameState<T> state, T data)
@@ -38,7 +43,7 @@ namespace Chess3D.Runtime.Core.Logic.Players
                 return;
             }
 
-            stateMachine.SetState(state as StateNode<T>, data);
+            _stateMachine.SetState(state as StateNode<T>, data);
         }
 
         [ServerRpc(requireOwnership: false)]

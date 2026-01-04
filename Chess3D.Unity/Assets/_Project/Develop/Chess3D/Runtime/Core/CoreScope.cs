@@ -22,7 +22,6 @@ using Chess3D.Runtime.Menu.UI.Views;
 using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities;
 using PurrNet.StateMachine;
-using Log = Chess3D.Runtime.Utilities.Logging.Log;
 
 namespace Chess3D.Runtime.Core
 {
@@ -48,12 +47,6 @@ namespace Chess3D.Runtime.Core
         [SerializeField] private CameraController cameraController;
         [SerializeField] private Camera mainCamera;
         [SerializeField] private Camera uiCamera;
-
-        protected override void Awake()
-        {
-            base.Awake();
-            Log.Default.D("CORESCOPE", $"parent is: {Parent}");
-        }
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -124,18 +117,34 @@ namespace Chess3D.Runtime.Core
         private static IClock RegisterClock(IObjectResolver resolver)
         {
             var configContainer = resolver.Resolve<ConfigContainer>();
-            IClock clock = configContainer.OnlineConfig.ConnectionType == ConnectionType.Online
-                ? resolver.Resolve<ClockOnline>()
-                : resolver.Resolve<ClockOffline>();
+            IClock clock;
+            if (configContainer.OnlineConfig.ConnectionType == ConnectionType.Online)
+            {
+                clock = resolver.Resolve<ClockOnline>();
+                resolver.Inject(clock);
+            }
+            else
+            {
+                clock = resolver.Resolve<ClockOffline>();
+            }
+
             return clock;
         }
 
         private static IGameStateMachine RegisterGameStateMachine(IObjectResolver resolver)
         {
             var configContainer = resolver.Resolve<ConfigContainer>();
-            IGameStateMachine gameStateMachine = configContainer.OnlineConfig.ConnectionType == ConnectionType.Online
-                ? resolver.Resolve<GameStateMachineOnline>()
-                : resolver.Resolve<GameStateMachineOffline>();
+            IGameStateMachine gameStateMachine;
+            if (configContainer.OnlineConfig.ConnectionType == ConnectionType.Online)
+            {
+                gameStateMachine = resolver.Resolve<GameStateMachineOnline>();
+                resolver.Inject(gameStateMachine);
+            }
+            else
+            {
+                gameStateMachine = resolver.Resolve<GameStateMachineOffline>();
+            }
+
             return gameStateMachine;
         }
     }

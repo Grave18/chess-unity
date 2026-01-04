@@ -1,7 +1,6 @@
 ﻿using DG.Tweening;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.NameUI
 {
@@ -12,21 +11,26 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.NameUI
 
         [Header("UI")]
         [SerializeField] private RectTransform nameTextTransform;
+        [SerializeField] private TMP_Text text;
 
         [Header("Settings")]
         [SerializeField] private bool isUpsideDown;
 
         private bool _isRotating;
-        private TMP_Text text;
+        private bool _isInitialized;
 
-        private void Awake()
+        public void Construct()
         {
-            text = nameTextTransform.GetComponent<TMP_Text>();
-            Assert.IsNotNull(text);
+            _isInitialized = true;
         }
 
         private void Update()
         {
+            if (!_isInitialized)
+            {
+                return;
+            }
+
             if (IsNeedToFlip())
             {
                 Flip();
