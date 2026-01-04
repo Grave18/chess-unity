@@ -150,7 +150,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
                 await UniTask.WaitForSeconds(2f, ignoreTimeScale: true);
             }
 
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Core).Forget();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Core, true).Forget();
         }
 
         [RelayCommand]

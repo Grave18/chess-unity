@@ -12,14 +12,12 @@ namespace Chess3D.Runtime.Utilities
     {
         private const string LogTag = "SCENE";
 
-        public async UniTask LoadScene(int toLoadIndex)
+        // ReSharper disable once MemberCanBeMadeStatic.Global
+        public async UniTask LoadScene(int toLoadIndex, bool isUseLoadingScreen = false)
         {
             int currentSceneIndex = UnitySceneManager.GetActiveScene().buildIndex;
 
-            bool isNeedLoadingScene = currentSceneIndex == RuntimeConstants.Scenes.Menu && toLoadIndex == RuntimeConstants.Scenes.Core
-                                   || currentSceneIndex == RuntimeConstants.Scenes.Core && toLoadIndex == RuntimeConstants.Scenes.Menu;
-
-            if (isNeedLoadingScene)
+            if (isUseLoadingScreen)
             {
                 Log.Default.D(LogTag, "LoadingScreen is loading.");
                 await UnitySceneManager.LoadSceneAsync(RuntimeConstants.Scenes.LoadScreen, LoadSceneMode.Additive);
@@ -41,11 +39,6 @@ namespace Chess3D.Runtime.Utilities
 
             Log.Default.D(LogTag, $"{SceneUtility.GetScenePathByBuildIndex(toLoadIndex)} is loading.");
             UnitySceneManager.LoadScene(toLoadIndex, LoadSceneMode.Single);
-        }
-
-        public void SetActiveScene(int sceneIndex)
-        {
-            UnitySceneManager.SetActiveScene(UnitySceneManager.GetSceneByBuildIndex(sceneIndex));
         }
     }
 }

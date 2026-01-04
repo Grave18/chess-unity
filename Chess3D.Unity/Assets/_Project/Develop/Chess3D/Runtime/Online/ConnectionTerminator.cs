@@ -48,13 +48,13 @@ namespace Chess3D.Runtime.Online
         {
             _networkManager?.StopServer();
 
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu).Forget();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu, true).Forget();
         }
 
         // Add delay to game scene to unload and load main menu
         private void ClientDisconnect()
         {
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu).Forget();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu, true).Forget();
         }
     }
 }

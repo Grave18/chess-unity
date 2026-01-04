@@ -44,14 +44,14 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _settingsContainer.S.GameSettings.PlayerBlack.PlayerType = PlayerType.Human;
             _settingsContainer.S.GameSettings.PlayerBlack.Name = "Player 2";
 
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Core).Forget();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Core, true).Forget();
         }
 
         [RelayCommand]
         private void PlayWithComputer()
         {
             SetupGameHumanVsComputerOffline();
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Core).Forget();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Core, true).Forget();
         }
 
         private void SetupGameHumanVsComputerOffline()
@@ -76,7 +76,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _configContainer.OnlineConfig.IsLocal = true;
             _configContainer.OnlineConfig.AuthorityType = AuthorityType.Host;
 
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Online).Forget();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Online, true).Forget();
         }
 
         [RelayCommand]
@@ -86,7 +86,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _configContainer.OnlineConfig.IsLocal = true;
             _configContainer.OnlineConfig.AuthorityType = AuthorityType.Client;
 
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Online).Forget();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Online, true).Forget();
         }
 
         [RelayCommand]
