@@ -1,7 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 
-namespace Chess3D.Runtime.Core.Sound
+namespace Chess3D.Runtime.Menu.Sound
 {
     public sealed class MusicPlayer : MonoBehaviour
     {
@@ -16,9 +16,10 @@ namespace Chess3D.Runtime.Core.Sound
             audioSource.loop = true;
             audioSource.Play();
             audioSource.DOFade(1f, fadeDuration)
-                .SetEase(Ease.OutBounce)
                 .From(0f)
-                .SetEase(easing);
+                .SetEase(easing)
+                .SetLink(gameObject)
+                .Play();
         }
     }
 }
