@@ -50,7 +50,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
                 .AddTo(_disposables);
 
             lobbyManager.OnAllReady
-                .Subscribe(_ => LoadCore().Forget())
+                .Subscribe(_ => LoadOnline().Forget())
                 .AddTo(_disposables);
 
             Observable.Interval(TimeSpan.FromSeconds(configContainer.LobbyConfig.UpdateIntervalSec))
@@ -136,10 +136,11 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             }
         }
 
-        private async UniTaskVoid LoadCore()
+        private async UniTaskVoid LoadOnline()
         {
             _configContainer.OnlineConfig.ConnectionType = ConnectionType.Online;
-            _configContainer.OnlineConfig.IsLocal = true;
+            _configContainer.OnlineConfig.IsLocal = false;
+
             if (_lobbyManager.CurrentLobby.IsOwner)
             {
                 _configContainer.OnlineConfig.AuthorityType = AuthorityType.Host;
@@ -147,10 +148,10 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             else
             {
                 _configContainer.OnlineConfig.AuthorityType = AuthorityType.Client;
-                await UniTask.WaitForSeconds(2f, ignoreTimeScale: true);
+                await UniTask.WaitForSeconds(1f, ignoreTimeScale: true);
             }
 
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Core, true).Forget();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Online, true).Forget();
         }
 
         [RelayCommand]
