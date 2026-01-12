@@ -1,5 +1,8 @@
-﻿using ParrelSync;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine.SceneManagement;
+
+#if UNITY_EDITOR
+using ParrelSync;
+#endif
 
 namespace Chess3D.Runtime
 {
