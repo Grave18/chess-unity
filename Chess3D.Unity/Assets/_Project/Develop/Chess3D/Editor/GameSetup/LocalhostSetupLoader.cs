@@ -1,4 +1,7 @@
 ﻿using System.Linq;
+using Chess3D.Runtime.Menu.UI.ViewModels;
+using Chess3D.Runtime.Utilities;
+using Chess3D.Runtime.Utilities.Logging;
 using Cysharp.Threading.Tasks;
 using ParrelSync;
 using UnityEditor;
@@ -6,25 +9,23 @@ using UnityEditor.SceneManagement;
 
 namespace Chess3D.Editor.GameSetup
 {
-    // TODO: Refactor or delete LocalhostSetupLoader
     public static class LocalhostSetupLoader
     {
+        private const string LogTag = "LOCALHOSTLOADER";
+
         [MenuItem("Chess3D/GameSetup/Play And Load Localhost ^#w")]
         public static void PlayAndLoadLocalhost()
         {
-            LoadScene("MainMenuScene");
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-            EditorApplication.EnterPlaymode();
-        }
 
-        private static void LoadScene(string scene)
-        {
-            if (!ClonesManager.IsClone())
+            if (EditorApplication.isPlaying)
             {
-                EditorSceneManager.SaveOpenScenes();
+                Log.Default.W(LogTag, "Exiting playmode first...");
+                EditorApplication.ExitPlaymode();
+                return;
             }
 
-            EditorSceneManager.OpenScene($"Assets/Assets/Scenes/{scene}.unity");
+            EditorApplication.EnterPlaymode();
         }
 
         private static void OnPlayModeStateChanged(PlayModeStateChange state)
@@ -34,6 +35,16 @@ namespace Chess3D.Editor.GameSetup
                 Load().Forget();
                 EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
             }
+            else if (state == PlayModeStateChange.EnteredEditMode)
+            {
+                if (!ClonesManager.IsClone())
+                {
+                    SceneLoader.LoadBootstrap();
+                }
+
+                Log.Default.D(LogTag, "Entering play mode ...");
+                EditorApplication.EnterPlaymode();
+            }
         }
 
         public static async UniTask Load()
@@ -42,19 +53,19 @@ namespace Chess3D.Editor.GameSetup
 
             if (ClonesManager.IsClone())
             {
-                await StartCloneClient();
+                StartCloneClient();
             }
             else
             {
                 await OpenOrCreateAndOpenClone();
-                await StartHost();
+                StartHost();
             }
         }
 
-        private static async UniTask StartCloneClient()
+        private static void StartCloneClient()
         {
-            // var onlineSceneSwitcher = Object.FindObjectOfType<OnlineSceneSwitcher>();
-            // await onlineSceneSwitcher.SetupAndSwitchScene(PieceColor.Black, isHost: false, isLocal: true);
+            var onlineSceneSwitcher = ServiceLocator.Resolve<PlayViewModel>();
+            onlineSceneSwitcher.StartLocalClient();
         }
 
         private static async UniTask OpenOrCreateAndOpenClone()
@@ -85,19 +96,17 @@ namespace Chess3D.Editor.GameSetup
             }
         }
 
-        private static async UniTask StartHost()
+        private static void StartHost()
         {
             // if (GameSettingsContainer.IsOnlineComputerVsComputer)
             // {
             //     CloneCommandSender.Send("StartLocalhostComputers");
             // }
-            // else
-            // {
-            //     CloneCommandSender.Send("StartLocalhost");
-            // }
 
-            // var onlineSceneSwitcher = Object.FindObjectOfType<OnlineSceneSwitcher>();
-            // await onlineSceneSwitcher.SetupAndSwitchScene(PieceColor.White, isHost: true, isLocal: true);
+            CloneCommandSender.Send("StartLocalhost");
+
+            var onlineSceneSwitcher = ServiceLocator.Resolve<PlayViewModel>();
+            onlineSceneSwitcher.StartLocalServer();
         }
     }
 }

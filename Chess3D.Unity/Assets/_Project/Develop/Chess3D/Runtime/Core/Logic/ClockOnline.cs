@@ -77,7 +77,7 @@ namespace Chess3D.Runtime.Core.Logic
             TimeSpan time = TimeSpan.FromMinutes(_settingsContainer.S.GameSettings.Time.x)
                                    + TimeSpan.FromSeconds(_settingsContainer.S.GameSettings.Time.y);
 
-            if (isController)
+            if (isHost)
             {
                 _whiteTime.value = time;
                 _blackTime.value = time;
@@ -88,7 +88,7 @@ namespace Chess3D.Runtime.Core.Logic
 
         private void Tick(long _)
         {
-            if (!_isPlaying || !isController)
+            if (!_isPlaying || !isHost)
             {
                 return;
             }

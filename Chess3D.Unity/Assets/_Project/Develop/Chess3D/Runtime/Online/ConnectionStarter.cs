@@ -2,21 +2,21 @@ using Chess3D.Runtime.Menu.LobbyManagement;
 using Cysharp.Threading.Tasks;
 using PurrNet;
 using PurrNet.Transports;
-using VContainer;
+using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Online
 {
+    [Preserve]
     public class ConnectionStarter
     {
-        private NetworkManager _networkManager;
-        private PurrTransport _purrTransport;
+        private readonly NetworkManager _networkManager;
+        private readonly PurrTransport _purrTransport;
         private LocalTransport _localTransport;
-        private UDPTransport _udpTransport;
-        private ConfigContainer _configContainer;
-        private Lobby _currentLobby;
+        private readonly UDPTransport _udpTransport;
+        private readonly ConfigContainer _configContainer;
+        private readonly Lobby _currentLobby;
 
-        [Inject]
-        public void Construct(NetworkManager networkManager, PurrTransport purrTransport, LocalTransport localTransport,
+        public ConnectionStarter(NetworkManager networkManager, PurrTransport purrTransport, LocalTransport localTransport,
             UDPTransport udpTransport, ConfigContainer configContainer, LobbyDataHolder lobbyDataHolder)
         {
             _networkManager = networkManager;
@@ -33,7 +33,7 @@ namespace Chess3D.Runtime.Online
             await StartHostOrClient();
         }
 
-        public void SetupTransports()
+        private void SetupTransports()
         {
             if (_configContainer.OnlineConfig.IsLocal)
             {
@@ -46,7 +46,7 @@ namespace Chess3D.Runtime.Online
             }
         }
 
-        public async UniTask StartHostOrClient()
+        private async UniTask StartHostOrClient()
         {
             if (_configContainer.OnlineConfig.AuthorityType == AuthorityType.Host)
             {

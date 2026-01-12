@@ -105,8 +105,6 @@ MonoBehaviour:
     TypeName: Chess3D.Runtime.Bootstrap.BootstrapScope
   autoRun: 1
   autoInjectGameObjects: []
-  coreScopePrefab: {fileID: 9112883012981457053, guid: cf16b2e52e3e6594fba6fb6f79d76642,
-    type: 3}
   networkManager: {fileID: 3854692027910868315}
   playersDataExchanger: {fileID: 4894126764480302735}
   purrTransport: {fileID: 9008386651365571035}
@@ -612,7 +610,7 @@ MonoBehaviour:
   _dontDestroyOnLoad: 0
   _transport: {fileID: 6304959698644052854}
   _networkPrefabs: {fileID: 11400000, guid: 546ab45d9f90d644eb4ae971360d20fb, type: 2}
-  _networkAssets: {fileID: 11400000, guid: b37401775807885489bbf45befb75467, type: 2}
+  _networkAssets: {fileID: 0}
   _networkRules: {fileID: 11400000, guid: d8799083b96579a42b8b2d03e4ceae98, type: 2}
   _visibilityRules: {fileID: 11400000, guid: 8f014a5bd8dc68646a2a3c0b18c5bbd8, type: 2}
   _authenticator: {fileID: 0}

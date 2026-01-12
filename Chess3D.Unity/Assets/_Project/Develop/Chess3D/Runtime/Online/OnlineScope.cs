@@ -33,7 +33,9 @@ namespace Chess3D.Runtime.Online
             builder.RegisterComponent(networkManager);
             builder.RegisterComponent(playersDataExchanger);
             builder.Register<ConnectionStarter>(Lifetime.Singleton);
+            builder.Register<ConnectionTerminator>(Lifetime.Singleton).As<IInitializable>();
             builder.Register<OnlineSceneManager>(Lifetime.Singleton);
+            builder.Register<OwnershipGiver>(Lifetime.Singleton).As<IInitializable>();
 
             builder.RegisterComponent(purrTransport);
             builder.RegisterComponent(localTransport);
