@@ -16,6 +16,7 @@ namespace Chess3D.Runtime
             public static readonly int Core = SceneUtility.GetBuildIndexByScenePath("3.Core");
             public static readonly int Online = SceneUtility.GetBuildIndexByScenePath("4.Online");
             public static readonly int LoadScreen = SceneUtility.GetBuildIndexByScenePath("5.LoadScreen");
+            public static readonly int Blank = SceneUtility.GetBuildIndexByScenePath("6.Blank");
         }
 
         public static class Settings
