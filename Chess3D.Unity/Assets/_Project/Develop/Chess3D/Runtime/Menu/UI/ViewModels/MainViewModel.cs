@@ -11,7 +11,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
     public sealed partial class MainViewModel : IMainViewModel, ILoadUnit<IViewModel>
     {
         [ObservableProperty] private IViewModel _currentViewModel;
-        public ImageSource ImageSource { get; private set; }
+        [ObservableProperty] private ImageSource _imageSource;
 
         private readonly RenderTexture _renderTexture;
 
@@ -20,11 +20,10 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _renderTexture = renderTexture;
         }
 
-        public UniTask Load(IViewModel viewModel)
+        public async UniTask Load(IViewModel viewModel)
         {
             LoadStartingView(viewModel);
-            InitRenderTexture();
-            return UniTask.CompletedTask;
+            await InitRenderTexture();
         }
 
         private void LoadStartingView(IViewModel viewModel)
@@ -32,10 +31,12 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             CurrentViewModel = viewModel;
         }
 
-        private void InitRenderTexture()
+        private async UniTask InitRenderTexture()
         {
             if(_renderTexture)
             {
+                await UniTask.NextFrame();
+
                 ImageSource = new TextureSource(_renderTexture);
             }
         }
