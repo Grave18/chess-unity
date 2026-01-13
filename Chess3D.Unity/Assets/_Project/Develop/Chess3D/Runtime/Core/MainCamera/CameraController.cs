@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Threading;
 using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.InputManagement;
 using Chess3D.Runtime.Core.Logic;
@@ -119,9 +120,15 @@ namespace Chess3D.Runtime.Core.MainCamera
             float targetYawRad = GetTargetYawRad(_rotateCameraToColor);
             yawRad = targetYawRad;
 
+            CancellationToken token = this.GetCancellationTokenOnDestroy();
             float t = 0f;
             while (t < 1f)
             {
+                if (token.IsCancellationRequested)
+                {
+                    return;
+                }
+
                 if (!_isStartRotationOn)
                 {
                     t = 1f;
