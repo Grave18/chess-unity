@@ -65,7 +65,9 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.Promotion
 
             canvasGroup.DOFade(1, appearTimeSec)
                 .From(0)
-                .SetEase(appearEasing);
+                .SetEase(appearEasing)
+                .SetLink(gameObject)
+                .Play();
         }
 
         private void Hide()
@@ -75,7 +77,9 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.Promotion
 
             canvasGroup.DOFade(0, appearTimeSec)
                 .From(0)
-                .SetEase(appearEasing);
+                .SetEase(appearEasing)
+                .SetLink(gameObject)
+                .Play();
         }
     }
 }

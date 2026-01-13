@@ -28,7 +28,9 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUI
             canvasGroup.DOFade(0f, fadeDuration)
                 .From(1f)
                 .SetDelay(fadeDelay)
-                .SetEase(fadeEase);
+                .SetEase(fadeEase)
+                .SetLink(gameObject)
+                .Play();
         }
 
         public void UnFade()
@@ -36,7 +38,9 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUI
             canvasGroup.DOFade(1f, fadeDuration)
                 .From(0f)
                 .SetDelay(fadeDelay)
-                .SetEase(fadeEase);
+                .SetEase(fadeEase)
+                .SetLink(gameObject)
+                .Play();
         }
     }
 }
