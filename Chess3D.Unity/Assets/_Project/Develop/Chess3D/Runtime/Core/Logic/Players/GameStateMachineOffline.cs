@@ -1,11 +1,12 @@
-﻿using Chess3D.Runtime.Core.Logic.GameStates;
+﻿using System;
+using Chess3D.Runtime.Core.Logic.GameStates;
 using Cysharp.Threading.Tasks;
 using UniRx;
 
 namespace Chess3D.Runtime.Core.Logic.Players
 {
     [UnityEngine.Scripting.Preserve]
-    public sealed class GameStateMachineOffline: IGameStateMachine
+    public sealed class GameStateMachineOffline: IGameStateMachine, IDisposable
     {
         public IGameState State { get; private set; }
 
@@ -16,6 +17,11 @@ namespace Chess3D.Runtime.Core.Logic.Players
         private GameStateMachineOffline()
         {
             Observable.EveryGameObjectUpdate().Subscribe(Tick).AddTo(_disposables);
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
         }
 
         public UniTask Load(IGameState warmUpState)
