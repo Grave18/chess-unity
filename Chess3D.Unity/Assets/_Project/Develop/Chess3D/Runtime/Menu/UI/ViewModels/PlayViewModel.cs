@@ -40,22 +40,34 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [RelayCommand]
         private void PlayOffline()
         {
+            SetupHumanVsHuman();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Core, true).Forget();
+        }
+
+        private void SetupHumanVsHuman()
+        {
+            _configContainer.OnlineConfig.ConnectionType = ConnectionType.Offline;
+            _configContainer.OnlineConfig.IsLocal = false;
+            _configContainer.OnlineConfig.AuthorityType = AuthorityType.None;
+
             _settingsContainer.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
             _settingsContainer.S.GameSettings.PlayerBlack.PlayerType = PlayerType.Human;
             _settingsContainer.S.GameSettings.PlayerBlack.Name = "Player 2";
-
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Core, true).Forget();
         }
 
         [RelayCommand]
         private void PlayWithComputer()
         {
-            SetupGameHumanVsComputerOffline();
+            SetupHumanVsComputerOffline();
             _sceneManager.LoadScene(RuntimeConstants.Scenes.Core, true).Forget();
         }
 
-        private void SetupGameHumanVsComputerOffline()
+        private void SetupHumanVsComputerOffline()
         {
+            _configContainer.OnlineConfig.ConnectionType = ConnectionType.Offline;
+            _configContainer.OnlineConfig.IsLocal = false;
+            _configContainer.OnlineConfig.AuthorityType = AuthorityType.None;
+
             _settingsContainer.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
             _settingsContainer.S.GameSettings.PlayerBlack.PlayerType = PlayerType.Computer;
 
@@ -72,21 +84,33 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [RelayCommand]
         public void StartLocalServer()
         {
+            SetupHumanHost();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Online, true).Forget();
+        }
+
+        private void SetupHumanHost()
+        {
             _configContainer.OnlineConfig.ConnectionType = ConnectionType.Online;
             _configContainer.OnlineConfig.IsLocal = true;
             _configContainer.OnlineConfig.AuthorityType = AuthorityType.Host;
 
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Online, true).Forget();
+            _settingsContainer.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
         }
 
         [RelayCommand]
         public void StartLocalClient()
         {
+            SetupHumanClient();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Online, true).Forget();
+        }
+
+        private void SetupHumanClient()
+        {
             _configContainer.OnlineConfig.ConnectionType = ConnectionType.Online;
             _configContainer.OnlineConfig.IsLocal = true;
             _configContainer.OnlineConfig.AuthorityType = AuthorityType.Client;
 
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Online, true).Forget();
+            _settingsContainer.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
         }
 
         [RelayCommand]

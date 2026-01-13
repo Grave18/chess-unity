@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Menu.LobbyManagement;
 using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities;
@@ -23,15 +24,18 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private readonly LobbyManager _lobbyManager;
         private readonly ConfigContainer _configContainer;
+        private readonly ISettingsContainer _settingsContainer;
         private readonly SceneManager _sceneManager;
 
         private readonly CompositeDisposable _disposables = new();
 
-        public LobbyViewModel(LobbyManager lobbyManager, ConfigContainer configContainer, SceneManager sceneManager)
+        public LobbyViewModel(LobbyManager lobbyManager, ConfigContainer configContainer, SceneManager sceneManager,
+            ISettingsContainer settingsContainer)
         {
             _lobbyManager = lobbyManager;
             _configContainer = configContainer;
             _sceneManager = sceneManager;
+            _settingsContainer = settingsContainer;
 
             _lobbyManager.OnRoomJoined
                 .Subscribe(_ => _lobbyManager.PullFriends(FriendFilter))
@@ -140,6 +144,8 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         {
             _configContainer.OnlineConfig.ConnectionType = ConnectionType.Online;
             _configContainer.OnlineConfig.IsLocal = false;
+
+            _settingsContainer.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
 
             if (_lobbyManager.CurrentLobby.IsOwner)
             {
