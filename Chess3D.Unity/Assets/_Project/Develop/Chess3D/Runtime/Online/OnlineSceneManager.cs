@@ -15,7 +15,8 @@ namespace Chess3D.Runtime.Online
 
         public void LoadCorePrefab()
         {
-           _coreScope.Build();
+            _coreScope.gameObject.SetActive(true);
+            _coreScope.Build();
         }
     }
 }
