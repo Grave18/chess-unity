@@ -18,6 +18,7 @@ namespace Chess3D.Runtime.Online
         [SerializeField] private PurrTransport purrTransport;
         [SerializeField] private LocalTransport localTransport;
         [SerializeField] private UDPTransport udpTransport;
+        [SerializeField] private WaitCanvas waitCanvas;
 
         [Header("Core components")]
         [SerializeField] private GameStateMachineOnline gameStateMachineOnline;
@@ -36,6 +37,8 @@ namespace Chess3D.Runtime.Online
             builder.Register<ConnectionTerminator>(Lifetime.Singleton).As<IInitializable>();
             builder.Register<OnlineSceneManager>(Lifetime.Singleton);
             builder.Register<OwnershipGiver>(Lifetime.Singleton).As<IInitializable>();
+
+            builder.RegisterComponent(waitCanvas);
 
             builder.RegisterComponent(purrTransport);
             builder.RegisterComponent(localTransport);

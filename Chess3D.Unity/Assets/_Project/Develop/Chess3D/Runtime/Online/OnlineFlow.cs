@@ -11,13 +11,15 @@ namespace Chess3D.Runtime.Online
         private readonly ConnectionStarter _connectionStarter;
         private readonly PlayersDataExchanger _playersDataExchanger;
         private readonly OnlineSceneManager _onlineSceneManager;
+        private readonly WaitCanvas _waitCanvas;
 
         public OnlineFlow(ConnectionStarter connectionStarter, PlayersDataExchanger playersDataExchanger,
-            OnlineSceneManager onlineSceneManager)
+            OnlineSceneManager onlineSceneManager, WaitCanvas waitCanvas)
         {
             _connectionStarter = connectionStarter;
             _playersDataExchanger = playersDataExchanger;
             _onlineSceneManager = onlineSceneManager;
+            _waitCanvas = waitCanvas;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = new())
@@ -25,6 +27,7 @@ namespace Chess3D.Runtime.Online
             await _connectionStarter.Load();
             await _playersDataExchanger.Load();
 
+            _waitCanvas.Hide();
             _onlineSceneManager.LoadCorePrefab();
         }
     }
