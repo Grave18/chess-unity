@@ -1,12 +1,15 @@
+using System;
+using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Core.MainCamera;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using VContainer;
+using UniRx;
 
 namespace Chess3D.Runtime.Core.UI.UnityGUI.NameUI
 {
-    public sealed class NameView : MonoBehaviour
+    public sealed class NameView : MonoBehaviour, IDisposable
     {
         [Header("UI")]
         [SerializeField] private TMP_Text whitePlayerNameText;
@@ -19,24 +22,26 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.NameUI
         [SerializeField] private float fadeDuration = 0.5f;
         [SerializeField] private Ease fadeEasing = Ease.InOutCubic;
 
-        private ISettingsContainer _settingsContainer;
-        private Camera _uguiCamera;
-
-        public Camera UGUICamera => _uguiCamera;
-        public float FadeDuration => fadeDuration;
-        public Ease FadeEasing => fadeEasing;
+        private readonly CompositeDisposable _disposables = new();
 
         [Inject]
-        public void Construct(ISettingsContainer settingsContainer, [Key(CameraKeys.Ui)] Camera uguiCamera)
+        public void Construct([Key(CameraKeys.Ui)] Camera uguiCamera, PlayerNames playerNames)
         {
-            _settingsContainer = settingsContainer;
-            _uguiCamera = uguiCamera;
+            textToCameraRotatorWhite.Construct(uguiCamera, fadeDuration, fadeEasing);
+            textToCameraRotatorBlack.Construct(uguiCamera, fadeDuration, fadeEasing);
 
-            textToCameraRotatorWhite.Construct();
-            textToCameraRotatorBlack.Construct();
+            playerNames.WhitePlayerName.Subscribe(whiteName =>
+                whitePlayerNameText.text = whiteName)
+                .AddTo(_disposables);
 
-            whitePlayerNameText.text = _settingsContainer.GameSettings.PlayerWhite.Name;
-            blackPlayerNameText.text = _settingsContainer.GameSettings.PlayerBlack.Name;
+            playerNames.BlackPlayerName.Subscribe(blackName =>
+                blackPlayerNameText.text = blackName)
+                .AddTo(_disposables);
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
         }
     }
 }

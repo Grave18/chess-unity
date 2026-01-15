@@ -27,7 +27,6 @@ namespace Chess3D.Runtime.Online
             }
 
             await UniTask.WaitUntil(IsAllObserversAdded);
-            // await UniTask.WaitUntil(() => networkManager.playerModule.localPlayerId != null);
 
             string serversFenPreset = _settingsContainer.GameSettings.CurrentFen;
             string playerName = _settingsContainer.GameSettings.PlayerWhite.Name;
@@ -44,16 +43,16 @@ namespace Chess3D.Runtime.Online
             _settingsContainer.GameSettings.PlayerBlack.Name = clientConnectionInfo.PlayerName;
         }
 
+        private bool IsAllObserversAdded()
+        {
+            return observers.Count == _configContainer.LobbyConfig.PlayersToStart;
+        }
+
         private PlayerID GetOtherPlayerID()
         {
             PlayerID? thisPlayerID = localPlayer;
             PlayerID? otherPlayerID = networkManager.players.FirstOrDefault(otherPlayerID => otherPlayerID != thisPlayerID);
             return otherPlayerID.Value;
-        }
-
-        private bool IsAllObserversAdded()
-        {
-            return observers.Count == _configContainer.LobbyConfig.PlayersToStart;
         }
 
         [TargetRpc(asyncTimeoutInSec:60)]

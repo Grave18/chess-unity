@@ -16,11 +16,18 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.NameUI
         [Header("Settings")]
         [SerializeField] private bool isUpsideDown;
 
+        private Camera _uguiCamera;
+        private float _fadeDuration;
+        private Ease _fadeEasing;
+
         private bool _isRotating;
         private bool _isInitialized;
 
-        public void Construct()
+        public void Construct(Camera uguiCamera, float fadeDuration, Ease fadeEasing)
         {
+            _uguiCamera = uguiCamera;
+            _fadeDuration = fadeDuration;
+            _fadeEasing = fadeEasing;
             _isInitialized = true;
         }
 
@@ -44,7 +51,7 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.NameUI
         private bool IsNeedToFlip()
         {
             Vector3 nameTextUp = transform.up;
-            Vector3 camUp = mainView.UGUICamera.transform.up;
+            Vector3 camUp =_uguiCamera.transform.up;
 
             var dot = Vector3.Dot(nameTextUp, camUp);
             bool isNeedToFlip = dot <= 0f && !isUpsideDown;
@@ -60,7 +67,7 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.NameUI
         private bool NeedToFlipBack()
         {
             Vector3 nameTextUp = transform.up;
-            Vector3 camUp = mainView.UGUICamera.transform.up;
+            Vector3 camUp =_uguiCamera.transform.up;
 
             var dot = Vector3.Dot(nameTextUp, camUp);
             bool isNeedToFlipBack = dot > 0f && isUpsideDown;
@@ -83,13 +90,13 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.NameUI
             _isRotating = true;
 
             DOTween.Sequence()
-                .Append(text.DOFade(0f, mainView.FadeDuration).SetEase(mainView.FadeEasing))
+                .Append(text.DOFade(0f, _fadeDuration).SetEase(_fadeEasing))
                 .AppendCallback(() =>
                 {
                     float zAngle = isBecomeUpsideDown ? 180f : 0f;
                     nameTextTransform.localRotation = Quaternion.Euler(0f, 0f, zAngle);
                 })
-                .Append(text.DOFade(1f, mainView.FadeDuration).SetEase(mainView.FadeEasing))
+                .Append(text.DOFade(1f, _fadeDuration).SetEase(_fadeEasing))
                 .AppendCallback(() =>
                 {
                     isUpsideDown = isBecomeUpsideDown;
@@ -97,6 +104,5 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.NameUI
                 })
                 .Play();
         }
-
     }
 }

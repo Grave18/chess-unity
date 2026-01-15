@@ -40,6 +40,7 @@ namespace Chess3D.Runtime.Core
         private readonly CoreHomeViewModel _homeViewModel;
         private readonly ViewNavigator _viewNavigator;
         private readonly WarmUpState _warmUpState;
+        private readonly PlayerNames _playerNames;
 
         public CoreFlow(LoadingService loadingService, FenFromString fenFromString,
             IGameStateMachine gameStateMachine, MenuStateMachine menuStateMachine,
@@ -48,7 +49,7 @@ namespace Chess3D.Runtime.Core
             GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel,
             CoreMainViewModel coreMainViewModel, CoreHomeViewModel homeViewModel,
             ViewNavigator viewNavigator, GameSettingsViewModel gameSettingsViewModel,
-            FenTextBoxViewModel fenTextBoxViewModel, WarmUpState warmUpState)
+            FenTextBoxViewModel fenTextBoxViewModel, WarmUpState warmUpState, PlayerNames playerNames)
         {
             _loadingService = loadingService;
             _fenFromString = fenFromString;
@@ -70,6 +71,7 @@ namespace Chess3D.Runtime.Core
             _gameSettingsViewModel = gameSettingsViewModel;
             _fenTextBoxViewModel = fenTextBoxViewModel;
             _warmUpState = warmUpState;
+            _playerNames = playerNames;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = new())
@@ -77,6 +79,7 @@ namespace Chess3D.Runtime.Core
             await _loadingService.BeginLoading(_fenFromString);
             await _loadingService.BeginLoading(_assets);
             await _loadingService.BeginLoading(_board);
+            await _loadingService.BeginLoading(_playerNames);
 
             await _loadingService.BeginLoading(_uciBuffer);
             await _loadingService.BeginLoading(_game);

@@ -84,6 +84,7 @@ namespace Chess3D.Runtime.Core
             builder.RegisterComponent(noesisView);
             builder.Register<ViewNavigator>(Lifetime.Singleton);
             builder.Register<MenuStateMachine>(Lifetime.Singleton);
+            builder.Register<PlayerNames>(Lifetime.Singleton);
             // Views
             builder.Register<CoreHomeView>(Lifetime.Singleton);
             builder.Register<SettingsView>(Lifetime.Singleton);
