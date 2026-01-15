@@ -171,6 +171,8 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   audioMixer: {fileID: 24100000, guid: a7cbbe5f537ffd242a66c9826c766cd0, type: 2}
+  loadingSceneFaderPrefab: {fileID: 470503716184545112, guid: 4028a7dc3e8c41044a89f26ef3b72f7b,
+    type: 3}
 --- !u!1001 &1281583761
 PrefabInstance:
   m_ObjectHideFlags: 0

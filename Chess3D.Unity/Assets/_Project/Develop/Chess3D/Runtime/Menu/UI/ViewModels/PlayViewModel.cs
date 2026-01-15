@@ -41,7 +41,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         private void PlayOffline()
         {
             SetupHumanVsHuman();
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Core, true).Forget();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Core).Forget();
         }
 
         private void SetupHumanVsHuman()
@@ -59,7 +59,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         private void PlayWithComputer()
         {
             SetupHumanVsComputerOffline();
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Core, true).Forget();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Core).Forget();
         }
 
         private void SetupHumanVsComputerOffline()
@@ -85,7 +85,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         public void StartLocalServer()
         {
             SetupHumanHost();
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Online, true).Forget();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Online).Forget();
         }
 
         private void SetupHumanHost()
@@ -101,7 +101,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         public void StartLocalClient()
         {
             SetupHumanClient();
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Online, true).Forget();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Online).Forget();
         }
 
         private void SetupHumanClient()

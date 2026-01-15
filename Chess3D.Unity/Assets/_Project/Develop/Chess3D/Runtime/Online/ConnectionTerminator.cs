@@ -57,7 +57,7 @@ namespace Chess3D.Runtime.Online
         {
             _networkManager?.StopServer();
 
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu, true).Forget();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu).Forget();
 
             Log.Default.D(LogTag, "Host disconnected");
         }
@@ -65,7 +65,7 @@ namespace Chess3D.Runtime.Online
         // Add delay to game scene to unload and load main menu
         private void ClientDisconnect()
         {
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu, true).Forget();
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu).Forget();
 
             Log.Default.D(LogTag, $"Client disconnected {_networkManager?.localPlayer.id.value}");
         }

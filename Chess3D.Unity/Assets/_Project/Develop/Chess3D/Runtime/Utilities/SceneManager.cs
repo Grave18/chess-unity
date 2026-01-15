@@ -1,4 +1,4 @@
-﻿using Chess3D.Runtime.LoadScreen;
+﻿using Chess3D.Runtime.Bootstrap;
 using Chess3D.Runtime.Utilities.Logging;
 using Cysharp.Threading.Tasks;
 using UnityEngine.SceneManagement;
@@ -12,25 +12,35 @@ namespace Chess3D.Runtime.Utilities
     {
         private const string LogTag = "SCENE";
 
+        private readonly LoadingScreen loadingScreen;
+
+        public SceneManager(LoadingScreen loadingScreen)
+        {
+            this.loadingScreen = loadingScreen;
+        }
+
         // ReSharper disable once MemberCanBeMadeStatic.Global
-        public async UniTask LoadScene(int toLoadIndex, bool isUseLoadingScreen = false)
+        public async UniTask LoadScene(int toLoadIndex)
         {
             int currentSceneIndex = UnitySceneManager.GetActiveScene().buildIndex;
 
-            if (isUseLoadingScreen)
+            bool isFromMenuToGame = currentSceneIndex == RuntimeConstants.Scenes.Menu
+                                    && toLoadIndex == RuntimeConstants.Scenes.Core
+                                    || toLoadIndex == RuntimeConstants.Scenes.Online;
+
+            bool isFromGameToMenu = currentSceneIndex == RuntimeConstants.Scenes.Core
+                                    || currentSceneIndex == RuntimeConstants.Scenes.Online
+                                    && toLoadIndex == RuntimeConstants.Scenes.Menu;
+
+            if (isFromMenuToGame || isFromGameToMenu)
             {
-                Log.Default.D(LogTag, "LoadingScreen is loading.");
-                await UnitySceneManager.LoadSceneAsync(RuntimeConstants.Scenes.LoadScreen, LoadSceneMode.Additive);
-                await LoadingSceneFader.Instance.Fade();
+                await UnitySceneManager.LoadSceneAsync(RuntimeConstants.Scenes.Blank);
+                await loadingScreen.Fade();
 
-                Log.Default.D(LogTag, $"{SceneUtility.GetScenePathByBuildIndex(currentSceneIndex)} is unloading.");
-                await UnitySceneManager.UnloadSceneAsync(currentSceneIndex);
                 Log.Default.D(LogTag, $"{SceneUtility.GetScenePathByBuildIndex(toLoadIndex)} is loading.");
-                await UnitySceneManager.LoadSceneAsync(toLoadIndex, LoadSceneMode.Additive);
+                await UnitySceneManager.LoadSceneAsync(toLoadIndex, LoadSceneMode.Single);
 
-                Log.Default.D(LogTag, "LoadingScreen is unloading.");
-                await LoadingSceneFader.Instance.UnFade();
-                await UnitySceneManager.UnloadSceneAsync(RuntimeConstants.Scenes.LoadScreen);
+                await loadingScreen.Unfade();
 
                 return;
             }
