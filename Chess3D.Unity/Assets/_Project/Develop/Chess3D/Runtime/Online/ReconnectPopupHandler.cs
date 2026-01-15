@@ -1,27 +1,33 @@
-﻿using PurrNet;
-using UnityEngine;
+﻿using System;
+using PurrNet;
+using UnityEngine.Scripting;
 using PopupViewModel = Chess3D.Runtime.Core.UI.ViewModels.PopupViewModel;
 
 namespace Chess3D.Runtime.Online
 {
-    public class ReconnectPopupHandler : MonoBehaviour
+    [Preserve]
+    public class ReconnectPopupHandler : IDisposable
     {
-        private void Awake()
+        private readonly NetworkManager _networkManager;
+        private PopupViewModel _popupViewModel;
+
+        private ReconnectPopupHandler(NetworkManager networkManager)
         {
-            if (InstanceHandler.NetworkManager == null)
-            {
-                InstanceHandler.NetworkManager.onPlayerJoined += OnPlayerJoined;
-                InstanceHandler.NetworkManager.onPlayerLeft += OnPlayerLeft;
-            }
+            _networkManager = networkManager;
+
+            _networkManager.onPlayerJoined += OnPlayerJoined;
+            _networkManager.onPlayerLeft += OnPlayerLeft;
         }
 
-        private void OnDestroy()
+        public void Dispose()
         {
-            if (InstanceHandler.NetworkManager != null)
-            {
-                InstanceHandler.NetworkManager.onPlayerJoined -= OnPlayerJoined;
-                InstanceHandler.NetworkManager.onPlayerLeft -= OnPlayerLeft;
-            }
+            _networkManager.onPlayerJoined -= OnPlayerJoined;
+            _networkManager.onPlayerLeft -= OnPlayerLeft;
+        }
+
+        public void SetPopupViewModel(PopupViewModel popupViewModel)
+        {
+            _popupViewModel = popupViewModel;
         }
 
         private void OnPlayerJoined(PlayerID player, bool isReconnect, bool asServer)
@@ -32,10 +38,9 @@ namespace Chess3D.Runtime.Online
             }
         }
 
-        private static void ClosePopup()
+        private void ClosePopup()
         {
-            // TODO: Fix Popup in online
-            // PopupViewModel.Instance.ClosePopupToGame();
+            _popupViewModel.ClosePopupToGame();
         }
 
         private void OnPlayerLeft(PlayerID player, bool asServer)
@@ -51,9 +56,9 @@ namespace Chess3D.Runtime.Online
             return player.id == 002;
         }
 
-        private static void OpenReconnectPopup()
+        private void OpenReconnectPopup()
         {
-            // PopupViewModel.Instance.OpenReconnectPopup();
+            _popupViewModel.OpenReconnectPopup();
         }
     }
 }

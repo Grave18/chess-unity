@@ -99,7 +99,7 @@ namespace Chess3D.Runtime.Core
             builder.Register<AudioSettingsViewModel>(Lifetime.Singleton);
             builder.Register<FenTextBoxViewModel>(Lifetime.Singleton);
 
-            // Offline part
+            builder.RegisterBuildCallback(ResolveReconnectPopupHandler);
             builder.Register(RegisterGameStateMachine, Lifetime.Singleton);
             builder.Register(RegisterClock, Lifetime.Singleton);
             builder.RegisterComponent(warmupState);
@@ -113,6 +113,17 @@ namespace Chess3D.Runtime.Core
 
             // Entry points
             builder.RegisterEntryPoint<CoreFlow>().AsSelf();
+        }
+
+        private static void ResolveReconnectPopupHandler(IObjectResolver resolver)
+        {
+            var configContainer = resolver.Resolve<ConfigContainer>();
+
+            if (configContainer.OnlineConfig.ConnectionType == ConnectionType.Online)
+            {
+                var reconnectPopupHandler = resolver.Resolve<ReconnectPopupHandler>();
+                reconnectPopupHandler.SetPopupViewModel(resolver.Resolve<PopupViewModel>());
+            }
         }
 
         private static IClock RegisterClock(IObjectResolver resolver)

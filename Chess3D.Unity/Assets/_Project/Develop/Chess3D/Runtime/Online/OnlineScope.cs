@@ -37,6 +37,7 @@ namespace Chess3D.Runtime.Online
             builder.Register<ConnectionTerminator>(Lifetime.Singleton).As<IInitializable>();
             builder.Register<OnlineSceneManager>(Lifetime.Singleton);
             builder.Register<OwnershipGiver>(Lifetime.Singleton).As<IInitializable>();
+            builder.Register<ReconnectPopupHandler>(Lifetime.Singleton);
 
             builder.RegisterComponent(waitCanvas);
 
