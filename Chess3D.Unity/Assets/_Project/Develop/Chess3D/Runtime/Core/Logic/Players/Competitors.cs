@@ -21,6 +21,8 @@ namespace Chess3D.Runtime.Core.Logic.Players
         private IPlayer _playerWhite;
         private IPlayer _playerBlack;
 
+        private bool isLoaded;
+
         private readonly CompositeDisposable _disposables = new();
         public Competitors(Game game, FenFromString fenFromString, PlayerFactory playerFactory,
             CoreEvents coreEvents, ISettingsContainer settingsContainer, ConfigContainer configContainer)
@@ -41,6 +43,11 @@ namespace Chess3D.Runtime.Core.Logic.Players
 
         public UniTask Load()
         {
+            if (isLoaded)
+            {
+                return UniTask.CompletedTask;
+            }
+
             _playerWhite = _playerFactory.Create(_settingsContainer.S.GameSettings.PlayerWhite.PlayerType,
                 _configContainer.OnlineConfig.ConnectionType,
                 PieceColor.White);
@@ -51,11 +58,17 @@ namespace Chess3D.Runtime.Core.Logic.Players
 
             CurrentPlayer = _fenFromString.TurnColor == PieceColor.White ? _playerWhite : _playerBlack;
 
+            isLoaded = true;
             return UniTask.CompletedTask;
         }
 
         public void StartPlayer()
         {
+            if (!isLoaded)
+            {
+                Load(); // In case initial state is not warmup
+            }
+
             CurrentPlayer.StartPlayer();
         }
 

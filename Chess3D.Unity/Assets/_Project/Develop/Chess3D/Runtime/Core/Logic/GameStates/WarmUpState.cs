@@ -1,18 +1,15 @@
 ﻿using Chess3D.Runtime.Core.Logic.Players;
-using Chess3D.Runtime.Core.MainCamera;
 using Chess3D.Runtime.Core.Sound;
-using Cysharp.Threading.Tasks;
 using PurrNet.StateMachine;
-using UniRx;
 using UnityEngine;
 using VContainer;
+using UniRx;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
     public sealed class WarmUpState : StateNode, IGameState
     {
         private IGameStateMachine _gameStateMachine;
-        private CameraController _cameraController;
         private CoreEvents _coreEvents;
         private ConfigContainer _configContainer;
         private EffectsPlayer _effectsPlayer;
@@ -26,12 +23,10 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         private bool _isConstructed;
 
         [Inject]
-        public void Construct(IGameStateMachine gameStateMachine,
-            CameraController cameraController, CoreEvents coreEvents,
+        public void Construct(IGameStateMachine gameStateMachine, CoreEvents coreEvents,
             ConfigContainer configContainer, EffectsPlayer effectsPlayer)
         {
             _gameStateMachine = gameStateMachine;
-            _cameraController = cameraController;
             _coreEvents = coreEvents;
             _configContainer = configContainer;
             _effectsPlayer = effectsPlayer;
@@ -46,8 +41,6 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             }
 
             t = _configContainer.ChessConfig.WarmupTimeSec;
-
-            _cameraController.RotateToStartPosition().Forget();
 
             _coreEvents.OnWarmup.OnNext(Unit.Default);
         }

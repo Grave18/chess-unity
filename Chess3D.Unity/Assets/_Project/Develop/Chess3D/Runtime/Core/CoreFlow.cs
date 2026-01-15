@@ -94,6 +94,7 @@ namespace Chess3D.Runtime.Core
             await _loadingService.BeginLoading(_fenTextBoxViewModel);
 
             await _loadingService.BeginLoading(_gameStateMachine, _warmUpState);
+            _cameraController.RotateToStartPosition().Forget();
         }
     }
 }
