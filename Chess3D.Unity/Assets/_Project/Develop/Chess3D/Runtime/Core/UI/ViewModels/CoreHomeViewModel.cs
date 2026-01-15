@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Core.Sound;
 using Chess3D.Runtime.Menu.UI;
@@ -154,8 +155,8 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
         private void RematchOnline()
         {
             IsRematchRequested = true;
-            // PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
-            // RequestRematchFrom_TargetRpc(otherPlayerID);
+            PlayerID otherPlayerID = GetOtherPlayerID();
+            RequestRematchFrom_TargetRpc(otherPlayerID);
         }
 
         [TargetRpc]
@@ -180,8 +181,8 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
             RematchOffline();
             _popupViewModel.ClosePopupToGame();
 
-            // PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
-            // RematchApprove_TargetRpc(otherPlayerID);
+            PlayerID otherPlayerID = GetOtherPlayerID();
+            RematchApprove_TargetRpc(otherPlayerID);
         }
 
         [TargetRpc]
@@ -194,8 +195,8 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
 
         private void RematchDecline()
         {
-            // PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID; // TODO: rematch and other online
-            // RematchDecline_TargetRpc(otherPlayerID);
+            PlayerID otherPlayerID = GetOtherPlayerID();
+            RematchDecline_TargetRpc(otherPlayerID);
 
             _popupViewModel.ClosePopupToGame();
         }
@@ -211,8 +212,8 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
             IsDrawRequested = true;
             _popupViewModel.ClosePopupToGame();
 
-            // PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
-            // DrawRequest_TargetRpc(otherPlayerID);
+            PlayerID otherPlayerID = GetOtherPlayerID();
+            DrawRequest_TargetRpc(otherPlayerID);
         }
 
         [TargetRpc]
@@ -237,8 +238,8 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
             _game.DrawSetup("Draw by agreement");
             _popupViewModel.ClosePopupToGame();
 
-            // PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
-            // DrawApprove_TargetRpc(otherPlayerID);
+            PlayerID otherPlayerID = GetOtherPlayerID();
+            DrawApprove_TargetRpc(otherPlayerID);
         }
 
         [TargetRpc]
@@ -252,8 +253,8 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
         {
             _popupViewModel.ClosePopupToGame();
 
-            // PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
-            // DrawDecline_TargetRpc(otherPlayerID);
+            PlayerID otherPlayerID = GetOtherPlayerID();
+            DrawDecline_TargetRpc(otherPlayerID);
         }
 
         [TargetRpc]
@@ -267,8 +268,15 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
             _game.ResignSetup();
             _popupViewModel.ClosePopupToGame();
 
-            // PlayerID otherPlayerID = OnlineInstanceHandler.OtherPlayerID;
-            // Resign_TargetRpc(otherPlayerID);
+            PlayerID otherPlayerID = GetOtherPlayerID();
+            Resign_TargetRpc(otherPlayerID);
+        }
+
+        private PlayerID GetOtherPlayerID()
+        {
+            PlayerID? thisPlayerID = localPlayer;
+            PlayerID? otherPlayerID = networkManager.players.FirstOrDefault(otherPlayerID => otherPlayerID != thisPlayerID);
+            return otherPlayerID.Value;
         }
 
         [TargetRpc]

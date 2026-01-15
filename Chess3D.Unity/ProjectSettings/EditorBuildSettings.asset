@@ -21,9 +21,6 @@ EditorBuildSettings:
     path: Assets/_Project/Scenes/4.Online.unity
     guid: 9c0b0537b08d3e04c89049f71e9c8f25
   - enabled: 1
-    path: Assets/_Project/Scenes/5.LoadScreen.unity
-    guid: 1841843d7597d594aa5a1ba286cb2cdc
-  - enabled: 1
     path: Assets/_Project/Scenes/5.Blank.unity
     guid: 2af3472c7389e8f4bbddbfe99f7c6663
   m_configObjects:

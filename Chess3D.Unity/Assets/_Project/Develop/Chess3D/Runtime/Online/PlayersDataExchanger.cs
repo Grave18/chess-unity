@@ -38,11 +38,17 @@ namespace Chess3D.Runtime.Online
                 PlayerName = playerName,
             };
 
-            PlayerID? thisPlayerID = localPlayer;
-            PlayerID? otherPlayerID = networkManager.players.FirstOrDefault(otherPlayerID => otherPlayerID != thisPlayerID);
+            PlayerID? otherPlayerID = GetOtherPlayerID();
             ConnectionInfo clientConnectionInfo = await Exchange_TargetRpc(otherPlayerID.Value, connectionInfo);
 
             _settingsContainer.S.GameSettings.PlayerBlack.Name = clientConnectionInfo.PlayerName;
+        }
+
+        private PlayerID? GetOtherPlayerID()
+        {
+            PlayerID? thisPlayerID = localPlayer;
+            PlayerID? otherPlayerID = networkManager.players.FirstOrDefault(otherPlayerID => otherPlayerID != thisPlayerID);
+            return otherPlayerID;
         }
 
         private bool IsAllObserversAdded()
