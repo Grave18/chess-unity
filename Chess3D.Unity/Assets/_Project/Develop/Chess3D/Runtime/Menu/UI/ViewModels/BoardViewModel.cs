@@ -37,7 +37,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private void InitPieces()
         {
-            _selectedPiece = settingsContainer.S.GameSettings.PiecesModelAddress;
+            _selectedPiece = settingsContainer.GameSettings.PiecesModelAddress;
 
             Pieces = new ObservableCollection<string>
             {
@@ -48,7 +48,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private void InitBoards()
         {
-            _selectedBoard = settingsContainer.S.GameSettings.BoardModelAddress;
+            _selectedBoard = settingsContainer.GameSettings.BoardModelAddress;
 
             Boards = new ObservableCollection<string>
             {
@@ -59,14 +59,14 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         partial void OnSelectedBoardChanged(string value)
         {
-            settingsContainer.S.GameSettings.BoardModelAddress = value;
+            settingsContainer.GameSettings.BoardModelAddress = value;
             settingsContainer.Save();
             _visualBoardSpawner.SpawnBoard(value);
         }
 
         partial void OnSelectedPieceChanged(string value)
         {
-            settingsContainer.S.GameSettings.PiecesModelAddress = value;
+            settingsContainer.GameSettings.PiecesModelAddress = value;
             settingsContainer.Save();
             _visualBoardSpawner.SpawnPieces(value);
         }

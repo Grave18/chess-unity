@@ -50,9 +50,9 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _configContainer.OnlineConfig.IsLocal = false;
             _configContainer.OnlineConfig.AuthorityType = AuthorityType.None;
 
-            _settingsContainer.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
-            _settingsContainer.S.GameSettings.PlayerBlack.PlayerType = PlayerType.Human;
-            _settingsContainer.S.GameSettings.PlayerBlack.Name = "Player 2";
+            _settingsContainer.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
+            _settingsContainer.GameSettings.PlayerBlack.PlayerType = PlayerType.Human;
+            _settingsContainer.GameSettings.PlayerBlack.Name = "Player 2";
         }
 
         [RelayCommand]
@@ -68,11 +68,11 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _configContainer.OnlineConfig.IsLocal = false;
             _configContainer.OnlineConfig.AuthorityType = AuthorityType.None;
 
-            _settingsContainer.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
-            _settingsContainer.S.GameSettings.PlayerBlack.PlayerType = PlayerType.Computer;
+            _settingsContainer.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
+            _settingsContainer.GameSettings.PlayerBlack.PlayerType = PlayerType.Computer;
 
-            ComputerSkillLevel skill = _settingsContainer.S.GameSettings.PlayerBlack.ComputerSkillLevel;
-            _settingsContainer.S.GameSettings.PlayerBlack.Name = $"Computer({skill})";
+            ComputerSkillLevel skill = _settingsContainer.GameSettings.PlayerBlack.ComputerSkillLevel;
+            _settingsContainer.GameSettings.PlayerBlack.Name = $"Computer({skill})";
         }
 
         [RelayCommand]
@@ -94,7 +94,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _configContainer.OnlineConfig.IsLocal = true;
             _configContainer.OnlineConfig.AuthorityType = AuthorityType.Host;
 
-            _settingsContainer.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
+            _settingsContainer.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
         }
 
         [RelayCommand]
@@ -110,7 +110,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _configContainer.OnlineConfig.IsLocal = true;
             _configContainer.OnlineConfig.AuthorityType = AuthorityType.Client;
 
-            _settingsContainer.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
+            _settingsContainer.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
         }
 
         [RelayCommand]

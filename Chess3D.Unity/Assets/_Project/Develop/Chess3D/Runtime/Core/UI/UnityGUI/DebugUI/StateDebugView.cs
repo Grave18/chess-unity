@@ -50,7 +50,7 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.DebugUI
             stateText.text = "State: " + _gameStateMachine?.StateName;
             turnText.text = "Turn: " + _game.CurrentTurnColor;
             checkText.text = "Check: " + _game.CheckType;
-            playerTypeText.text = "Player: " + _settingsContainer.S.GameSettings.PlayerWhite.PlayerType;
+            playerTypeText.text = "Player: " + _settingsContainer.GameSettings.PlayerWhite.PlayerType;
         }
 
         private string GetAuthority()

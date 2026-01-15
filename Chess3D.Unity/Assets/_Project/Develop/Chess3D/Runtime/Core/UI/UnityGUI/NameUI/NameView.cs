@@ -35,8 +35,8 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.NameUI
             textToCameraRotatorWhite.Construct();
             textToCameraRotatorBlack.Construct();
 
-            whitePlayerNameText.text = _settingsContainer.S.GameSettings.PlayerWhite.Name;
-            blackPlayerNameText.text = _settingsContainer.S.GameSettings.PlayerBlack.Name;
+            whitePlayerNameText.text = _settingsContainer.GameSettings.PlayerWhite.Name;
+            blackPlayerNameText.text = _settingsContainer.GameSettings.PlayerBlack.Name;
         }
     }
 }

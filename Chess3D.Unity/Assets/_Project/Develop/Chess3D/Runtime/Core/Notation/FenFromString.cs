@@ -31,7 +31,7 @@ namespace Chess3D.Runtime.Core.Notation
 
         public UniTask Load()
         {
-            string[] splitPreset = settingsContainer.S.GameSettings.CurrentFen.Split(' ');
+            string[] splitPreset = settingsContainer.GameSettings.CurrentFen.Split(' ');
 
             _fenSplit = new FenSplit
             {

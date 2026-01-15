@@ -97,7 +97,7 @@ namespace Chess3D.Runtime.Core.Logic.Players
 
             if (CanPromote(piece, toSquare))
             {
-                if (_settingsContainer.S.GameSettings.IsAutoPromoteToQueen)
+                if (_settingsContainer.GameSettings.IsAutoPromoteToQueen)
                 {
                     uci += "q";
                     _gameStateMachine.Move(uci);

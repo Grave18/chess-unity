@@ -23,7 +23,7 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUI
         {
             canvas.worldCamera = uiCamera;
 
-            if (settingsContainer.S.GameSettings.PlayerColor == PieceColor.White)
+            if (settingsContainer.GameSettings.PlayerColor == PieceColor.White)
             {
                 whiteCurrentPlayerPointerView.Construct(game, coreEvents);
                 whiteClockView.Construct(coreEvents, clock);

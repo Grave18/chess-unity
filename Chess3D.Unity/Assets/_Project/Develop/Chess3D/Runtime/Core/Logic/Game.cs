@@ -28,7 +28,7 @@ namespace Chess3D.Runtime.Core.Logic
         private readonly CoreEvents _coreEvents;
 
         /// Is it turn of current player
-        public bool IsMyTurn => CurrentTurnColor == _settingsContainer.S.GameSettings.PlayerColor;
+        public bool IsMyTurn => CurrentTurnColor == _settingsContainer.GameSettings.PlayerColor;
         public bool IsWhiteTurn => CurrentTurnColor == PieceColor.White;
         public bool IsBlackTurn => CurrentTurnColor == PieceColor.Black;
 
@@ -262,14 +262,14 @@ namespace Chess3D.Runtime.Core.Logic
 
         private bool IsThreefoldRule()
         {
-            bool isThreefold = _uciBuffer.ThreefoldRepetitionCount >= _settingsContainer.S.GameSettings.ThreefoldRepetitionCount;
+            bool isThreefold = _uciBuffer.ThreefoldRepetitionCount >= _settingsContainer.GameSettings.ThreefoldRepetitionCount;
 
             return isThreefold;
         }
 
         private bool IsRule50()
         {
-            return _uciBuffer.HalfMoveClock == _settingsContainer.S.GameSettings.FiftyMoveRuleCount * 2;
+            return _uciBuffer.HalfMoveClock == _settingsContainer.GameSettings.FiftyMoveRuleCount * 2;
         }
 
         private bool IsInsufficientMaterial(out string checkDescription)

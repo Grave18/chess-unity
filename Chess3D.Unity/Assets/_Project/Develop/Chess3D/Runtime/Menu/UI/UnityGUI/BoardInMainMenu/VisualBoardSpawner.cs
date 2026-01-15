@@ -37,8 +37,8 @@ namespace Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu
 
         public UniTask Load()
         {
-            SpawnBoard(settingsContainer.S.GameSettings.BoardModelAddress);
-            SpawnPieces(settingsContainer.S.GameSettings.PiecesModelAddress);
+            SpawnBoard(settingsContainer.GameSettings.BoardModelAddress);
+            SpawnPieces(settingsContainer.GameSettings.PiecesModelAddress);
 
             return UniTask.CompletedTask;
         }

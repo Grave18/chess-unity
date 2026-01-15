@@ -74,8 +74,8 @@ namespace Chess3D.Runtime.Core.Logic
 
         public UniTask Load()
         {
-            TimeSpan time = TimeSpan.FromMinutes(_settingsContainer.S.GameSettings.Time.x)
-                                   + TimeSpan.FromSeconds(_settingsContainer.S.GameSettings.Time.y);
+            TimeSpan time = TimeSpan.FromMinutes(_settingsContainer.GameSettings.Time.x)
+                                   + TimeSpan.FromSeconds(_settingsContainer.GameSettings.Time.y);
 
             if (isHost)
             {

@@ -4,6 +4,7 @@ using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Scripting;
 
@@ -11,14 +12,19 @@ namespace Chess3D.Runtime
 {
     public interface ISettingsContainer : ILoadUnit
     {
-        Settings S { get; }
+        GameSettings GameSettings { get; set; }
+        GraphicsSettings GraphicsSettings  { get; set; }
+        AudioSettings AudioSettings  { get; set; }
+
         void Save();
     }
 
     [Preserve]
     public sealed class SettingsContainer : ISettingsContainer
     {
-        public Settings S { get; private set; }
+        public GameSettings GameSettings { get; set; }
+        public GraphicsSettings GraphicsSettings { get; set; }
+        public AudioSettings AudioSettings { get; set; }
 
         private static readonly string FilePath = Path.Combine(Application.persistentDataPath, RuntimeConstants.Settings.FileName + ".json");
 
@@ -35,24 +41,16 @@ namespace Chess3D.Runtime
                 settingsJson = asset.text;
             }
 
-            S = JsonUtility.FromJson<Settings>(settingsJson);
+            JsonConvert.PopulateObject(settingsJson, this);
 
             return UniTask.CompletedTask;
         }
 
         public void Save()
         {
-            string settingsJson = JsonUtility.ToJson(S, prettyPrint: true);
+            string settingsJson = JsonConvert.SerializeObject(this, Formatting.Indented);
             File.WriteAllText(FilePath, settingsJson);
         }
-    }
-
-    [Serializable]
-    public sealed class Settings
-    {
-        public GameSettings GameSettings;
-        public GraphicsSettings GraphicsSettings;
-        public AudioSettings AudioSettings;
     }
 
     [Serializable]

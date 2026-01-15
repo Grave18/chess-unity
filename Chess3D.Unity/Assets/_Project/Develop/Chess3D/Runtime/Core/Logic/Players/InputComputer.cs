@@ -34,7 +34,7 @@ namespace Chess3D.Runtime.Core.Logic.Players
             string uci;
             try
             {
-                PlayerSettings player2Settings = settingsContainer.S.GameSettings.PlayerBlack;
+                PlayerSettings player2Settings = settingsContainer.GameSettings.PlayerBlack;
                 uci = await _stockfish.GetUci(player2Settings, _moveCts.Token);
             }
             catch (Exception ex)

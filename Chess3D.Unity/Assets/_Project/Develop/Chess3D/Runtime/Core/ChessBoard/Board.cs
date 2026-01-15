@@ -238,12 +238,12 @@ namespace Chess3D.Runtime.Core.ChessBoard
 
         private void RotateBoard()
         {
-            if (settingsContainer.S.GameSettings.PlayerColor == PieceColor.White)
+            if (settingsContainer.GameSettings.PlayerColor == PieceColor.White)
             {
                 transform.localRotation = Quaternion.identity;
                 beatenPieces.gameObject.transform.localScale = Vector3.one;
             }
-            else if (settingsContainer.S.GameSettings.PlayerColor == PieceColor.Black)
+            else if (settingsContainer.GameSettings.PlayerColor == PieceColor.Black)
             {
                 transform.localRotation = Quaternion.Euler(0, 180, 0);
                 beatenPieces.gameObject.transform.localScale = new Vector3(-1, 1, 1);

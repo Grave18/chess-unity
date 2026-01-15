@@ -13,7 +13,6 @@ using UniRx;
 
 namespace Chess3D.Runtime.Core.UI.ViewModels
 {
-    // TODO: Refactor NetworkBehaviour out of this class
     public sealed partial class CoreHomeViewModel : NetworkBehaviour, IViewModel, IDisposable
     {
         public bool IsRematchRequested { get; set; }

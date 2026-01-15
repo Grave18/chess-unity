@@ -79,8 +79,8 @@ namespace Chess3D.Runtime.Core.MainCamera
         private FenFromString _fenFromString;
         private ConfigContainer _configContainer;
 
-        private bool IsVsPlayer => _settingsContainer.S.GameSettings.PlayerWhite.PlayerType == PlayerType.Human
-                                   && _settingsContainer.S.GameSettings.PlayerBlack.PlayerType == PlayerType.Human;
+        private bool IsVsPlayer => _settingsContainer.GameSettings.PlayerWhite.PlayerType == PlayerType.Human
+                                   && _settingsContainer.GameSettings.PlayerBlack.PlayerType == PlayerType.Human;
 
         [Inject]
         public void Construct(Game game, [Key(CameraKeys.Main)] Camera mainCamera,
@@ -100,11 +100,11 @@ namespace Chess3D.Runtime.Core.MainCamera
 
         public UniTask Load()
         {
-            _rotateCameraToColor = IsVsPlayer ? _fenFromString.TurnColor : _settingsContainer.S.GameSettings.PlayerColor;
-            _isStartRotationOn = _settingsContainer.S.GameSettings.IsRotateCameraOnStart;
+            _rotateCameraToColor = IsVsPlayer ? _fenFromString.TurnColor : _settingsContainer.GameSettings.PlayerColor;
+            _isStartRotationOn = _settingsContainer.GameSettings.IsRotateCameraOnStart;
             _isAutoRotateCamera = IsVsPlayer
                                   && _configContainer.OnlineConfig.ConnectionType == ConnectionType.Offline
-                                  && _settingsContainer.S.GameSettings.IsAutoRotateCamera;
+                                  && _settingsContainer.GameSettings.IsAutoRotateCamera;
 
             _newDistance = distance;
             _newYawRad = yawRad;

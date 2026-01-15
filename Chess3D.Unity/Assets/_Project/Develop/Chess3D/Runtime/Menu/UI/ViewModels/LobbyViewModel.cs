@@ -145,7 +145,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _configContainer.OnlineConfig.ConnectionType = ConnectionType.Online;
             _configContainer.OnlineConfig.IsLocal = false;
 
-            _settingsContainer.S.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
+            _settingsContainer.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
 
             if (_lobbyManager.CurrentLobby.IsOwner)
             {

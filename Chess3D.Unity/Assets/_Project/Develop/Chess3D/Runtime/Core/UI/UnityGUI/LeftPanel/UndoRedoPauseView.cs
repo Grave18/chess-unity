@@ -73,7 +73,7 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel
         {
             if (_configContainer.OnlineConfig.ConnectionType == ConnectionType.Online)
             {
-                PieceColor playerColor = _settingsContainer.S.GameSettings.PlayerColor;
+                PieceColor playerColor = _settingsContainer.GameSettings.PlayerColor;
                 pauseButton.interactable = playerColor == _game.CurrentTurnColor;
             }
             else

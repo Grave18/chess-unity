@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Chess3D.Runtime;
 using Chess3D.Runtime.Core.Logic;
+using Newtonsoft.Json;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -11,10 +12,12 @@ namespace Chess3D.Editor
 {
     public static class SettingsGenerator
     {
+        private static string InternalSettingsPath = Path.Combine(Application.dataPath, "_Project", "Resources", RuntimeConstants.Settings.FileName + ".json");
+
         [MenuItem("Chess3D/Settings/Generate Settings", priority = 1)]
         public static void Generate()
         {
-            var settings = new Settings
+            var settings = new SettingsContainer
             {
                 AudioSettings = new AudioSettings
                 {
@@ -55,10 +58,9 @@ namespace Chess3D.Editor
                     BoardModelAddress = "Day4 Board",
                 },
             };
-
-            var path = Path.Combine(Application.dataPath, "_Project", "Resources", RuntimeConstants.Settings.FileName + ".json");
-            var settingsJson = JsonUtility.ToJson(settings, prettyPrint: true);
-            File.WriteAllText(path, settingsJson);
+            ;
+            var settingsJson = JsonConvert.SerializeObject(settings, Formatting.Indented);
+            File.WriteAllText(InternalSettingsPath, settingsJson);
         }
 
         [MenuItem("Chess3D/Settings/Open External Settings", priority = 1)]
@@ -71,8 +73,7 @@ namespace Chess3D.Editor
         [MenuItem("Chess3D/Settings/Open Default Settings", priority = 1)]
         public static void OpenInternalSettings()
         {
-            var path = Path.Combine(Application.dataPath, "_Project", "Resources", RuntimeConstants.Settings.FileName + ".json");
-            InternalEditorUtility.OpenFileAtLineExternal(path, 1);
+            InternalEditorUtility.OpenFileAtLineExternal(InternalSettingsPath, 1);
         }
     }
 }

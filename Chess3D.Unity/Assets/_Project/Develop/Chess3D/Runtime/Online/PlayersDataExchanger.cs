@@ -29,8 +29,8 @@ namespace Chess3D.Runtime.Online
             await UniTask.WaitUntil(IsAllObserversAdded);
             // await UniTask.WaitUntil(() => networkManager.playerModule.localPlayerId != null);
 
-            string serversFenPreset = _settingsContainer.S.GameSettings.CurrentFen;
-            string playerName = _settingsContainer.S.GameSettings.PlayerWhite.Name;
+            string serversFenPreset = _settingsContainer.GameSettings.CurrentFen;
+            string playerName = _settingsContainer.GameSettings.PlayerWhite.Name;
 
             var connectionInfo = new ConnectionInfo
             {
@@ -38,17 +38,17 @@ namespace Chess3D.Runtime.Online
                 PlayerName = playerName,
             };
 
-            PlayerID? otherPlayerID = GetOtherPlayerID();
-            ConnectionInfo clientConnectionInfo = await Exchange_TargetRpc(otherPlayerID.Value, connectionInfo);
+            PlayerID otherPlayerID = GetOtherPlayerID();
+            ConnectionInfo clientConnectionInfo = await Exchange_TargetRpc(otherPlayerID, connectionInfo);
 
-            _settingsContainer.S.GameSettings.PlayerBlack.Name = clientConnectionInfo.PlayerName;
+            _settingsContainer.GameSettings.PlayerBlack.Name = clientConnectionInfo.PlayerName;
         }
 
-        private PlayerID? GetOtherPlayerID()
+        private PlayerID GetOtherPlayerID()
         {
             PlayerID? thisPlayerID = localPlayer;
             PlayerID? otherPlayerID = networkManager.players.FirstOrDefault(otherPlayerID => otherPlayerID != thisPlayerID);
-            return otherPlayerID;
+            return otherPlayerID.Value;
         }
 
         private bool IsAllObserversAdded()
@@ -59,12 +59,12 @@ namespace Chess3D.Runtime.Online
         [TargetRpc(asyncTimeoutInSec:60)]
         private Task<ConnectionInfo> Exchange_TargetRpc(PlayerID target, ConnectionInfo serverConnectionInfo)
         {
-            _settingsContainer.S.GameSettings.PlayerBlack.Name = serverConnectionInfo.PlayerName;
-            _settingsContainer.S.GameSettings.CurrentFen = serverConnectionInfo.FenPreset;
+            _settingsContainer.GameSettings.PlayerBlack.Name = serverConnectionInfo.PlayerName;
+            _settingsContainer.GameSettings.CurrentFen = serverConnectionInfo.FenPreset;
 
             var clientConnectionInfo = new ConnectionInfo
             {
-                PlayerName = _settingsContainer.S.GameSettings.PlayerWhite.Name,
+                PlayerName = _settingsContainer.GameSettings.PlayerWhite.Name,
             };
 
             return Task.FromResult(clientConnectionInfo);

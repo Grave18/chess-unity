@@ -47,7 +47,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
                 new("Windowed", 3),
             };
 
-            _selectedFullscreenMode = FullscreenModes.FirstOrDefault(mode => mode.Index == settingsContainer.S.GraphicsSettings.FullScreenMode);
+            _selectedFullscreenMode = FullscreenModes.FirstOrDefault(mode => mode.Index == settingsContainer.GraphicsSettings.FullScreenMode);
         }
 
         private void InitResolution()
@@ -58,7 +58,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
                 Reverse();
 
             Resolutions = new ObservableCollection<ResolutionUi>(availableResolutions);
-            _selectedResolution = Resolutions.FirstOrDefault(res => res.Width == settingsContainer.S.GraphicsSettings.Width && res.Height == settingsContainer.S.GraphicsSettings.Height);
+            _selectedResolution = Resolutions.FirstOrDefault(res => res.Width == settingsContainer.GraphicsSettings.Width && res.Height == settingsContainer.GraphicsSettings.Height);
         }
 
         private void InitQuality()
@@ -68,8 +68,8 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             Qualities = new ObservableCollection<string>(levelsForPlatform);
             _selectedQuality = Qualities.FirstOrDefault(quality =>
             {
-                string name = settingsContainer.S.GraphicsSettings.Quality < QualitySettings.names.Length
-                    ? QualitySettings.names[settingsContainer.S.GraphicsSettings.Quality]
+                string name = settingsContainer.GraphicsSettings.Quality < QualitySettings.names.Length
+                    ? QualitySettings.names[settingsContainer.GraphicsSettings.Quality]
                     : QualitySettings.names.FirstOrDefault();
                 return quality == name;
             });
@@ -77,22 +77,22 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         partial void OnSelectedFullscreenModeChanged(FullscreenModeUi value)
         {
-            settingsContainer.S.GraphicsSettings.FullScreenMode = value.Index;
+            settingsContainer.GraphicsSettings.FullScreenMode = value.Index;
             _isNeedToApplySettings = true;
             ApplySettingsCommand.NotifyCanExecuteChanged();
         }
 
         partial void OnSelectedResolutionChanged(ResolutionUi value)
         {
-            settingsContainer.S.GraphicsSettings.Height = value.Height;
-            settingsContainer.S.GraphicsSettings.Width = value.Width;
+            settingsContainer.GraphicsSettings.Height = value.Height;
+            settingsContainer.GraphicsSettings.Width = value.Width;
             _isNeedToApplySettings = true;
             ApplySettingsCommand.NotifyCanExecuteChanged();
         }
 
         partial void OnSelectedQualityChanged(string value)
         {
-            settingsContainer.S.GraphicsSettings.Quality = QualitySettings.names.ToList().IndexOf(value);
+            settingsContainer.GraphicsSettings.Quality = QualitySettings.names.ToList().IndexOf(value);
             _isNeedToApplySettings = true;
             ApplySettingsCommand.NotifyCanExecuteChanged();
         }
@@ -105,10 +105,10 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [RelayCommand(CanExecute = nameof(CanExecuteApply))]
         private void ApplySettings()
         {
-            int width = settingsContainer.S.GraphicsSettings.Width;
-            int height = settingsContainer.S.GraphicsSettings.Height;
-            int fullScreenMode = settingsContainer.S.GraphicsSettings.FullScreenMode;
-            int qualityIndex = settingsContainer.S.GraphicsSettings.Quality;
+            int width = settingsContainer.GraphicsSettings.Width;
+            int height = settingsContainer.GraphicsSettings.Height;
+            int fullScreenMode = settingsContainer.GraphicsSettings.FullScreenMode;
+            int qualityIndex = settingsContainer.GraphicsSettings.Quality;
 
             Screen.SetResolution(width, height, (FullScreenMode)fullScreenMode);
             QualitySettings.SetQualityLevel(qualityIndex);

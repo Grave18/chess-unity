@@ -238,7 +238,7 @@ namespace Chess3D.Runtime.Core.AI
             Log.AI.D($"<color=green>{name} calculating move...</color>");
 
             // Set start position
-            string positionCommand = $"position fen {settingsContainer.S.GameSettings.CurrentFen} {_uciBuffer.GetMovesUci()}";
+            string positionCommand = $"position fen {settingsContainer.GameSettings.CurrentFen} {_uciBuffer.GetMovesUci()}";
             Log.AI.D(positionCommand);
             PostCommand(positionCommand);
 

@@ -35,33 +35,33 @@ namespace Chess3D.Runtime.Bootstrap
 
         private void SetQuality()
         {
-            QualitySettings.SetQualityLevel(settingsContainer.S.GraphicsSettings.Quality);
+            QualitySettings.SetQualityLevel(settingsContainer.GraphicsSettings.Quality);
         }
 
         private void SetResolution()
         {
             InitializeResolution();
-            Screen.SetResolution(settingsContainer.S.GraphicsSettings.Width,
-                settingsContainer.S.GraphicsSettings.Height,
-                (FullScreenMode)settingsContainer.S.GraphicsSettings.FullScreenMode);
+            Screen.SetResolution(settingsContainer.GraphicsSettings.Width,
+                settingsContainer.GraphicsSettings.Height,
+                (FullScreenMode)settingsContainer.GraphicsSettings.FullScreenMode);
         }
 
         private void InitializeResolution()
         {
-            if (settingsContainer.S.GraphicsSettings.Width == 0 ||
-                settingsContainer.S.GraphicsSettings.Height == 0)
+            if (settingsContainer.GraphicsSettings.Width == 0 ||
+                settingsContainer.GraphicsSettings.Height == 0)
             {
-                settingsContainer.S.GraphicsSettings.Width = Screen.currentResolution.width;
-                settingsContainer.S.GraphicsSettings.Height = Screen.currentResolution.height;
+                settingsContainer.GraphicsSettings.Width = Screen.currentResolution.width;
+                settingsContainer.GraphicsSettings.Height = Screen.currentResolution.height;
                 settingsContainer.Save();
             }
         }
 
         private void SetVolume()
         {
-            _audioMixer.SetFloat(RuntimeConstants.Settings.MasterVolumeKey, VolumeUtils.Map01ToDb(settingsContainer.S.AudioSettings.MasterVolume));
-            _audioMixer.SetFloat(RuntimeConstants.Settings.MusicVolumeKey, VolumeUtils.Map01ToDb(settingsContainer.S.AudioSettings.MusicVolume));
-            _audioMixer.SetFloat(RuntimeConstants.Settings.EffectsVolumeKey, VolumeUtils.Map01ToDb(settingsContainer.S.AudioSettings.EffectsVolume));
+            _audioMixer.SetFloat(RuntimeConstants.Settings.MasterVolumeKey, VolumeUtils.Map01ToDb(settingsContainer.AudioSettings.MasterVolume));
+            _audioMixer.SetFloat(RuntimeConstants.Settings.MusicVolumeKey, VolumeUtils.Map01ToDb(settingsContainer.AudioSettings.MusicVolume));
+            _audioMixer.SetFloat(RuntimeConstants.Settings.EffectsVolumeKey, VolumeUtils.Map01ToDb(settingsContainer.AudioSettings.EffectsVolume));
         }
     }
 }

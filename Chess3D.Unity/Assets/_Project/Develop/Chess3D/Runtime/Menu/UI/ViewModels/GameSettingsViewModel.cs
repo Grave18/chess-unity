@@ -37,32 +37,33 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private void InitName()
         {
-            _playerName = settingsContainer.S.GameSettings.PlayerWhite.Name;
+            _playerName = settingsContainer.GameSettings.PlayerWhite.Name;
         }
 
         private void IntiTime()
         {
             Times = new ObservableCollection<string> { "1", "3", "5", "10", "20", "30", "40", "50", "60" };
-            _selectedTime = settingsContainer.S.GameSettings.Time.x.ToString();
+            _selectedTime = settingsContainer.GameSettings.Time.x.ToString();
         }
 
         private void InitDifficulty()
         {
             var difficulties = Enum.GetNames(typeof(ComputerSkillLevel));
             Difficulties = new ObservableCollection<string>(difficulties);
-            _selectedDifficulty = settingsContainer.S.GameSettings.PlayerBlack.ComputerSkillLevel.ToString();
+            _selectedDifficulty = settingsContainer.GameSettings.PlayerBlack.ComputerSkillLevel.ToString();
         }
 
         partial void OnPlayerNameChanged(string value)
         {
-            settingsContainer.S.GameSettings.PlayerWhite.Name = value;
+            settingsContainer.GameSettings.PlayerWhite.Name = value;
+            settingsContainer.Save();
         }
 
         partial void OnSelectedTimeChanged(string value)
         {
             if (int.TryParse(value, out int result))
             {
-                settingsContainer.S.GameSettings.Time = new Vector2Int(result, 0);
+                settingsContainer.GameSettings.Time = new Vector2Int(result, 0);
                 settingsContainer.Save();
             }
         }
@@ -71,7 +72,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         {
             if (Enum.TryParse(value, out ComputerSkillLevel computerSkillLevel))
             {
-                settingsContainer.S.GameSettings.PlayerBlack.ComputerSkillLevel = computerSkillLevel;
+                settingsContainer.GameSettings.PlayerBlack.ComputerSkillLevel = computerSkillLevel;
                 settingsContainer.Save();
             }
         }

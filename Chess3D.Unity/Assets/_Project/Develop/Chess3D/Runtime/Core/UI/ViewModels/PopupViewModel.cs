@@ -114,7 +114,7 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
             if (IsSaveCheckBoxChecked)
             {
                 string fen = _fenFromBoard.Get();
-                _settingsContainer.S.GameSettings.SavedFen = fen;
+                _settingsContainer.GameSettings.SavedFen = fen;
                 _settingsContainer.Save();
             }
         }

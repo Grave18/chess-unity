@@ -26,11 +26,11 @@ namespace Chess3D.Runtime.Core.AssetManagement
 
         public async UniTask Load()
         {
-            string boardModelAddress = settingsContainer.S.GameSettings.BoardModelAddress;
+            string boardModelAddress = settingsContainer.GameSettings.BoardModelAddress;
             _boardHandle = Addressables.LoadAssetAsync<GameObject>(boardModelAddress);
             GameObject boardPrefab = await _boardHandle;
 
-            string piecesModelAddress = settingsContainer.S.GameSettings.PiecesModelAddress;
+            string piecesModelAddress = settingsContainer.GameSettings.PiecesModelAddress;
             _piecesHandle =  Addressables.LoadAssetsAsync<GameObject>(piecesModelAddress, _ => { });
             IList<GameObject> piecePrefabs = await _piecesHandle;
 

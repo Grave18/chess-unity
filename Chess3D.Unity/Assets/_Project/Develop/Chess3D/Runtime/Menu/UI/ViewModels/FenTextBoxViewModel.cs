@@ -28,31 +28,31 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private void InitFen()
         {
-            _currentFen = settingsContainer.S.GameSettings.CurrentFen;
+            _currentFen = settingsContainer.GameSettings.CurrentFen;
         }
 
         [RelayCommand]
         private void GetDefaultFen()
         {
-            CurrentFen = settingsContainer.S.GameSettings.DefaultFen;
+            CurrentFen = settingsContainer.GameSettings.DefaultFen;
         }
 
         [RelayCommand]
         private void GetSavedFen()
         {
-            CurrentFen = settingsContainer.S.GameSettings.SavedFen;
+            CurrentFen = settingsContainer.GameSettings.SavedFen;
         }
 
         partial void OnCurrentFenChanged(string value)
         {
             if (FenValidator.IsValid(value, out string errorMessage))
             {
-                settingsContainer.S.GameSettings.CurrentFen = value;
+                settingsContainer.GameSettings.CurrentFen = value;
                 settingsContainer.Save();
             }
             else
             {
-                CurrentFen = settingsContainer.S.GameSettings.CurrentFen;
+                CurrentFen = settingsContainer.GameSettings.CurrentFen;
                 Log.Editor.W(errorMessage);
             }
         }

@@ -48,11 +48,11 @@ namespace Chess3D.Runtime.Core.Logic.Players
                 return UniTask.CompletedTask;
             }
 
-            _playerWhite = _playerFactory.Create(_settingsContainer.S.GameSettings.PlayerWhite.PlayerType,
+            _playerWhite = _playerFactory.Create(_settingsContainer.GameSettings.PlayerWhite.PlayerType,
                 _configContainer.OnlineConfig.ConnectionType,
                 PieceColor.White);
 
-            _playerBlack = _playerFactory.Create(_settingsContainer.S.GameSettings.PlayerBlack.PlayerType,
+            _playerBlack = _playerFactory.Create(_settingsContainer.GameSettings.PlayerBlack.PlayerType,
                 _configContainer.OnlineConfig.ConnectionType,
                 PieceColor.Black);
 
