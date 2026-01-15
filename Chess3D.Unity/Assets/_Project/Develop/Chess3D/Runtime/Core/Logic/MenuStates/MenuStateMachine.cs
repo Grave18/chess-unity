@@ -1,4 +1,5 @@
-﻿using Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel;
+﻿using Chess3D.Runtime.Core.Logic.Players;
+using Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel;
 using Chess3D.Runtime.Core.UI.ViewModels;
 using Cysharp.Threading.Tasks;
 using Chess3D.Runtime.Utilities;
@@ -47,7 +48,8 @@ namespace Chess3D.Runtime.Core.Logic.MenuStates
             else if (typeof(T) == typeof(PopupState))
             {
                 var gameCanvas = _resolver.Resolve<GameCanvasEnabler>();
-                _currentState = new PopupState(this, gameCanvas);
+                var gameStateMachine = _resolver.Resolve<IGameStateMachine>();
+                _currentState = new PopupState(this, gameCanvas, gameStateMachine);
             }
             else
             {
