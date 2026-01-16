@@ -221,14 +221,14 @@
       "hash": "80c0c42131d4824f9ff6439eda11c2378251fe6d"
     },
     "dev.purrnet.purrnet": {
-      "version": "https://github.com/PurrNet/PurrNet.git?path=/Assets/PurrNet#release",
+      "version": "https://github.com/PurrNet/PurrNet.git?path=/Assets/PurrNet#v1.18.0",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.nuget.mono-cecil": "1.11.4",
         "com.unity.nuget.newtonsoft-json": "3.2.1"
       },
-      "hash": "06b5b26968d533dd896bf1015d71f18f582a46a9"
+      "hash": "3c4ddbf8d5b0984bee8b2e1049ec66f72657a711"
     },
     "jp.hadashikick.vcontainer": {
       "version": "1.17.0",
