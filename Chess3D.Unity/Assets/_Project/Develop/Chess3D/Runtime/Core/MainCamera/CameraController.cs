@@ -60,7 +60,7 @@ namespace Chess3D.Runtime.Core.MainCamera
         private bool _isUpdating;
         private bool _isStartRotationOn;
         private bool _isAutoRotateCamera;
-        private PieceColor _rotateCameraToColor;
+        private PieceColor _initialCameraSide;
         private Coroutine _startRotateRoutine;
 
         private float _zoomCurrentVelocity;
@@ -100,7 +100,7 @@ namespace Chess3D.Runtime.Core.MainCamera
 
         public UniTask Load()
         {
-            _rotateCameraToColor = IsVsPlayer ? _fenFromString.TurnColor : _settingsContainer.GameSettings.PlayerColor;
+            _initialCameraSide = IsVsPlayer ? _fenFromString.TurnColor : _settingsContainer.GameSettings.PlayerColor;
             _isStartRotationOn = _settingsContainer.GameSettings.IsRotateCameraOnStart;
             _isAutoRotateCamera = IsVsPlayer
                                   && _configContainer.OnlineConfig.ConnectionType == ConnectionType.Offline
@@ -117,7 +117,7 @@ namespace Chess3D.Runtime.Core.MainCamera
         {
             _isUpdating = false;
 
-            float targetYawRad = GetTargetYawRad(_rotateCameraToColor);
+            float targetYawRad = GetTargetYawRad(_initialCameraSide);
             yawRad = targetYawRad;
 
             CancellationToken token = this.GetCancellationTokenOnDestroy();

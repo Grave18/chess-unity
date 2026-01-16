@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Chess3D.Runtime.Bootstrap.Settings;
+using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Menu.LobbyManagement;
 using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities;
@@ -150,10 +151,12 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             if (_lobbyManager.CurrentLobby.IsOwner)
             {
                 _configContainer.OnlineConfig.AuthorityType = AuthorityType.Host;
+                _settingsContainer.GameSettings.PlayerColor = PieceColor.White;
             }
             else
             {
                 _configContainer.OnlineConfig.AuthorityType = AuthorityType.Client;
+                _settingsContainer.GameSettings.PlayerColor = PieceColor.Black;
                 await UniTask.WaitForSeconds(1f, ignoreTimeScale: true);
             }
 

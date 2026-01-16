@@ -1,5 +1,6 @@
 ﻿using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.AI;
+using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Menu.LobbyManagement;
 using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities;
@@ -94,6 +95,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _configContainer.OnlineConfig.IsLocal = true;
             _configContainer.OnlineConfig.AuthorityType = AuthorityType.Host;
 
+            _settingsContainer.GameSettings.PlayerColor = PieceColor.White;
             _settingsContainer.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
         }
 
@@ -110,6 +112,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _configContainer.OnlineConfig.IsLocal = true;
             _configContainer.OnlineConfig.AuthorityType = AuthorityType.Client;
 
+            _settingsContainer.GameSettings.PlayerColor = PieceColor.Black;
             _settingsContainer.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
         }
 
