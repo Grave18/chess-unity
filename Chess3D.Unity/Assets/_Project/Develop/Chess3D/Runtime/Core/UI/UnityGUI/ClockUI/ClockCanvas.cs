@@ -10,12 +10,13 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUI
         [SerializeField] private Canvas canvas;
 
         [Header("References")]
-        [SerializeField] private ClockView whiteClockView;
-        [SerializeField] private ClockView blackClockView;
-        [SerializeField] private CurrentPlayerPointerView whiteCurrentPlayerPointerView;
-        [SerializeField] private CurrentPlayerPointerView blackCurrentPlayerPointerView;
         [SerializeField] private GameObject whiteClockRoot;
+        [SerializeField] private ClockView whiteClockView;
+        [SerializeField] private CurrentPlayerPointerView whiteCurrentPlayerPointerView;
+
         [SerializeField] private GameObject blackClockRoot;
+        [SerializeField] private ClockView blackClockView;
+        [SerializeField] private CurrentPlayerPointerView blackCurrentPlayerPointerView;
 
         [Inject]
         public void Construct(Game game, CoreEvents coreEvents, IClock clock, ISettingsContainer settingsContainer,
@@ -25,17 +26,19 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.ClockUI
 
             if (settingsContainer.GameSettings.PlayerColor == PieceColor.White)
             {
+                whiteClockRoot.SetActive(true);
                 whiteCurrentPlayerPointerView.Construct(game, coreEvents);
                 whiteClockView.Construct(coreEvents, clock);
-                whiteClockRoot.SetActive(true);
+
                 blackClockRoot.SetActive(false);
             }
             else
             {
+                blackClockRoot.SetActive(true);
                 blackCurrentPlayerPointerView.Construct(game, coreEvents);
                 blackClockView.Construct(coreEvents, clock);
+
                 whiteClockRoot.SetActive(false);
-                blackClockRoot.SetActive(true);
             }
         }
     }

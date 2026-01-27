@@ -1,5 +1,8 @@
-﻿using Chess3D.Runtime.Core.Logic.MovesBuffer;
+﻿using System;
+using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Core.Logic.Players;
+using Chess3D.Runtime.Utilities.Logging;
+using Cysharp.Threading.Tasks;
 using PurrNet.StateMachine;
 using UniRx;
 using UnityEngine;
@@ -22,6 +25,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         [SerializeField] private RedoState redoState;
 
         private bool _isRunning;
+        private bool _isInitialized;
 
         public string Name => "Idle";
 
@@ -34,21 +38,30 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             _uciBuffer = uciBuffer;
             _coreEvents = coreEvents;
             _gameStateMachine = gameStateMachine;
+            _isInitialized = true;
         }
 
-
-        public override void Enter()
+        public override async void Enter()
         {
-            if (_game.IsEndGame)
+            try
             {
-                EndGame();
-                return;
+                await UniTask.WaitUntil(() => _isInitialized);
+
+                if (_game.IsEndGame)
+                {
+                    EndGame();
+                    return;
+                }
+
+                _isRunning = true;
+                _competitors.StartPlayer();
+
+                _coreEvents.OnIdle.OnNext(Unit.Default);
             }
-
-            _isRunning = true;
-            _competitors.StartPlayer();
-
-            _coreEvents.OnIdle.OnNext(Unit.Default);
+            catch (Exception e)
+            {
+                Log.Default.E("GAMESTATE",e.Message);
+            }
         }
 
         public override void Exit()

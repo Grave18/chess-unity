@@ -63,7 +63,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1373773486251062736}
   m_LocalRotation: {x: 0.000000010244547, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -221,7 +221,7 @@ GameObject:
   - component: {fileID: 7737973935159246174}
   - component: {fileID: 8067430073043732085}
   m_Layer: 5
-  m_Name: ClockView
+  m_Name: BlackClockView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -239,8 +239,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8876485455200079235}
   - {fileID: 5284890183376659642}
+  - {fileID: 8876485455200079235}
   m_Father: {fileID: 6415642266447731388}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -303,7 +303,7 @@ GameObject:
   - component: {fileID: 3627642130797248667}
   - component: {fileID: 471036113225288216}
   m_Layer: 5
-  m_Name: ClockView
+  m_Name: WhiteClockView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -595,12 +595,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 8886915526425131757}
-  whiteClockView: {fileID: 471036113225288216}
-  blackClockView: {fileID: 8067430073043732085}
-  whiteCurrentPlayerPointerView: {fileID: 5908154607444691265}
-  blackCurrentPlayerPointerView: {fileID: 8185769519006650922}
   whiteClockRoot: {fileID: 3712760143449272346}
+  whiteClockView: {fileID: 471036113225288216}
+  whiteCurrentPlayerPointerView: {fileID: 5908154607444691265}
   blackClockRoot: {fileID: 175055260787312579}
+  blackClockView: {fileID: 8067430073043732085}
+  blackCurrentPlayerPointerView: {fileID: 8185769519006650922}
 --- !u!1 &5716519592368952985
 GameObject:
   m_ObjectHideFlags: 0
@@ -899,7 +899,7 @@ GameObject:
   - component: {fileID: 5255404370493256371}
   - component: {fileID: 8185769519006650922}
   m_Layer: 5
-  m_Name: PointerView
+  m_Name: BlackPointerView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1332,7 +1332,7 @@ GameObject:
   - component: {fileID: 844217105879534949}
   - component: {fileID: 5908154607444691265}
   m_Layer: 5
-  m_Name: PointerView
+  m_Name: WhitePointerView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

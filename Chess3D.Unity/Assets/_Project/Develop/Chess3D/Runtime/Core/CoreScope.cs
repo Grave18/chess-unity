@@ -100,6 +100,7 @@ namespace Chess3D.Runtime.Core
             builder.Register<FenTextBoxViewModel>(Lifetime.Singleton);
 
             builder.RegisterBuildCallback(ResolveReconnectPopupHandler);
+            builder.RegisterBuildCallback(ResolvePlayersDataExchanger);
             builder.Register(RegisterGameStateMachine, Lifetime.Singleton);
             builder.Register(RegisterClock, Lifetime.Singleton);
             builder.RegisterComponent(warmupState);
@@ -113,6 +114,14 @@ namespace Chess3D.Runtime.Core
 
             // Entry points
             builder.RegisterEntryPoint<CoreFlow>().AsSelf();
+        }
+
+        private static void ResolvePlayersDataExchanger(IObjectResolver resolver)
+        {
+            var playersDataExchanger = resolver.Resolve<PlayersDataExchanger>();
+            var fenFromBoard = resolver.Resolve<FenFromBoard>();
+
+            playersDataExchanger.SetFenFromBoard(fenFromBoard);
         }
 
         private static void ResolveReconnectPopupHandler(IObjectResolver resolver)

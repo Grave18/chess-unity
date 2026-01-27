@@ -17,8 +17,8 @@ namespace Chess3D.Runtime.Core.MainCamera
 {
     public sealed class CameraController : MonoBehaviour, ILoadUnit
     {
-        private const float WhiteInitialYawRad = Mathf.PI*1.5f;
-        private const float BlackInitialYawRad = Mathf.PI*0.5f;
+        private float WhiteInitialYawRad = Mathf.PI*1.5f;
+        private float BlackInitialYawRad = Mathf.PI*0.5f;
 
         // TODO: Move LayerMask to SO
         private const float MaxDistance = 100;
@@ -100,11 +100,17 @@ namespace Chess3D.Runtime.Core.MainCamera
 
         public UniTask Load()
         {
-            _initialCameraSide = IsVsPlayer ? _fenFromString.TurnColor : _settingsContainer.GameSettings.PlayerColor;
+            _initialCameraSide = _configContainer.OnlineConfig.ConnectionType == ConnectionType.Offline && IsVsPlayer ? _fenFromString.TurnColor : _settingsContainer.GameSettings.PlayerColor;
             _isStartRotationOn = _settingsContainer.GameSettings.IsRotateCameraOnStart;
             _isAutoRotateCamera = IsVsPlayer
                                   && _configContainer.OnlineConfig.ConnectionType == ConnectionType.Offline
                                   && _settingsContainer.GameSettings.IsAutoRotateCamera;
+
+            if (_configContainer.OnlineConfig.ConnectionType == ConnectionType.Online
+                && _settingsContainer.GameSettings.PlayerColor == PieceColor.Black)
+            {
+                (WhiteInitialYawRad, BlackInitialYawRad) = (BlackInitialYawRad, WhiteInitialYawRad);
+            }
 
             _newDistance = distance;
             _newYawRad = yawRad;
