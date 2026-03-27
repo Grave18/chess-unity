@@ -1,9 +1,5 @@
 ﻿using UnityEngine.SceneManagement;
 
-#if UNITY_EDITOR
-using ParrelSync;
-#endif
-
 namespace Chess3D.Runtime
 {
     public static class RuntimeConstants
@@ -20,11 +16,7 @@ namespace Chess3D.Runtime
 
         public static class Settings
         {
-#if UNITY_EDITOR
-            public static readonly string FileName = ClonesManager.IsClone() ? "SettingsClone" : "Settings";
-#else
             public const string FileName = "Settings";
-#endif
             public const string MasterVolumeKey = "MasterVolume";
             public const string MusicVolumeKey = "MusicVolume";
             public const string EffectsVolumeKey = "EffectsVolume";

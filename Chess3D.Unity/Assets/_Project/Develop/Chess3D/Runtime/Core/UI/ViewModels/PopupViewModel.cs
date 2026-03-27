@@ -1,11 +1,8 @@
-﻿using Chess3D.Runtime.Bootstrap.Settings;
-using Chess3D.Runtime.Core.Logic.MenuStates;
+﻿using Chess3D.Runtime.Core.Logic.MenuStates;
 using Chess3D.Runtime.Core.Notation;
-using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using MvvmTool;
-using PurrNet;
 using UnityEngine.Scripting;
 
 namespace Chess3D.Runtime.Core.UI.ViewModels
@@ -98,15 +95,7 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
         public void ExitToMainMenu()
         {
             SaveBoard();
-
-            if (_configContainer.OnlineConfig.ConnectionType == ConnectionType.Online)
-            {
-                InstanceHandler.NetworkManager?.StopClient();
-            }
-            else
-            {
-                _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu).Forget();
-            }
+            _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu).Forget();
         }
 
         private void SaveBoard()

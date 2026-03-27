@@ -22,7 +22,6 @@ namespace Chess3D.Runtime.Menu
         {
             // Lobby
             builder.RegisterComponent(lobbyManager);
-            builder.Register<LobbyListener>(Lifetime.Scoped);
 
             // UI
             builder.RegisterComponent(renderTexture);
@@ -36,7 +35,6 @@ namespace Chess3D.Runtime.Menu
             builder.Register<BoardView>(Lifetime.Scoped);
             builder.Register<PlayView>(Lifetime.Scoped);
             builder.Register<SettingsView>(Lifetime.Scoped);
-            builder.Register<LobbyView>(Lifetime.Scoped);
             // ViewModels
             builder.Register<MainViewModel>(Lifetime.Scoped).As<IMainViewModel>().AsSelf();
             builder.Register<HomeViewModel>(Lifetime.Scoped);
@@ -47,7 +45,6 @@ namespace Chess3D.Runtime.Menu
             builder.Register<GraphicsSettingsViewModel>(Lifetime.Scoped);
             builder.Register<AudioSettingsViewModel>(Lifetime.Scoped);
             builder.Register<FenTextBoxViewModel>(Lifetime.Scoped);
-            builder.Register<LobbyViewModel>(Lifetime.Scoped);
 
             // Service locator
             builder.RegisterBuildCallback(ServiceLocator.Initialize);

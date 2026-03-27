@@ -1,7 +1,5 @@
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Core.Logic.Players;
-using Chess3D.Runtime.Online;
-using PurrNet;
 using TMPro;
 using UnityEngine;
 using VContainer;
@@ -46,18 +44,10 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.DebugUI
                 return;
             }
 
-            authorityText.text = "Authority: " + GetAuthority();
             stateText.text = "State: " + _gameStateMachine?.StateName;
             turnText.text = "Turn: " + _game.CurrentTurnColor;
             checkText.text = "Check: " + _game.CheckType;
             playerTypeText.text = "Player: " + _settingsContainer.GameSettings.PlayerWhite.PlayerType;
-        }
-
-        private string GetAuthority()
-        {
-            return _configContainer.OnlineConfig.ConnectionType == ConnectionType.Offline
-                ? "Offline"
-                : _configContainer.OnlineConfig.AuthorityType.ToString();
         }
     }
 }

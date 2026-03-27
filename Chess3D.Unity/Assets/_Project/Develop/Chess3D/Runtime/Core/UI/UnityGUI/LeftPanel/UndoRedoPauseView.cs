@@ -1,6 +1,4 @@
-﻿using Chess3D.Runtime.Core.Logic;
-using Chess3D.Runtime.Core.Logic.Players;
-using Chess3D.Runtime.Online;
+﻿using Chess3D.Runtime.Core.Logic.Players;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -24,20 +22,13 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel
         [SerializeField] private Sprite playSprite;
         [SerializeField] private Sprite pauseSprite;
 
-        private Game _game;
-        private ISettingsContainer _settingsContainer;
-        private ConfigContainer _configContainer;
         private IGameStateMachine _gameStateMachine;
 
         private bool _isPause;
 
         [Inject]
-        public void Construct(Game game, CoreEvents coreEvents,
-            ISettingsContainer settingsContainer, IGameStateMachine gameStateMachine, ConfigContainer configContainer)
+        public void Construct(CoreEvents coreEvents, IGameStateMachine gameStateMachine)
         {
-            _game = game;
-            _settingsContainer = settingsContainer;
-            _configContainer = configContainer;
             _gameStateMachine = gameStateMachine;
 
             coreEvents.OnWarmup.Subscribe(_ => Initialize()).AddTo(this);
@@ -57,29 +48,13 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel
         private void Initialize()
         {
             OnPlay();
-            if (_configContainer.OnlineConfig.ConnectionType == ConnectionType.Online)
-            {
-                undoButton.interactable = false;
-                redoButton.interactable = false;
-            }
-            else
-            {
-                undoButton.interactable = true;
-                redoButton.interactable = true;
-            }
+            undoButton.interactable = true;
+            redoButton.interactable = true;
         }
 
         private void DisablePauseIfOnlineAndNotMoving()
         {
-            if (_configContainer.OnlineConfig.ConnectionType == ConnectionType.Online)
-            {
-                PieceColor playerColor = _settingsContainer.GameSettings.PlayerColor;
-                pauseButton.interactable = playerColor == _game.CurrentTurnColor;
-            }
-            else
-            {
-                pauseButton.interactable = true;
-            }
+            pauseButton.interactable = true;
         }
 
 

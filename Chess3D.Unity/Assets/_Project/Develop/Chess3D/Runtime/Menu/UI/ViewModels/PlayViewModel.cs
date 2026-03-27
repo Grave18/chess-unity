@@ -2,7 +2,6 @@
 using Chess3D.Runtime.Core.AI;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Menu.LobbyManagement;
-using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using MvvmTool;
@@ -47,10 +46,6 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private void SetupHumanVsHuman()
         {
-            _configContainer.OnlineConfig.ConnectionType = ConnectionType.Offline;
-            _configContainer.OnlineConfig.IsLocal = false;
-            _configContainer.OnlineConfig.AuthorityType = AuthorityType.None;
-
             _settingsContainer.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
             _settingsContainer.GameSettings.PlayerBlack.PlayerType = PlayerType.Human;
             _settingsContainer.GameSettings.PlayerBlack.Name = "Player 2";
@@ -65,10 +60,6 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private void SetupHumanVsComputerOffline()
         {
-            _configContainer.OnlineConfig.ConnectionType = ConnectionType.Offline;
-            _configContainer.OnlineConfig.IsLocal = false;
-            _configContainer.OnlineConfig.AuthorityType = AuthorityType.None;
-
             _settingsContainer.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
             _settingsContainer.GameSettings.PlayerBlack.PlayerType = PlayerType.Computer;
 
@@ -91,10 +82,6 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private void SetupHumanHost()
         {
-            _configContainer.OnlineConfig.ConnectionType = ConnectionType.Online;
-            _configContainer.OnlineConfig.IsLocal = true;
-            _configContainer.OnlineConfig.AuthorityType = AuthorityType.Host;
-
             _settingsContainer.GameSettings.PlayerColor = PieceColor.White;
             _settingsContainer.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
         }
@@ -108,10 +95,6 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
         private void SetupHumanClient()
         {
-            _configContainer.OnlineConfig.ConnectionType = ConnectionType.Online;
-            _configContainer.OnlineConfig.IsLocal = true;
-            _configContainer.OnlineConfig.AuthorityType = AuthorityType.Client;
-
             _settingsContainer.GameSettings.PlayerColor = PieceColor.Black;
             _settingsContainer.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
         }

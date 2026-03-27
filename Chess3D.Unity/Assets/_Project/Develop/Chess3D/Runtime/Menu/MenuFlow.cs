@@ -29,10 +29,9 @@ namespace Chess3D.Runtime.Menu
         public MenuFlow(LoadingService loadingService, MainViewModel mainViewModel,
             VisualBoardSpawner visualBoardSpawner, BoardViewModel boardViewModel,
             FenTextBoxViewModel fenTextBoxViewModel,
-            GameSettingsViewModel gameSettingsViewModel, LobbyViewModel lobbyViewModel,
+            GameSettingsViewModel gameSettingsViewModel,
             GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel,
-            HomeViewModel homeViewModel, ViewNavigator viewNavigator, MainViewLoader mainViewLoader,
-            LobbyListener lobbyListener, PlayViewModel playViewModel, LobbyManager lobbyManager)
+            HomeViewModel homeViewModel, ViewNavigator viewNavigator, MainViewLoader mainViewLoader, PlayViewModel playViewModel, LobbyManager lobbyManager)
         {
             _loadingService = loadingService;
             _visualBoardSpawner = visualBoardSpawner;

@@ -4,7 +4,6 @@ using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.InputManagement;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Core.Notation;
-using Chess3D.Runtime.Online;
 using Chess3D.Runtime.Utilities;
 using Chess3D.Runtime.Utilities.Common.Mathematics;
 using Cysharp.Threading.Tasks;
@@ -100,14 +99,12 @@ namespace Chess3D.Runtime.Core.MainCamera
 
         public UniTask Load()
         {
-            _initialCameraSide = _configContainer.OnlineConfig.ConnectionType == ConnectionType.Offline && IsVsPlayer ? _fenFromString.TurnColor : _settingsContainer.GameSettings.PlayerColor;
+            _initialCameraSide = _settingsContainer.GameSettings.PlayerColor;
             _isStartRotationOn = _settingsContainer.GameSettings.IsRotateCameraOnStart;
             _isAutoRotateCamera = IsVsPlayer
-                                  && _configContainer.OnlineConfig.ConnectionType == ConnectionType.Offline
                                   && _settingsContainer.GameSettings.IsAutoRotateCamera;
 
-            if (_configContainer.OnlineConfig.ConnectionType == ConnectionType.Online
-                && _settingsContainer.GameSettings.PlayerColor == PieceColor.Black)
+            if (_settingsContainer.GameSettings.PlayerColor == PieceColor.Black)
             {
                 (WhiteInitialYawRad, BlackInitialYawRad) = (BlackInitialYawRad, WhiteInitialYawRad);
             }
