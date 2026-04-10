@@ -2,6 +2,7 @@
 using Chess3D.Runtime.Core.Logic.GameStates;
 using Cysharp.Threading.Tasks;
 using UniRx;
+using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.Players
 {
@@ -12,10 +13,13 @@ namespace Chess3D.Runtime.Core.Logic.Players
 
         public string StateName => State?.Name ?? "No State";
 
+        private readonly IObjectResolver _resolver;
+
         private readonly CompositeDisposable _disposables = new();
 
-        private GameStateMachineOffline()
+        private GameStateMachineOffline(IObjectResolver resolver)
         {
+            _resolver = resolver;
             Observable.EveryGameObjectUpdate().Subscribe(Tick).AddTo(_disposables);
         }
 
@@ -26,7 +30,7 @@ namespace Chess3D.Runtime.Core.Logic.Players
 
         public UniTask Load(IGameState warmUpState)
         {
-            SetState(warmUpState);
+            SetState<WarmUpState>();
 
             return UniTask.CompletedTask;
         }
@@ -35,14 +39,28 @@ namespace Chess3D.Runtime.Core.Logic.Players
         {
             State?.Exit();
             State = state;
-            state?.Enter();
+            State?.Enter();
         }
 
-        public void SetState<T>(IGameState<T> state, T data)
+        public void SetState<TArg>(IGameState<TArg> state, TArg data)
         {
             State?.Exit();
             State = state;
-            state?.Enter(data);
+            (State as IGameState<TArg>)?.Enter(data);
+        }
+
+        public void SetState<TState>() where TState : IGameState
+        {
+            State?.Exit();
+            State = _resolver.Resolve<TState>();
+            State?.Enter();
+        }
+
+        public void SetState<TState, TArg>(TArg data) where TState : IGameState<TArg>
+        {
+            State?.Exit();
+            State = _resolver.Resolve<TState>();
+            (State as IGameState<TArg>)?.Enter(data);
         }
 
         public void Move(string uci)

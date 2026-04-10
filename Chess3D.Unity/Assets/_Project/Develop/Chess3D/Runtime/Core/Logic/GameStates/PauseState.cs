@@ -10,10 +10,9 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         private UciBuffer _uciBuffer;
         private IGameStateMachine _gameStateMachine;
         private CoreEvents _coreEvents;
-        private IObjectResolver _resolver;
 
         [Inject]
-        public void Construct(UciBuffer uciBuffer, IGameStateMachine gameStateMachine, CoreEvents coreEvents, IObjectResolver resolver)
+        public void Construct(UciBuffer uciBuffer, IGameStateMachine gameStateMachine, CoreEvents coreEvents)
         {
             _uciBuffer = uciBuffer;
             _gameStateMachine = gameStateMachine;
@@ -37,7 +36,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             if (_uciBuffer.CanUndo(out MoveData moveData))
             {
                 moveData.PreviousState = this;
-                _gameStateMachine.SetState(_resolver.Resolve<UndoState>(), moveData);
+                _gameStateMachine.SetState<UndoState, MoveData>(moveData);
             }
         }
 
@@ -46,13 +45,13 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             if (_uciBuffer.CanRedo(out MoveData moveData))
             {
                 moveData.PreviousState = this;
-                _gameStateMachine.SetState(_resolver.Resolve<RedoState>(), moveData);
+                _gameStateMachine.SetState<RedoState, MoveData>(moveData);
             }
         }
 
         public void Play()
         {
-            _gameStateMachine.SetState(_resolver.Resolve<IdleState>());
+            _gameStateMachine.SetState<IdleState>();
         }
 
 #region unused

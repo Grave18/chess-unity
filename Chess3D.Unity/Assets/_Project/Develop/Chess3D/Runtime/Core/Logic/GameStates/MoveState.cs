@@ -6,19 +6,15 @@ using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Core.Sound;
-using Chess3D.Runtime.Utilities;
-using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
-    public sealed class MoveState : IGameState<string>, ILoadUnit
+    public sealed class MoveState : IGameState<string>
     {
         private const float SoundT = 0.6f;
-
-        private IdleState idleState;
 
         private string _uci;
         private MoveData _moveData;
@@ -34,12 +30,11 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         private CoreEvents _coreEvents;
         private ConfigContainer _configContainer;
         private EffectsPlayer _effectsPlayer;
-        private IObjectResolver _resolver;
 
         [Inject]
         public void Construct(Game game, Board board, PieceFactory pieceFactory, UciBuffer uciBuffer,
             IGameStateMachine gameStateMachine, CoreEvents coreEvents, ConfigContainer configContainer,
-            EffectsPlayer effectsPlayer, IObjectResolver resolver)
+            EffectsPlayer effectsPlayer)
         {
             _game = game;
             _board = board;
@@ -49,13 +44,6 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             _coreEvents = coreEvents;
             _configContainer = configContainer;
             _effectsPlayer = effectsPlayer;
-            _resolver = resolver;
-        }
-
-        public UniTask Load()
-        {
-            idleState = _resolver.Resolve<IdleState>();
-            return UniTask.CompletedTask;
         }
 
         public string Name => "Move";
@@ -213,7 +201,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         {
             Debug.Log($"{uci}: invalid move");
             _isRunning = false;
-            _gameStateMachine.SetState(idleState);
+            _gameStateMachine.SetState<IdleState>();
         }
 
         public void Enter()
@@ -251,7 +239,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             }
             else
             {
-                _gameStateMachine.SetState(idleState);
+                _gameStateMachine.SetState<IdleState>();
             }
         }
 

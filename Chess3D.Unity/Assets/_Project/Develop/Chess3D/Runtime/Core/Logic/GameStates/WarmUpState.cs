@@ -12,7 +12,6 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         private CoreEvents _coreEvents;
         private ConfigContainer _configContainer;
         private EffectsPlayer _effectsPlayer;
-        private IObjectResolver _resolver;
 
         private float t;
 
@@ -22,13 +21,12 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         [Inject]
         public void Construct(IGameStateMachine gameStateMachine, CoreEvents coreEvents,
-            ConfigContainer configContainer, EffectsPlayer effectsPlayer, IObjectResolver resolver)
+            ConfigContainer configContainer, EffectsPlayer effectsPlayer)
         {
             _gameStateMachine = gameStateMachine;
             _coreEvents = coreEvents;
             _configContainer = configContainer;
             _effectsPlayer = effectsPlayer;
-            _resolver = resolver;
             _isConstructed = true;
         }
 
@@ -66,7 +64,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
             if (t <= 0f)
             {
-                _gameStateMachine.SetState(_resolver.Resolve<IdleState>());
+                _gameStateMachine.SetState<IdleState>();
             }
         }
 

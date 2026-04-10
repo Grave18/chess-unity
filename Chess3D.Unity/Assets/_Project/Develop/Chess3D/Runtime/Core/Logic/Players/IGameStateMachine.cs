@@ -7,8 +7,10 @@ namespace Chess3D.Runtime.Core.Logic.Players
     {
         IGameState State { get; }
         string StateName { get; }
-        void SetState(IGameState state);
-        void SetState<T>(IGameState<T> state, T data);
+        public void SetState(IGameState state);
+        public void SetState<TArg>(IGameState<TArg> state, TArg data);
+        void SetState<TState>() where TState : IGameState;
+        public void SetState<TState, TArg>(TArg data) where TState : IGameState<TArg>;
         void Move(string uci);
         void Undo();
         void Redo();

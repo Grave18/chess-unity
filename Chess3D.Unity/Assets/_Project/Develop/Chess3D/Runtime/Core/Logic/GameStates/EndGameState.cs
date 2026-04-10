@@ -38,7 +38,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             if (_uciBuffer.CanUndo(out MoveData moveData))
             {
                 moveData.PreviousState = _resolver.Resolve<IdleState>();
-                _gameStateMachine.SetState(_resolver.Resolve<UndoState>(), moveData);
+                _gameStateMachine.SetState<UndoState, MoveData>(moveData);
             }
         }
 
