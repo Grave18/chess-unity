@@ -14,17 +14,15 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [ObservableProperty] private bool _isOnlineEnabled;
 
         private readonly ISettingsContainer _settingsContainer;
-        private readonly ConfigContainer _configContainer;
         private readonly SceneManager _sceneManager;
         private readonly ViewNavigator _viewNavigator;
 
         public PlayViewModel(ISettingsContainer settingsContainer, SceneManager sceneManager,
-            ViewNavigator viewNavigator, ConfigContainer configContainer)
+            ViewNavigator viewNavigator)
         {
             _settingsContainer = settingsContainer;
             _sceneManager = sceneManager;
             _viewNavigator = viewNavigator;
-            _configContainer = configContainer;
         }
 
         [RelayCommand]
@@ -44,11 +42,11 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         [RelayCommand]
         private void PlayWithComputer()
         {
-            SetupHumanVsComputerOffline();
+            SetupHumanVsComputer();
             _sceneManager.LoadScene(RuntimeConstants.Scenes.Core).Forget();
         }
 
-        private void SetupHumanVsComputerOffline()
+        private void SetupHumanVsComputer()
         {
             _settingsContainer.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
             _settingsContainer.GameSettings.PlayerBlack.PlayerType = PlayerType.Computer;

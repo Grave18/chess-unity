@@ -8,7 +8,7 @@ using UnityEngine.Scripting;
 namespace Chess3D.Runtime.Core.Logic
 {
     [Preserve]
-    public sealed class ClockOffline : IClock, IDisposable
+    public sealed class Clock : IClock, IDisposable
     {
         private readonly ReactiveProperty<TimeSpan> _whiteTime = new();
         private readonly ReactiveProperty<TimeSpan> _blackTime = new();
@@ -38,7 +38,7 @@ namespace Chess3D.Runtime.Core.Logic
                 .AsUnitObservable()
         );
 
-        public ClockOffline(Game game, ISettingsContainer settingsContainer, CoreEvents coreEvents,
+        public Clock(Game game, ISettingsContainer settingsContainer, CoreEvents coreEvents,
             EffectsPlayer effectsPlayer)
         {
             _game = game;

@@ -18,7 +18,7 @@ namespace Chess3D.Runtime.Core.Logic.Players
             var input = _resolver.Resolve<IInputHandler>(playerType);
             input.Load();
 
-            return new PlayerOffline(input);
+            return new Player(input);
         }
     }
 }

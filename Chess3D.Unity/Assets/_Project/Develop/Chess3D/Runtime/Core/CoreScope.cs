@@ -107,8 +107,8 @@ namespace Chess3D.Runtime.Core
             // Service Locator
             builder.RegisterBuildCallback(ServiceLocator.Initialize);
 
-            builder.Register<ClockOffline>(Lifetime.Singleton);
-            builder.Register<GameStateMachineOffline>(Lifetime.Singleton).As<IGameStateMachine>();
+            builder.Register<Clock>(Lifetime.Singleton);
+            builder.Register<GameStateMachine>(Lifetime.Singleton).As<IGameStateMachine>();
 
             // Entry points
             builder.RegisterEntryPoint<CoreFlow>().AsSelf();
@@ -117,7 +117,7 @@ namespace Chess3D.Runtime.Core
         private static IClock RegisterClock(IObjectResolver resolver)
         {
             resolver.Resolve<ConfigContainer>();
-            IClock clock = resolver.Resolve<ClockOffline>();
+            IClock clock = resolver.Resolve<Clock>();
 
             return clock;
         }

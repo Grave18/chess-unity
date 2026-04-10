@@ -1,10 +1,10 @@
 namespace Chess3D.Runtime.Core.Logic.Players
 {
-    public sealed class PlayerOffline : IPlayer
+    public sealed class Player : IPlayer
     {
         private readonly IInputHandler _inputHandler;
 
-        public PlayerOffline(IInputHandler inputHandler)
+        public Player(IInputHandler inputHandler)
         {
             _inputHandler = inputHandler;
         }

@@ -7,7 +7,7 @@ using VContainer;
 namespace Chess3D.Runtime.Core.Logic.Players
 {
     [UnityEngine.Scripting.Preserve]
-    public sealed class GameStateMachineOffline: IGameStateMachine, IDisposable
+    public sealed class GameStateMachine: IGameStateMachine, IDisposable
     {
         public IGameState State { get; private set; }
 
@@ -17,7 +17,7 @@ namespace Chess3D.Runtime.Core.Logic.Players
 
         private readonly CompositeDisposable _disposables = new();
 
-        private GameStateMachineOffline(IObjectResolver resolver)
+        private GameStateMachine(IObjectResolver resolver)
         {
             _resolver = resolver;
             Observable.EveryGameObjectUpdate().Subscribe(Tick).AddTo(_disposables);
