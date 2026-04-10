@@ -20,7 +20,7 @@ using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Menu.UI.Views;
 using Chess3D.Runtime.Utilities;
-using PurrNet.StateMachine;
+using PauseState = Chess3D.Runtime.Core.Logic.GameStates.PauseState;
 
 namespace Chess3D.Runtime.Core
 {
@@ -28,8 +28,6 @@ namespace Chess3D.Runtime.Core
     {
         [Header("Game")]
         [SerializeField] private Board board;
-        [SerializeField] private WarmUpState warmupState;
-        [SerializeField] private StateMachine stateMachine;
 
         [Header("Sound")]
         [SerializeField] private EffectsPlayer effectsPlayer;
@@ -38,9 +36,6 @@ namespace Chess3D.Runtime.Core
         [SerializeField] private GameCanvasEnabler gameCanvasEnabler;
         [SerializeField] private NoesisXaml mainViewXaml;
         [SerializeField] private NoesisView noesisView;
-
-        [Header("ViewModels")]
-        [SerializeField] private CoreHomeViewModel coreHomeViewModel; // Because NetworkBehaviour
 
         [Header("Camera")]
         [SerializeField] private CameraController cameraController;
@@ -89,7 +84,7 @@ namespace Chess3D.Runtime.Core
             builder.Register<SettingsView>(Lifetime.Singleton);
             // ViewModels
             builder.Register<CoreMainViewModel>(Lifetime.Singleton).As<IMainViewModel>().AsSelf();
-            builder.RegisterComponent(coreHomeViewModel); // Network behaviour
+            builder.Register<CoreHomeViewModel>(Lifetime.Singleton); // Network behaviour
             builder.Register<PopupViewModel>(Lifetime.Singleton);
             // Settings VMs
             builder.Register<SettingsViewModel>(Lifetime.Singleton);
@@ -98,31 +93,25 @@ namespace Chess3D.Runtime.Core
             builder.Register<AudioSettingsViewModel>(Lifetime.Singleton);
             builder.Register<FenTextBoxViewModel>(Lifetime.Singleton);
 
-            builder.RegisterBuildCallback(ResolveReconnectPopupHandler);
-            builder.RegisterBuildCallback(ResolvePlayersDataExchanger);
-            builder.Register(RegisterGameStateMachine, Lifetime.Singleton);
             builder.Register(RegisterClock, Lifetime.Singleton);
-            builder.RegisterComponent(warmupState);
-            builder.RegisterComponent(stateMachine);
+            builder.Register<InitialState>(Lifetime.Singleton);
+            builder.Register<WarmUpState>(Lifetime.Singleton);
+            builder.Register<MoveState>(Lifetime.Singleton);
+            builder.Register<IdleState>(Lifetime.Singleton);
+            builder.Register<EndGameState>(Lifetime.Singleton);
+            builder.Register<PlayState>(Lifetime.Singleton);
+            builder.Register<PauseState>(Lifetime.Singleton);
+            builder.Register<UndoState>(Lifetime.Singleton);
+            builder.Register<RedoState>(Lifetime.Singleton);
 
             // Service Locator
             builder.RegisterBuildCallback(ServiceLocator.Initialize);
 
             builder.Register<ClockOffline>(Lifetime.Singleton);
-            builder.Register<GameStateMachineOffline>(Lifetime.Singleton);
+            builder.Register<GameStateMachineOffline>(Lifetime.Singleton).As<IGameStateMachine>();
 
             // Entry points
             builder.RegisterEntryPoint<CoreFlow>().AsSelf();
-        }
-
-        private static void ResolvePlayersDataExchanger(IObjectResolver resolver)
-        {
-            resolver.Resolve<FenFromBoard>();
-        }
-
-        private static void ResolveReconnectPopupHandler(IObjectResolver resolver)
-        {
-            resolver.Resolve<ConfigContainer>();
         }
 
         private static IClock RegisterClock(IObjectResolver resolver)
@@ -131,14 +120,6 @@ namespace Chess3D.Runtime.Core
             IClock clock = resolver.Resolve<ClockOffline>();
 
             return clock;
-        }
-
-        private static IGameStateMachine RegisterGameStateMachine(IObjectResolver resolver)
-        {
-            resolver.Resolve<ConfigContainer>();
-            IGameStateMachine gameStateMachine = resolver.Resolve<GameStateMachineOffline>();
-
-            return gameStateMachine;
         }
     }
 }

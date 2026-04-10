@@ -6,18 +6,19 @@ using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Core.Sound;
-using PurrNet.StateMachine;
+using Chess3D.Runtime.Utilities;
+using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
-    public sealed class MoveState : StateNode<string>, IGameState<string>
+    public sealed class MoveState : IGameState<string>, ILoadUnit
     {
         private const float SoundT = 0.6f;
 
-        [SerializeField] private IdleState idleState;
+        private IdleState idleState;
 
         private string _uci;
         private MoveData _moveData;
@@ -33,11 +34,12 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         private CoreEvents _coreEvents;
         private ConfigContainer _configContainer;
         private EffectsPlayer _effectsPlayer;
+        private IObjectResolver _resolver;
 
         [Inject]
         public void Construct(Game game, Board board, PieceFactory pieceFactory, UciBuffer uciBuffer,
             IGameStateMachine gameStateMachine, CoreEvents coreEvents, ConfigContainer configContainer,
-            EffectsPlayer effectsPlayer)
+            EffectsPlayer effectsPlayer, IObjectResolver resolver)
         {
             _game = game;
             _board = board;
@@ -47,11 +49,18 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             _coreEvents = coreEvents;
             _configContainer = configContainer;
             _effectsPlayer = effectsPlayer;
+            _resolver = resolver;
+        }
+
+        public UniTask Load()
+        {
+            idleState = _resolver.Resolve<IdleState>();
+            return UniTask.CompletedTask;
         }
 
         public string Name => "Move";
 
-        public override void Enter(string uci)
+        public void Enter(string uci)
         {
             _t = 0f;
             _uci = uci;
@@ -207,7 +216,12 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             _gameStateMachine.SetState(idleState);
         }
 
-        public override void Exit()
+        public void Enter()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Exit()
         {
             if (_isRunning)
             {
@@ -224,7 +238,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             _coreEvents.OnEndMove.OnNext(Unit.Default);
         }
 
-        public override void StateUpdate()
+        public void StateUpdate()
         {
             if (!_isRunning)
             {

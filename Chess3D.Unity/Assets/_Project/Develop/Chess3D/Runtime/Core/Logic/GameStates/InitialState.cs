@@ -1,6 +1,4 @@
-﻿using PurrNet.StateMachine;
-
-namespace Chess3D.Runtime.Core.Logic.GameStates
+﻿namespace Chess3D.Runtime.Core.Logic.GameStates
 {
-    public class InitialState : StateNode { }
+    public class InitialState { }
 }

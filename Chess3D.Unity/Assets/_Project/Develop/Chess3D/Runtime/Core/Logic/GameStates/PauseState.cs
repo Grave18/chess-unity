@@ -1,24 +1,19 @@
 ﻿using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Core.Logic.Players;
-using PurrNet.StateMachine;
 using UniRx;
-using UnityEngine;
 using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
-    public sealed class PauseState : StateNode,IGameState
+    public sealed class PauseState : IGameState
     {
         private UciBuffer _uciBuffer;
         private IGameStateMachine _gameStateMachine;
         private CoreEvents _coreEvents;
-
-        [SerializeField] private IdleState idleState;
-        [SerializeField] private UndoState undoState;
-        [SerializeField] private RedoState redoState;
+        private IObjectResolver _resolver;
 
         [Inject]
-        public void Construct(UciBuffer uciBuffer, IGameStateMachine gameStateMachine, CoreEvents coreEvents)
+        public void Construct(UciBuffer uciBuffer, IGameStateMachine gameStateMachine, CoreEvents coreEvents, IObjectResolver resolver)
         {
             _uciBuffer = uciBuffer;
             _gameStateMachine = gameStateMachine;
@@ -27,12 +22,12 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         public string Name => "Pause";
 
-        public override void Enter()
+        public void Enter()
         {
             _coreEvents.OnPause.OnNext(Unit.Default);
         }
 
-        public override void Exit()
+        public void Exit()
         {
             _coreEvents.OnPlay.OnNext(Unit.Default);
         }
@@ -42,7 +37,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             if (_uciBuffer.CanUndo(out MoveData moveData))
             {
                 moveData.PreviousState = this;
-                _gameStateMachine.SetState(undoState, moveData);
+                _gameStateMachine.SetState(_resolver.Resolve<UndoState>(), moveData);
             }
         }
 
@@ -51,17 +46,17 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             if (_uciBuffer.CanRedo(out MoveData moveData))
             {
                 moveData.PreviousState = this;
-                _gameStateMachine.SetState(redoState, moveData);
+                _gameStateMachine.SetState(_resolver.Resolve<RedoState>(), moveData);
             }
         }
 
         public void Play()
         {
-            _gameStateMachine.SetState(idleState);
+            _gameStateMachine.SetState(_resolver.Resolve<IdleState>());
         }
 
 #region unused
-        public override void StateUpdate()
+        public void StateUpdate()
         {
             // Nothing to update
         }

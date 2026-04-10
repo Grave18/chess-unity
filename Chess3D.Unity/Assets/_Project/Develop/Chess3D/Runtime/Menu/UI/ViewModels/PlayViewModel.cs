@@ -1,7 +1,5 @@
 ﻿using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.AI;
-using Chess3D.Runtime.Core.Logic;
-using Chess3D.Runtime.Menu.LobbyManagement;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using MvvmTool;
@@ -11,30 +9,22 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 {
     [Preserve]
     [INotifyPropertyChanged]
-    public sealed partial class PlayViewModel : IViewModel, ILoadUnit
+    public sealed partial class PlayViewModel : IViewModel
     {
         [ObservableProperty] private bool _isOnlineEnabled;
 
         private readonly ISettingsContainer _settingsContainer;
         private readonly ConfigContainer _configContainer;
-        private readonly LobbyManager _lobbyManager;
         private readonly SceneManager _sceneManager;
         private readonly ViewNavigator _viewNavigator;
 
-        public PlayViewModel(ISettingsContainer settingsContainer, LobbyManager lobbyManager, SceneManager sceneManager,
+        public PlayViewModel(ISettingsContainer settingsContainer, SceneManager sceneManager,
             ViewNavigator viewNavigator, ConfigContainer configContainer)
         {
             _settingsContainer = settingsContainer;
-            _lobbyManager = lobbyManager;
             _sceneManager = sceneManager;
             _viewNavigator = viewNavigator;
             _configContainer = configContainer;
-        }
-
-        public UniTask Load()
-        {
-            IsOnlineEnabled = _lobbyManager.CurrentProvider.IsLobbyCreationPossible;
-            return UniTask.CompletedTask;
         }
 
         [RelayCommand]
@@ -65,38 +55,6 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
 
             ComputerSkillLevel skill = _settingsContainer.GameSettings.PlayerBlack.ComputerSkillLevel;
             _settingsContainer.GameSettings.PlayerBlack.Name = $"Computer({skill})";
-        }
-
-        [RelayCommand]
-        private void CreateLobby()
-        {
-            _lobbyManager.CreateRoom();
-        }
-
-        [RelayCommand]
-        public void StartLocalServer()
-        {
-            SetupHumanHost();
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Online).Forget();
-        }
-
-        private void SetupHumanHost()
-        {
-            _settingsContainer.GameSettings.PlayerColor = PieceColor.White;
-            _settingsContainer.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
-        }
-
-        [RelayCommand]
-        public void StartLocalClient()
-        {
-            SetupHumanClient();
-            _sceneManager.LoadScene(RuntimeConstants.Scenes.Online).Forget();
-        }
-
-        private void SetupHumanClient()
-        {
-            _settingsContainer.GameSettings.PlayerColor = PieceColor.Black;
-            _settingsContainer.GameSettings.PlayerWhite.PlayerType = PlayerType.Human;
         }
 
         [RelayCommand]

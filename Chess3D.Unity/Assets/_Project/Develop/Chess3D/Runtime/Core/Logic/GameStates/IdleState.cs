@@ -1,28 +1,22 @@
 ﻿using System;
 using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Core.Logic.Players;
+using Chess3D.Runtime.Utilities;
 using Chess3D.Runtime.Utilities.Logging;
 using Cysharp.Threading.Tasks;
-using PurrNet.StateMachine;
 using UniRx;
-using UnityEngine;
 using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
-    public sealed class IdleState : StateNode, IGameState
+    public sealed class IdleState : IGameState
     {
         private Game _game;
         private Competitors _competitors;
         private UciBuffer _uciBuffer;
         private CoreEvents _coreEvents;
         private IGameStateMachine _gameStateMachine;
-
-        [SerializeField] private EndGameState endGameState;
-        [SerializeField] private PauseState pauseState;
-        [SerializeField] private MoveState moveState;
-        [SerializeField] private UndoState undoState;
-        [SerializeField] private RedoState redoState;
+        private IObjectResolver _resolver;
 
         private bool _isRunning;
         private bool _isInitialized;
@@ -31,17 +25,19 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         [Inject]
         public void Construct(Game game, Competitors competitors, UciBuffer uciBuffer, CoreEvents coreEvents,
-            IGameStateMachine gameStateMachine)
+            IGameStateMachine gameStateMachine, IObjectResolver resolver)
         {
             _game = game;
             _competitors = competitors;
             _uciBuffer = uciBuffer;
             _coreEvents = coreEvents;
             _gameStateMachine = gameStateMachine;
+            _resolver = resolver;
+
             _isInitialized = true;
         }
 
-        public override async void Enter()
+        public async void Enter()
         {
             try
             {
@@ -64,7 +60,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             }
         }
 
-        public override void Exit()
+        public void Exit()
         {
             _isRunning = false;
             _competitors.StopPlayer();
@@ -72,7 +68,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         public void Move(string uci)
         {
-            _gameStateMachine.SetState(moveState, uci);
+            _gameStateMachine.SetState(_resolver.Resolve<MoveState>(), uci);
         }
 
         public void Undo()
@@ -80,7 +76,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             if (_uciBuffer.CanUndo(out MoveData moveData))
             {
                 moveData.PreviousState = this;
-                _gameStateMachine.SetState(undoState, moveData);
+                _gameStateMachine.SetState(_resolver.Resolve<UndoState>(), moveData);
             }
         }
 
@@ -89,16 +85,16 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             if (_uciBuffer.CanRedo(out MoveData moveData))
             {
                 moveData.PreviousState = this;
-                _gameStateMachine.SetState(redoState, moveData);
+                _gameStateMachine.SetState(_resolver.Resolve<RedoState>(), moveData);
             }
         }
 
         public void Pause()
         {
-            _gameStateMachine.SetState(pauseState);
+            _gameStateMachine.SetState(_resolver.Resolve<PauseState>());
         }
 
-        public override void StateUpdate()
+        public void StateUpdate()
         {
             if (!_isRunning)
             {
@@ -115,7 +111,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         private void EndGame()
         {
-            _gameStateMachine.SetState(endGameState);
+            _gameStateMachine.SetState(_resolver.Resolve<EndGameState>());
             _competitors.StopPlayer();
         }
 

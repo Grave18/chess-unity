@@ -1,5 +1,4 @@
-﻿using Chess3D.Runtime.Menu.LobbyManagement;
-using Chess3D.Runtime.Menu.UI;
+﻿using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Menu.UI.Views;
@@ -13,16 +12,12 @@ namespace Chess3D.Runtime.Menu
     public sealed class MenuScope : LifetimeScope
     {
         [SerializeField] private RenderTexture renderTexture;
-        [SerializeField] private LobbyManager lobbyManager;
         [SerializeField] private VisualBoardSpawner visualBoardSpawner;
         [SerializeField] public NoesisXaml mainViewXaml;
         [SerializeField] private NoesisView noesisView;
 
         protected override void Configure(IContainerBuilder builder)
         {
-            // Lobby
-            builder.RegisterComponent(lobbyManager);
-
             // UI
             builder.RegisterComponent(renderTexture);
             builder.RegisterComponent(visualBoardSpawner);

@@ -1,36 +1,33 @@
 ﻿using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.Sound;
-using PurrNet.StateMachine;
 using UniRx;
-using UnityEngine;
 using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
-    public sealed class EndGameState : StateNode, IGameState
+    public sealed class EndGameState : IGameState
     {
-        [SerializeField] private UndoState undoState;
-        [SerializeField] private IdleState idleState;
-
         private IGameStateMachine _gameStateMachine;
         private CoreEvents _coreEvents;
         private UciBuffer _uciBuffer;
         private EffectsPlayer _effectsPlayer;
+        private IObjectResolver _resolver;
 
         [Inject]
         public void Construct(IGameStateMachine gameStateMachine, CoreEvents coreEvents,
-            UciBuffer uciBuffer, EffectsPlayer effectsPlayer)
+            UciBuffer uciBuffer, EffectsPlayer effectsPlayer, IObjectResolver resolver)
         {
             _gameStateMachine = gameStateMachine;
             _coreEvents = coreEvents;
             _uciBuffer = uciBuffer;
             _effectsPlayer = effectsPlayer;
+            _resolver = resolver;
         }
 
         public string Name => "End Game";
 
-        public override void Enter()
+        public void Enter()
         {
             _effectsPlayer.PlayGameEndSound();
             _coreEvents.OnEnd.OnNext(Unit.Default);
@@ -40,19 +37,19 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
         {
             if (_uciBuffer.CanUndo(out MoveData moveData))
             {
-                moveData.PreviousState = idleState;
-                _gameStateMachine.SetState(undoState, moveData);
+                moveData.PreviousState = _resolver.Resolve<IdleState>();
+                _gameStateMachine.SetState(_resolver.Resolve<UndoState>(), moveData);
             }
         }
 
 #region unused
 
-        public override void Exit()
+        public void Exit()
         {
             // Empty
         }
 
-        public override void StateUpdate()
+        public void StateUpdate()
         {
             // Empty
         }

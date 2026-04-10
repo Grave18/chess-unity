@@ -1,5 +1,4 @@
 ﻿using System.Threading;
-using Chess3D.Runtime.Menu.LobbyManagement;
 using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu;
 using Chess3D.Runtime.Menu.UI.ViewModels;
@@ -13,14 +12,12 @@ namespace Chess3D.Runtime.Menu
     public sealed class MenuFlow : IAsyncStartable
     {
         private readonly LoadingService _loadingService;
-        private readonly LobbyManager _lobbyManager;
         private readonly VisualBoardSpawner _visualBoardSpawner;
         private readonly ViewNavigator _viewNavigator;
         private readonly MainViewLoader _mainViewLoader;
         private readonly MainViewModel _mainViewModel;
         private readonly HomeViewModel _homeViewModel;
         private readonly BoardViewModel _boardViewModel;
-        private readonly PlayViewModel _playViewModel;
         private readonly FenTextBoxViewModel _fenTextBoxViewModel;
         private readonly GameSettingsViewModel _gameSettingsViewModel;
         private readonly GraphicsSettingsViewModel _graphicsSettingsViewModel;
@@ -31,7 +28,7 @@ namespace Chess3D.Runtime.Menu
             FenTextBoxViewModel fenTextBoxViewModel,
             GameSettingsViewModel gameSettingsViewModel,
             GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel,
-            HomeViewModel homeViewModel, ViewNavigator viewNavigator, MainViewLoader mainViewLoader, PlayViewModel playViewModel, LobbyManager lobbyManager)
+            HomeViewModel homeViewModel, ViewNavigator viewNavigator, MainViewLoader mainViewLoader)
         {
             _loadingService = loadingService;
             _visualBoardSpawner = visualBoardSpawner;
@@ -44,13 +41,10 @@ namespace Chess3D.Runtime.Menu
             _homeViewModel = homeViewModel;
             _viewNavigator = viewNavigator;
             _mainViewLoader = mainViewLoader;
-            _playViewModel = playViewModel;
-            _lobbyManager = lobbyManager;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = new())
         {
-            await _loadingService.BeginLoading(_lobbyManager);
             await _loadingService.BeginLoading(_mainViewLoader);
             await _loadingService.BeginLoading(_viewNavigator);
             await _loadingService.BeginLoading(_visualBoardSpawner);
@@ -58,7 +52,6 @@ namespace Chess3D.Runtime.Menu
             await _loadingService.BeginLoading(_boardViewModel);
             await _loadingService.BeginLoading(_fenTextBoxViewModel);
             await _loadingService.BeginLoading(_gameSettingsViewModel);
-            await _loadingService.BeginLoading(_playViewModel);
             await _loadingService.BeginLoading(_graphicsSettingsViewModel);
             await _loadingService.BeginLoading(_audioSettingsViewModel);
         }

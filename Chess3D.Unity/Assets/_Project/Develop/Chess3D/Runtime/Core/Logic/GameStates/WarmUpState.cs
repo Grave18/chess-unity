@@ -1,20 +1,18 @@
 ﻿using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.Sound;
-using PurrNet.StateMachine;
 using UnityEngine;
 using VContainer;
 using UniRx;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
-    public sealed class WarmUpState : StateNode, IGameState
+    public sealed class WarmUpState : IGameState
     {
         private IGameStateMachine _gameStateMachine;
         private CoreEvents _coreEvents;
         private ConfigContainer _configContainer;
         private EffectsPlayer _effectsPlayer;
-
-        [SerializeField] private IdleState idleState;
+        private IObjectResolver _resolver;
 
         private float t;
 
@@ -24,16 +22,17 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         [Inject]
         public void Construct(IGameStateMachine gameStateMachine, CoreEvents coreEvents,
-            ConfigContainer configContainer, EffectsPlayer effectsPlayer)
+            ConfigContainer configContainer, EffectsPlayer effectsPlayer, IObjectResolver resolver)
         {
             _gameStateMachine = gameStateMachine;
             _coreEvents = coreEvents;
             _configContainer = configContainer;
             _effectsPlayer = effectsPlayer;
+            _resolver = resolver;
             _isConstructed = true;
         }
 
-        public override void Enter()
+        public void Enter()
         {
             if (!_isConstructed)
             {
@@ -45,13 +44,13 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             _coreEvents.OnWarmup.OnNext(Unit.Default);
         }
 
-        public override void Exit()
+        public void Exit()
         {
             _effectsPlayer.PlayGameStartSound();
             _coreEvents.OnStart.OnNext(Unit.Default);
         }
 
-        public override void StateUpdate()
+        public void StateUpdate()
         {
             if (!_isConstructed)
             {
@@ -67,7 +66,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
             if (t <= 0f)
             {
-                _gameStateMachine.SetState(idleState);
+                _gameStateMachine.SetState(_resolver.Resolve<IdleState>());
             }
         }
 

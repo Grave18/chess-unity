@@ -5,14 +5,13 @@ using Chess3D.Runtime.Core.Logic.Moves;
 using Chess3D.Runtime.Core.Logic.MovesBuffer;
 using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.Sound;
-using PurrNet.StateMachine;
 using UniRx;
 using UnityEngine;
 using VContainer;
 
 namespace Chess3D.Runtime.Core.Logic.GameStates
 {
-    public sealed class RedoState : StateNode<MoveData>, IGameState<MoveData>
+    public sealed class RedoState : IGameState<MoveData>
     {
         private const float SoundT = 0.6f;
 
@@ -47,7 +46,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         public string Name => "Redo";
 
-        public override void Enter(MoveData moveData)
+        public void Enter(MoveData moveData)
         {
             _t = 0f;
             _moveData = moveData;
@@ -153,7 +152,12 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             _gameStateMachine.SetState(_moveData.PreviousState);
         }
 
-        public override void Exit()
+        public void Enter()
+        {
+
+        }
+
+        public void Exit()
         {
             if (!_isRunning)
             {
@@ -170,7 +174,7 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             PlayCheckSoundIfCheck();
         }
 
-        public override void StateUpdate()
+        public void StateUpdate()
         {
             if (!_isRunning)
             {

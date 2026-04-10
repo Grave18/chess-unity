@@ -14,7 +14,6 @@ namespace Chess3D.Runtime.Core.Logic.Players
 
         private readonly Game _game;
         private readonly ISettingsContainer _settingsContainer;
-        private readonly ConfigContainer _configContainer;
         private readonly FenFromString _fenFromString;
         private readonly PlayerFactory _playerFactory;
 
@@ -25,13 +24,12 @@ namespace Chess3D.Runtime.Core.Logic.Players
 
         private readonly CompositeDisposable _disposables = new();
         public Competitors(Game game, FenFromString fenFromString, PlayerFactory playerFactory,
-            CoreEvents coreEvents, ISettingsContainer settingsContainer, ConfigContainer configContainer)
+            CoreEvents coreEvents, ISettingsContainer settingsContainer)
         {
             _game = game;
             _fenFromString = fenFromString;
             _playerFactory = playerFactory;
             _settingsContainer = settingsContainer;
-            _configContainer = configContainer;
 
             coreEvents.OnEndMove.Subscribe(_ => SwapCurrentPlayer()).AddTo(_disposables);
         }

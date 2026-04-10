@@ -4,12 +4,11 @@ using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Cysharp.Threading.Tasks;
 using MvvmTool;
-using PurrNet;
 using VContainer;
 
 namespace Chess3D.Runtime.Core.UI.ViewModels
 {
-    public sealed partial class CoreHomeViewModel : NetworkBehaviour, IViewModel
+    public sealed partial class CoreHomeViewModel :IViewModel
     {
         public bool IsDrawRequested { get; set; }
 
