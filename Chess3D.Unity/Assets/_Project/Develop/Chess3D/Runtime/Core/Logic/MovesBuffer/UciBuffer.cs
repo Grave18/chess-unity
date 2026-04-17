@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
@@ -39,7 +40,7 @@ namespace Chess3D.Runtime.Core.Logic.MovesBuffer
             _fenFromString = fenFromString;
         }
 
-        public UniTask Load()
+        public UniTask Load(CancellationToken cancellationToken = default)
         {
             _head = null;
             _buffer.Clear();

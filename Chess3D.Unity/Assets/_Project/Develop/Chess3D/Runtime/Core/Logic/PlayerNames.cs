@@ -1,4 +1,5 @@
 ﻿using Chess3D.Runtime.Utilities;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine.Scripting;
@@ -18,7 +19,7 @@ namespace Chess3D.Runtime.Core.Logic
             _settingsContainer = settingsContainer;
         }
 
-        public UniTask Load()
+        public UniTask Load(CancellationToken cancellationToken = default)
         {
             WhitePlayerName.OnNext(_settingsContainer.GameSettings.PlayerWhite.Name);
             BlackPlayerName.OnNext(_settingsContainer.GameSettings.PlayerBlack.Name);

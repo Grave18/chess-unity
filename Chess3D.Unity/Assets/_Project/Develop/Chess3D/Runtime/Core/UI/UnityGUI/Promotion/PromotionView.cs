@@ -1,6 +1,7 @@
 ﻿using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.ChessBoard.Info;
 using Chess3D.Runtime.Core.Logic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UniRx;
@@ -40,9 +41,8 @@ namespace Chess3D.Runtime.Core.UI.UnityGUI.Promotion
         /// Callback is continuation for call site
         private async void RequestPromotedPiece(UnityAction<string> callback)
         {
-            Show(_game.CurrentTurnColor);
-
-            await UniTask.WaitWhile(() => _promotedPieceType == PieceType.None);
+            CancellationToken token = this.GetCancellationTokenOnDestroy();
+            await UniTask.WaitWhile(() => _promotedPieceType == PieceType.None, cancellationToken: token);
 
             Hide();
 

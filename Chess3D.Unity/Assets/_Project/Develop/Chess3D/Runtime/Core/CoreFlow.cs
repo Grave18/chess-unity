@@ -73,27 +73,27 @@ namespace Chess3D.Runtime.Core
             _playerNames = playerNames;
         }
 
-        public async UniTask StartAsync(CancellationToken cancellation = new())
+        public async UniTask StartAsync(CancellationToken cancellation = default)
         {
-            await _loadingService.BeginLoading(_fenFromString);
-            await _loadingService.BeginLoading(_assets);
-            await _loadingService.BeginLoading(_board);
-            await _loadingService.BeginLoading(_playerNames);
+            await _loadingService.BeginLoading(_fenFromString, cancellation);
+            await _loadingService.BeginLoading(_assets, cancellation);
+            await _loadingService.BeginLoading(_board, cancellation);
+            await _loadingService.BeginLoading(_playerNames, cancellation);
 
-            await _loadingService.BeginLoading(_uciBuffer);
-            await _loadingService.BeginLoading(_game);
-            await _loadingService.BeginLoading(_clock);
-            await _loadingService.BeginLoading(_competitors);
-            await _loadingService.BeginLoading(_cameraController);
+            await _loadingService.BeginLoading(_uciBuffer, cancellation);
+            await _loadingService.BeginLoading(_game, cancellation);
+            await _loadingService.BeginLoading(_clock, cancellation);
+            await _loadingService.BeginLoading(_competitors, cancellation);
+            await _loadingService.BeginLoading(_cameraController, cancellation);
 
-            await _loadingService.BeginLoading(_mainViewLoader);
-            await _loadingService.BeginLoading(_viewNavigator);
-            await _loadingService.BeginLoading(_coreMainViewModel, _homeViewModel);
-            await _loadingService.BeginLoading(_menuStateMachine);
-            await _loadingService.BeginLoading(_gameSettingsViewModel);
-            await _loadingService.BeginLoading(_graphicsSettingsViewModel);
-            await _loadingService.BeginLoading(_audioSettingsViewModel);
-            await _loadingService.BeginLoading(_fenTextBoxViewModel);
+            await _loadingService.BeginLoading(_mainViewLoader, cancellation);
+            await _loadingService.BeginLoading(_viewNavigator, cancellation);
+            await _loadingService.BeginLoading(_coreMainViewModel, _homeViewModel, cancellation);
+            await _loadingService.BeginLoading(_menuStateMachine, cancellation);
+            await _loadingService.BeginLoading(_gameSettingsViewModel, cancellation);
+            await _loadingService.BeginLoading(_graphicsSettingsViewModel, cancellation);
+            await _loadingService.BeginLoading(_audioSettingsViewModel, cancellation);
+            await _loadingService.BeginLoading(_fenTextBoxViewModel, cancellation);
 
             _gameStateMachine.SetState<WarmUpState>();
             _cameraController.RotateToStartPosition().Forget();

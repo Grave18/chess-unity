@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Chess3D.Runtime.Core.ChessBoard.Info;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Utilities;
@@ -21,7 +22,7 @@ namespace Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu
         [SerializeField] private AssetLabelReference piecesLabel;
         [SerializeField] private PieceSpawnPoint[] pieceSpawnPoints;
 
-        private ISettingsContainer settingsContainer;
+        private ISettingsContainer _settingsContainer;
 
         private AsyncOperationHandle<GameObject> _boardHandle;
         private GameObject _boardInstance;
@@ -32,13 +33,13 @@ namespace Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu
         [Inject]
         public void Construct(ISettingsContainer settingsContainer)
         {
-            this.settingsContainer = settingsContainer;
+            _settingsContainer = settingsContainer;
         }
 
-        public UniTask Load()
+        public UniTask Load(CancellationToken cancellationToken = default)
         {
-            SpawnBoard(settingsContainer.GameSettings.BoardModelAddress);
-            SpawnPieces(settingsContainer.GameSettings.PiecesModelAddress);
+            SpawnBoard(_settingsContainer.GameSettings.BoardModelAddress);
+            SpawnPieces(_settingsContainer.GameSettings.PiecesModelAddress);
 
             return UniTask.CompletedTask;
         }

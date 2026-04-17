@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -24,21 +25,29 @@ namespace Chess3D.Runtime.Core.AssetManagement
             this.settingsContainer = settingsContainer;
         }
 
-        public async UniTask Load()
+        public async UniTask Load(CancellationToken cancellationToken = default)
         {
-            string boardModelAddress = settingsContainer.GameSettings.BoardModelAddress;
-            _boardHandle = Addressables.LoadAssetAsync<GameObject>(boardModelAddress);
-            GameObject boardPrefab = await _boardHandle;
-
-            string piecesModelAddress = settingsContainer.GameSettings.PiecesModelAddress;
-            _piecesHandle =  Addressables.LoadAssetsAsync<GameObject>(piecesModelAddress, _ => { });
-            IList<GameObject> piecePrefabs = await _piecesHandle;
-
-            Prefabs = new LoadedPrefabs
+            try
             {
-                Board = boardPrefab,
-                Pieceses = piecePrefabs
-            };
+                string boardModelAddress = settingsContainer.GameSettings.BoardModelAddress;
+                _boardHandle = Addressables.LoadAssetAsync<GameObject>(boardModelAddress);
+                GameObject boardPrefab = await _boardHandle.ToUniTask(cancellationToken: cancellationToken);
+
+                string piecesModelAddress = settingsContainer.GameSettings.PiecesModelAddress;
+                _piecesHandle =  Addressables.LoadAssetsAsync<GameObject>(piecesModelAddress, _ => { });
+                IList<GameObject> piecePrefabs = await _piecesHandle.ToUniTask(cancellationToken: cancellationToken);
+
+                Prefabs = new LoadedPrefabs
+                {
+                    Board = boardPrefab,
+                    Pieceses = piecePrefabs
+                };
+            }
+            catch (OperationCanceledException)
+            {
+                ReleaseAssets();
+                throw;
+            }
         }
 
         public void Dispose()

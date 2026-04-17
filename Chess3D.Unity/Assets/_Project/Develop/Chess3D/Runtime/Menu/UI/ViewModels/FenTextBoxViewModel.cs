@@ -1,6 +1,7 @@
 ﻿using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Utilities;
 using Chess3D.Runtime.Utilities.Logging;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using MvvmTool;
 using UnityEngine.Scripting;
@@ -20,7 +21,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             this.settingsContainer = settingsContainer;
         }
 
-        public UniTask Load()
+        public UniTask Load(CancellationToken cancellationToken = default)
         {
             InitFen();
             return UniTask.CompletedTask;

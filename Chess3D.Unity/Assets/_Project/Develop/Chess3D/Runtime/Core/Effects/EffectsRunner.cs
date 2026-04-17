@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Threading;
 using Chess3D.Runtime.Utilities.Common;
 using Chess3D.Runtime.Utilities.Common.Mathematics;
 using Cysharp.Threading.Tasks;
@@ -75,12 +76,13 @@ namespace Chess3D.Runtime.Core.Effects
             }
         }
 
-        public async UniTask HighlightPiece(bool enableHighlight)
+        private async UniTask HighlightPiece(bool enableHighlight)
         {
+            CancellationToken token = this.GetCancellationTokenOnDestroy();
             if (enableHighlight)
             {
                 _material.SetInt(IsHighlightedId, 1);
-                while (hoverT < 1)
+                while (hoverT < 1 && !token.IsCancellationRequested)
                 {
                     hoverT += Time.deltaTime/highlightDurationSec;
                     _material.SetFloat(HighlightT, Easing.Generic(hoverT, EasingType.InOutQuad));
@@ -89,7 +91,7 @@ namespace Chess3D.Runtime.Core.Effects
             }
             else
             {
-                while (hoverT > 0)
+                while (hoverT > 0 && !token.IsCancellationRequested)
                 {
                     hoverT -= Time.deltaTime/unhighlightDurationSec;
                     _material.SetFloat(HighlightT,Easing.Generic(hoverT, EasingType.InOutQuad));

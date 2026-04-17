@@ -1,5 +1,6 @@
 ﻿using Chess3D.Runtime.Bootstrap;
 using Chess3D.Runtime.Utilities.Logging;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine.SceneManagement;
 using UnityEngine.Scripting;
@@ -20,7 +21,7 @@ namespace Chess3D.Runtime.Utilities
         }
 
         // ReSharper disable once MemberCanBeMadeStatic.Global
-        public async UniTask LoadScene(int toLoadIndex)
+        public async UniTask LoadScene(int toLoadIndex, CancellationToken cancellationToken = default)
         {
             int currentSceneIndex = UnitySceneManager.GetActiveScene().buildIndex;
 
@@ -45,7 +46,7 @@ namespace Chess3D.Runtime.Utilities
                 return;
             }
 
-            await UniTask.NextFrame();
+            await UniTask.NextFrame(cancellationToken);
 
             Log.Default.D(LogTag, $"{SceneUtility.GetScenePathByBuildIndex(toLoadIndex)} is loading.");
             UnitySceneManager.LoadScene(toLoadIndex, LoadSceneMode.Single);

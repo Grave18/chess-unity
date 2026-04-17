@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
@@ -8,22 +9,14 @@ namespace Chess3D.Runtime
 {
     public sealed class ConfigContainer : ILoadUnit
     {
-        public LobbyConfig LobbyConfig;
         public ChessConfig ChessConfig;
 
-        public UniTask Load()
+        public UniTask Load(CancellationToken cancellationToken = default)
         {
             var asset = AssetService.R.Load<TextAsset>(RuntimeConstants.Configs.FileName);
             JsonConvert.PopulateObject(asset.text, this);
             return UniTask.CompletedTask;
         }
-    }
-
-    [Serializable]
-    public sealed class LobbyConfig
-    {
-        public float UpdateIntervalSec;
-        public int PlayersToStart;
     }
 
     [Serializable]

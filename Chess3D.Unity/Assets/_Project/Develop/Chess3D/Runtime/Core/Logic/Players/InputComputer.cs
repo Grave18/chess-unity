@@ -9,13 +9,13 @@ using UnityEngine.Scripting;
 namespace Chess3D.Runtime.Core.Logic.Players
 {
     [Preserve]
-    public sealed class InputComputer : IInputHandler
+    public sealed class InputComputer : IInputHandler, IDisposable
     {
         private readonly Stockfish _stockfish;
         private readonly ISettingsContainer settingsContainer;
         private readonly IGameStateMachine _gameStateMachine;
 
-        private CancellationTokenSource _moveCts = new();
+        private CancellationTokenSource _moveCts;
 
         public InputComputer(Stockfish stockfish, ISettingsContainer settingsContainer, IGameStateMachine gameStateMachine)
         {
@@ -24,13 +24,14 @@ namespace Chess3D.Runtime.Core.Logic.Players
             _gameStateMachine = gameStateMachine;
         }
 
-        public async UniTask Load()
+        public async UniTask Load(CancellationToken cancellationToken = default)
         {
-            await _stockfish.Load();
+            await _stockfish.Load(cancellationToken);
         }
 
-        public async void StartInput()
+        public async UniTask StartInput()
         {
+            _moveCts = new CancellationTokenSource();
             string uci;
             try
             {
@@ -53,13 +54,19 @@ namespace Chess3D.Runtime.Core.Logic.Players
 
         public void StopInput()
         {
-            _moveCts?.Cancel();
-            _moveCts = new CancellationTokenSource();
+            _moveCts.Cancel();
+            _moveCts.Dispose();
         }
 
         public void UpdateInput()
         {
             // Noop
+        }
+
+        public void Dispose()
+        {
+            _stockfish?.Dispose();
+            StopInput();
         }
     }
 }

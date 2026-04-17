@@ -26,14 +26,14 @@ namespace Chess3D.Runtime.Bootstrap
             _configContainer = configContainer;
         }
 
-        public async UniTask StartAsync(CancellationToken cancellation = new())
+        public async UniTask StartAsync(CancellationToken cancellation = default)
         {
-            await _loadingService.BeginLoading(_settingsContainer);
-            await _loadingService.BeginLoading(_configContainer);
-            await _loadingService.BeginLoading(_applicationConfigurationLoadUnit);
+            await _loadingService.BeginLoading(_settingsContainer, cancellation);
+            await _loadingService.BeginLoading(_configContainer, cancellation);
+            await _loadingService.BeginLoading(_applicationConfigurationLoadUnit, cancellation);
 
             UniRxUtils.Initialize();
-            await _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu);
+            await _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu, cancellation);
 
             Log.Bootstrap.D("BootstrapFlow.StartAsync()");
         }

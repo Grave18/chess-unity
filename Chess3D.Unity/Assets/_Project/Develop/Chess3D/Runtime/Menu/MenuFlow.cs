@@ -44,17 +44,17 @@ namespace Chess3D.Runtime.Menu
             _mainViewLoader = mainViewLoader;
         }
 
-        public async UniTask StartAsync(CancellationToken cancellation = new())
+        public async UniTask StartAsync(CancellationToken cancellation = default)
         {
-            await _loadingService.BeginLoading(_mainViewLoader);
-            await _loadingService.BeginLoading(_viewNavigator);
-            await _loadingService.BeginLoading(_visualBoardSpawner);
-            await _loadingService.BeginLoading(_mainViewModel, _homeViewModel);
-            await _loadingService.BeginLoading(_boardViewModel);
-            await _loadingService.BeginLoading(_fenTextBoxViewModel);
-            await _loadingService.BeginLoading(_gameSettingsViewModel);
-            await _loadingService.BeginLoading(_graphicsSettingsViewModel);
-            await _loadingService.BeginLoading(_audioSettingsViewModel);
+            await _loadingService.BeginLoading(_mainViewLoader, cancellation);
+            await _loadingService.BeginLoading(_viewNavigator, cancellation);
+            await _loadingService.BeginLoading(_visualBoardSpawner, cancellation);
+            await _loadingService.BeginLoading(_mainViewModel, _homeViewModel, cancellation);
+            await _loadingService.BeginLoading(_boardViewModel, cancellation);
+            await _loadingService.BeginLoading(_fenTextBoxViewModel, cancellation);
+            await _loadingService.BeginLoading(_gameSettingsViewModel, cancellation);
+            await _loadingService.BeginLoading(_graphicsSettingsViewModel, cancellation);
+            await _loadingService.BeginLoading(_audioSettingsViewModel, cancellation);
 
             Log.Menu.D("MenuFlow.StartAsync()");
         }

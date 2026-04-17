@@ -1,4 +1,5 @@
-﻿using Chess3D.Runtime.Bootstrap.Settings;
+﻿using System.Threading;
+using Chess3D.Runtime.Bootstrap.Settings;
 using Cysharp.Threading.Tasks;
 using VContainer;
 
@@ -14,10 +15,10 @@ namespace Chess3D.Runtime.Core.Logic.Players
             _resolver = resolver;
         }
 
-        public async UniTask<IPlayer> Create(PlayerType playerType)
+        public async UniTask<IPlayer> Create(PlayerType playerType, CancellationToken cancellationToken = default)
         {
             var input = _resolver.Resolve<IInputHandler>(playerType);
-            await input.Load();
+            await input.Load(cancellationToken);
 
             return new Player(input);
         }

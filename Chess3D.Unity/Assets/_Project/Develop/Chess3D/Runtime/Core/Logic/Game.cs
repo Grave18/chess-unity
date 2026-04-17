@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.ChessBoard.Pieces;
 using Chess3D.Runtime.Core.Logic.MovesBuffer;
@@ -58,7 +59,7 @@ namespace Chess3D.Runtime.Core.Logic
             coreEvents.OnEndMove.Subscribe(_ => Deselect());
         }
 
-        public UniTask Load()
+        public UniTask Load(CancellationToken cancellationToken = default)
         {
             ResetGameState();
             PreformCalculations();

@@ -1,5 +1,6 @@
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Noesis;
 
@@ -19,7 +20,7 @@ namespace Chess3D.Runtime.Menu.UI
             _mainViewModel = mainViewModel;
         }
 
-        public UniTask Load()
+        public UniTask Load(CancellationToken cancellationToken = default)
         {
             _noesisView.Xaml = _mainViewXaml;
             _noesisView.LoadXaml(false);

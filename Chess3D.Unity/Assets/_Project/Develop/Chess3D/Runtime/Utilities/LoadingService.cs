@@ -11,12 +11,12 @@ namespace Chess3D.Runtime.Utilities
 
     public interface ILoadUnit
     {
-        UniTask Load();
+        UniTask Load(CancellationToken cancellationToken = default);
     }
 
     public interface ILoadUnit<in T>
     {
-        UniTask Load(T param);
+        UniTask Load(T param, CancellationToken cancellationToken = default);
     }
 
     public interface IDisposableLoadUnit<in T> : ILoadUnit<T>, IDisposable { }
@@ -38,7 +38,7 @@ namespace Chess3D.Runtime.Utilities
             Log.Loading.D($"{unit.GetType().Name} loading is started");
         }
 
-        private async UniTask OnLoadingFinish(object unit, bool isError)
+        private async UniTask OnLoadingFinish(object unit, bool isError, CancellationToken cancellationToken)
         {
             _watch?.Stop();
             Log.Loading.D($"{unit.GetType().Name} is {(isError ? "NOT " : "")}loaded with time {_watch?.ElapsedMilliseconds}ms");
@@ -49,19 +49,19 @@ namespace Chess3D.Runtime.Utilities
             if (mainThreadId != currentThreadId) {
                 _watch?.Restart();
                 Log.Loading.D("THREADING",$"start switching from '{currentThreadId}' thread to main thread '{mainThreadId}'");
-                await UniTask.SwitchToMainThread();
+                await UniTask.SwitchToMainThread(cancellationToken);
                 _watch?.Stop();
                 Log.Loading.D("THREADING",$"switch finished with time {_watch?.ElapsedMilliseconds}");
             }
         }
 
-        public async UniTask BeginLoading(ILoadUnit loadUnit, bool skipExceptionThrow = false)
+        public async UniTask BeginLoading(ILoadUnit loadUnit, CancellationToken cancellationToken = default, bool skipExceptionThrow = false)
         {
             var isError = true;
 
             try {
                 OnLoadingBegin(loadUnit);
-                await loadUnit.Load();
+                await loadUnit.Load(cancellationToken);
                 isError = false;
             }
             catch (Exception e) {
@@ -71,24 +71,27 @@ namespace Chess3D.Runtime.Utilities
                     throw;
             }
             finally {
-                await OnLoadingFinish(loadUnit, isError);
+                await OnLoadingFinish(loadUnit, isError, cancellationToken);
             }
         }
 
-        public async UniTask BeginLoading(IDisposableLoadUnit unit, bool skipExceptionThrow = false)
+        public async UniTask BeginLoading(IDisposableLoadUnit unit, CancellationToken cancellationToken = default, bool skipExceptionThrow = false)
         {
             Disposables.Add(unit);
-            await BeginLoading((ILoadUnit)unit, skipExceptionThrow);
+            await BeginLoading((ILoadUnit)unit, cancellationToken, skipExceptionThrow);
         }
 
-        public async UniTask BeginLoading<T>(ILoadUnit<T> loadUnit, T param, bool skipExceptionThrow = false)
+        public async UniTask BeginLoading<T>(ILoadUnit<T> loadUnit, T param, CancellationToken cancellationToken = default, bool skipExceptionThrow = false)
         {
             var isError = true;
 
             try {
                 OnLoadingBegin(loadUnit);
-                await loadUnit.Load(param);
+                await loadUnit.Load(param, cancellationToken);
                 isError = false;
+            }
+            catch (OperationCanceledException) {
+                throw;
             }
             catch (Exception e) {
                 Log.Loading.E(e);
@@ -97,31 +100,34 @@ namespace Chess3D.Runtime.Utilities
                     throw;
             }
             finally {
-                await OnLoadingFinish(loadUnit, isError);
+                await OnLoadingFinish(loadUnit, isError, cancellationToken);
             }
         }
 
-        public async UniTask BeginLoading<T>(IDisposableLoadUnit<T> unit, T param, bool skipExceptionThrow = false)
+        public async UniTask BeginLoading<T>(IDisposableLoadUnit<T> unit, T param, CancellationToken cancellationToken = default, bool skipExceptionThrow = false)
         {
             Disposables.Add(unit);
-            await BeginLoading((ILoadUnit<T>)unit, param, skipExceptionThrow);
+            await BeginLoading((ILoadUnit<T>)unit, param, cancellationToken, skipExceptionThrow);
         }
 
-        public async UniTask BeginLoading(bool skipExceptionThrow = false, params ILoadUnit[] units)
+        public async UniTask BeginLoading(CancellationToken cancellationToken = default, bool skipExceptionThrow = false, params ILoadUnit[] units)
         {
             foreach (ILoadUnit loadUnit in units)
-                await BeginLoading(loadUnit, skipExceptionThrow);
+                await BeginLoading(loadUnit, cancellationToken, skipExceptionThrow);
         }
 
-        public async UniTask BeginLoadingParallel(string logName, bool skipExceptionThrow = false, params ILoadUnit[] units)
+        public async UniTask BeginLoadingParallel(string logName, CancellationToken cancellationToken = default, bool skipExceptionThrow = false, params ILoadUnit[] units)
         {
             var isError = true;
 
             try {
                 OnLoadingBegin(logName);
-                var t = UniTask.WhenAll(units.Select(e => e.Load()));
+                var t = UniTask.WhenAll(units.Select(e => e.Load(cancellationToken)));
                 await t;
                 isError = false;
+            }
+            catch (OperationCanceledException) {
+                throw;
             }
             catch (Exception e) {
                 Log.Loading.E(e);
@@ -130,7 +136,7 @@ namespace Chess3D.Runtime.Utilities
                     throw;
             }
             finally {
-                await OnLoadingFinish(logName, isError);
+                await OnLoadingFinish(logName, isError, cancellationToken);
             }
         }
     }

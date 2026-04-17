@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading;
 using Chess3D.Runtime.Core.AI;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
@@ -27,7 +28,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             this.settingsContainer = settingsContainer;
         }
 
-        public UniTask Load()
+        public UniTask Load(CancellationToken cancellationToken = default)
         {
             InitName();
             InitTime();

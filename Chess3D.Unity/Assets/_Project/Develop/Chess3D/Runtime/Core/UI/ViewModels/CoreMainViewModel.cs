@@ -1,6 +1,7 @@
 ﻿using Chess3D.Runtime.Core.Logic.MenuStates;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using MvvmTool;
 using UniRx;
@@ -24,7 +25,7 @@ namespace Chess3D.Runtime.Core.UI.ViewModels
             _menuStateMachine = menuStateMachine;
         }
 
-        public UniTask Load(IViewModel viewModel)
+        public UniTask Load(IViewModel viewModel, CancellationToken cancellationToken = default)
         {
             CurrentViewModel = viewModel;
 

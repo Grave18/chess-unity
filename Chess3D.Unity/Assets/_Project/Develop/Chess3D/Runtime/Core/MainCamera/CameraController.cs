@@ -1,9 +1,9 @@
 ﻿using System.Collections;
+using System;
 using System.Threading;
 using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.InputManagement;
 using Chess3D.Runtime.Core.Logic;
-using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Utilities;
 using Chess3D.Runtime.Utilities.Common.Mathematics;
 using Cysharp.Threading.Tasks;
@@ -75,29 +75,24 @@ namespace Chess3D.Runtime.Core.MainCamera
         private Game _game;
         private Camera _mainCamera;
         private ISettingsContainer _settingsContainer;
-        private FenFromString _fenFromString;
-        private ConfigContainer _configContainer;
 
         private bool IsVsPlayer => _settingsContainer.GameSettings.PlayerWhite.PlayerType == PlayerType.Human
                                    && _settingsContainer.GameSettings.PlayerBlack.PlayerType == PlayerType.Human;
 
         [Inject]
         public void Construct(Game game, [Key(CameraKeys.Main)] Camera mainCamera,
-            ISettingsContainer settingsContainer, CoreEvents coreEvents, FenFromString fenFromString,
-            ConfigContainer configContainer)
+            ISettingsContainer settingsContainer, CoreEvents coreEvents)
         {
             _game = game;
             _mainCamera = mainCamera;
             _settingsContainer = settingsContainer;
-            _fenFromString = fenFromString;
             _layerMask = LayerMask.GetMask("Piece", "Square");
-            _configContainer = configContainer;
 
             coreEvents.OnEndMove.Subscribe(_ => AutoRotate()).AddTo(this);
             coreEvents.OnEnd.Subscribe(_ => StopAutoRotate()).AddTo(this);
         }
 
-        public UniTask Load()
+        public UniTask Load(CancellationToken cancellationToken = default)
         {
             _initialCameraSide = _settingsContainer.GameSettings.PlayerColor;
             _isStartRotationOn = _settingsContainer.GameSettings.IsRotateCameraOnStart;
@@ -129,7 +124,7 @@ namespace Chess3D.Runtime.Core.MainCamera
             {
                 if (token.IsCancellationRequested)
                 {
-                    return;
+                    break;
                 }
 
                 if (!_isStartRotationOn)

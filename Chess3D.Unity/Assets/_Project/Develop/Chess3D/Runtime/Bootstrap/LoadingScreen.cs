@@ -1,3 +1,4 @@
+using System;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
@@ -5,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Chess3D.Runtime.Bootstrap
 {
-    public sealed class LoadingScreen : MonoBehaviour
+    public sealed class LoadingScreen : MonoBehaviour, IDisposable
     {
         [SerializeField] private Image loadingBarImage;
         [SerializeField] private RectTransform loadingPanel;
@@ -17,33 +18,37 @@ namespace Chess3D.Runtime.Bootstrap
         [SerializeField] private float unfadeTimeSec = 0.35f;
         [SerializeField] private Ease unfadeEasing = Ease.InQuart;
 
-
-        public float LoadingProgress
-        {
-            get => loadingBarImage.fillAmount;
-            set => loadingBarImage.fillAmount = value;
-        }
+        private Tween _currentTween;
 
         public async UniTask Fade()
         {
-            await loadingPanel
+            _currentTween?.Kill();
+            _currentTween = loadingPanel
                 .DOAnchorPos(new Vector2(0, 0), fadeTimeSec)
                 .From(new Vector2(-1920, 0))
                 .SetEase(fadeEasing)
                 .SetLink(gameObject)
-                .Play()
-                .AsyncWaitForCompletion();
+                .Play();
+
+            await _currentTween.AsyncWaitForCompletion();
         }
 
         public async UniTask Unfade()
         {
-            await loadingPanel
+            _currentTween?.Kill();
+            _currentTween = loadingPanel
                 .DOAnchorPos(new Vector2(1920, 0), unfadeTimeSec)
                 .From(new Vector2(0, 0))
                 .SetEase(unfadeEasing)
                 .SetLink(gameObject)
-                .Play()
-                .AsyncWaitForCompletion();
+                .Play();
+
+            await _currentTween.AsyncWaitForCompletion();
+        }
+
+        public void Dispose()
+        {
+            _currentTween?.Kill();
         }
     }
 }

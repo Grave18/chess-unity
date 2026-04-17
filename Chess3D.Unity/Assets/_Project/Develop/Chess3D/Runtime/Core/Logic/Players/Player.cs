@@ -1,3 +1,6 @@
+using System.Threading;
+using Cysharp.Threading.Tasks;
+
 namespace Chess3D.Runtime.Core.Logic.Players
 {
     public sealed class Player : IPlayer
@@ -9,9 +12,9 @@ namespace Chess3D.Runtime.Core.Logic.Players
             _inputHandler = inputHandler;
         }
 
-        public void StartPlayer()
+        public UniTask StartPlayer(CancellationToken cancellationToken = default)
         {
-            _inputHandler.StartInput();
+            return _inputHandler.StartInput();
         }
 
         public void UpdatePlayer()

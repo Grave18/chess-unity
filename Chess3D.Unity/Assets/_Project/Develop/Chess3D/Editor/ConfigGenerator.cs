@@ -16,11 +16,6 @@ namespace Chess3D.Editor
         {
             var config = new ConfigContainer
             {
-                LobbyConfig = new LobbyConfig
-                {
-                    UpdateIntervalSec = 3f,
-                    PlayersToStart = 2,
-                },
                 ChessConfig = new ChessConfig
                 {
                     WarmupTimeSec = 3f,

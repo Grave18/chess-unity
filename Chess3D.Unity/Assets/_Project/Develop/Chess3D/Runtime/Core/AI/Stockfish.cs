@@ -82,11 +82,11 @@ namespace Chess3D.Runtime.Core.AI
             Log.AI.D(state);
         }
 
-        public async Task Load()
+        public async Task Load(CancellationToken cancellationToken = default)
         {
             StartStockfish();
-            await SetupStockfish();
-            await StartNewGame();
+            await SetupStockfish(cancellationToken);
+            await StartNewGame(cancellationToken);
             DeclareReady();
         }
 
@@ -122,11 +122,11 @@ namespace Chess3D.Runtime.Core.AI
             }
         }
 
-        private async Task SetupStockfish()
+        private async Task SetupStockfish(CancellationToken cancellationToken)
         {
             // Enable uci mode
             PostCommand("uci");
-            await FindAnswer("uciok", Application.exitCancellationToken);
+            await FindAnswer("uciok", cancellationToken);
 
             // Set Threads
             int logicalProcessorsCount = SystemInfo.processorCount;
@@ -134,11 +134,11 @@ namespace Chess3D.Runtime.Core.AI
             PostCommand($"setoption name Threads value {logicalProcessorsCount/2}");
         }
 
-        private async Task StartNewGame()
+        private async Task StartNewGame(CancellationToken cancellationToken)
         {
             PostCommand("ucinewgame");
             PostCommand("isready");
-            await FindAnswer("readyok", Application.exitCancellationToken);
+            await FindAnswer("readyok", cancellationToken);
         }
 
         private void DeclareReady()
@@ -151,7 +151,7 @@ namespace Chess3D.Runtime.Core.AI
         {
             _playerSettings = playerSettings;
 
-            if (await IsAiFailedToLoad())
+            if (await IsAiFailedToLoad(token))
             {
                 Debug.LogError("Ai failed to load");
                 return null;
@@ -175,8 +175,13 @@ namespace Chess3D.Runtime.Core.AI
             return uci;
         }
 
-        private async Task<bool> IsAiFailedToLoad()
+        private async Task<bool> IsAiFailedToLoad(CancellationToken cancellationToken)
         {
+            while (!_isAiLoaded.Task.IsCompleted && !cancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(10, cancellationToken);
+            }
+
             return !await _isAiLoaded.Task;
         }
 

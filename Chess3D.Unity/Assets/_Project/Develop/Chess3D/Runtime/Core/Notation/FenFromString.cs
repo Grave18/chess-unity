@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Chess3D.Runtime.Bootstrap.Settings;
+using System.Threading;
 using Chess3D.Runtime.Core.ChessBoard.Info;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Utilities;
@@ -29,7 +29,7 @@ namespace Chess3D.Runtime.Core.Notation
             this.settingsContainer = settingsContainer;
         }
 
-        public UniTask Load()
+        public UniTask Load(CancellationToken cancellationToken = default)
         {
             string[] splitPreset = settingsContainer.GameSettings.CurrentFen.Split(' ');
 

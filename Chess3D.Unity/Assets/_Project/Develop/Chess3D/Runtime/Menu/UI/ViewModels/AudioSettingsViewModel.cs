@@ -1,4 +1,5 @@
 ﻿using Chess3D.Runtime.Utilities;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using MvvmTool;
 using UnityEngine.Audio;
@@ -23,7 +24,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _audioMixer = audioMixer;
         }
 
-        public UniTask Load()
+        public UniTask Load(CancellationToken cancellationToken = default)
         {
             _masterVolume = _settingsContainer.AudioSettings.MasterVolume;
             _musicVolume = _settingsContainer.AudioSettings.MusicVolume;

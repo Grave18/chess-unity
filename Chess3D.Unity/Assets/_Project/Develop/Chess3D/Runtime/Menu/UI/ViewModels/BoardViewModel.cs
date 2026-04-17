@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Threading;
 using Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _viewNavigator = viewNavigator;
         }
 
-        public UniTask Load()
+        public UniTask Load(CancellationToken cancellationToken = default)
         {
             InitPieces();
             InitBoards();

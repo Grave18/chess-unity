@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities;
 using Chess3D.Runtime.Utilities.Logging;
@@ -20,7 +21,7 @@ namespace Chess3D.Runtime.Menu.UI
             _resolver = resolver;
         }
 
-        public UniTask Load()
+        public UniTask Load(CancellationToken cancellationToken = default)
         {
             _mainViewModel = _resolver.Resolve<IMainViewModel>();
             return UniTask.CompletedTask;

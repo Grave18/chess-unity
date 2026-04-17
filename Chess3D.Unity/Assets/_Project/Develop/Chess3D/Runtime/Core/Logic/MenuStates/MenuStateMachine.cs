@@ -1,6 +1,7 @@
 ﻿using Chess3D.Runtime.Core.Logic.Players;
 using Chess3D.Runtime.Core.UI.UnityGUI.LeftPanel;
 using Chess3D.Runtime.Core.UI.ViewModels;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Chess3D.Runtime.Utilities;
 using VContainer;
@@ -19,7 +20,7 @@ namespace Chess3D.Runtime.Core.Logic.MenuStates
             _resolver = resolver;
         }
 
-        public UniTask Load()
+        public UniTask Load(CancellationToken cancellationToken = default)
         {
             SetState<PlayState>();
 

@@ -1,4 +1,5 @@
 ﻿using Chess3D.Runtime.Utilities;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -18,7 +19,7 @@ namespace Chess3D.Runtime.Bootstrap
             _audioMixer = audioMixer;
         }
 
-        public UniTask Load()
+        public UniTask Load(CancellationToken cancellationToken = default)
         {
             SetFramerate();
             SetQuality();

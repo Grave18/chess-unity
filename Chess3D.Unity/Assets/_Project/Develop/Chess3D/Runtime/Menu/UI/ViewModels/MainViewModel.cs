@@ -1,4 +1,5 @@
 ﻿using Chess3D.Runtime.Utilities;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using MvvmTool;
 using Noesis;
@@ -20,10 +21,10 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _renderTexture = renderTexture;
         }
 
-        public async UniTask Load(IViewModel viewModel)
+        public async UniTask Load(IViewModel viewModel, CancellationToken cancellationToken = default)
         {
             LoadStartingView(viewModel);
-            await InitRenderTexture();
+            await InitRenderTexture(cancellationToken);
         }
 
         private void LoadStartingView(IViewModel viewModel)
@@ -31,11 +32,11 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             CurrentViewModel = viewModel;
         }
 
-        private async UniTask InitRenderTexture()
+        private async UniTask InitRenderTexture(CancellationToken cancellationToken)
         {
             if(_renderTexture)
             {
-                await UniTask.NextFrame();
+                await UniTask.NextFrame(cancellationToken);
 
                 ImageSource = new TextureSource(_renderTexture);
             }

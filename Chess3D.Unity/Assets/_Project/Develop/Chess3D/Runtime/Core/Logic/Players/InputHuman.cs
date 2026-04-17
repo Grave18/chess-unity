@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Chess3D.Runtime.Core.ChessBoard;
 using Chess3D.Runtime.Core.ChessBoard.Pieces;
 using Chess3D.Runtime.Core.MainCamera;
@@ -29,14 +30,15 @@ namespace Chess3D.Runtime.Core.Logic.Players
             _gameStateMachine = gameStateMachine;
         }
 
-        public UniTask Load()
+        public UniTask Load(CancellationToken cancellationToken = default)
         {
             return UniTask.CompletedTask;
         }
 
-        public void StartInput()
+        public UniTask StartInput()
         {
             _isPlaying = true;
+            return UniTask.CompletedTask;
         }
 
         public void UpdateInput()

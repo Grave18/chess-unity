@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using Chess3D.Runtime.Bootstrap.Settings;
 using Chess3D.Runtime.Core.Logic;
 using Chess3D.Runtime.Utilities;
@@ -28,7 +29,7 @@ namespace Chess3D.Runtime
 
         private static readonly string FilePath = Path.Combine(Application.persistentDataPath, RuntimeConstants.Settings.FileName + ".json");
 
-        public UniTask Load()
+        public UniTask Load(CancellationToken cancellationToken = default)
         {
             string settingsJson;
             if (File.Exists(FilePath))

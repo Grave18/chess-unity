@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
@@ -26,9 +27,9 @@ namespace Chess3D.Runtime.Utilities
             return _resolver.Resolve<T>();
         }
 
-        public static async UniTask<T> ResolveAsync<T>()
+        public static async UniTask<T> ResolveAsync<T>(CancellationToken cancellationToken = default)
         {
-            await UniTask.WaitUntil(() => IsValid);
+            await UniTask.WaitUntil(() => IsValid, cancellationToken: cancellationToken);
             var ret = _resolver.Resolve<T>();
 
             return ret;

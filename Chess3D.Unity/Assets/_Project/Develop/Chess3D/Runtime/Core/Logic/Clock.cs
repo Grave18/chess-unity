@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Chess3D.Runtime.Core.Sound;
 using Cysharp.Threading.Tasks;
 using UniRx;
@@ -61,7 +62,7 @@ namespace Chess3D.Runtime.Core.Logic
             _disposables.Dispose();
         }
 
-        public UniTask Load()
+        public UniTask Load(CancellationToken cancellationToken = default)
         {
             TimeSpan time = TimeSpan.FromMinutes(_settingsContainer.GameSettings.Time.x)
                                    + TimeSpan.FromSeconds(_settingsContainer.GameSettings.Time.y);

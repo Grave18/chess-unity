@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Chess3D.Runtime.Core.Notation;
 using Chess3D.Runtime.Utilities;
 using Cysharp.Threading.Tasks;
@@ -23,6 +24,8 @@ namespace Chess3D.Runtime.Core.Logic.Players
         private bool isLoaded;
 
         private readonly CompositeDisposable _disposables = new();
+        private CancellationTokenSource _cancellationTokenSource;
+
         public Competitors(Game game, FenFromString fenFromString, PlayerFactory playerFactory,
             CoreEvents coreEvents, ISettingsContainer settingsContainer)
         {
@@ -37,17 +40,19 @@ namespace Chess3D.Runtime.Core.Logic.Players
         public void Dispose()
         {
             _disposables.Dispose();
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
         }
 
-        public async UniTask Load()
+        public async UniTask Load(CancellationToken cancellationToken = default)
         {
             if (isLoaded)
             {
                 return;
             }
 
-            _playerWhite = await _playerFactory.Create(_settingsContainer.GameSettings.PlayerWhite.PlayerType);
-            _playerBlack = await _playerFactory.Create(_settingsContainer.GameSettings.PlayerBlack.PlayerType);
+            _playerWhite = await _playerFactory.Create(_settingsContainer.GameSettings.PlayerWhite.PlayerType, cancellationToken);
+            _playerBlack = await _playerFactory.Create(_settingsContainer.GameSettings.PlayerBlack.PlayerType, cancellationToken);
 
             CurrentPlayer = _fenFromString.TurnColor == PieceColor.White ? _playerWhite : _playerBlack;
 
@@ -56,18 +61,19 @@ namespace Chess3D.Runtime.Core.Logic.Players
 
         public async UniTask StartPlayer()
         {
-            await Load(); // In case initial state is not warmup
-            CurrentPlayer.StartPlayer();
+            _cancellationTokenSource = new CancellationTokenSource();
+            await Load(_cancellationTokenSource.Token); // In case initial state is not warmup
+            await CurrentPlayer.StartPlayer(_cancellationTokenSource.Token);
         }
 
         public void UpdatePlayer()
         {
-            CurrentPlayer.UpdatePlayer();
+            CurrentPlayer?.UpdatePlayer();
         }
 
         public void StopPlayer()
         {
-            CurrentPlayer.StopPlayer();
+            CurrentPlayer?.StopPlayer();
         }
 
         private void SwapCurrentPlayer()
