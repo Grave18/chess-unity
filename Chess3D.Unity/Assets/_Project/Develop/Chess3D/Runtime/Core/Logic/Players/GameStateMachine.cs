@@ -1,6 +1,5 @@
 ﻿using System;
 using Chess3D.Runtime.Core.Logic.GameStates;
-using Cysharp.Threading.Tasks;
 using UniRx;
 using VContainer;
 
@@ -26,13 +25,6 @@ namespace Chess3D.Runtime.Core.Logic.Players
         public void Dispose()
         {
             _disposables.Dispose();
-        }
-
-        public UniTask Load(IGameState warmUpState)
-        {
-            SetState<WarmUpState>();
-
-            return UniTask.CompletedTask;
         }
 
         public void SetState(IGameState state)

@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using Chess3D.Runtime.Utilities;
+using Chess3D.Runtime.Utilities.Logging;
 using Cysharp.Threading.Tasks;
 using UnityEngine.Scripting;
 using VContainer.Unity;
@@ -33,6 +34,8 @@ namespace Chess3D.Runtime.Bootstrap
 
             UniRxUtils.Initialize();
             await _sceneManager.LoadScene(RuntimeConstants.Scenes.Menu);
+
+            Log.Bootstrap.D("BootstrapFlow.StartAsync()");
         }
     }
 }

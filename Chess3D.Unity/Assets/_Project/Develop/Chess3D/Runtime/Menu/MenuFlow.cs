@@ -3,6 +3,7 @@ using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.UnityGUI.BoardInMainMenu;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities;
+using Chess3D.Runtime.Utilities.Logging;
 using Cysharp.Threading.Tasks;
 using VContainer.Unity;
 
@@ -54,6 +55,8 @@ namespace Chess3D.Runtime.Menu
             await _loadingService.BeginLoading(_gameSettingsViewModel);
             await _loadingService.BeginLoading(_graphicsSettingsViewModel);
             await _loadingService.BeginLoading(_audioSettingsViewModel);
+
+            Log.Menu.D("MenuFlow.StartAsync()");
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
         public UniTask Load()
         {
             InitName();
-            IntiTime();
+            InitTime();
             InitDifficulty();
             return UniTask.CompletedTask;
         }
@@ -40,7 +40,7 @@ namespace Chess3D.Runtime.Menu.UI.ViewModels
             _playerName = settingsContainer.GameSettings.PlayerWhite.Name;
         }
 
-        private void IntiTime()
+        private void InitTime()
         {
             Times = new ObservableCollection<string> { "1", "3", "5", "10", "20", "30", "40", "50", "60" };
             _selectedTime = settingsContainer.GameSettings.Time.x.ToString();

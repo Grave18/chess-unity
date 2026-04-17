@@ -39,20 +39,19 @@ namespace Chess3D.Runtime.Core.Logic.Players
             _disposables.Dispose();
         }
 
-        public UniTask Load()
+        public async UniTask Load()
         {
             if (isLoaded)
             {
-                return UniTask.CompletedTask;
+                return;
             }
 
-            _playerWhite = _playerFactory.Create(_settingsContainer.GameSettings.PlayerWhite.PlayerType);
-            _playerBlack = _playerFactory.Create(_settingsContainer.GameSettings.PlayerBlack.PlayerType);
+            _playerWhite = await _playerFactory.Create(_settingsContainer.GameSettings.PlayerWhite.PlayerType);
+            _playerBlack = await _playerFactory.Create(_settingsContainer.GameSettings.PlayerBlack.PlayerType);
 
             CurrentPlayer = _fenFromString.TurnColor == PieceColor.White ? _playerWhite : _playerBlack;
 
             isLoaded = true;
-            return UniTask.CompletedTask;
         }
 
         public void StartPlayer()

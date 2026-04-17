@@ -12,6 +12,7 @@ using Chess3D.Runtime.Core.UI.ViewModels;
 using Chess3D.Runtime.Menu.UI;
 using Chess3D.Runtime.Menu.UI.ViewModels;
 using Chess3D.Runtime.Utilities;
+using Chess3D.Runtime.Utilities.Logging;
 using Cysharp.Threading.Tasks;
 using VContainer.Unity;
 
@@ -39,7 +40,6 @@ namespace Chess3D.Runtime.Core
         private readonly CoreMainViewModel _coreMainViewModel;
         private readonly CoreHomeViewModel _homeViewModel;
         private readonly ViewNavigator _viewNavigator;
-        private readonly WarmUpState _warmUpState;
         private readonly PlayerNames _playerNames;
 
         public CoreFlow(LoadingService loadingService, FenFromString fenFromString,
@@ -49,7 +49,7 @@ namespace Chess3D.Runtime.Core
             GraphicsSettingsViewModel graphicsSettingsViewModel, AudioSettingsViewModel audioSettingsViewModel,
             CoreMainViewModel coreMainViewModel, CoreHomeViewModel homeViewModel,
             ViewNavigator viewNavigator, GameSettingsViewModel gameSettingsViewModel,
-            FenTextBoxViewModel fenTextBoxViewModel, WarmUpState warmUpState, PlayerNames playerNames)
+            FenTextBoxViewModel fenTextBoxViewModel, PlayerNames playerNames)
         {
             _loadingService = loadingService;
             _fenFromString = fenFromString;
@@ -70,7 +70,6 @@ namespace Chess3D.Runtime.Core
             _viewNavigator = viewNavigator;
             _gameSettingsViewModel = gameSettingsViewModel;
             _fenTextBoxViewModel = fenTextBoxViewModel;
-            _warmUpState = warmUpState;
             _playerNames = playerNames;
         }
 
@@ -96,8 +95,10 @@ namespace Chess3D.Runtime.Core
             await _loadingService.BeginLoading(_audioSettingsViewModel);
             await _loadingService.BeginLoading(_fenTextBoxViewModel);
 
-            await _loadingService.BeginLoading(_gameStateMachine, _warmUpState);
+            _gameStateMachine.SetState<WarmUpState>();
             _cameraController.RotateToStartPosition().Forget();
+
+            Log.Core.D("CoreFlow.StartAsync()");
         }
     }
 }

@@ -6,11 +6,10 @@ namespace Chess3D.Runtime.Utilities.Logging
         public static readonly TagLog Loading = new("LOADING");
         public static readonly TagLog Editor = new("EDITOR");
         public static readonly TagLog Noesis = new("NOESIS");
-        public static readonly TagLog Boot = new("BOOT");
+        public static readonly TagLog Bootstrap = new("BOOTSTRAP");
         public static readonly TagLog Menu = new("MENU");
         public static readonly TagLog Core = new("CORE");
         public static readonly TagLog AI = new("AI");
-        public static readonly TagLog Lobby = new("LOBBY");
 
         public static readonly BuilderLogPool Builder = new(new TagLog(string.Empty), 5);
     }
