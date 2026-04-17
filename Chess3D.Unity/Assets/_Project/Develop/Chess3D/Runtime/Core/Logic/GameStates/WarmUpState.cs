@@ -17,8 +17,6 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         public string Name => "WarmUp";
 
-        private bool _isConstructed;
-
         [Inject]
         public void Construct(IGameStateMachine gameStateMachine, CoreEvents coreEvents,
             ConfigContainer configContainer, EffectsPlayer effectsPlayer)
@@ -27,16 +25,10 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
             _coreEvents = coreEvents;
             _configContainer = configContainer;
             _effectsPlayer = effectsPlayer;
-            _isConstructed = true;
         }
 
         public void Enter()
         {
-            if (!_isConstructed)
-            {
-                return;
-            }
-
             t = _configContainer.ChessConfig.WarmupTimeSec;
 
             _coreEvents.OnWarmup.OnNext(Unit.Default);
@@ -50,11 +42,6 @@ namespace Chess3D.Runtime.Core.Logic.GameStates
 
         public void StateUpdate()
         {
-            if (!_isConstructed)
-            {
-                return;
-            }
-
             if (t <= 0f)
             {
                 return;

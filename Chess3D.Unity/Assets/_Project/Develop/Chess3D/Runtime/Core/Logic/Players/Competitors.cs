@@ -54,13 +54,9 @@ namespace Chess3D.Runtime.Core.Logic.Players
             isLoaded = true;
         }
 
-        public void StartPlayer()
+        public async UniTask StartPlayer()
         {
-            if (!isLoaded)
-            {
-                Load(); // In case initial state is not warmup
-            }
-
+            await Load(); // In case initial state is not warmup
             CurrentPlayer.StartPlayer();
         }
 
